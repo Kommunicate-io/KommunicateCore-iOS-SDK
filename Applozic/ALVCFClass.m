@@ -16,6 +16,7 @@
 {
     ABAddressBookRef book;
 }
+
 -(NSString *)saveContactToDocumentDirectory:(ABRecordRef)person
 {
     NSArray * array = [[NSArray alloc] initWithObjects:(__bridge id _Nonnull)(person), nil];
