@@ -1,0 +1,563 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [
+    {
+      'type': 'directory',
+      'name': "/Users/devashish/Library/Developer/Xcode/DerivedData/applozicdemo-geymhlxaqulgdzfttxyhkxzvoiyz/Build/Products/Release-iphonesimulator/Applozic.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "ALAPIResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALAPIResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALAppLocalNotifications.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALAppLocalNotifications.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALApplozicSettings.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALApplozicSettings.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALAudioAttachmentViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALAudioAttachmentViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALAudioCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALAudioCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALBaseViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALBaseViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannel.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannel.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannelClientService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannelClientService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannelCreateResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannelCreateResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannelDBService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannelDBService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannelFeed.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannelFeed.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannelInfo.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannelInfo.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannelService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannelService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannelSyncResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannelSyncResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChannelUserX.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChannelUserX.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChatCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Views/ALChatCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChatLauncher.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALChatLauncher.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALChatViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALChatViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALCollectionReusableView.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALCollectionReusableView.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALColorUtility.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Utilities/ALColorUtility.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALConnection.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALConnection.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALConnectionQueueHandler.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALConnectionQueueHandler.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALConstant.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Resources/Files/ALConstant.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALContact.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALContact.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALContactCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Views/ALContactCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALContactDBService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALContactDBService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALContactMessageCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALContactMessageCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALContactService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALContactService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALContactsResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALContactsResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALConversationClientService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALConversationClientService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALConversationCreateResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALConversationCreateResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALConversationDBService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALConversationDBService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALConversationProxy.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALConversationProxy.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALConversationService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALConversationService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALDBHandler.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALDBHandler.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALDataNetworkConnection.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALDataNetworkConnection.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALDocumentsCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALDocumentsCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALFileMetaInfo.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALFileMetaInfo.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALGroupCreationViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALGroupCreationViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALGroupDetailViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALGroupDetailViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALHyperLabel.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALHyperLabel.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALImageCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Views/ALImageCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALImagePickerController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALImagePickerController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALImagePickerHandler.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALImagePickerHandler.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALJson.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALJson.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALLastSeenSyncFeed.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALLastSeenSyncFeed.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALLocationCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALLocationCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALLocationManager.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALLocationManager.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALLogs.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALLogs.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMapViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALMapViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMediaBaseCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALMediaBaseCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMediaPlayer.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALMediaPlayer.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessage.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALMessage.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessageArrayWrapper.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALMessageArrayWrapper.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessageClientService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALMessageClientService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessageDBService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALMessageDBService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessageInfo.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALMessageInfo.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessageInfoResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALMessageInfoResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessageInfoViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALMessageInfoViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessageList.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALMessageList.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessageService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Services/ALMessageService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMessagesViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALMessagesViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALMultipleAttachmentView.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALMultipleAttachmentView.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALNewContactCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Views/ALNewContactCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALNewContactsViewController.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALNewContactsViewController.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALNotificationView.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Views/ALNotificationView.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALPushAssist.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALPushAssist.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALPushNotificationService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALPushNotificationService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALReachability.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALReachability.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALReceiverUserProfileVC.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALReceiverUserProfileVC.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALRegisterUserClientService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Services/ALRegisterUserClientService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALRegistrationResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALRegistrationResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALRequestHandler.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALRequestHandler.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALResponseHandler.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALResponseHandler.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALSendMessageResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALSendMessageResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALSyncCallService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALSyncCallService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALSyncMessageFeed.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALSyncMessageFeed.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALTopicDetail.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALTopicDetail.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUIConstant.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUIConstant.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUser.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALUser.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUserBlockResponse.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserBlockResponse.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUserBlocked.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserBlocked.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUserClientService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserClientService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUserDefaultsHandler.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALUserDefaultsHandler.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUserDetail.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserDetail.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUserProfileVC.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/ALUserProfileVC.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUserService.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserService.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALUtilityClass.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Utilities/ALUtilityClass.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALVCFClass.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALVCFClass.h"
+        },
+        {
+          'type': 'file',
+          'name': "ALVideoCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALVideoCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "AlMultipleAttachmentCell.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ViewControllers/AlMultipleAttachmentCell.h"
+        },
+        {
+          'type': 'file',
+          'name': "Applozic-Swift.h",
+          'external-contents': "/Users/devashish/Library/Developer/Xcode/DerivedData/applozicdemo-geymhlxaqulgdzfttxyhkxzvoiyz/Build/Products/Release-iphonesimulator/Applozic.framework/Headers/Applozic-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "Applozic.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Applozic.h"
+        },
+        {
+          'type': 'file',
+          'name': "DB_CHANNEL.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/DB_CHANNEL.h"
+        },
+        {
+          'type': 'file',
+          'name': "DB_CHANNEL_USER_X.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/DB_CHANNEL_USER_X.h"
+        },
+        {
+          'type': 'file',
+          'name': "DB_CONTACT.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/DB_CONTACT.h"
+        },
+        {
+          'type': 'file',
+          'name': "DB_ConversationProxy.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/DB_ConversationProxy.h"
+        },
+        {
+          'type': 'file',
+          'name': "DB_FileMetaInfo.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/DB_FileMetaInfo.h"
+        },
+        {
+          'type': 'file',
+          'name': "DB_Message.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/DB_Message.h"
+        },
+        {
+          'type': 'file',
+          'name': "HexColors.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/HexColors.h"
+        },
+        {
+          'type': 'file',
+          'name': "KAProgressLabel.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Resources/ProgressView/KAProgressLabel.h"
+        },
+        {
+          'type': 'file',
+          'name': "MessageListRequest.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/MessageListRequest.h"
+        },
+        {
+          'type': 'file',
+          'name': "NSString+Encode.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Utilities/NSString+Encode.h"
+        },
+        {
+          'type': 'file',
+          'name': "TPPropertyAnimation.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Resources/ProgressView/TPPropertyAnimation.h"
+        },
+        {
+          'type': 'file',
+          'name': "TSBlurView.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/TSBlurView.h"
+        },
+        {
+          'type': 'file',
+          'name': "TSMessage.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/TSMessage.h"
+        },
+        {
+          'type': 'file',
+          'name': "TSMessageView.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/TSMessageView.h"
+        },
+        {
+          'type': 'file',
+          'name': "UIImage+Utility.h",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Utilities/UIImage+Utility.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/devashish/Library/Developer/Xcode/DerivedData/applozicdemo-geymhlxaqulgdzfttxyhkxzvoiyz/Build/Products/Release-iphonesimulator/Applozic.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/build/Applozic.build/Release-iphonesimulator/Applozic.build/module.modulemap"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+dependencies: \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALContactService.m \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALContactService.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/build/Applozic.build/Release-iphonesimulator/Applozic.build/module.modulemap \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALContact.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALJson.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/DB_CONTACT.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/ALContactDBService.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserDetail.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserBlocked.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALContactsResponse.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Handlers/ALDBHandler.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserService.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/Resources/Files/ALConstant.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALSyncMessageFeed.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALMessageList.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALMessage.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/ALFileMetaInfo.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/Applozic/DomainClasses/DB_FileMetaInfo.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALLastSeenSyncFeed.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserClientService.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALAPIResponse.h \
+  /Users/devashish/Documents/Projects/Github/Applozic-iOS-SDK-Dev/sample-with-framework/Applozic/ALUserBlockResponse.h
