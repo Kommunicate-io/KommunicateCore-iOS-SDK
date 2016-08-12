@@ -105,7 +105,9 @@ Pod::Spec.new do |s|
 
   # s.resource  = "icon.png"
   # s.resources = "Resources/*.png"
-  s.resources = "Applozic/**/*.{png, jpeg, jpg, lproj, storyboard, xib}"
+  s.resources = "Applozic/**/*.{png, jpeg, jpg}"
+#  s.resource_bundles = "Applozic/**/*.{lproj, storyboard, xib}"
+  s.resource_bundles = {  "Applozic" => "Applozic/**/*.{storyboard, xib, xcassets, json, xcdatamodel, lproj}" }
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 
