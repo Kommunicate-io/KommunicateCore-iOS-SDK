@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "1.0.1"
+  s.version      = "1.2"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
   #  profile URL.
   #
 
-  s.author             = { "abhishek" => "abhishekthapliyal7579@gmail.com" }
+  s.author             = { "Abhishek" => "abhishekthapliyal7579@gmail.com" }
   # Or just: s.author    = "abhishek"
   # s.authors            = { "abhishek" => "abhishekthapliyal7579@gmail.com" }
   # s.social_media_url   = "http://twitter.com/abhishek"
@@ -105,7 +105,7 @@ Pod::Spec.new do |s|
 
   # s.resource  = "icon.png"
   # s.resources = "Resources/*.png"
-  s.resources = "Applozic/**/*.{png, jpeg, jpg, ,lproj, storyboard, xib}"
+  s.resources = "Applozic/**/*.{png, jpeg, jpg, lproj, storyboard, xib}"
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 
