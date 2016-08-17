@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "1.4"
+  s.version      = "1.5"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
   s.description  = "Applozic iOS SDK CocoaPods"
 
   s.homepage     = "https://github.com/AppLozic/Applozic-Chat-iOS-Framework"
-  s.screenshots  = "https://www.applozic.com/resources/1156/images/one-group-chat.png"
+  s.screenshots  = "https://www.applozic.com/resources/1197/images/one-group-chat.png"
 
 
   # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -122,7 +122,7 @@ Pod::Spec.new do |s|
 
   # s.framework  = "SomeFramework"
 
-  s.frameworks = "Foundation", "CoreServices", "UIKit", "AddressBook", "AddressBookUI", "MediaPlayer", "AVFoundation", "CoreLocation", "SystemConfiguration"
+  s.frameworks = "Foundation", "UIKit", "AddressBook", "AddressBookUI", "MediaPlayer", "AVFoundation", "CoreLocation", "SystemConfiguration"
 
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
