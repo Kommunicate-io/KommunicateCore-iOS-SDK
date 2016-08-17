@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "1.2"
+  s.version      = "1.4"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -105,11 +105,14 @@ Pod::Spec.new do |s|
 
   # s.resource  = "icon.png"
   # s.resources = "Resources/*.png"
-  s.resources = "Applozic/**/*.{png, jpeg, jpg}"
-#  s.resource_bundles = "Applozic/**/*.{lproj, storyboard, xib}"
-  s.resource_bundles = {  "Applozic" => "Applozic/**/*.{storyboard, xib, xcassets, json, xcdatamodel, lproj}" }
+  #  s.resources = "Applozic/**/*.{png, jpeg, jpg}"
+  #  s.resource_bundles = "Applozic/**/*.{lproj, storyboard, xib}"
+  #  s.resource_bundles = {
+  #    'Applozic' => ['Applozic/**/*.{storyboard,xib,xcassets,json,xcdatamodel,imageset,lproj}']
+  #  }
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
+  s.resources = 'Applozic/**/*'
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -118,7 +121,8 @@ Pod::Spec.new do |s|
   #
 
   # s.framework  = "SomeFramework"
-  # s.frameworks = "SomeFramework", "AnotherFramework"
+
+  s.frameworks = "Foundation", "CoreServices", "UIKit", "AddressBook", "AddressBookUI", "MediaPlayer", "AVFoundation", "CoreLocation", "SystemConfiguration"
 
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
