@@ -19,6 +19,7 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 
 #import <Applozic/ALRegisterUserClientService.h>
 #import <Applozic/ALContact.h>
+#import <Applozic/ALAPIResponse.h>
 #import <Applozic/ALChatLauncher.h>
 #import <Applozic/MQTTClient.h>
 #import <Applozic/ALRegistrationResponse.h>
