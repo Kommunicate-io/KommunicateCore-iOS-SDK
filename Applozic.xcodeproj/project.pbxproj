@@ -110,7 +110,6 @@
 		6D6DF1841BC5364C00EBA00F /* DB_Message.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF0DB1BC5364C00EBA00F /* DB_Message.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D6DF1851BC5364C00EBA00F /* DB_Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF0DC1BC5364C00EBA00F /* DB_Message.m */; };
 		6D6DF1861BC5364C00EBA00F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0DD1BC5364C00EBA00F /* Images.xcassets */; };
-		6D6DF1871BC5364C00EBA00F /* ALChatCostomization.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E01BC5364C00EBA00F /* ALChatCostomization.plist */; };
 		6D6DF1881BC5364C00EBA00F /* ALConstant.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF0E11BC5364C00EBA00F /* ALConstant.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D6DF1891BC5364C00EBA00F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E21BC5364C00EBA00F /* Localizable.strings */; };
 		6D6DF18A1BC5364C00EBA00F /* crossButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E51BC5364C00EBA00F /* crossButton.png */; };
@@ -310,6 +309,7 @@
 		6D95476A1BE38DFF00776652 /* ALContactDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9547641BE38DFF00776652 /* ALContactDBService.m */; };
 		6D95476B1BE38DFF00776652 /* ALContactService.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D9547651BE38DFF00776652 /* ALContactService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D95476C1BE38DFF00776652 /* ALContactService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9547661BE38DFF00776652 /* ALContactService.m */; };
+		6DAD04FF1D66D6FA005475C9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DAD04FE1D66D6FA005475C9 /* Info.plist */; };
 		6DBA7D0D1C943BFF001263F4 /* ALContactMessageCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DBA7D0B1C943BFF001263F4 /* ALContactMessageCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6DBA7D0E1C943BFF001263F4 /* ALContactMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DBA7D0C1C943BFF001263F4 /* ALContactMessageCell.m */; };
 		6DC729661C7854E100A8A268 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC729651C7854E100A8A268 /* MediaPlayer.framework */; };
@@ -443,7 +443,6 @@
 		6D6DF0DB1BC5364C00EBA00F /* DB_Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DB_Message.h; path = Applozic/DomainClasses/DB_Message.h; sourceTree = "<group>"; };
 		6D6DF0DC1BC5364C00EBA00F /* DB_Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DB_Message.m; path = Applozic/DomainClasses/DB_Message.m; sourceTree = "<group>"; };
 		6D6DF0DD1BC5364C00EBA00F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
-		6D6DF0E01BC5364C00EBA00F /* ALChatCostomization.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ALChatCostomization.plist; sourceTree = "<group>"; };
 		6D6DF0E11BC5364C00EBA00F /* ALConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALConstant.h; sourceTree = "<group>"; };
 		6D6DF0E31BC5364C00EBA00F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6D6DF0E51BC5364C00EBA00F /* crossButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = crossButton.png; sourceTree = "<group>"; };
@@ -643,6 +642,7 @@
 		6D9547641BE38DFF00776652 /* ALContactDBService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALContactDBService.m; path = Applozic/ALContactDBService.m; sourceTree = "<group>"; };
 		6D9547651BE38DFF00776652 /* ALContactService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALContactService.h; path = Applozic/ALContactService.h; sourceTree = "<group>"; };
 		6D9547661BE38DFF00776652 /* ALContactService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALContactService.m; path = Applozic/ALContactService.m; sourceTree = "<group>"; };
+		6DAD04FE1D66D6FA005475C9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Applozic/Info.plist; sourceTree = "<group>"; };
 		6DBA7D0B1C943BFF001263F4 /* ALContactMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALContactMessageCell.h; path = Applozic/ViewControllers/ALContactMessageCell.h; sourceTree = "<group>"; };
 		6DBA7D0C1C943BFF001263F4 /* ALContactMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALContactMessageCell.m; path = Applozic/ViewControllers/ALContactMessageCell.m; sourceTree = "<group>"; };
 		6DC729651C7854E100A8A268 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -789,6 +789,7 @@
 		6D6DF0731BC535C800EBA00F = {
 			isa = PBXGroup;
 			children = (
+				6DAD04FE1D66D6FA005475C9 /* Info.plist */,
 				6D7757291D5B845C0025560B /* Applozic_Prefix.pch */,
 				6DDB07491CB9162A00B99F33 /* AddressBook.framework */,
 				6DDB07411CB9069B00B99F33 /* AddressBookUI.framework */,
@@ -899,7 +900,6 @@
 		6D6DF0DF1BC5364C00EBA00F /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				6D6DF0E01BC5364C00EBA00F /* ALChatCostomization.plist */,
 				6D6DF0E11BC5364C00EBA00F /* ALConstant.h */,
 				6D6DF0E21BC5364C00EBA00F /* Localizable.strings */,
 			);
@@ -1595,12 +1595,12 @@
 				6D6DF1951BC5364C00EBA00F /* ic_action_email.png in Resources */,
 				6D6DF1AE1BC5364C00EBA00F /* mobicom_ic_action_send_now2.png in Resources */,
 				6D6DF1AF1BC5364C00EBA00F /* mobicom_social_forward.png in Resources */,
+				6DAD04FF1D66D6FA005475C9 /* Info.plist in Resources */,
 				6D6DF19F1BC5364C00EBA00F /* ic_action_time.png in Resources */,
 				6D6DF18B1BC5364C00EBA00F /* ic_action_about.png in Resources */,
 				6D6DF1A21BC5364C00EBA00F /* ic_contact_picture_holo_light.png in Resources */,
 				6D6DF1AA1BC5364C00EBA00F /* ic_upload.png in Resources */,
 				6D6DF18F1BC5364C00EBA00F /* ic_action_call.png in Resources */,
-				6D6DF1871BC5364C00EBA00F /* ALChatCostomization.plist in Resources */,
 				6D6DF19A1BC5364C00EBA00F /* ic_action_message_pending.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
