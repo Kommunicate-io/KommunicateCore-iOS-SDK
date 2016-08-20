@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "1.9.1"
+  s.version      = "1.9.2"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -131,7 +131,7 @@ Pod::Spec.new do |s|
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
 
-  # s.requires_arc = true
+  s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # s.dependency "JSONKit", "~> 1.4"
