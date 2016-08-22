@@ -2,6 +2,6 @@ platform :ios, '9.0'
 
 target 'Applozic' do
 
-use_frameworks!
+# use_frameworks!
 
 end
