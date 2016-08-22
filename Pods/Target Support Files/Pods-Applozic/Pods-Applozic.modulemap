@@ -1,6 +1,0 @@
-framework module Pods_Applozic {
-  umbrella header "Pods-Applozic-umbrella.h"
-
-  export *
-  module * { export * }
-}

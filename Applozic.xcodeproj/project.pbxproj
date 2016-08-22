@@ -333,7 +333,7 @@
 		982F13111C05D6050024678E /* MQTTSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 982F13011C05D6040024678E /* MQTTSessionManager.m */; };
 		982F13121C05D6050024678E /* MQTTSSLSecurityPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = 982F13021C05D6040024678E /* MQTTSSLSecurityPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		982F13131C05D6050024678E /* MQTTSSLSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 982F13031C05D6040024678E /* MQTTSSLSecurityPolicy.m */; };
-		F063801C94A4EB5FD5524631 /* Pods_Applozic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DB27D97E94363AF2319E5F1 /* Pods_Applozic.framework */; };
+		CA48CD75EC9E50D727F11CA8 /* libPods-Applozic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BABEB56A0F9F0ADBE804E94 /* libPods-Applozic.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -351,7 +351,6 @@
 		29CBF2011C0303A700BE6A20 /* ALColorUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALColorUtility.m; sourceTree = "<group>"; };
 		29D6F8691D193D9D00A75369 /* PSPDFTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSPDFTextView.h; sourceTree = "<group>"; };
 		29D6F86A1D193D9D00A75369 /* PSPDFTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFTextView.m; sourceTree = "<group>"; };
-		2DB27D97E94363AF2319E5F1 /* Pods_Applozic.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Applozic.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F2A59A41D90C8743DCC5C86 /* Pods-Applozic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Applozic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Applozic/Pods-Applozic.debug.xcconfig"; sourceTree = "<group>"; };
 		6D0877071D01B0F900DB491A /* UIView+Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Toast.h"; sourceTree = "<group>"; };
 		6D0877091D01B0FE00DB491A /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
@@ -650,6 +649,7 @@
 		6DDB07491CB9162A00B99F33 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		6DEAEE8A1D4CDBC700360060 /* ALUserProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALUserProfileVC.h; sourceTree = "<group>"; };
 		6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALUserProfileVC.m; sourceTree = "<group>"; };
+		7BABEB56A0F9F0ADBE804E94 /* libPods-Applozic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Applozic.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		982F12F41C05D6040024678E /* MQTTClient-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MQTTClient-Prefix.pch"; path = "Applozic/MQTT/MQTTClient-Prefix.pch"; sourceTree = "<group>"; };
 		982F12F51C05D6040024678E /* MQTTClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MQTTClient.h; path = Applozic/MQTT/MQTTClient.h; sourceTree = "<group>"; };
 		982F12F61C05D6040024678E /* MQTTDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MQTTDecoder.h; path = Applozic/MQTT/MQTTDecoder.h; sourceTree = "<group>"; };
@@ -680,7 +680,7 @@
 				6D3A4DF71C75ED330067A4C8 /* AVFoundation.framework in Frameworks */,
 				6D5439DC1C19B8D600C686BC /* SystemConfiguration.framework in Frameworks */,
 				6D88E1DA1BC8046500364C5B /* CoreLocation.framework in Frameworks */,
-				F063801C94A4EB5FD5524631 /* Pods_Applozic.framework in Frameworks */,
+				CA48CD75EC9E50D727F11CA8 /* libPods-Applozic.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -690,7 +690,7 @@
 		28848647EB19770E1D11563F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2DB27D97E94363AF2319E5F1 /* Pods_Applozic.framework */,
+				7BABEB56A0F9F0ADBE804E94 /* libPods-Applozic.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
