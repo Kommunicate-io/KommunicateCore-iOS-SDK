@@ -1531,6 +1531,7 @@
 				TargetAttributes = {
 					6D6DF07C1BC535C800EBA00F = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = C25JNDCBM4;
 					};
 				};
 			};
@@ -1639,7 +1640,7 @@
 		};
 		E89A2E4935C5F5918F619E71 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -1916,8 +1917,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5F2A59A41D90C8743DCC5C86 /* Pods-Applozic.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Adarsh Kumar (RN66F37TC5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adarsh Kumar (RN66F37TC5)";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1944,8 +1945,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DEC034D945995489DB2E901D /* Pods-Applozic.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Adarsh Kumar (RN66F37TC5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Adarsh Kumar (RN66F37TC5)";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
