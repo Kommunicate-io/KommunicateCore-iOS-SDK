@@ -32,3 +32,5 @@ Applozic Chat Framework for Cocoa Pod
 
 
 6) For Registering user and other customization follow [**Applozic iOS DOCS**](https://www.applozic.com/docs/ios-chat-sdk.html#step-2-login-register-user)
+
+For reference download our sample project here [**ApplozicCocoaPodDemo**](https://github.com/Abhishek9634/ApplozicCocoaPodDemo)
