@@ -112,46 +112,6 @@
 		6D6DF1861BC5364C00EBA00F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0DD1BC5364C00EBA00F /* Images.xcassets */; };
 		6D6DF1881BC5364C00EBA00F /* ALConstant.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF0E11BC5364C00EBA00F /* ALConstant.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D6DF1891BC5364C00EBA00F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E21BC5364C00EBA00F /* Localizable.strings */; };
-		6D6DF18A1BC5364C00EBA00F /* crossButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E51BC5364C00EBA00F /* crossButton.png */; };
-		6D6DF18B1BC5364C00EBA00F /* ic_action_about.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E61BC5364C00EBA00F /* ic_action_about.png */; };
-		6D6DF18C1BC5364C00EBA00F /* ic_action_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E71BC5364C00EBA00F /* ic_action_add.png */; };
-		6D6DF18D1BC5364C00EBA00F /* ic_action_attachment.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E81BC5364C00EBA00F /* ic_action_attachment.png */; };
-		6D6DF18E1BC5364C00EBA00F /* ic_action_attachment2.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0E91BC5364C00EBA00F /* ic_action_attachment2.png */; };
-		6D6DF18F1BC5364C00EBA00F /* ic_action_call.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0EA1BC5364C00EBA00F /* ic_action_call.png */; };
-		6D6DF1901BC5364C00EBA00F /* ic_action_call_holo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0EB1BC5364C00EBA00F /* ic_action_call_holo_light.png */; };
-		6D6DF1911BC5364C00EBA00F /* ic_action_camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0EC1BC5364C00EBA00F /* ic_action_camera.png */; };
-		6D6DF1921BC5364C00EBA00F /* ic_action_cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0ED1BC5364C00EBA00F /* ic_action_cancel.png */; };
-		6D6DF1931BC5364C00EBA00F /* ic_action_chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0EE1BC5364C00EBA00F /* ic_action_chat.png */; };
-		6D6DF1941BC5364C00EBA00F /* ic_action_edit.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0EF1BC5364C00EBA00F /* ic_action_edit.png */; };
-		6D6DF1951BC5364C00EBA00F /* ic_action_email.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F01BC5364C00EBA00F /* ic_action_email.png */; };
-		6D6DF1961BC5364C00EBA00F /* ic_action_forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F11BC5364C00EBA00F /* ic_action_forward.png */; };
-		6D6DF1971BC5364C00EBA00F /* ic_action_go_to_today.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F21BC5364C00EBA00F /* ic_action_go_to_today.png */; };
-		6D6DF1981BC5364C00EBA00F /* ic_action_help.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F31BC5364C00EBA00F /* ic_action_help.png */; };
-		6D6DF1991BC5364C00EBA00F /* ic_action_message_delivered.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F41BC5364C00EBA00F /* ic_action_message_delivered.png */; };
-		6D6DF19A1BC5364C00EBA00F /* ic_action_message_pending.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F51BC5364C00EBA00F /* ic_action_message_pending.png */; };
-		6D6DF19B1BC5364C00EBA00F /* ic_action_message_schedule.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F61BC5364C00EBA00F /* ic_action_message_schedule.png */; };
-		6D6DF19C1BC5364C00EBA00F /* ic_action_message_sent.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F71BC5364C00EBA00F /* ic_action_message_sent.png */; };
-		6D6DF19D1BC5364C00EBA00F /* ic_action_search.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F81BC5364C00EBA00F /* ic_action_search.png */; };
-		6D6DF19E1BC5364C00EBA00F /* ic_action_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0F91BC5364C00EBA00F /* ic_action_settings.png */; };
-		6D6DF19F1BC5364C00EBA00F /* ic_action_time.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0FA1BC5364C00EBA00F /* ic_action_time.png */; };
-		6D6DF1A01BC5364C00EBA00F /* ic_action_video.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0FB1BC5364C00EBA00F /* ic_action_video.png */; };
-		6D6DF1A11BC5364C00EBA00F /* ic_contact_picture_180_holo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0FC1BC5364C00EBA00F /* ic_contact_picture_180_holo_light.png */; };
-		6D6DF1A21BC5364C00EBA00F /* ic_contact_picture_holo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0FD1BC5364C00EBA00F /* ic_contact_picture_holo_light.png */; };
-		6D6DF1A31BC5364C00EBA00F /* ic_download.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0FE1BC5364C00EBA00F /* ic_download.png */; };
-		6D6DF1A41BC5364C00EBA00F /* ic_facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF0FF1BC5364C00EBA00F /* ic_facebook.png */; };
-		6D6DF1A51BC5364C00EBA00F /* ic_google_plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1001BC5364C00EBA00F /* ic_google_plus.png */; };
-		6D6DF1A61BC5364C00EBA00F /* ic_googleplay.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1011BC5364C00EBA00F /* ic_googleplay.png */; };
-		6D6DF1A71BC5364C00EBA00F /* ic_launcher.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1021BC5364C00EBA00F /* ic_launcher.png */; };
-		6D6DF1A81BC5364C00EBA00F /* ic_mobicom.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1031BC5364C00EBA00F /* ic_mobicom.png */; };
-		6D6DF1A91BC5364C00EBA00F /* ic_twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1041BC5364C00EBA00F /* ic_twitter.png */; };
-		6D6DF1AA1BC5364C00EBA00F /* ic_upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1051BC5364C00EBA00F /* ic_upload.png */; };
-		6D6DF1AB1BC5364C00EBA00F /* mobicom_emoticons_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1061BC5364C00EBA00F /* mobicom_emoticons_icon.png */; };
-		6D6DF1AC1BC5364C00EBA00F /* mobicom_ic_action_send.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1071BC5364C00EBA00F /* mobicom_ic_action_send.png */; };
-		6D6DF1AD1BC5364C00EBA00F /* mobicom_ic_action_send_now.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1081BC5364C00EBA00F /* mobicom_ic_action_send_now.png */; };
-		6D6DF1AE1BC5364C00EBA00F /* mobicom_ic_action_send_now2.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF1091BC5364C00EBA00F /* mobicom_ic_action_send_now2.png */; };
-		6D6DF1AF1BC5364C00EBA00F /* mobicom_social_forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF10A1BC5364C00EBA00F /* mobicom_social_forward.png */; };
-		6D6DF1B01BC5364C00EBA00F /* mobicom_social_reply.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF10B1BC5364C00EBA00F /* mobicom_social_reply.png */; };
-		6D6DF1B11BC5364C00EBA00F /* mobicom_social_share.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D6DF10C1BC5364C00EBA00F /* mobicom_social_share.png */; };
 		6D6DF1B21BC5364C00EBA00F /* MKAnnotationView+WebCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF10F1BC5364C00EBA00F /* MKAnnotationView+WebCache.h */; };
 		6D6DF1B31BC5364C00EBA00F /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF1101BC5364C00EBA00F /* MKAnnotationView+WebCache.m */; };
 		6D6DF1B41BC5364C00EBA00F /* NSData+ImageContentType.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF1111BC5364C00EBA00F /* NSData+ImageContentType.h */; };
@@ -444,46 +404,6 @@
 		6D6DF0DD1BC5364C00EBA00F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
 		6D6DF0E11BC5364C00EBA00F /* ALConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALConstant.h; sourceTree = "<group>"; };
 		6D6DF0E31BC5364C00EBA00F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		6D6DF0E51BC5364C00EBA00F /* crossButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = crossButton.png; sourceTree = "<group>"; };
-		6D6DF0E61BC5364C00EBA00F /* ic_action_about.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_about.png; sourceTree = "<group>"; };
-		6D6DF0E71BC5364C00EBA00F /* ic_action_add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_add.png; sourceTree = "<group>"; };
-		6D6DF0E81BC5364C00EBA00F /* ic_action_attachment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_attachment.png; sourceTree = "<group>"; };
-		6D6DF0E91BC5364C00EBA00F /* ic_action_attachment2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_attachment2.png; sourceTree = "<group>"; };
-		6D6DF0EA1BC5364C00EBA00F /* ic_action_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_call.png; sourceTree = "<group>"; };
-		6D6DF0EB1BC5364C00EBA00F /* ic_action_call_holo_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_call_holo_light.png; sourceTree = "<group>"; };
-		6D6DF0EC1BC5364C00EBA00F /* ic_action_camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_camera.png; sourceTree = "<group>"; };
-		6D6DF0ED1BC5364C00EBA00F /* ic_action_cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_cancel.png; sourceTree = "<group>"; };
-		6D6DF0EE1BC5364C00EBA00F /* ic_action_chat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_chat.png; sourceTree = "<group>"; };
-		6D6DF0EF1BC5364C00EBA00F /* ic_action_edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_edit.png; sourceTree = "<group>"; };
-		6D6DF0F01BC5364C00EBA00F /* ic_action_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_email.png; sourceTree = "<group>"; };
-		6D6DF0F11BC5364C00EBA00F /* ic_action_forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_forward.png; sourceTree = "<group>"; };
-		6D6DF0F21BC5364C00EBA00F /* ic_action_go_to_today.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_go_to_today.png; sourceTree = "<group>"; };
-		6D6DF0F31BC5364C00EBA00F /* ic_action_help.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_help.png; sourceTree = "<group>"; };
-		6D6DF0F41BC5364C00EBA00F /* ic_action_message_delivered.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_message_delivered.png; sourceTree = "<group>"; };
-		6D6DF0F51BC5364C00EBA00F /* ic_action_message_pending.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_message_pending.png; sourceTree = "<group>"; };
-		6D6DF0F61BC5364C00EBA00F /* ic_action_message_schedule.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_message_schedule.png; sourceTree = "<group>"; };
-		6D6DF0F71BC5364C00EBA00F /* ic_action_message_sent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_message_sent.png; sourceTree = "<group>"; };
-		6D6DF0F81BC5364C00EBA00F /* ic_action_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_search.png; sourceTree = "<group>"; };
-		6D6DF0F91BC5364C00EBA00F /* ic_action_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_settings.png; sourceTree = "<group>"; };
-		6D6DF0FA1BC5364C00EBA00F /* ic_action_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_time.png; sourceTree = "<group>"; };
-		6D6DF0FB1BC5364C00EBA00F /* ic_action_video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_action_video.png; sourceTree = "<group>"; };
-		6D6DF0FC1BC5364C00EBA00F /* ic_contact_picture_180_holo_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_contact_picture_180_holo_light.png; sourceTree = "<group>"; };
-		6D6DF0FD1BC5364C00EBA00F /* ic_contact_picture_holo_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_contact_picture_holo_light.png; sourceTree = "<group>"; };
-		6D6DF0FE1BC5364C00EBA00F /* ic_download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_download.png; sourceTree = "<group>"; };
-		6D6DF0FF1BC5364C00EBA00F /* ic_facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_facebook.png; sourceTree = "<group>"; };
-		6D6DF1001BC5364C00EBA00F /* ic_google_plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_google_plus.png; sourceTree = "<group>"; };
-		6D6DF1011BC5364C00EBA00F /* ic_googleplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_googleplay.png; sourceTree = "<group>"; };
-		6D6DF1021BC5364C00EBA00F /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_launcher.png; sourceTree = "<group>"; };
-		6D6DF1031BC5364C00EBA00F /* ic_mobicom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_mobicom.png; sourceTree = "<group>"; };
-		6D6DF1041BC5364C00EBA00F /* ic_twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_twitter.png; sourceTree = "<group>"; };
-		6D6DF1051BC5364C00EBA00F /* ic_upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_upload.png; sourceTree = "<group>"; };
-		6D6DF1061BC5364C00EBA00F /* mobicom_emoticons_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mobicom_emoticons_icon.png; sourceTree = "<group>"; };
-		6D6DF1071BC5364C00EBA00F /* mobicom_ic_action_send.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mobicom_ic_action_send.png; sourceTree = "<group>"; };
-		6D6DF1081BC5364C00EBA00F /* mobicom_ic_action_send_now.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mobicom_ic_action_send_now.png; sourceTree = "<group>"; };
-		6D6DF1091BC5364C00EBA00F /* mobicom_ic_action_send_now2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mobicom_ic_action_send_now2.png; sourceTree = "<group>"; };
-		6D6DF10A1BC5364C00EBA00F /* mobicom_social_forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mobicom_social_forward.png; sourceTree = "<group>"; };
-		6D6DF10B1BC5364C00EBA00F /* mobicom_social_reply.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mobicom_social_reply.png; sourceTree = "<group>"; };
-		6D6DF10C1BC5364C00EBA00F /* mobicom_social_share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mobicom_social_share.png; sourceTree = "<group>"; };
 		6D6DF10F1BC5364C00EBA00F /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		6D6DF1101BC5364C00EBA00F /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
 		6D6DF1111BC5364C00EBA00F /* NSData+ImageContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ImageContentType.h"; sourceTree = "<group>"; };
@@ -909,46 +829,6 @@
 		6D6DF0E41BC5364C00EBA00F /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				6D6DF0E51BC5364C00EBA00F /* crossButton.png */,
-				6D6DF0E61BC5364C00EBA00F /* ic_action_about.png */,
-				6D6DF0E71BC5364C00EBA00F /* ic_action_add.png */,
-				6D6DF0E81BC5364C00EBA00F /* ic_action_attachment.png */,
-				6D6DF0E91BC5364C00EBA00F /* ic_action_attachment2.png */,
-				6D6DF0EA1BC5364C00EBA00F /* ic_action_call.png */,
-				6D6DF0EB1BC5364C00EBA00F /* ic_action_call_holo_light.png */,
-				6D6DF0EC1BC5364C00EBA00F /* ic_action_camera.png */,
-				6D6DF0ED1BC5364C00EBA00F /* ic_action_cancel.png */,
-				6D6DF0EE1BC5364C00EBA00F /* ic_action_chat.png */,
-				6D6DF0EF1BC5364C00EBA00F /* ic_action_edit.png */,
-				6D6DF0F01BC5364C00EBA00F /* ic_action_email.png */,
-				6D6DF0F11BC5364C00EBA00F /* ic_action_forward.png */,
-				6D6DF0F21BC5364C00EBA00F /* ic_action_go_to_today.png */,
-				6D6DF0F31BC5364C00EBA00F /* ic_action_help.png */,
-				6D6DF0F41BC5364C00EBA00F /* ic_action_message_delivered.png */,
-				6D6DF0F51BC5364C00EBA00F /* ic_action_message_pending.png */,
-				6D6DF0F61BC5364C00EBA00F /* ic_action_message_schedule.png */,
-				6D6DF0F71BC5364C00EBA00F /* ic_action_message_sent.png */,
-				6D6DF0F81BC5364C00EBA00F /* ic_action_search.png */,
-				6D6DF0F91BC5364C00EBA00F /* ic_action_settings.png */,
-				6D6DF0FA1BC5364C00EBA00F /* ic_action_time.png */,
-				6D6DF0FB1BC5364C00EBA00F /* ic_action_video.png */,
-				6D6DF0FC1BC5364C00EBA00F /* ic_contact_picture_180_holo_light.png */,
-				6D6DF0FD1BC5364C00EBA00F /* ic_contact_picture_holo_light.png */,
-				6D6DF0FE1BC5364C00EBA00F /* ic_download.png */,
-				6D6DF0FF1BC5364C00EBA00F /* ic_facebook.png */,
-				6D6DF1001BC5364C00EBA00F /* ic_google_plus.png */,
-				6D6DF1011BC5364C00EBA00F /* ic_googleplay.png */,
-				6D6DF1021BC5364C00EBA00F /* ic_launcher.png */,
-				6D6DF1031BC5364C00EBA00F /* ic_mobicom.png */,
-				6D6DF1041BC5364C00EBA00F /* ic_twitter.png */,
-				6D6DF1051BC5364C00EBA00F /* ic_upload.png */,
-				6D6DF1061BC5364C00EBA00F /* mobicom_emoticons_icon.png */,
-				6D6DF1071BC5364C00EBA00F /* mobicom_ic_action_send.png */,
-				6D6DF1081BC5364C00EBA00F /* mobicom_ic_action_send_now.png */,
-				6D6DF1091BC5364C00EBA00F /* mobicom_ic_action_send_now2.png */,
-				6D6DF10A1BC5364C00EBA00F /* mobicom_social_forward.png */,
-				6D6DF10B1BC5364C00EBA00F /* mobicom_social_reply.png */,
-				6D6DF10C1BC5364C00EBA00F /* mobicom_social_share.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -1558,51 +1438,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D6DF1901BC5364C00EBA00F /* ic_action_call_holo_light.png in Resources */,
-				6D6DF1961BC5364C00EBA00F /* ic_action_forward.png in Resources */,
-				6D6DF1A11BC5364C00EBA00F /* ic_contact_picture_180_holo_light.png in Resources */,
-				6D6DF1911BC5364C00EBA00F /* ic_action_camera.png in Resources */,
-				6D6DF1B11BC5364C00EBA00F /* mobicom_social_share.png in Resources */,
-				6D6DF1931BC5364C00EBA00F /* ic_action_chat.png in Resources */,
-				6D6DF19E1BC5364C00EBA00F /* ic_action_settings.png in Resources */,
 				6D7757161D5B83660025560B /* TSMessagesDefaultDesign.json in Resources */,
-				6D6DF1991BC5364C00EBA00F /* ic_action_message_delivered.png in Resources */,
-				6D6DF1A41BC5364C00EBA00F /* ic_facebook.png in Resources */,
-				6D6DF1941BC5364C00EBA00F /* ic_action_edit.png in Resources */,
 				6D6DF1891BC5364C00EBA00F /* Localizable.strings in Resources */,
-				6D6DF1B01BC5364C00EBA00F /* mobicom_social_reply.png in Resources */,
-				6D6DF1981BC5364C00EBA00F /* ic_action_help.png in Resources */,
 				6D6DF1861BC5364C00EBA00F /* Images.xcassets in Resources */,
-				6D6DF19D1BC5364C00EBA00F /* ic_action_search.png in Resources */,
-				6D6DF1A51BC5364C00EBA00F /* ic_google_plus.png in Resources */,
-				6D6DF1971BC5364C00EBA00F /* ic_action_go_to_today.png in Resources */,
-				6D6DF18A1BC5364C00EBA00F /* crossButton.png in Resources */,
-				6D6DF19C1BC5364C00EBA00F /* ic_action_message_sent.png in Resources */,
-				6D6DF1AD1BC5364C00EBA00F /* mobicom_ic_action_send_now.png in Resources */,
-				6D6DF18E1BC5364C00EBA00F /* ic_action_attachment2.png in Resources */,
-				6D6DF1A91BC5364C00EBA00F /* ic_twitter.png in Resources */,
-				6D6DF1AB1BC5364C00EBA00F /* mobicom_emoticons_icon.png in Resources */,
-				6D6DF1A71BC5364C00EBA00F /* ic_launcher.png in Resources */,
 				6D6DF16F1BC5364C00EBA00F /* Applozic.storyboard in Resources */,
-				6D6DF18C1BC5364C00EBA00F /* ic_action_add.png in Resources */,
-				6D6DF1A81BC5364C00EBA00F /* ic_mobicom.png in Resources */,
-				6D6DF1921BC5364C00EBA00F /* ic_action_cancel.png in Resources */,
-				6D6DF1A61BC5364C00EBA00F /* ic_googleplay.png in Resources */,
-				6D6DF1A31BC5364C00EBA00F /* ic_download.png in Resources */,
-				6D6DF1AC1BC5364C00EBA00F /* mobicom_ic_action_send.png in Resources */,
-				6D6DF19B1BC5364C00EBA00F /* ic_action_message_schedule.png in Resources */,
-				6D6DF18D1BC5364C00EBA00F /* ic_action_attachment.png in Resources */,
-				6D6DF1A01BC5364C00EBA00F /* ic_action_video.png in Resources */,
-				6D6DF1951BC5364C00EBA00F /* ic_action_email.png in Resources */,
-				6D6DF1AE1BC5364C00EBA00F /* mobicom_ic_action_send_now2.png in Resources */,
-				6D6DF1AF1BC5364C00EBA00F /* mobicom_social_forward.png in Resources */,
 				6DAD04FF1D66D6FA005475C9 /* Info.plist in Resources */,
-				6D6DF19F1BC5364C00EBA00F /* ic_action_time.png in Resources */,
-				6D6DF18B1BC5364C00EBA00F /* ic_action_about.png in Resources */,
-				6D6DF1A21BC5364C00EBA00F /* ic_contact_picture_holo_light.png in Resources */,
-				6D6DF1AA1BC5364C00EBA00F /* ic_upload.png in Resources */,
-				6D6DF18F1BC5364C00EBA00F /* ic_action_call.png in Resources */,
-				6D6DF19A1BC5364C00EBA00F /* ic_action_message_pending.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
