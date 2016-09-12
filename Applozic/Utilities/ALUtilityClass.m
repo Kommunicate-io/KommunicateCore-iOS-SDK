@@ -395,4 +395,18 @@
     return normalizedImage;
 }
 
++(BOOL)isThisDebugBuild
+{
+    BOOL debug;
+    #ifdef DEBUG
+        NSLog(@"DEBUG_MODE");
+        debug = YES;
+    #else
+        NSLog(@"RELEASE_MODE");
+        debug = NO;
+    #endif
+
+    return debug;
+}
+
 @end

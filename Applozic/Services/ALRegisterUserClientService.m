@@ -53,16 +53,14 @@
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
-        NSLog(@"server response received %@", theJson);
-        
+       
         NSString *statusStr = (NSString *)theJson;
-        
-        
-        if (theError) {
-            
+        NSLog(@"RESPONSE_USER_REGISTRATION :: %@", statusStr);
+
+        if (theError)
+        {
             completion(nil,theError);
-            
-            return ;
+            return;
         }
         
         ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
@@ -78,6 +76,7 @@
             [ALUserDefaultsHandler setEmailId:user.email];
             [ALUserDefaultsHandler setDeviceKeyString:response.deviceKey];
             [ALUserDefaultsHandler setUserKeyString:response.userKey];
+            [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
             if(response.imageLink){
                 [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
             }

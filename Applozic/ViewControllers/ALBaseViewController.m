@@ -184,7 +184,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    
+    [super viewWillAppear:animated];
     [self registerForKeyboardNotifications];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSubViews) name:@"APP_ENTER_IN_FOREGROUND" object:nil];
@@ -214,9 +214,47 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     [self updateSubViews];
+    
+/*  CHECK PRICING PACKAGE */
+    [self checkPricingPackage];
 }
 
+-(void)checkPricingPackage
+{
+    BOOL debugflag = [ALUtilityClass isThisDebugBuild];
+    BOOL pricingFlag = ([ALUserDefaultsHandler getUserPricingPackage] == BETA);
+
+    if(debugflag)
+    {
+        return;
+    }
+    if([ALUserDefaultsHandler getUserPricingPackage] == CLOSED)
+    {
+        [self back:self];
+        [ALUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];
+        return;
+    }
+    if(!debugflag && pricingFlag)
+    {
+        UIToolbar * accessoryView = [[UIToolbar alloc] init];
+        [accessoryView setBackgroundColor:[UIColor lightGrayColor]];
+        [accessoryView sizeToFit];
+
+        NSString *titleText = @"  Please Contact Applozic to activate chat in your app";
+        UILabel *customLabel = [[UILabel alloc] initWithFrame:accessoryView.frame];
+        [customLabel setFont:[UIFont fontWithName:@"Helvetica" size:14]];
+        [customLabel setText:titleText];
+        [customLabel setTextColor:[UIColor blueColor]];
+
+        UIBarButtonItem * barButton = [[UIBarButtonItem alloc] initWithCustomView:customLabel];
+        [accessoryView setItems:[NSArray arrayWithObjects:barButton, nil] animated:YES];
+        [accessoryView setUserInteractionEnabled:NO];
+        [self.sendMessageTextView setInputAccessoryView:accessoryView];
+    }
+}
+    
 -(void)updateSubViews
 {
     CGFloat typingLabelY = self.view.frame.size.height - typingIndicatorHeight - self.typingMessageView.frame.size.height + paddingForTextMessageViewHeight;

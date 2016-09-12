@@ -79,3 +79,13 @@ typedef enum {
     NOTIFICATION_ENABLE = 0,
     NOTIFICATION_DISABLE = 2
 } NOTIFICATION_TYPE_MODE;
+
+typedef enum {
+
+    CLOSED = -1,
+    BETA = 0,
+    STARTER = 1,
+    LAUNCH = 2,
+    GROWTH = 3,
+    ENTERPRISE = 4
+} PRICING_PACKAGE;

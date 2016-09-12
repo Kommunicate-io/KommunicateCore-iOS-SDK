@@ -44,5 +44,6 @@
 +(UIImage *)subProcessThumbnail:(NSURL *)url;
 +(void)showAlertMessage:(NSString *)text andTitle:(NSString *)title;
 +(UIImage *)getNormalizedImage:(UIImage *)rawImage;
++(BOOL)isThisDebugBuild;
 
 @end

@@ -23,6 +23,7 @@
     self.brokerURL = [registrationResponse valueForKey:@"brokerUrl"];
     self.statusMessage = [registrationResponse valueForKey:@"statusMessage"];
     self.imageLink = [registrationResponse valueForKey:@"imageLink"];
+    self.pricingPackage = [[registrationResponse valueForKey:@"pricingPackage"] shortValue];
     
     return self;
 }

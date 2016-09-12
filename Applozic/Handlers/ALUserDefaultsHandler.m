@@ -612,4 +612,15 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++(void)setUserPricingPackage:(short)pricingPackage
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:pricingPackage forKey:USER_PRICING_PACKAGE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(short)getUserPricingPackage
+{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:USER_PRICING_PACKAGE];
+}
+
 @end
