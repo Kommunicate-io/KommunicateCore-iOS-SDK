@@ -47,7 +47,7 @@
 
 @property  NSUInteger lastSearchLength;
 
-@property (strong,nonatomic)NSMutableArray* groupMembers;
+@property (strong,nonatomic)NSMutableSet* groupMembers;
 @property (strong,nonatomic)ALChannelService * creatingChannel;
 
 @property (strong,nonatomic) NSNumber* groupOrContacts;
@@ -76,11 +76,20 @@
     
     //    if(![ALUserDefaultsHandler getContactViewLoaded] && [ALApplozicSettings getFilterContactsStatus]) // COMMENTED for INTERNAL PURPOSE
     //    {
+    
+    float y = self.navigationController.navigationBar.frame.origin.y+self.navigationController.navigationBar.frame.size.height;
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,y, self.view.frame.size.width, 40)];
+    self.searchBar.delegate = self;
+    self.searchBar.placeholder = @"Email, userid, number";
+    [self.view addSubview:self.searchBar];
+    
+    [self.searchBar setUserInteractionEnabled:NO];
     if([ALApplozicSettings getFilterContactsStatus])
     {
         ALUserService * userService = [ALUserService new];
         [userService getListOfRegisteredUsersWithCompletion:^(NSError *error) {
             
+            [self.searchBar setUserInteractionEnabled:YES];
             if(error)
             {
                 [self.activityIndicator stopAnimating];
@@ -96,22 +105,19 @@
     {
         [self processFilterListWithLastSeen];
         [self onlyGroupFetch];
+        [self.searchBar setUserInteractionEnabled:YES];
     }
     else
     {
         [self subProcessContactFetch];
+        [self.searchBar setUserInteractionEnabled:YES];
     }
     
     barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton:@"Back"]];
 
-    float y = self.navigationController.navigationBar.frame.origin.y+self.navigationController.navigationBar.frame.size.height;    
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,y, self.view.frame.size.width, 40)];
-    self.searchBar.delegate = self;
-    self.searchBar.placeholder = @"Email, userid, number";
-    [self.view addSubview:self.searchBar];
     self.colors = [[NSArray alloc] initWithObjects:@"#617D8A",@"#628B70",@"#8C8863",@"8B627D",@"8B6F62", nil];
     
-    self.groupMembers=[[NSMutableArray alloc] init];
+    self.groupMembers=[[NSMutableSet alloc] init];
     
     [self emptyConversationAlertLabel];
 }
@@ -152,6 +158,7 @@
     {
         //        self.navigationController.navigationBar.translucent = NO;
         [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName: [ALApplozicSettings getColorForNavigationItem], NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace] size:18]}];
+
         [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
@@ -172,6 +179,8 @@
     [self.navigationItem setLeftBarButtonItem: barButtonItem];
     float y = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height;
     self.searchBar.frame = CGRectMake(0,y, self.view.frame.size.width, 40);
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUser:) name:@"USER_DETAIL_OTHER_VC" object:nil];
 }
 
 - (void)updateView
@@ -199,6 +208,37 @@
 {
     [self.tabBarController.tabBar setHidden: NO];
     self.forGroup = [NSNumber numberWithInt:0];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAIL_OTHER_VC" object:nil];
+}
+
+-(void)updateUser:(NSNotification *)notifyObj
+{
+    ALUserDetail *userDetail = (ALUserDetail *)notifyObj.object;
+    ALNewContactCell *newContactCell = [self getCell:userDetail.userId];
+    if(newContactCell && self.selectedSegment == 0)
+    {
+        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:userDetail.imageLink]];
+        newContactCell.contactPersonName.text = [userDetail getDisplayName];
+    }
+}
+
+-(ALNewContactCell *)getCell:(NSString *)key
+{
+    int index = (int)[self.filteredContactList indexOfObjectPassingTest:^BOOL(id element, NSUInteger idx, BOOL *stop) {
+        
+        ALContact *contact = (ALContact *)element;
+        if([contact.userId isEqualToString:key])
+        {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];
+    
+    NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:0];
+    ALNewContactCell *contactCell = (ALNewContactCell *)[self.contactsTableView cellForRowAtIndexPath:path];
+    
+    return contactCell;
 }
 
 -(void)emptyConversationAlertLabel
@@ -249,8 +289,8 @@
     return count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *individualCellIdentifier = @"NewContactCell";
     ALNewContactCell *newContactCell = (ALNewContactCell *)[tableView dequeueReusableCellWithIdentifier:individualCellIdentifier];
     NSUInteger randomIndex = random()% [self.colors count];
@@ -258,10 +298,13 @@
     [nameIcon setTextColor:[UIColor whiteColor]];
     [nameIcon setHidden:YES];
     [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
-    
+    newContactCell.contactPersonName.text = @"";
     [newContactCell.contactPersonImageView setHidden:NO];
-    newContactCell.contactPersonImageView.layer.cornerRadius = newContactCell.contactPersonImageView.frame.size.width/2;
-    newContactCell.contactPersonImageView.layer.masksToBounds = YES;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        newContactCell.contactPersonImageView.layer.cornerRadius = newContactCell.contactPersonImageView.frame.size.width/2;
+        newContactCell.contactPersonImageView.layer.masksToBounds = YES;
+    });
     
     [self.emptyConversationText setHidden:YES];
     [self.contactsTableView setHidden:NO];
@@ -285,7 +328,8 @@
                 else
                 {
                     [nameIcon setHidden:NO];
-                    [newContactCell.contactPersonImageView setImage:[ALColorUtility imageWithSize:CGRectMake(0, 0, 55, 55) WithHexString:self.colors[randomIndex]]];
+                    [newContactCell.contactPersonImageView setImage:[ALColorUtility imageWithSize:CGRectMake(0, 0, 55, 55)
+                                                                                    WithHexString:self.colors[randomIndex]]];
                     [newContactCell.contactPersonImageView addSubview:nameIcon];
                     [nameIcon  setText:[ALColorUtility getAlphabetForProfileImage:[contact getDisplayName]]];
                 }
@@ -304,6 +348,21 @@
                     newContactCell.selectionStyle = UITableViewCellSelectionStyleGray ;
                 }
                 
+                for (NSString * userID in  self.groupMembers) {
+                    if([userID isEqualToString:contact.userId]){
+                        
+                    
+                        [self.contactsTableView selectRowAtIndexPath:indexPath
+                                                    animated:YES
+                                              scrollPosition:UITableViewScrollPositionNone];
+                        [self tableView:self.contactsTableView didSelectRowAtIndexPath:indexPath];
+                        
+                        NSLog(@"SELECTED:%@",contact.userId);
+                    
+                    }else{
+                        NSLog(@"NOT SELECTED :%@",contact.userId);
+                    }
+                }
             }
         }break;
         case SHOW_GROUP:
@@ -346,29 +405,31 @@
     contactCell.selectionStyle = UITableViewCellSelectionStyleNone ;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
-    switch (self.forGroup.intValue){
-            
-        case GROUP_CREATION:{
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    switch (self.forGroup.intValue)
+    {
+        case GROUP_CREATION:
+        {
             ALContact *contact = [self.filteredContactList objectAtIndex:indexPath.row];
             [self.groupMembers addObject:contact.userId];
         }break;
         case GROUP_ADDITION:
         {
-            if(![self checkInternetConnectivity:tableView andIndexPath:indexPath]){
+            if(![self checkInternetConnectivity:tableView andIndexPath:indexPath])
+            {
                 return;
             }
             
             ALContact * contact = self.filteredContactList[indexPath.row];
             
-            if([self.contactsInGroup containsObject:contact.userId]){
+            if([self.contactsInGroup containsObject:contact.userId])
+            {
                 return;
             }
             
             [self turnUserInteractivityForNavigationAndTableView:NO];
-            [delegate addNewMembertoGroup:contact withComletion:^(NSError *error, ALAPIResponse *response) {
+            [delegate addNewMembertoGroup:contact withCompletion:^(NSError *error, ALAPIResponse *response) {
                 
                 if(error)
                 {
@@ -426,13 +487,15 @@
     }
 }
 
--(BOOL)checkInternetConnectivity:(UITableView*)tableView andIndexPath:(NSIndexPath *)indexPath{
-    
-    if(![ALDataNetworkConnection checkDataNetworkAvailable]){
+-(BOOL)checkInternetConnectivity:(UITableView*)tableView andIndexPath:(NSIndexPath *)indexPath
+{
+    if(![ALDataNetworkConnection checkDataNetworkAvailable])
+    {
         [[self activityIndicator] stopAnimating];
         ALNotificationView * notification = [ALNotificationView new];
         [notification noDataConnectionNotificationView];
-        if(tableView){
+        if(tableView)
+        {
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
         }
         return NO;
@@ -496,13 +559,17 @@
     
 }
 
--(void)handleFrameForOrientation {
-    
+-(void)handleFrameForOrientation
+{
     UIInterfaceOrientation toOrientation   = (UIInterfaceOrientation)[[UIDevice currentDevice] orientation];
     
-    if ([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPhone && (toOrientation == UIInterfaceOrientationLandscapeLeft || toOrientation == UIInterfaceOrientationLandscapeRight)) {
+    if ([[UIDevice currentDevice]userInterfaceIdiom] == UIUserInterfaceIdiomPhone &&
+        (toOrientation == UIInterfaceOrientationLandscapeLeft || toOrientation == UIInterfaceOrientationLandscapeRight))
+    {
         self.mTableViewTopConstraint.constant = DEFAULT_TOP_LANDSCAPE_CONSTANT;
-    }else{
+    }
+    else
+    {
         self.mTableViewTopConstraint.constant = DEFAULT_TOP_PORTRAIT_CONSTANT;
     }
     [self.view layoutIfNeeded];
@@ -519,16 +586,17 @@
     // Do the search...
     ALChatViewController * theVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     theVC.contactIds = searchBar.text;
-    
 }
 
 #pragma mark - Search Bar Delegate Methods -
 //========================================
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
     [searchBar resignFirstResponder];
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
     self.stopSearchText = searchText;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self getSerachResult:searchText];
@@ -545,7 +613,7 @@
         
         if(self.selectedSegment == 0)
         {
-            searchPredicate = [NSPredicate predicateWithFormat:@"email CONTAINS[cd] %@ OR userId CONTAINS[cd] %@ OR contactNumber CONTAINS[cd] %@ OR fullName CONTAINS[cd] %@", searchText, searchText, searchText,searchText];
+            searchPredicate = [NSPredicate predicateWithFormat:@"email CONTAINS[cd] %@ OR userId CONTAINS[cd] %@ OR contactNumber CONTAINS[cd] %@ OR fullName CONTAINS[cd] %@ OR displayName CONTAINS[cd] %@", searchText, searchText, searchText, searchText,searchText];
         }
         else
         {
@@ -600,23 +668,22 @@
 }
 
 
--(void)back:(id)sender {
-    
+-(void)back:(id)sender
+{
     UIViewController * viewControllersFromStack = [self.navigationController popViewControllerAnimated:YES];
     if(self.directContactVCLaunch)
     {
         [self  dismissViewControllerAnimated:YES completion:nil];
     }
-    else if(!viewControllersFromStack){
+    else if(!viewControllersFromStack)
+    {
         self.tabBarController.selectedIndex = 0;
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
-    
 }
 
 -(void)launchChatForContact:(NSString *)contactId  withChannelKey:(NSNumber*)channelKey
 {
-    
     if(self.directContactVCLaunch)  // IF DIRECT CONTACT VIEW LAUNCH FROM ALCHATLAUNCHER
     {
          ALChatLauncher * chatLauncher = [[ALChatLauncher alloc] init];
@@ -674,11 +741,11 @@
         //remove ALNewContactsViewController from back stack...
         
         viewControllersFromStack = [self.navigationController.viewControllers mutableCopy];
-        if(viewControllersFromStack.count >=2 && [[viewControllersFromStack objectAtIndex:viewControllersFromStack.count -2] isKindOfClass:[ALNewContactsViewController class]])
+        if(viewControllersFromStack.count >=2 &&
+           [[viewControllersFromStack objectAtIndex:viewControllersFromStack.count -2] isKindOfClass:[ALNewContactsViewController class]])
         {
             [viewControllersFromStack removeObjectAtIndex:viewControllersFromStack.count -2];
             self.navigationController.viewControllers = viewControllersFromStack;
-            
         }
     }
 }
@@ -707,8 +774,8 @@
 
 #pragma mark- Segment Control
 //===========================
-- (IBAction)segmentControlAction:(id)sender {
-    
+- (IBAction)segmentControlAction:(id)sender
+{
     UISegmentedControl *segmentedControl = (UISegmentedControl *) sender;
     self.selectedSegment = segmentedControl.selectedSegmentIndex;
     [self.filteredContactList removeAllObjects];
@@ -719,7 +786,8 @@
         self.groupOrContacts = [NSNumber numberWithInt:SHOW_CONTACTS];
         self.filteredContactList = [NSMutableArray arrayWithArray: self.contactList];
     }
-    else{
+    else
+    {
         //toggle the Group view to be visible
         self.groupOrContacts = [NSNumber numberWithInt:SHOW_GROUP];
         self.filteredContactList = [NSMutableArray arrayWithArray: self.alChannelsList];
@@ -729,8 +797,8 @@
 
 #pragma mark - Create group method
 //================================
--(void)createNewGroup:(id)sender{
-    
+-(void)createNewGroup:(id)sender
+{
     if(![self checkInternetConnectivity:nil andIndexPath:nil]){
         return;
     }
@@ -744,6 +812,8 @@
                                               alertControllerWithTitle:@"Group Members"
                                               message:@"Please select minimum two members"
                                               preferredStyle:UIAlertControllerStyleAlert];
+        
+        [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
         
         UIAlertAction *okAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedString(@"OK", @"OK action")
@@ -760,7 +830,8 @@
     
     //Server Call
     self.creatingChannel = [[ALChannelService alloc] init];
-    [self.creatingChannel createChannel:self.groupName orClientChannelKey:nil andMembersList:self.groupMembers andImageLink:self.groupImageURL
+    NSMutableArray * memberList = [NSMutableArray arrayWithArray:self.groupMembers.allObjects];
+    [self.creatingChannel createChannel:self.groupName orClientChannelKey:nil andMembersList:memberList andImageLink:self.groupImageURL
                          withCompletion:^(ALChannel *alChannel) {
                              
                              if(alChannel)
@@ -788,18 +859,14 @@
                              
                          }];
     
-    
-    
     if(![ALDataNetworkConnection checkDataNetworkAvailable])
     {
         [self turnUserInteractivityForNavigationAndTableView:YES];
     }
-    
-    
 }
 
--(void)turnUserInteractivityForNavigationAndTableView:(BOOL)option{
-    
+-(void)turnUserInteractivityForNavigationAndTableView:(BOOL)option
+{
     [self.contactsTableView setUserInteractionEnabled:option];
     [[[self navigationController] navigationBar] setUserInteractionEnabled:option];
     [[self searchBar] setUserInteractionEnabled:option];

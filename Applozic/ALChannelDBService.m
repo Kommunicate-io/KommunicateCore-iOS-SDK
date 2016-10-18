@@ -22,7 +22,7 @@
 -(void)createChannel:(ALChannel *)channel
 {
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-    DB_CHANNEL *dbChannel = [self createChannelEntity:channel];
+    [self createChannelEntity:channel];
     [theDBHandler.managedObjectContext save:nil];
     
     NSMutableArray * memberArray = [NSMutableArray new];
@@ -36,6 +36,9 @@
     }
     
     [self insertChannelUserX:memberArray];
+    
+    [self addedMembersArray:channel.membersName andChannelKey:channel.key];
+    [self removedMembersArray:channel.removeMembers andChannelKey:channel.key];
 }
 
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey
@@ -45,7 +48,8 @@
     newUserX.userKey = userId;
     
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-    DB_CHANNEL_USER_X *dbChannelUserX = [self createChannelUserXEntity: newUserX];
+//    DB_CHANNEL_USER_X *dbChannelUserX = [self createChannelUserXEntity: newUserX];
+    [self createChannelUserXEntity: newUserX];
     
     [theDBHandler.managedObjectContext save:nil];
     //channelUserX.channelDBObjectId = dbChannelUserX.objectID;
@@ -59,13 +63,13 @@
     
     for(ALChannel *channel in channelList)
     {
-        DB_CHANNEL *dbChannel = [self createChannelEntity:channel];
+//        DB_CHANNEL *dbChannel = [self createChannelEntity:channel];
+         [self createChannelEntity:channel];
         // IT MIGHT BE USED IN FUTURE
         [theDBHandler.managedObjectContext save:nil];
         //channel.channelDBObjectId = dbChannel.objectID;
         [channelArray addObject:channel];
     }
-    
     
     NSError *error = nil;
     [theDBHandler.managedObjectContext save:&error];
@@ -136,7 +140,8 @@
     
     for(ALChannelUserX *channelUserX in channelUserXList)
     {
-        DB_CHANNEL_USER_X *dbChannelUserX = [self createChannelUserXEntity:channelUserX];
+//        DB_CHANNEL_USER_X *dbChannelUserX = [self createChannelUserXEntity:channelUserX];
+         [self createChannelUserXEntity:channelUserX];
         // IT MIGHT BE USED IN FUTURE
         [theDBHandler.managedObjectContext save:nil];
         //channelUserX.channelDBObjectId = dbChannelUserX.objectID;
@@ -312,7 +317,14 @@
     
     if(dbChannel)
     {
+        channel.key = dbChannel.channelKey;
+        channel.clientChannelKey = dbChannel.clientChannelKey;
         channel.name = dbChannel.channelDisplayName;
+        channel.adminKey = dbChannel.adminId;
+        channel.type = dbChannel.type;
+        channel.unreadCount = dbChannel.unreadCount;
+        channel.channelImageURL = dbChannel.channelImageURL;
+        
         return channel;
     }
     else
@@ -432,7 +444,7 @@
     return unreadCount;
 }
 
--(void)renameChannel:(NSNumber *)channelKey andNewName:(NSString *)newName
+-(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orImageURL:(NSString *)imageURL
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -448,12 +460,17 @@
     if (result.count)
     {
         DB_CHANNEL *dbChannel = [result objectAtIndex:0];
-        dbChannel.channelDisplayName = newName;
+        if(newName.length) {
+            dbChannel.channelDisplayName = newName;
+        }
+        if(imageURL.length) {
+            dbChannel.channelImageURL = imageURL;
+        }
         [dbHandler.managedObjectContext save:nil];
     }
     else
     {
-        NSLog(@"NO CHANNEL FOUND");
+        NSLog(@"UPDATE_CHANNEL_DB : NO CHANNEL FOUND");
     }
 }
 
@@ -484,30 +501,26 @@
 
 }
 
--(void)setLeaveFlagForChannel:(NSNumber*)groupId
+-(void)setLeaveFlag:(BOOL)flag forChannel:(NSNumber *)groupId
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
     
-    if(dbChannel){
-        dbChannel.isLeft = YES;
+    if(dbChannel)
+    {
+        dbChannel.isLeft = flag;
         [dbHandler.managedObjectContext save:nil];
     }
-    else{
-        NSLog(@"Channel not found in db");
+    else
+    {
+        NSLog(@"NO CHANNEL : %@ FOUND",groupId);
     }
-
 }
 
 -(BOOL)isChannelLeft:(NSNumber *)groupId
 {
-     DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
-    if(dbChannel.isLeft){
-        return YES;
-    }
-    else{
-        return NO;
-    }
+    DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
+    return dbChannel.isLeft;
 }
 
 -(void)processArrayAfterSyncCall:(NSMutableArray *)channelArray
@@ -517,6 +530,35 @@
         [self createChannel:channelObject];
     }
 }
+
+//------------------------------------------
+#pragma mark AFTER LEAVE LOGOUT and LOGIN
+//------------------------------------------
+
+-(void)removedMembersArray:(NSMutableArray *)memberArray andChannelKey:(NSNumber *)channelKey
+{
+    if([memberArray containsObject:[ALUserDefaultsHandler getUserId]])
+    {
+        [self setLeaveFlag:YES forChannel:channelKey];
+        NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+        [dict setObject:channelKey forKey:@"CHANNEL_KEY"];
+        [dict setObject:[NSNumber numberWithInt:1] forKey:@"FLAG_VALUE"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_USER_FREEZE_CHANNEL_ADD_REMOVING" object:nil userInfo:dict];
+    }
+}
+
+-(void)addedMembersArray:(NSMutableArray *)memberArray andChannelKey:(NSNumber *)channelKey
+{
+    if([memberArray containsObject:[ALUserDefaultsHandler getUserId]])
+    {
+        [self setLeaveFlag:NO forChannel:channelKey];
+        NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+        [dict setObject:channelKey forKey:@"CHANNEL_KEY"];
+        [dict setObject:[NSNumber numberWithInt:0] forKey:@"FLAG_VALUE"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_USER_FREEZE_CHANNEL_ADD_REMOVING" object:nil userInfo:dict];
+    }
+}
+
 
 //-----------------------------
 #pragma mark Marking Group Read

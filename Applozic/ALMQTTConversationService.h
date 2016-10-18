@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MQTTSession.h"
+#import "MQTTSessionManager.h"
 #import "ALMessage.h"
 #import "ALUserDetail.h"
 #import "ALSyncCallService.h"
@@ -24,6 +25,7 @@
 @optional
 
 -(void) reloadDataForUserBlockNotification:(NSString *)userId andBlockFlag:(BOOL)flag;
+-(void)updateUserDetail:(NSString *)userId;
 
 @end
 
@@ -31,7 +33,11 @@
 
 +(ALMQTTConversationService *)sharedInstance;
 
-@property(nonatomic, strong) ALSyncCallService *alSyncCallService;
+@property (nonatomic, strong) ALSyncCallService *alSyncCallService;
+
+@property (nonatomic, strong) id<ALMQTTConversationDelegate>mqttConversationDelegate;
+
+@property (nonatomic, readwrite) MQTTSession *session;
 
 -(void) subscribeToConversation;
 
@@ -40,8 +46,6 @@
 -(void) unsubscribeToConversation: (NSString *)userKey;
 
 -(void) sendTypingStatus:(NSString *) applicationKey userID:(NSString *) userId andChannelKey:(NSNumber *)channelKey typing: (BOOL) typing;
-
-@property(nonatomic, strong) id<ALMQTTConversationDelegate>mqttConversationDelegate;
 
 -(void)unSubscribeToChannelConversation:(NSNumber *)channelKey;
 -(void)subscribeToChannelConversation:(NSNumber *)channelKey;

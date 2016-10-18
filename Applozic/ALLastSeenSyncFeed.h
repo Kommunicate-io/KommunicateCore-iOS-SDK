@@ -16,7 +16,7 @@
 
 @property(nonatomic)  NSMutableArray <ALUserDetail *>* lastSeenArray ;
 
--(void)populateLastSeenDetail:(NSString *)jsonString;
+-(void)populateLastSeenDetail:(NSMutableArray *)jsonString;
 
 
 @end

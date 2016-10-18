@@ -13,7 +13,7 @@
 #define LEFT_CHANNEL_URL @"/rest/ws/group/left"
 #define ADD_MEMBER_TO_CHANNEL_URL @"/rest/ws/group/add/member"
 #define REMOVE_MEMBER_FROM_CHANNEL_URL @"/rest/ws/group/remove/member"
-#define RENAME_CHANNEL_URL @"/rest/ws/group/change/name"
+#define UPDATE_CHANNEL_URL @"/rest/ws/group/update"
 
 #import "ALChannelClientService.h"
 #import "NSString+Encode.h"
@@ -42,15 +42,15 @@
         }
         else
         {
-            NSLog(@"JSON ALCHANNEL CLIENT SERVICE CLASS :: %@", theJson);
+            NSLog(@"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
             ALChannelCreateResponse *response = [[ALChannelCreateResponse alloc] initWithJSONString:theJson];
             completion(error, response.alChannel);
         }
-        
     }];
 }
 
-+(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion
++(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray
+        andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion
 {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CHANNEL_URL];
@@ -58,8 +58,15 @@
     
     [channelDictionary setObject:channelName forKey:@"groupName"];
     [channelDictionary setObject:memberArray forKey:@"groupMemberList"];
-  
-    if(imageLink){
+    [channelDictionary setObject:[NSString stringWithFormat:@"%i", type] forKey:@"type"];
+    
+    if(metaData)
+    {
+        [channelDictionary setObject:metaData forKey:@"metadata"];
+    }
+    
+    if(imageLink)
+    {
         [channelDictionary setObject:imageLink forKey:@"imageUrl"];
     }
     
@@ -80,21 +87,20 @@
         
         if (theError)
         {
-            NSLog(@"ERROR IN CREATE_CHANNEL %@", theError);
+            NSLog(@"ERROR IN CREATE_CHANNEL :: %@", theError);
         }
         else
         {
-            NSLog(@"SEVER RESPONSE FROM JSON CREATE_CHANNEL : %@", (NSString *)theJson);
             response = [[ALChannelCreateResponse alloc] initWithJSONString:theJson];
         }
-        
+        NSLog(@"RESPONSE_CREATE_CHANNEL :: %@", (NSString *)theJson);
         completion(theError, response);
         
     }];
-    
 }
 
-+(void)addMemberToChannel:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey andChannelKey:(NSNumber *)channelKey withComletion:(void(^)(NSError *error, ALAPIResponse *response))completion
++(void)addMemberToChannel:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey andChannelKey:(NSNumber *)channelKey
+           withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
 {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, ADD_MEMBER_TO_CHANNEL_URL];
     NSString * theParamString = [NSString stringWithFormat:@"groupId=%@&userId=%@",channelKey,[userId urlEncodeUsingNSUTF8StringEncoding]];
@@ -109,18 +115,19 @@
         ALAPIResponse *response = nil;
         if(error)
         {
-            NSLog(@"ERROR IN ADD_NEW_MEMBER_TO_CHANNEL SERVER CALL REQUEST %@", error);
+            NSLog(@"ERROR IN ADD_NEW_MEMBER_TO_CHANNEL :: %@", error);
         }
         else
         {
             response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         }
-        NSLog(@"Response ADD_NEW_MEMBER_TO_CHANNEL :%@",response);
+        NSLog(@"RESPONSE_ADD_NEW_MEMBER_TO_CHANNEL :: %@", (NSString *)theJson);
         completion(error, response);
     }];
 }
 
-+(void)removeMemberFromChannel:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey andChannelKey:(NSNumber *)channelKey withComletion:(void(^)(NSError *error, ALAPIResponse *response))completion
++(void)removeMemberFromChannel:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey andChannelKey:(NSNumber *)channelKey
+                withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
 {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, REMOVE_MEMBER_FROM_CHANNEL_URL];
@@ -131,23 +138,24 @@
     }
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
-    [ALResponseHandler processRequest:theRequest andTag:@"REMOVE_MEMBER_FROM_CHANNEL_URL" WithCompletionHandler:^(id theJson, NSError *error) {
+    [ALResponseHandler processRequest:theRequest andTag:@"REMOVE_MEMBER_FROM_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+        
         ALAPIResponse *response = nil;
         if(error)
         {
-            NSLog(@"ERROR IN REMOVE_MEMBER_FROM_CHANNEL_URL SERVER CALL REQUEST %@", error);
+            NSLog(@"ERROR IN REMOVE_MEMBER_FROM_CHANNEL :: %@", error);
         }
         else
         {
-            NSLog(@"Response REMOVE_MEMBER_FROM_CHANNEL %@",theJson);
             response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         }
-        
+        NSLog(@"RESPONSE_REMOVE_MEMBER_FROM_CHANNEL :: %@", (NSString *)theJson);
         completion(error, response);
     }];
 }
 
-+(void)deleteChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withComletion:(void(^)(NSError *error, ALAPIResponse *response))completion
++(void)deleteChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
+      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
 {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, DELETE_CHANNEL_URL];
     NSString * theParamString = [NSString stringWithFormat:@"groupId=%@", channelKey];
@@ -158,21 +166,23 @@
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"DELETE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+        
         ALAPIResponse *response = nil;
         if(error)
         {
-            NSLog(@"ERROR IN DELETE_CHANNEL SERVER CALL REQUEST %@", error);
+            NSLog(@"ERROR IN DELETE_CHANNEL SERVER CALL REQUEST :: %@", error);
         }
         else
         {
             response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         }
-        
+        NSLog(@"RESPONSE_DELETE_CHANNEL :: %@", (NSString *)theJson);
         completion(error, response);
     }];
 }
 
-+(void)leaveChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withUserId:(NSString *)userId andCompletion:(void (^)(NSError *, ALAPIResponse *))completion
++(void)leaveChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withUserId:(NSString *)userId
+      andCompletion:(void (^)(NSError *, ALAPIResponse *))completion
 {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, LEFT_CHANNEL_URL];
     NSString * theParamString = [NSString stringWithFormat:@"groupId=%@&userId=%@",channelKey,[userId urlEncodeUsingNSUTF8StringEncoding]];
@@ -183,42 +193,65 @@
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"LEAVE_FROM_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+        
         ALAPIResponse *response = nil;
         if(error)
         {
-            NSLog(@"ERROR IN LEAVE_FROM_CHANNEL SERVER CALL REQUEST %@", error);
+            NSLog(@"ERROR IN LEAVE_FROM_CHANNEL SERVER CALL REQUEST  :: %@", error);
         }
         else
         {
             response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         }
-        NSLog(@"Response: LEAVE_FROM_CHANNEL %@",response.status);
+        NSLog(@"RESPONSE_LEAVE_FROM_CHANNEL :: %@", (NSString *)theJson);
         completion(error, response);
     }];
 }
 
-+(void)renameChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
-          andNewName:(NSString *)newName andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
++(void)updateChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
+          andNewName:(NSString *)newName andImageURL:(NSString *)imageURL andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
 {
-    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, RENAME_CHANNEL_URL];
-    NSString * theParamString = [NSString stringWithFormat:@"groupId=%@&newName=%@", channelKey, newName];
-    if(clientChannelKey)
-    {
-        theParamString = [NSString stringWithFormat:@"clientGroupId=%@&newName=%@", clientChannelKey, newName];
-    }
-    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, UPDATE_CHANNEL_URL];
     
-    [ALResponseHandler processRequest:theRequest andTag:@"RENAME_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+   
+    if(newName.length)
+    {
+        [dictionary setObject:newName forKey:@"newName"];
+    }
+    if(clientChannelKey.length)
+    {
+        [dictionary setObject:clientChannelKey forKey:@"clientGroupId"];
+    }
+    else
+    {
+        [dictionary setObject:channelKey forKey:@"groupId"];
+    }
+    if(imageURL.length)
+    {
+        [dictionary setObject:imageURL forKey:@"imageUrl"];
+    }
+    
+    NSError *error;
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+    NSString * theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    
+    NSLog(@"PARAM_STRING_CHANNEL_UPDATE :: %@", theParamString);
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *error) {
+        
         ALAPIResponse *response = nil;
         if(error)
         {
-            NSLog(@"ERROR IN RENAME_CHANNEL SERVER CALL REQUEST %@", error);
+            NSLog(@"ERROR IN UPDATE_CHANNEL :: %@", error);
         }
         else
         {
             response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         }
-        
+        NSLog(@"RESPONSE_UPDATE_CHANNEL :: %@", (NSString *)theJson);
         completion(error, response);
     }];
 }
@@ -239,6 +272,7 @@
     }
     
     [ALResponseHandler processRequest:theRequest andTag:@"CHANNEL_SYNCHRONIZATION" WithCompletionHandler:^(id theJson, NSError *error) {
+        
         ALChannelSyncResponse *response = nil;
         if(error)
         {
@@ -249,6 +283,7 @@
             response = [[ALChannelSyncResponse alloc] initWithJSONString:theJson];
         }
         
+        NSLog(@"RESPONSE_CHANNEL_SYNCHRONIZATION :: %@", (NSString *)theJson);
         completion(error, response);
     }];
 
@@ -265,16 +300,18 @@
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"MARK_CONVERSATION_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
-        if (theError) {
-            completion(nil,theError);
-            NSLog(@"theError");
-            return ;
-        }else{
-            //read sucessfull
+        if (theError)
+        {
+            NSLog(@"ERROR IN MARK_CONVERSATION_AS_READ :: %@", theError);
+            completion(nil, theError);
+            return;
+        }
+        else
+        {
             NSLog(@"sucessfully marked read !");
         }
-        NSLog(@"Response: %@", (NSString *)theJson);
-        completion((NSString *)theJson,nil);
+        NSLog(@"RESPONSE_MARK_CONVERSATION_AS_READ :: %@", (NSString *)theJson);
+        completion((NSString *)theJson, nil);
     }];
 }
 

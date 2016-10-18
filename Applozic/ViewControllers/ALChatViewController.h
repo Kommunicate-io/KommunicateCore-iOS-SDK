@@ -18,14 +18,17 @@
 #import "ALChannel.h"
 #import "ALAudioCell.h"
 #import "ALAudioAttachmentViewController.h"
+#import "ALVCardClass.h"
+#import <ContactsUI/CNContactPickerViewController.h>
 
 @protocol ALChatViewControllerDelegate <NSObject>
 
+@optional
 -(void)handleCustomActionFromChatVC:(UIViewController *)chatViewController andWithMessage:(ALMessage *)alMessage;
 
 @end
 
-@interface ALChatViewController : ALBaseViewController<UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,ALMapViewControllerDelegate,ALChatCellDelegate>
+@interface ALChatViewController : ALBaseViewController<UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,ALMapViewControllerDelegate,ALChatCellDelegate,CNContactPickerDelegate>
 
 @property (strong, nonatomic) ALContact * alContact;
 @property (nonatomic, strong) ALChannel * alChannel;
@@ -75,5 +78,5 @@
 -(NSString*)formatDateTime:(ALUserDetail*)alUserDetail  andValue:(double)value;
 -(void)checkUserBlockStatus;
 -(void)updateChannelSubscribing:(NSNumber *)oldChannelKey andNewChannel:(NSNumber *)newChannelKey;
-
+-(void)subProcessDetailUpdate:(ALUserDetail *)userId;
 @end

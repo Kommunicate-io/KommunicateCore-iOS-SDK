@@ -454,13 +454,8 @@ UIViewController * modalCon;
     UIStoryboard * applozicStoryboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     
     ALShowImageViewController * alShowImageViewController = [applozicStoryboard instantiateViewControllerWithIdentifier:@"showImageViewController"];
-    alShowImageViewController.view.backgroundColor=[UIColor blackColor];
-    alShowImageViewController.view.userInteractionEnabled=YES;
-    
-    UIImageView *imageViewNew = [[UIImageView alloc] initWithFrame:alShowImageViewController.view.frame];
-    imageViewNew.contentMode = UIViewContentModeScaleAspectFit;
-    imageViewNew.image = self.mImageView.image;
-    [alShowImageViewController.view addSubview:imageViewNew];
+    alShowImageViewController.view.backgroundColor = [UIColor lightGrayColor];
+    alShowImageViewController.view.userInteractionEnabled = YES;
     
     [alShowImageViewController setImage:self.mImageView.image];
     [alShowImageViewController setAlMessage:self.mMessage];

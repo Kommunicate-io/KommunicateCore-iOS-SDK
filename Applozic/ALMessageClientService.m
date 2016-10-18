@@ -172,35 +172,44 @@
     
 }
 
--(void) getMessageListForUser:(MessageListRequest*) messageListRequest withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
+-(void)getMessageListForUser:(MessageListRequest *)messageListRequest withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
 {
-    
+   NSLog(@"CHATVC_OPENS_1st TIME_CALL");
    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:messageListRequest.getParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"GET MESSAGES LIST FOR USERID" WithCompletionHandler:^(id theJson, NSError *theError) {
         
-        if (theError) {
+        if (theError)
+        {
+            NSLog(@"MSG_LIST ERROR :: %@",theError.description);
             completion(nil, theError, nil);
-            return ;
+            return;
         }
-        if(messageListRequest.channelKey){
+        if(messageListRequest.channelKey && !(messageListRequest.channelType == OPEN))
+        {
             [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.channelKey stringValue]];
-        }else{
+        }
+        else
+        {
             [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:messageListRequest.userId];
         }
-        if(messageListRequest.conversationId){
+        if(messageListRequest.conversationId)
+        {
             [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.conversationId stringValue]];
         }
-        ALMessageList *messageListResponse =  [[ALMessageList alloc] initWithJSONString:theJson andWithUserId:messageListRequest.userId andWithGroup:messageListRequest.channelKey];
         
-        ALMessageDBService *almessageDBService =  [[ALMessageDBService alloc] init];
+        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson
+                                                                          andWithUserId:messageListRequest.userId
+                                                                           andWithGroup:messageListRequest.channelKey];
+        
+        ALMessageDBService *almessageDBService = [[ALMessageDBService alloc] init];
         [almessageDBService addMessageList:messageListResponse.messageList];
-        ALConversationService * alConversationService  = [[ALConversationService alloc] init];
+        ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
         
         completion(messageListResponse.messageList, nil, messageListResponse.userDetailsList);
-//        NSLog(@"getMessageListForUser message list response THE JSON %@",theJson);
+       NSLog(@"MSG_LIST RESPONSE :: %@",(NSString *)theJson);
         
     }];
     
@@ -215,16 +224,15 @@
     
     [ALResponseHandler processRequest:theRequest andTag:@"CREATE FILE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
         
-        if (theError) {
-            
+        if (theError)
+        {
             completion(nil,theError);
-            
-            return ;
+            return;
         }
         
         NSString *imagePostingURL = (NSString *)theJson;
-        
-        completion(imagePostingURL,nil);
+        NSLog(@"RESPONSE_IMG_URL :: %@",imagePostingURL);
+        completion(imagePostingURL, nil);
         
     }];
 }
@@ -265,18 +273,18 @@
     
 }
 
--(void )deleteMessage:( NSString * ) keyString andContactId:( NSString * )contactId withCompletion:(void (^)(NSString *, NSError *))completion{
+-(void)deleteMessage:(NSString *) keyString andContactId:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion
+{
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/delete",KBASE_URL];
     NSString * theParamString = [NSString stringWithFormat:@"key=%@&userId=%@",keyString,[contactId urlEncodeUsingNSUTF8StringEncoding]];
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"DELETE_MESSAGE" WithCompletionHandler:^(id theJson, NSError *theError) {
         
-        if (theError) {
-            
+        if (theError)
+        {
             completion(nil,theError);
-            
-            return ;
+            return;
         }
         else{
             completion((NSString *)theJson,nil);
@@ -308,12 +316,13 @@
             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
         }
         NSLog(@"Response DELETE_MESSAGE_THREAD: %@", (NSString *)theJson);
+        NSLog(@"ERROR DELETE_MESSAGE_THREAD: %@", theError.description);
         completion((NSString *)theJson,theError);
     }];
 }
 
-
--(void)sendMessage: (NSDictionary *) userInfo WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
+-(void)sendMessage: (NSDictionary *) userInfo WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion
+{
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/send",KBASE_URL];
     NSString * theParamString = [ALUtilityClass generateJsonStringFromDictionary:userInfo];
     
@@ -323,7 +332,7 @@
         
         if (theError) {
             completion(nil,theError);
-            return ;
+            return;
         }
         completion(theJson,nil);
     }];

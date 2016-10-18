@@ -20,14 +20,12 @@
 
 
 @implementation ALPushAssist
-
+// WHEN NON-APPLOZIC VIEWs OPENED
 -(void)assist:(NSString*)notiMsg and :(NSMutableDictionary*)dict ofUser:(NSString*)userId{
-
-    if (!self.isOurViewOnTop) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"showNotificationAndLaunchChat"
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"showNotificationAndLaunchChat"
                                                              object:notiMsg
                                                            userInfo:dict];
-    }
 
 }
 

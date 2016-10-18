@@ -51,7 +51,8 @@
 #define STATUS_BAR_BG_COLOUR @"com.applozic.userdefault.STATUS_BAR_BG_COLOUR"
 #define STATUS_BAR_STYLE @"com.applozic.userdefault.STATUS_BAR_STYLE"
 #define MAX_TEXT_VIEW_LINES @"com.applozic.userdefault.MAX_TEXT_VIEW_LINES"
-
+#define ABUSE_WORDS_WARNING_TEXT @"com.applozic.userdefault.ABUSE_WORDS_WARNING_TEXT"
+#define ENABLE_MSGTEXT_ABUSE_CHECK @"com.applozic.userdefault.ENABLE_MSGTEXT_ABUSE_CHECK"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -214,7 +215,13 @@
 +(UIStatusBarStyle)getStatusBarStyle;            
 +(void)setStatusBarStyle:(UIStatusBarStyle)style;
 
-
 +(void)setMaxTextViewLines:(int)numberOfLines;
 +(int)getMaxTextViewLines;
+
++(void)setAbuseWarningText:(NSString *)warningText;
++(NSString *)getAbuseWarningText;
+
++(BOOL)getMessageAbuseMode;
++(void)setMessageAbuseMode:(BOOL)flag;
+
 @end

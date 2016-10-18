@@ -48,11 +48,13 @@
 #define LOGIN_USER_PROFILE_IMAGE_SERVER @"com.applozic.userdefault.LOGIN_USER_PROFILE_IMAGE_SERVER"
 #define LOGGEDIN_USER_STATUS @"com.applozic.userdefault.LOGGEDIN_USER_STATUS"
 #define LOGIN_USER_SUBSCRIBED_MQTT @"com.applozic.userdefault.LOGIN_USER_SUBSCRIBED_MQTT"
+#define USER_ENCRYPTION_KEY @"com.applozic.userdefault.USER_ENCRYPTION_KEY"
 #define USER_PRICING_PACKAGE @"com.applozic.userdefault.USER_PRICING_PACKAGE"
+#define DEVICE_APNS_TYPE_ID @"com.applozic.userdefault.DEVICE_APNS_TYPE"
+#define DEVICE_ENCRYPTION_ENABLE @"com.applozic.userdefault.DEVICE_ENCRYPTION_ENABLE"
 
 #define KEY_PREFIX @"com.applozic.userdefault"
 
-#define DEVICE_APNS_TYPE_ID @"com.applozic.userdefault.DEVICE_APNS_TYPE"
 
 #import <Foundation/Foundation.h>
 
@@ -214,7 +216,13 @@
 +(BOOL)isUserLoggedInUserSubscribedMQTT;
 +(void)setLoggedInUserSubscribedMQTT:(BOOL)flag;
 
++(NSString *)getEncryptionKey;
++(void)setEncryptionKey:(NSString *)encrptionKey;
+
 +(short)getUserPricingPackage;
 +(void)setUserPricingPackage:(short)pricingPackage;
+
++(BOOL)getEnableEncryption;
++(void)setEnableEncryption:(BOOL)flag;
 
 @end

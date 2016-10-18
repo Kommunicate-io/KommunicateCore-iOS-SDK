@@ -25,21 +25,31 @@
 
 -(NSString *)stringFromChannelUserList:(NSNumber *)key;
 
--(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink withCompletion:(void(^)(ALChannel *alChannel))completion;
+-(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey
+      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink withCompletion:(void(^)(ALChannel *alChannel))completion;
 
--(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withComletion:(void(^)(NSError *error,ALAPIResponse *response))completion;
+-(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray
+        andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData
+      withCompletion:(void(^)(ALChannel *alChannel))completion;
 
--(void)removeMemberFromChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withComletion:(void(^)(NSError *error, NSString *response))completion;
+-(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
+            withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
--(void)deleteChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void(^)(NSError *error))completion;
+-(void)removeMemberFromChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
+                 withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+
+-(void)deleteChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
+      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 -(BOOL)checkAdmin:(NSNumber *)channelKey;
 
--(void)leaveChannel:(NSNumber *)channelKey andUserId:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void(^)(NSError *error))completion;
+-(void)leaveChannel:(NSNumber *)channelKey andUserId:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey
+     withCompletion:(void(^)(NSError *error))completion;
 
 -(void)syncCallForChannel;
 
--(void)renameChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void(^)(NSError *error))completion;
+-(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
+      withCompletion:(void(^)(NSError *error))completion;
 
 +(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
@@ -50,5 +60,7 @@
 -(NSNumber *)getOverallUnreadCountForChannel;
 
 -(ALChannel *)fetchChannelWithClientChannelKey:(NSString *)clientChannelKey;
+
+-(BOOL)isLoginUserInChannel:(NSNumber *)channelKey;
 
 @end

@@ -19,7 +19,7 @@
 
 @interface ALUserService : NSObject
 
-+ (void)processContactFromMessages:(NSArray *) messagesArr withCompletion:(void(^)())completionMark;
++(void)processContactFromMessages:(NSArray *) messagesArr withCompletion:(void(^)())completionMark;
 
 +(void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark;
 
@@ -53,5 +53,7 @@
 
 -(void)updateUserDisplayName:(NSString *)displayName andUserImage:(NSString *)imageLink userStatus:(NSString *)status
               withCompletion:(void (^)(id theJson, NSError * error))completion;
+
++(void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
 
 @end

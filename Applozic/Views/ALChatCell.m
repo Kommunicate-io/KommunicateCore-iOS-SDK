@@ -277,7 +277,6 @@
             
         }
         
-        
     }
     else    //Sent Message
     {
@@ -495,6 +494,11 @@
 
 -(void)processHyperLink
 {
+    if(self.mMessage.contentType == 10) // AVOID HYPERLINK FOR GROUP OPERATION MESSAGE OBJECT
+    {
+        return;
+    }
+    
     NSString * source = self.mMessage.message;
     NSDataDetector * detector = [NSDataDetector dataDetectorWithTypes:(NSTextCheckingTypePhoneNumber | NSTextCheckingTypeLink)
                                                                 error:nil];
@@ -527,7 +531,14 @@
         }
         else
         {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@",substring]]];
+            if([substring hasPrefix:@"http"])
+            {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:substring]];
+            }
+            else
+            {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@",substring]]];
+            }
         }
     };
     

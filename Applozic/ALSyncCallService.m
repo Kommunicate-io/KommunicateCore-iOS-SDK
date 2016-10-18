@@ -41,4 +41,15 @@
     [contactDBService updateLastSeenDBUpdate:alUserDetail];
 }
 
+-(void)updateTableAtConversationDeleteForContact:(NSString*)contactID
+                                  ConversationID:(NSString *)conversationID
+                                      ChannelKey:(NSNumber *)channelKey{
+    
+    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
+    [messageDBService deleteAllMessagesByContact:contactID orChannelKey:channelKey];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CONVERSATION_DELETION"
+                                                        object:(contactID ? contactID :channelKey)];
+    
+}
+
 @end

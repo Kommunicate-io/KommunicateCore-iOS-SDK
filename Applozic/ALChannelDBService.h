@@ -45,21 +45,28 @@
 
 -(NSMutableArray*)getAllChannelKeyAndName;
 
--(void)renameChannel:(NSNumber *)channelKey andNewName:(NSString *)newName;
+-(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orImageURL:(NSString *)imageURL;
 
 -(void)processArrayAfterSyncCall:(NSMutableArray *)channelArray;
 
 -(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key;
 //New Added...
 -(NSUInteger)markConversationAsRead:(NSNumber*)channelKey;
-- (NSArray *)getUnreadMessagesForGroup:(NSNumber*)groupId;
--(void)updateUnreadCountChannel:(NSNumber *)channelKey
-         unreadCount:(NSNumber *)unreadCount;
--(void)setLeaveFlagForChannel:(NSNumber*)groupId;
+
+-(NSArray *)getUnreadMessagesForGroup:(NSNumber*)groupId;
+
+-(void)updateUnreadCountChannel:(NSNumber *)channelKey unreadCount:(NSNumber *)unreadCount;
+
+-(void)setLeaveFlag:(BOOL)flag forChannel:(NSNumber *)groupId;
+
 -(BOOL)isChannelLeft:(NSNumber *)groupId;
 
 -(NSNumber *)getOverallUnreadCountForChannelFromDB;
 
 -(ALChannel *)loadChannelByClientChannelKey:(NSString *)clientChannelKey;
+
+-(void)removedMembersArray:(NSMutableArray *)memberArray andChannelKey:(NSNumber *)channelKey;
+
+-(void)addedMembersArray:(NSMutableArray *)memberArray andChannelKey:(NSNumber *)channelKey;
 
 @end

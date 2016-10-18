@@ -74,7 +74,6 @@
          [self.contentView addSubview:self.mMessageStatusImageView];
         
         self.mDowloadRetryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//        [self.mDowloadRetryButton setTitle:@"Retry" forState:UIControlStateNormal];
         [self.mDowloadRetryButton setContentMode:UIViewContentModeCenter];
         [self.mDowloadRetryButton setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.6]];
         self.mDowloadRetryButton.layer.cornerRadius = 4;
@@ -95,8 +94,8 @@
         self.mChannelMemberName.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.mChannelMemberName];
         
-        UIMenuItem * testMenuItem = [[UIMenuItem alloc] initWithTitle:@"Info" action:@selector(msgInfo:)];
-        [[UIMenuController sharedMenuController] setMenuItems: @[testMenuItem]];
+        UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:@"Info" action:@selector(msgInfo:)];
+        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo]];
         [[UIMenuController sharedMenuController] update];
 
         if (IS_IPHONE_5)
@@ -126,6 +125,21 @@
     [self.delegate downloadRetryButtonActionDelegate:(int)self.tag andMessage:self.mMessage];
 }
 
+- (void)msgInfo:(id)sender{
 
+}
+
+-(void)setupProgress{
+
+}
+
+-(void)hidePlayButtonOnUploading
+{
+    
+}
+
+-(void)cancelAction{
+
+}
 
 @end

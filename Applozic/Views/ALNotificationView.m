@@ -20,6 +20,7 @@
 #import "ALChannelDBService.h"
 #import "ALApplozicSettings.h"
 #import "ALConstant.h"
+#import "ALGroupDetailViewController.h"
 @implementation ALNotificationView
     
 
@@ -34,7 +35,8 @@
 *********************/
 
 
--(instancetype)initWithAlMessage:(ALMessage*)alMessage  withAlertMessage: (NSString *) alertMessage{
+-(instancetype)initWithAlMessage:(ALMessage*)alMessage  withAlertMessage: (NSString *) alertMessage
+{
     self = [super init];
     self.text =[self getNotificationText:alMessage];
     self.textColor = [UIColor whiteColor];
@@ -86,9 +88,11 @@
 
 #pragma mark- Our SDK views notification
 //=======================================
--(void)nativeNotification:(id)delegate{
+-(void)nativeNotification:(id)delegate
+{
    
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE){
+    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE)
+    {
         return;
     }
     NSString * title; // Title of Notification Banner (Display Name or Group Name)
@@ -99,13 +103,11 @@
     ALContactDBService * contactDbService = [[ALContactDBService alloc] init];
     ALContact * alcontact = [contactDbService loadContactByKey:@"userId" value:self.contactId];
    
-    ALChannel * alchannel=[[ALChannel alloc] init];
-    ALChannelDBService * channelDbService= [[ALChannelDBService alloc] init];
+    ALChannel * alchannel = [[ALChannel alloc] init];
+    ALChannelDBService * channelDbService = [[ALChannelDBService alloc] init];
     
-
-    if(self.groupId && self.groupId.intValue != 0){
-    
-
+    if(self.groupId && self.groupId.intValue != 0)
+    {
         NSString * contactName;
         NSString * groupName;
         
@@ -115,34 +117,35 @@
         groupName = [NSString stringWithFormat:@"%@",(alchannel.name != nil ? alchannel.name : self.groupId)];
         
         NSArray *notificationComponents = [alcontact.getDisplayName componentsSeparatedByString:@":"];
-        if(notificationComponents.count>1){
-            contactName =[[contactDbService loadContactByKey:@"userId" value:[notificationComponents lastObject]] getDisplayName];
-            
+        if(notificationComponents.count > 1)
+        {
+            contactName = [[contactDbService loadContactByKey:@"userId" value:[notificationComponents lastObject]] getDisplayName];
         }
-        else{
+        else
+        {
             contactName = alcontact.getDisplayName;
         }
         
-        if(_alMessageObject.contentType == 10){
+        if(self.alMessageObject.contentType == 10)
+        {
             title = self.text;
             subtitle = @"";
         }
-        else{
+        else
+        {
             title    = groupName;
             subtitle = [NSString stringWithFormat:@"%@:%@",contactName,subtitle];
         }
-
-
     }
-    else{
-        
-        title    = alcontact.getDisplayName;
+    else
+    {
+        title = alcontact.getDisplayName;
         subtitle = self.text;
-
     }
     
     // ** Attachment ** //
-    if(self.alMessageObject.contentType == ALMESSAGE_CONTENT_LOCATION){
+    if(self.alMessageObject.contentType == ALMESSAGE_CONTENT_LOCATION)
+    {
         subtitle = [NSString stringWithFormat:@"Shared location"];
     }
     
@@ -167,52 +170,34 @@
                                        callback:
      ^(void){
          
-         if([delegate isKindOfClass:[ALMessagesViewController class]] && top.isMessageViewOnTop){
+         if([delegate isKindOfClass:[ALMessagesViewController class]] && top.isMessageViewOnTop)
+         {
              // Conversation View is Opened.....
              ALMessagesViewController* class2=(ALMessagesViewController*)delegate;
-             if(self.groupId){
-                 class2.channelKey=self.groupId; NSLog(@"CLASS %@",class2.channelKey);
+             if(self.groupId)
+             {
+                 class2.channelKey = self.groupId; NSLog(@"CLASS %@",class2.channelKey);
                  //_contactId=self.groupId; CRASH: if you send contactId as NSNumber.
              }
-             else{
-                 class2.channelKey=nil;
-                 self.groupId=nil;
+             else
+             {
+                 class2.channelKey = nil;
+                 self.groupId = nil;
              }
              NSLog(@"onTopMessageVC: ContactID %@ and ChannelID %@",self.contactId, self.groupId);
              [class2 createDetailChatViewController:_contactId];
-             self.checkContactId=[NSString stringWithFormat:@"%@",self.contactId];
+             self.checkContactId = [NSString stringWithFormat:@"%@",self.contactId];
              
          }
          else if([delegate isKindOfClass:[ALChatViewController class]] && top.isChatViewOnTop){
-             // Chat View is Opened....
-             ALChatViewController * class1 = (ALChatViewController*)delegate;
-             NSLog(@"onTopChatVC: ContactID %@ and ChannelID %@",self.contactId, self.groupId);
-             if(self.groupId){
-                 [class1 updateChannelSubscribing:class1.channelKey andNewChannel:self.groupId];
-                 class1.channelKey = self.groupId;
-             }
-             else
-             {
-                 self.groupId = nil;
-                 [class1 updateChannelSubscribing:class1.channelKey andNewChannel:self.groupId];
-                 class1.channelKey=nil;
-             }
              
-             if (self.conversationId) {
-                 class1.conversationId = self.conversationId;
-                 [[class1.alMessageWrapper messageArray] removeAllObjects];
-                 [class1 processLoadEarlierMessages:YES];
-             }
-             else
-             {
-                 class1.conversationId = nil;
-                 class1.contactIds=self.contactId;
-                 [class1 reloadView];
-                 [class1 markConversationRead];
-                 [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
-             }
+             [self updateChatScreen:delegate];
+             
          }
-         else{
+         else if ([delegate isKindOfClass:[ALChatViewController class]] && top.isGroupDetailViewOnTop){
+             [[(ALGroupDetailViewController *)delegate navigationController] popViewControllerAnimated:YES];
+             [self updateChatScreen:delegate];
+         }else{
              NSLog(@"View Already Opened and Notification coming already");
          }
 }
@@ -222,6 +207,36 @@
                            canBeDismissedByUser:YES];
 }
 
+-(void)updateChatScreen:(UIViewController*)delegate{
+    // Chat View is Opened....
+    ALChatViewController * class1 = (ALChatViewController*)delegate;
+    NSLog(@"onTopChatVC: ContactID %@ and ChannelID %@",self.contactId, self.groupId);
+    if(self.groupId){
+        [class1 updateChannelSubscribing:class1.channelKey andNewChannel:self.groupId];
+        class1.channelKey = self.groupId;
+    }
+    else
+    {
+        self.groupId = nil;
+        [class1 updateChannelSubscribing:class1.channelKey andNewChannel:self.groupId];
+        class1.channelKey=nil;
+    }
+    
+    if (self.conversationId) {
+        class1.conversationId = self.conversationId;
+        [[class1.alMessageWrapper messageArray] removeAllObjects];
+        [class1 processLoadEarlierMessages:YES];
+    }
+    else
+    {
+        class1.conversationId = nil;
+        class1.contactIds=self.contactId;
+        [class1 reloadView];
+        [class1 markConversationRead];
+        [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+    }
+
+}
 -(void)showGroupLeftMessage
 {
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];

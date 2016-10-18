@@ -18,6 +18,7 @@
 #import "ALMessagesViewController.h"
 #import "ALUserService.h"
 #import "ALMQTTConversationService.h"
+#import "ALGroupDetailViewController.h"
 
 @implementation ALAppLocalNotifications
 
@@ -46,6 +47,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(thirdPartyNotificationHandler:)
                                                  name:@"showNotificationAndLaunchChat" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popGroupDetailsAndLoadChatHandler:)
+                                                 name:@"popGroupDetailsAndLoadChat" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForegroundBase:)
                                                  name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -257,18 +261,53 @@
             NSLog(@"Nil Alert Value");
         }
     }
+    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_BACKGROUND]])
+    {
+        if(alertValue)
+        {
+            ALPushAssist* assitant = [[ALPushAssist alloc] init];
+            NSLog(@"APP_STATE_BACKGROUND :: %@",notification.userInfo);
+            if(!assitant.isOurViewOnTop)
+            {
+                [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId delegate:self];
+            }
+        }
+    }
 }
 
 -(void)thirdPartyNotificationTap1:(NSString *)contactId withGroupId:(NSNumber *)groupID
 {
-    ALPushAssist* object = [[ALPushAssist alloc] init];
+    ALPushAssist* pushAssistant = [[ALPushAssist alloc] init];
     NSLog(@"Chat Launch Contact ID: %@",self.contactId);
     
-    if(!object.isOurViewOnTop)
+    if(!pushAssistant.isOurViewOnTop)
     {
         self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:APPLICATION_KEY];
-        [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID andViewControllerObject:object.topViewController andWithText:nil];
+        [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID andViewControllerObject:pushAssistant.topViewController andWithText:nil];
     }
+}
+
+-(void)popGroupDetailsAndLoadChatHandler:(NSNotification *)notification{    
+    NSLog(@"NOTIFICATION OBJECT :%@ USERINFO :%@",notification.object,notification.userInfo);
+    ALPushAssist* pushAssistant = [[ALPushAssist alloc] init];
+    
+    ALGroupDetailViewController * groupDeatilView = (ALGroupDetailViewController *)pushAssistant.topViewController;
+    [groupDeatilView.navigationController popViewControllerAnimated:YES];
+    
+    
+    UIViewController * topViewController = pushAssistant.topViewController;
+    NSArray * allViewControllers = [[topViewController navigationController] viewControllers];
+    
+    for (UIViewController *viewController in allViewControllers){
+        
+        if ([viewController isKindOfClass:[ALChatViewController class]]){
+            
+            ALChatViewController * chatViewController = (ALChatViewController*)viewController;
+            
+            [topViewController.navigationController popToViewController:chatViewController animated:YES];
+        }
+    }
+    
 }
 
 -(void)dealloc

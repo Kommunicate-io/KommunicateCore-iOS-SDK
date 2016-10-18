@@ -8,6 +8,7 @@
 
 #import "ALVCFClass.h"
 #import "UIImage+Utility.h"
+#import "ALUtilityClass.h"
 @import CoreFoundation;
 @import AddressBook;
 
@@ -39,26 +40,32 @@
     
 //////////////////////////////////// AUTHORIZATION FOR CONTACT (IF NEEDED) //////////////////////////////////
     
-    if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized)
-    {
-        NSLog(@"AUTHORISED");
-        [self addVCardToContacts:vcard];
-    }
-    else
-    {
-        NSLog(@"NOT_DETERMINED");
-        ABAddressBookRequestAccessWithCompletion(ABAddressBookCreateWithOptions(NULL, nil), ^(bool granted, CFErrorRef error)
-        {
-            if (!granted)
-            {
-                NSLog(@"JUST_DENIED");
-                return;
-            }
-            
-            NSLog(@"JUST_AUTHORISED");
-            [self addVCardToContacts:vcard];
-        });
-    }
+//    if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized)
+//    {
+//        NSLog(@"AUTHORISED");
+////        [ALUtilityClass showAlertMessage:@"CONTACT PERMISSION AUTHORISED" andTitle:@"Contacts"];
+//        [self addVCardToContacts:vcard];
+//    }
+//    else
+//    {
+//        NSLog(@"===================== NOT_DETERMINED ======================");
+//        ABAddressBookRequestAccessWithCompletion(ABAddressBookCreateWithOptions(NULL, nil), ^(bool granted, CFErrorRef error)
+//        {
+//             dispatch_async(dispatch_get_main_queue(), ^{
+//                 
+//                if (!granted)
+//                {
+//                    NSLog(@"JUST_DENIED");
+//    //                [ALUtilityClass showAlertMessage:@"CONTACT PERMISSION DENIED" andTitle:@"Contacts"];
+//                    return;
+//                }
+//                
+//                NSLog(@"JUST_AUTHORISED");
+//    //            [ALUtilityClass showAlertMessage:@"CONTACT PERMISSION JUST AUTHORISED" andTitle:@"Contacts"];
+//                [self addVCardToContacts:vcard];
+//            });
+//        });
+//    }
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -75,12 +82,17 @@
 
     self.fullName = @"";
     
+    CFErrorRef CFerror = NULL;
+    
     if(CFArrayGetCount(vCardPeople) == 1)
     {
         person = CFArrayGetValueAtIndex(vCardPeople,(CFIndex)0);
-        ABAddressBookAddRecord(book, person, NULL);
+        ABAddressBookAddRecord(book, person, &CFerror);
         CFRelease(person);
     }
+    
+    NSError *theError = (__bridge NSError *)CFerror;
+    NSLog(@"ERROR VCARD (IF ANY) :: %@",theError.description);
     
     // get the first name
     self.firstName = (__bridge_transfer NSString *)ABRecordCopyValue(person, kABPersonFirstNameProperty);
@@ -138,25 +150,37 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex != [alertView cancelButtonIndex])
+    //    if (buttonIndex != [alertView cancelButtonIndex])
+    if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"SAVE"])
     {
         [self saveContact];
+    }
+    if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Settings"])
+    {
+        [ALUtilityClass openApplicationSettings];
     }
 }
 
 -(void)saveContact
 {
-    if(!ABAddressBookSave(book, NULL))
+    CFErrorRef CFError = NULL;
+    if(!ABAddressBookSave(book, &CFError))
     {
-        NSLog(@"ERROR_IN_SAVE_CONTACT");
+        NSError *error = (__bridge NSError *)CFError;
+        NSLog(@"ERROR_IN_SAVE_CONTACT : %@",error.description);
+        
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Application Settings"
+                                                             message:@"Enable Contacts Permission"
+                                                            delegate:self
+                                                   cancelButtonTitle:@"Cancel"
+                                                   otherButtonTitles:@"Settings", nil];
+        
+        [alertView show];
+        
         return;
     }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Contact"
-                                                    message: @"Contact Saved Successfully"
-                                                   delegate: nil
-                                          cancelButtonTitle: @"OK"
-                                          otherButtonTitles: nil];
-    [alert show];
+    
+    [ALUtilityClass showAlertMessage:@"Contact Saved Successfully" andTitle:@"Contact"];
 }
 
 @end

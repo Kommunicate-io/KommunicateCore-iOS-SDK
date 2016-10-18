@@ -66,7 +66,7 @@
         {
             if(((NSArray*)theJson).count > 0)
             {
-                //NSLog(@"SEVER RESPONSE FROM JSON : %@", (NSString *)theJson);
+                NSLog(@"SEVER RESPONSE FROM JSON : %@", (NSString *)theJson);
                 ALUserDetail *userDetailObject = [[ALUserDetail alloc] initWithDictonary:[theJson objectAtIndex:0]];
                 [userDetailObject userDetail];
                 completionMark(userDetailObject);

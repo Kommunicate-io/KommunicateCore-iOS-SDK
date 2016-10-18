@@ -20,4 +20,7 @@
 
 -(void) updateConnectedStatus: (ALUserDetail *) alUserDetail;
 
+-(void)updateTableAtConversationDeleteForContact:(NSString*)contactID
+                                  ConversationID:(NSString *)conversationID
+                                      ChannelKey:(NSNumber *)channelKey;
 @end

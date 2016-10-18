@@ -11,8 +11,8 @@
 @implementation ALRegistrationResponse
 
 
-- (id)initWithJSONString:(NSString *)registrationResponse {
-
+- (id)initWithJSONString:(NSString *)registrationResponse
+{
     //TODO: Right now error is coming super initWithJSONString, so overriding it...once fixed remove this
     self.message = [registrationResponse valueForKey:@"message"];
     self.deviceKey = [registrationResponse valueForKey:@"deviceKey"];
@@ -23,8 +23,9 @@
     self.brokerURL = [registrationResponse valueForKey:@"brokerUrl"];
     self.statusMessage = [registrationResponse valueForKey:@"statusMessage"];
     self.imageLink = [registrationResponse valueForKey:@"imageLink"];
+    self.encryptionKey = [registrationResponse valueForKey:@"encryptionKey"];
     self.pricingPackage = [[registrationResponse valueForKey:@"pricingPackage"] shortValue];
-    
+   
     return self;
 }
 @end

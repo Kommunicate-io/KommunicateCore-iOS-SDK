@@ -378,14 +378,30 @@
             imageView.layer.cornerRadius = imageView.frame.size.width/2;
 
             [imageView setImage: [ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
-            if(self.VCFObject.retrievedImage)
+            if(IS_OS_EARLIER_THAN_10)
             {
-                [imageView setImage:self.VCFObject.retrievedImage];
+                if(self.VCFObject.retrievedImage)
+                {
+                    [imageView setImage:self.VCFObject.retrievedImage];
+                }
+                [textView setText:[NSString stringWithFormat:@"%@\n\n%@",self.VCFObject.fullName,self.VCFObject.phoneNumber]];
+                if(self.VCFObject.emailID)
+                {
+                    [textView setText:[NSString stringWithFormat:@"%@\n\n%@\n\n%@",self.VCFObject.fullName,self.VCFObject.phoneNumber,self.VCFObject.emailID]];
+                }
             }
-            [textView setText:[NSString stringWithFormat:@"%@\n\n%@",self.VCFObject.fullName,self.VCFObject.phoneNumber]];
-            if(self.VCFObject.emailID)
+            else
             {
-                [textView setText:[NSString stringWithFormat:@"%@\n\n%@\n\n%@",self.VCFObject.fullName,self.VCFObject.phoneNumber,self.VCFObject.emailID]];
+                if(self.VCardClass.contactImage)
+                {
+                    [imageView setImage:self.VCardClass.contactImage];
+                }
+                [textView setText:[NSString stringWithFormat:@"%@\n\n%@",self.VCardClass.fullName,self.VCardClass.userPHONE_NO]];
+                if(self.VCardClass.userEMAIL_ID)
+                {
+                    [textView setText:[NSString stringWithFormat:@"%@\n\n%@\n\n%@",self.VCardClass.fullName, self.VCardClass.userPHONE_NO,
+                                       self.VCardClass.userEMAIL_ID]];
+                }
             }
             textView.frame = CGRectMake(imageView.frame.origin.x + imageView.frame.size.width + 10,
                                         bubbleView.frame.origin.y + 5,

@@ -21,6 +21,10 @@
 		29CBF2031C0303A700BE6A20 /* ALColorUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CBF2011C0303A700BE6A20 /* ALColorUtility.m */; };
 		29D6F86B1D193D9D00A75369 /* PSPDFTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 29D6F8691D193D9D00A75369 /* PSPDFTextView.h */; };
 		29D6F86C1D193D9D00A75369 /* PSPDFTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D6F86A1D193D9D00A75369 /* PSPDFTextView.m */; };
+		4639572E1DB6CC110093D632 /* NSData+AES.h in Headers */ = {isa = PBXBuildFile; fileRef = 4639572C1DB6CC110093D632 /* NSData+AES.h */; };
+		4639572F1DB6CC110093D632 /* NSData+AES.m in Sources */ = {isa = PBXBuildFile; fileRef = 4639572D1DB6CC110093D632 /* NSData+AES.m */; };
+		463957321DB6CC4B0093D632 /* ALVCardClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 463957301DB6CC4B0093D632 /* ALVCardClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		463957331DB6CC4B0093D632 /* ALVCardClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 463957311DB6CC4B0093D632 /* ALVCardClass.m */; };
 		6D0877081D01B0F900DB491A /* UIView+Toast.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D0877071D01B0F900DB491A /* UIView+Toast.h */; };
 		6D08770A1D01B0FE00DB491A /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0877091D01B0FE00DB491A /* UIView+Toast.m */; };
 		6D0D107A1D4CD7B6009853FB /* ALImagePickerController.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D0D10781D4CD7B6009853FB /* ALImagePickerController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -311,6 +315,10 @@
 		29CBF2011C0303A700BE6A20 /* ALColorUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALColorUtility.m; sourceTree = "<group>"; };
 		29D6F8691D193D9D00A75369 /* PSPDFTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSPDFTextView.h; sourceTree = "<group>"; };
 		29D6F86A1D193D9D00A75369 /* PSPDFTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFTextView.m; sourceTree = "<group>"; };
+		4639572C1DB6CC110093D632 /* NSData+AES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+AES.h"; sourceTree = "<group>"; };
+		4639572D1DB6CC110093D632 /* NSData+AES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+AES.m"; sourceTree = "<group>"; };
+		463957301DB6CC4B0093D632 /* ALVCardClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALVCardClass.h; path = Applozic/ALVCardClass.h; sourceTree = "<group>"; };
+		463957311DB6CC4B0093D632 /* ALVCardClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALVCardClass.m; path = Applozic/ALVCardClass.m; sourceTree = "<group>"; };
 		5F2A59A41D90C8743DCC5C86 /* Pods-Applozic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Applozic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Applozic/Pods-Applozic.debug.xcconfig"; sourceTree = "<group>"; };
 		6D0877071D01B0F900DB491A /* UIView+Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Toast.h"; sourceTree = "<group>"; };
 		6D0877091D01B0FE00DB491A /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
@@ -670,6 +678,8 @@
 		6D34AEB11CA441D7005FA8D4 /* contact */ = {
 			isa = PBXGroup;
 			children = (
+				463957301DB6CC4B0093D632 /* ALVCardClass.h */,
+				463957311DB6CC4B0093D632 /* ALVCardClass.m */,
 				6D7756731D5B7F150025560B /* ALVCFClass.h */,
 				6D7756741D5B7F150025560B /* ALVCFClass.m */,
 			);
@@ -751,6 +761,8 @@
 		6D6DF0A21BC5364C00EBA00F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				4639572C1DB6CC110093D632 /* NSData+AES.h */,
+				4639572D1DB6CC110093D632 /* NSData+AES.m */,
 				29D6F8681D193D9000A75369 /* TEXT VIEW */,
 				29CBF2001C0303A700BE6A20 /* ALColorUtility.h */,
 				6D0877071D01B0F900DB491A /* UIView+Toast.h */,
@@ -1318,6 +1330,7 @@
 				29D6F86B1D193D9D00A75369 /* PSPDFTextView.h in Headers */,
 				6D7756ED1D5B82560025560B /* ALReachability.h in Headers */,
 				6D7756D71D5B82000025560B /* ALMessageInfoResponse.h in Headers */,
+				4639572E1DB6CC110093D632 /* NSData+AES.h in Headers */,
 				6D7756751D5B7F150025560B /* ALVCFClass.h in Headers */,
 				6D7756AB1D5B80DF0025560B /* ALChannelClientService.h in Headers */,
 				29CBF2021C0303A700BE6A20 /* ALColorUtility.h in Headers */,
@@ -1351,6 +1364,7 @@
 				6D6DF1561BC5364C00EBA00F /* ALBaseViewController.h in Headers */,
 				6D6DF1401BC5364C00EBA00F /* ALConnectionQueueHandler.h in Headers */,
 				6D6DF1841BC5364C00EBA00F /* DB_Message.h in Headers */,
+				463957321DB6CC4B0093D632 /* ALVCardClass.h in Headers */,
 				6D95476B1BE38DFF00776652 /* ALContactService.h in Headers */,
 				6D46B6C51BD025060014A5D3 /* ALMapViewController.h in Headers */,
 				6D36F2081BFF3EE3003D46D3 /* ALApplozicSettings.h in Headers */,
@@ -1514,6 +1528,7 @@
 				6D7756BA1D5B80DF0025560B /* ALChannelUserX.m in Sources */,
 				6D6DF14D1BC5364C00EBA00F /* ALUserDefaultsHandler.m in Sources */,
 				293446161D4F426F007BD1B4 /* ALShowImageViewController.m in Sources */,
+				4639572F1DB6CC110093D632 /* NSData+AES.m in Sources */,
 				6D6DF1C81BC5364C00EBA00F /* UIImage+GIF.m in Sources */,
 				6D7756761D5B7F150025560B /* ALVCFClass.m in Sources */,
 				6D36F2091BFF3EE3003D46D3 /* ALApplozicSettings.m in Sources */,
@@ -1574,6 +1589,7 @@
 				6D7756AA1D5B80DF0025560B /* ALChannel.m in Sources */,
 				293446141D4F426F007BD1B4 /* ALImageActivity.m in Sources */,
 				6D7756921D5B7FBE0025560B /* DB_ConversationProxy.m in Sources */,
+				463957331DB6CC4B0093D632 /* ALVCardClass.m in Sources */,
 				6D6DF1D91BC5364C00EBA00F /* AppLozic.xcdatamodeld in Sources */,
 				6D6DF1B71BC5364C00EBA00F /* SDImageCache.m in Sources */,
 				6D6DF1771BC5364C00EBA00F /* ALMessage.m in Sources */,

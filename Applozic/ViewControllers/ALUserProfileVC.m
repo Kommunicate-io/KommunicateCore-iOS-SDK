@@ -71,11 +71,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    self.profileImage.layer.cornerRadius = self.profileImage.frame.size.width/2;
-    self.profileImage.layer.masksToBounds = YES;
-    
-    self.uploadImageButton.layer.cornerRadius = self.uploadImageButton.frame.size.width/2;
-    self.uploadImageButton.layer.masksToBounds = YES;
+    [super viewWillAppear:animated];
     
     self.mImagePicker = [UIImagePickerController new];
     self.mImagePicker.delegate = self;
@@ -86,6 +82,15 @@
         self.navigationController.navigationBar.translucent = NO;
         [self commonNavBarTheme:self.navigationController];
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        self.profileImage.layer.cornerRadius = self.profileImage.frame.size.width/2;
+        self.profileImage.layer.masksToBounds = YES;
+        
+        self.uploadImageButton.layer.cornerRadius = self.uploadImageButton.frame.size.width/2;
+        self.uploadImageButton.layer.masksToBounds = YES;
+    });
 
     self.navigationItem.title = @"Profile";
     [self.profileImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
@@ -114,7 +119,7 @@
     [navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName: [ALApplozicSettings getColorForNavigationItem], NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace] size:18]}];
     [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
     [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
-    [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+    [navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
 }
 
 -(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -219,6 +224,8 @@
 {
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
+    [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
+    
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
 
     [alertController addAction:[UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -242,16 +249,29 @@
 
 -(void)uploadByCamera
 {
-    if (![UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera])
+    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera])
     {
-        [ALUtilityClass showAlertMessage:@"Camera is not available in device." andTitle:@"Alert"];
-        return;
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                if (granted)
+                {
+                    self.mImagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                    self.mImagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *) kUTTypeImage, nil];
+                    [self presentViewController:self.mImagePicker animated:YES completion:nil];
+                }
+                else
+                {
+                    [ALUtilityClass permissionPopUpWithMessage:@"Enable Camera Permission" andViewController:self];
+                }
+            });
+        }];
     }
-    
-    self.mImagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    self.mImagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *) kUTTypeImage, nil];
-    [self presentViewController:self.mImagePicker animated:YES completion:nil];
-    
+    else
+    {
+        [ALUtilityClass showAlertMessage:@"Camera is not Available !!!" andTitle:@"OOPS !!!"];
+    }
 }
 
 //==============================================================================================================================
@@ -324,6 +344,8 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"Confirmation" message:@"Are you sure?"
                                                              preferredStyle:UIAlertControllerStyleAlert];
     
+    [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
+    
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
@@ -336,7 +358,7 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
             return;
         }
         
-        NSString * uploadUrl = [[ALUserDefaultsHandler getBASEURL] stringByAppendingString:IMAGE_UPLOAD_URL];
+        NSString * uploadUrl = [KBASE_URL stringByAppendingString:IMAGE_UPLOAD_URL];
         [self proessUploadImage:image uploadURL:uploadUrl withdelegate:self];
         
     }];
@@ -417,6 +439,8 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Your Status"
                                                                              message:@"(Max 256 characters)"
                                                                       preferredStyle:UIAlertControllerStyleAlert];
+    
+    [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
     
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         

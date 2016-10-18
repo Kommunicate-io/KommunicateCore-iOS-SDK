@@ -33,8 +33,7 @@
 #define MT_DELETE_MULTIPLE_MESSAGE @"MT_DELETE_MULTIPLE_MESSAGE"
 #define MT_SYNC_PENDING @"MT_SYNC_PENDING"
 
-
-
+#define APPLOZIC_PREFIX @"APPLOZIC_"
 
 
 #import <Foundation/Foundation.h>
@@ -42,9 +41,6 @@
 #import "ALUserDetail.h"
 #import "ALSyncCallService.h"
 #import <Applozic/ALChatLauncher.h>
-
-
-
 
 
 @interface ALPushNotificationService : NSObject

@@ -26,12 +26,13 @@
     self.clientChannelKey = [self getStringFromJsonValue:messageJson[@"clientGroupId"]];
     self.name = [self getStringFromJsonValue:messageJson[@"name"]];
     self.channelImageURL = [self getStringFromJsonValue:messageJson[@"imageUrl"]];
-    self.adminKey = [self getStringFromJsonValue:messageJson[@"adminName"]];
+    self.adminKey = [self getStringFromJsonValue:messageJson[@"adminId"]];
     self.unreadCount = [self getNSNumberFromJsonValue:messageJson[@"unreadCount"]];
 //    self.userCount = [self getNSNumberFromJsonValue:messageJson[@""]];
     self.membersName = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersName"]];
+    self.removeMembers = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"removedMembersId"]];
     self.type = [self getShortFromJsonValue:messageJson[@"type"]];
-
+   
 }
 
 @end

@@ -12,6 +12,7 @@
 
 @protocol ALMessagesViewDelegate <NSObject>
 
+@optional
 -(void)handleCustomActionFromMsgVC:(UIViewController *)chatView andWithMessage:(ALMessage *)alMessage;
 
 @end

@@ -15,6 +15,7 @@
 #import "ALUtilityClass.h"
 #import "ALColorUtility.h"
 #import "ALVCFClass.h"
+#import "ALVCardClass.h"
 
 @interface ALMessageInfoViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
@@ -28,7 +29,7 @@
 
 @property (strong, nonatomic) IBOutlet UITableView * alTableView;
 @property (strong, nonatomic) ALVCFClass * VCFObject;
-
+@property (strong, nonatomic) ALVCardClass * VCardClass;
 @property (nonatomic, weak) ALMessage *almessage;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 

@@ -378,7 +378,6 @@
     CGFloat width = app.statusBarFrame.size.width;
     UIView *statusBarView = [[UIView alloc] initWithFrame:CGRectMake(0, -height, width, height)];
     statusBarView.backgroundColor = [ALApplozicSettings getStatusBarBGColor];
-    
     return statusBarView;
 }
 
@@ -405,8 +404,44 @@
         NSLog(@"RELEASE_MODE");
         debug = NO;
     #endif
-
+    
     return debug;
+}
+
++(void)openApplicationSettings
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+}
+
++(void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController
+{
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"Application Settings"
+                                                                              message:msgText
+                                                                       preferredStyle:UIAlertControllerStyleAlert];
+    
+    [ALUtilityClass setAlertControllerFrame:alertController andViewController:viewController];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+        [ALUtilityClass openApplicationSettings];
+    }]];
+    
+    [viewController presentViewController:alertController animated:YES completion:nil];
+}
+
+// FOR IPAD DEVICES
++(void)setAlertControllerFrame:(UIAlertController *)alertController andViewController:(UIViewController *)viewController
+{
+    if(IS_IPAD)
+    {
+        alertController.popoverPresentationController.sourceView = viewController.view;
+        CGSize size = viewController.view.bounds.size;
+        CGRect frame = CGRectMake((size.width/2.0), (size.height/2.0), 1.0, 1.0); // (x, y, popup point X, popup point Y);
+        alertController.popoverPresentationController.sourceRect = frame;
+        [alertController.popoverPresentationController setPermittedArrowDirections:0]; // HIDING POPUP ARROW
+    }
 }
 
 @end

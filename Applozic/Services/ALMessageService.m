@@ -23,7 +23,8 @@
 #import "ALContactDBService.h"
 #import "ALContactService.h"
 #import "ALConversationService.h"
-
+#include <tgmath.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @implementation ALMessageService 
 
@@ -105,21 +106,32 @@ static ALMessageClientService *alMsgClientService;
     
 }
 
-+(void)getMessageListForUser:(MessageListRequest*)messageListRequest withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
++(void)getMessageListForUser:(MessageListRequest *)messageListRequest withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
 {
     //On Message List Cell Tap
     ALMessageDBService *almessageDBService =  [[ALMessageDBService alloc] init];
     NSMutableArray * messageList = [almessageDBService getMessageListForContactWithCreatedAt:messageListRequest.userId withCreatedAt:messageListRequest.endTimeStamp andChannelKey:messageListRequest.channelKey conversationId:messageListRequest.conversationId];
     
     //Found Record in DB itself ...if not make call to server
-    if(messageList.count > 0 && ![ALUserDefaultsHandler isServerCallDoneForMSGList:messageListRequest.userId]){
+    if(messageList.count > 0 && ![ALUserDefaultsHandler isServerCallDoneForMSGList:messageListRequest.userId])
+    {
        // NSLog(@"the Message List::%@",messageList);
         completion(messageList, nil, nil);
         return;
-    }else {
+    }
+    else
+    {
         NSLog(@"message list is coming from DB %ld", (unsigned long)messageList.count);
     }
-    ALMessageClientService *alMessageClientService =  [[ALMessageClientService alloc ]init];
+    
+    ALChannelService *channelService = [[ALChannelService alloc] init];
+    if(messageListRequest.channelKey && ![channelService isLoginUserInChannel:messageListRequest.channelKey])
+    {
+        ALChannel *alChannel = [channelService getChannelByKey:messageListRequest.channelKey];
+        messageListRequest.channelType = alChannel.type;
+    }
+    
+    ALMessageClientService *alMessageClientService = [[ALMessageClientService alloc] init];
     
     [alMessageClientService getMessageListForUser:messageListRequest
                    withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
@@ -171,7 +183,7 @@ static ALMessageClientService *alMsgClientService;
             
             alMessage.key = dbMessage.key;
             alMessage.sentToServer= dbMessage.sentToServer.boolValue;
-            alMessage.inProgress=dbMessage.inProgress.boolValue;
+            alMessage.inProgress = dbMessage.inProgress.boolValue;
             alMessage.isUploadFailed=dbMessage.isUploadFailed.boolValue;
             alMessage.status = dbMessage.status;
         
@@ -185,13 +197,69 @@ static ALMessageClientService *alMsgClientService;
 }
 
 
++(void) sendMessage:(ALMessage *)alMessage
+withAttachmentAtLocation:(NSString *)attachmentLocalPath
+            andContentType:(short)contentype
+      withCompletion:(void(^)(NSString * message, NSError * error)) completion {
+   
+    //Message Creation
+    ALMessage * theMessage = alMessage;
+    theMessage.contentType = contentype;
+    theMessage.imageFilePath = attachmentLocalPath.lastPathComponent;
+    
+    //File Meta Creation
+    theMessage.fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", attachmentLocalPath.lastPathComponent];
+    if(alMessage.contactIds){
+        theMessage.fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",alMessage.contactIds, attachmentLocalPath.lastPathComponent];
+    }
+    
+    CFStringRef pathExtension = (__bridge_retained CFStringRef)[attachmentLocalPath pathExtension];
+    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
+    CFRelease(pathExtension);
+    NSString *mimeType = (__bridge_transfer NSString *)UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
+    
+    theMessage.fileMeta.contentType = mimeType;
+    if( theMessage.contentType == ALMESSAGE_CONTENT_VCARD){
+        theMessage.fileMeta.contentType = @"text/x-vcard";
+    }
+    NSData *imageSize = [NSData dataWithContentsOfFile:attachmentLocalPath];
+    theMessage.fileMeta.size = [NSString stringWithFormat:@"%lu",(unsigned long)imageSize.length];
+    
+    //DB Addition
+    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
+    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
+    DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:theMessage];
+    [theDBHandler.managedObjectContext save:nil];
+    theMessage.msgDBObjectId = [theMessageEntity objectID];
+    theMessageEntity.inProgress = [NSNumber numberWithBool:YES];
+    theMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
+    [[ALDBHandler sharedInstance].managedObjectContext save:nil];
+    
+    NSDictionary * userInfo = [alMessage dictionary];
+    
+    ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
+    [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *message, NSError *error) {
+        
+        if (error)
+        {
+            NSLog(@" <<<ERROR>>> SEND PHOTO FOR USER%@",error);
+//            [self handleErrorStatus:theMessage];
+             completion (message,error);
+            return;
+        }
+        [self proessUploadImageForMessage:theMessage databaseObj:theMessageEntity.fileMetaInfo uploadURL:message  withdelegate:self];
+        
+        completion (message,error);
+        
+    }];
 
+}
 +(void) getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void (^)( NSMutableArray *, NSError *))completion
 {
     
     if(!alMsgClientService)
     {
-        alMsgClientService = [[ALMessageClientService alloc]init];
+        alMsgClientService = [[ALMessageClientService alloc] init];
     }
     
     @synchronized(alMsgClientService) {
@@ -203,12 +271,12 @@ static ALMessageClientService *alMsgClientService;
             {
                 if (syncResponse.deliveredMessageKeys.count > 0)
                 {
-                    [ALMessageService updateDeliveredReport: syncResponse.deliveredMessageKeys withStatus:DELIVERED];
+                    [ALMessageService updateDeliveredReport:syncResponse.deliveredMessageKeys withStatus:DELIVERED];
                 }
                 if(syncResponse.messagesList.count > 0)
                 {
                     messageArray = [[NSMutableArray alloc] init];
-                    ALMessageDBService * dbService = [[ALMessageDBService alloc]init];
+                    ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
                     messageArray = [dbService addMessageList:syncResponse.messagesList];
                     
                     NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:messageArray];
@@ -349,10 +417,9 @@ static ALMessageClientService *alMsgClientService;
 }
 
 
-+(void)deleteMessageThread:( NSString * ) contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion
++(void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion
 {
-    
-    ALMessageClientService *alMessageClientService =  [[ALMessageClientService alloc]init];
+    ALMessageClientService *alMessageClientService = [[ALMessageClientService alloc] init];
     [alMessageClientService deleteMessageThread:contactId orChannelKey:channelKey withCompletion:^(NSString * response, NSError *error) {
         
         if (!error)
@@ -370,14 +437,10 @@ static ALMessageClientService *alMsgClientService;
              {
                  [ALUserService setUnreadCountZeroForContactId:contactId];
              }
-
          }
-             completion(response, error);
+         completion(response, error);
          }];
 }
-
-
-
 
 +(void) proessUploadImageForMessage:(ALMessage *)message databaseObj:(DB_FileMetaInfo *)fileMetaInfo uploadURL:(NSString *)uploadURL withdelegate:(id)delegate{
     
@@ -434,6 +497,9 @@ static ALMessageClientService *alMsgClientService;
         connection.connectionType = @"Image Posting";
         [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:connection];
         NSLog(@"CONNECTION_BEFORE_MQTT : %@",connection.mData);
+    }
+    else{
+        NSLog(@"<<< ERROR >>> :: FILE DO NOT EXIT AT GIVEN PATH");
     }
     
 }

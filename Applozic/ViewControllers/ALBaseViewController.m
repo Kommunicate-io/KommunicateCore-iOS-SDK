@@ -20,13 +20,14 @@
 #import "ALChatLauncher.h"
 #import "ALMessagesViewController.h"
 
+static CGFloat const sendTextViewCornerRadius = 15.0f;
+
 #define KEYBOARD_PADDING 85
 
-@interface ALBaseViewController ()<UITextViewDelegate>
-
+@interface ALBaseViewController ()
 
 @property (nonatomic,retain) UIButton * rightViewButton;
-
+-(void)parseRestrictedWordFile;
 
 @end
 
@@ -47,15 +48,18 @@
     [self setUpTheming];
     
     self.sendMessageTextView.clipsToBounds = YES;
-    self.sendMessageTextView.layer.cornerRadius = self.sendMessageTextView.frame.size.height/5;
+    self.sendMessageTextView.layer.cornerRadius = sendTextViewCornerRadius;
+//    self.sendMessageTextView.frame.size.height/5;
+    
     self.sendMessageTextView.textContainer.lineBreakMode = NSLineBreakByCharWrapping;
-    self.sendMessageTextView.textContainerInset = UIEdgeInsetsMake(self.attachmentOutlet.frame.origin.x, // Top
-                                                                   self.attachmentOutlet.frame.size.width,// Left
-                                                                   self.attachmentOutlet.frame.origin.y, // Bottom
-                                                                   self.attachmentOutlet.frame.size.width/4);   // Right
+//    self.sendMessageTextView.textContainerInset = UIEdgeInsetsMake(self.attachmentOutlet.frame.origin.x, // Top
+//                                                                   self.attachmentOutlet.frame.size.width,// Left
+//                                                                   self.attachmentOutlet.frame.origin.y, // Bottom
+//                                                                   self.attachmentOutlet.frame.size.width/4);   // Right
     self.sendMessageTextView.delegate = self;
-    self.placeHolderTxt = @"Write a Message...";
+/*    self.placeHolderTxt = @"Write a Message...";
     self.sendMessageTextView.text = self.placeHolderTxt;
+    */
     self.placeHolderColor = [ALApplozicSettings getPlaceHolderColor];
     self.sendMessageTextView.textColor = self.placeHolderColor;
     self.sendMessageTextView.backgroundColor = [ALApplozicSettings getMsgTextViewBGColor];
@@ -74,17 +78,36 @@
     // Set Beak's Color : Dependant of SendMessage-TextView
     self.beakImageView.image = [_beakImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     [self.beakImageView setTintColor:self.sendMessageTextView.backgroundColor];
-
+    
+    [self parseRestrictedWordFile];
 }
 
+-(void)parseRestrictedWordFile
+{
+    if(![ALApplozicSettings getMessageAbuseMode])
+    {
+        return;
+    }
+    
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSLog(@":: BUNDLE_NAME :: %@",bundle.bundleIdentifier);
+    NSString *path = [bundle pathForResource:@"restrictWords" ofType:@"txt"];
+    NSLog(@":: FILE_PATH :: %@",path);
+    NSError *error = nil;
+    NSString *fileString = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+    NSLog(@"ERROR(IF-ANY) WHILE IMPORT WORD FILE :: %@",error.description);
+    if (!error)
+    {
+        self.wordArray = [NSArray arrayWithArray:[fileString componentsSeparatedByString:@","]];
+    }
+}
 
 -(void)setUpTableView
 {
-    
     UIButton * mLoadEarlierMessagesButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     mLoadEarlierMessagesButton.frame = CGRectMake(self.view.frame.size.width/2-90, 15, 180, 30);
     [mLoadEarlierMessagesButton setTitle:@"Load Earlier" forState:UIControlStateNormal];
-    [mLoadEarlierMessagesButton setBackgroundColor:[UIColor whiteColor] ];
+    [mLoadEarlierMessagesButton setBackgroundColor:[UIColor whiteColor]];
     mLoadEarlierMessagesButton.layer.cornerRadius = 3;
     [mLoadEarlierMessagesButton addTarget:self action:@selector(loadChatView) forControlEvents:UIControlEventTouchUpInside];
     [mLoadEarlierMessagesButton.titleLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:14]];
@@ -96,7 +119,8 @@
 {
     
     UIBarButtonItem * barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton]];
-    UIBarButtonItem * refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshTable:)];
+    UIBarButtonItem * refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                                    target:self action:@selector(refreshTable:)];
     
     self.callButton = [[UIBarButtonItem alloc] initWithCustomView:[self customCallButtonView]];
     
@@ -122,13 +146,13 @@
     
     typingIndicatorHeight = 30;
  
-    self.typingLabel = [[UILabel alloc] init];
+//    self.typingLabel = [[UILabel alloc] init];
     
     self.typingLabel.backgroundColor = [ALApplozicSettings getBGColorForTypingLabel];
     self.typingLabel.textColor = [ALApplozicSettings getTextColorForTypingLabel];
     [self.typingLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:TYPING_LABEL_SIZE]];
     self.typingLabel.textAlignment = NSTextAlignmentLeft;
-    [self.view addSubview:self.typingLabel];
+//    [self.view addSubview:self.typingLabel];
     
 //    CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height +
 //    [UIApplication sharedApplication].statusBarFrame.size.height;
@@ -184,7 +208,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+     [super viewWillAppear:animated];
     [self registerForKeyboardNotifications];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSubViews) name:@"APP_ENTER_IN_FOREGROUND" object:nil];
@@ -214,10 +238,10 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
     [self updateSubViews];
     
-/*  CHECK PRICING PACKAGE */
+    /*  CHECK PRICING PACKAGE */
     [self checkPricingPackage];
 }
 
@@ -225,7 +249,7 @@
 {
     BOOL debugflag = [ALUtilityClass isThisDebugBuild];
     BOOL pricingFlag = ([ALUserDefaultsHandler getUserPricingPackage] == BETA);
-
+   
     if(debugflag)
     {
         return;
@@ -241,31 +265,31 @@
         UIToolbar * accessoryView = [[UIToolbar alloc] init];
         [accessoryView setBackgroundColor:[UIColor lightGrayColor]];
         [accessoryView sizeToFit];
-
+        
         NSString *titleText = @"  Please Contact Applozic to activate chat in your app";
         UILabel *customLabel = [[UILabel alloc] initWithFrame:accessoryView.frame];
         [customLabel setFont:[UIFont fontWithName:@"Helvetica" size:14]];
         [customLabel setText:titleText];
         [customLabel setTextColor:[UIColor blueColor]];
-
+        
         UIBarButtonItem * barButton = [[UIBarButtonItem alloc] initWithCustomView:customLabel];
         [accessoryView setItems:[NSArray arrayWithObjects:barButton, nil] animated:YES];
         [accessoryView setUserInteractionEnabled:NO];
         [self.sendMessageTextView setInputAccessoryView:accessoryView];
     }
 }
-    
+
 -(void)updateSubViews
 {
-    CGFloat typingLabelY = self.view.frame.size.height - typingIndicatorHeight - self.typingMessageView.frame.size.height + paddingForTextMessageViewHeight;
-    [self.typingLabel setFrame:CGRectMake(0, typingLabelY, self.view.frame.size.width, typingIndicatorHeight)];
+//    CGFloat typingLabelY = self.view.frame.size.height - typingIndicatorHeight - self.typingMessageView.frame.size.height + paddingForTextMessageViewHeight;
+//    [self.typingLabel setFrame:CGRectMake(0, typingLabelY, self.view.frame.size.width, typingIndicatorHeight)];
 }
 
 
 -(void)sendButtonUI
 {
     [self.sendButton setBackgroundColor:[ALApplozicSettings getColorForSendButton]];
-    self.sendButton.layer.cornerRadius = self.sendButton.frame.size.width/2;
+   self.sendButton.layer.cornerRadius = sendTextViewCornerRadius + 5;
     self.sendButton.layer.masksToBounds = YES;
     
     [self.typingMessageView sendSubviewToBack:self.typeMsgBG];
@@ -319,7 +343,6 @@
 //                                                tempFrame.size.width,
 //                                                tempFrame.size.height);
     
-    
     [UIView animateWithDuration:theAnimationDuration.doubleValue animations:^{
         [self.view layoutIfNeeded];
         [self scrollTableViewToBottomWithAnimation:YES];
@@ -354,9 +377,9 @@
     
     keyboardEndFrame = [(NSValue *)[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
-    self.typingLabel.frame = CGRectMake(0,
-                                        keyboardEndFrame.origin.y - (self.typingMessageView.frame.size.height + typingIndicatorHeight + navigationWidth),
-                                        self.view.frame.size.width, typingIndicatorHeight);
+//    self.typingLabel.frame = CGRectMake(0,
+//                                        keyboardEndFrame.origin.y - (self.typingMessageView.frame.size.height + typingIndicatorHeight + navigationWidth),
+//                                        self.view.frame.size.width, typingIndicatorHeight);
     return theAnimationDuration;
 }
 
@@ -388,9 +411,9 @@
     
     self.textMessageViewHeightConstaint.constant = (self.typingMessageView.frame.size.height-self.sendMessageTextView.frame.size.height) + sizeThatFitsTextView.height + paddingForTextMessageViewHeight;
     
-    self.typingLabel.frame = CGRectMake(0,
-                                        keyboardEndFrame.origin.y - (self.textMessageViewHeightConstaint.constant + typingIndicatorHeight + navigationWidth),
-                                        self.view.frame.size.width, typingIndicatorHeight);
+//    self.typingLabel.frame = CGRectMake(0,
+//                                        keyboardEndFrame.origin.y - (self.textMessageViewHeightConstaint.constant + typingIndicatorHeight + navigationWidth),
+//                                        self.view.frame.size.width, typingIndicatorHeight);
     
 }
 
@@ -459,6 +482,10 @@
     [view addGestureRecognizer:phoneIconTap];
     
     return view;
+}
+
+-(void)phoneCallMethod {
+
 }
 
 -(UIView *)setCustomBackButton

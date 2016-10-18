@@ -10,6 +10,9 @@
 #import "ALUserDefaultsHandler.h"
 #import "NSString+Encode.h"
 #import "ALUser.h"
+#import "NSData+AES.h"
+
+#define REGISTER_USER_STRING @"rest/ws/register/client"
 
 @implementation ALRequestHandler
 
@@ -48,15 +51,21 @@
     
     [theRequest setHTTPMethod:@"POST"];
     
-    if (paramString != nil) {
-        
+    if (paramString != nil)
+    {
         NSData * thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
         
+        if([ALUserDefaultsHandler getEncryptionKey] && ![urlString hasSuffix:REGISTER_USER_STRING]) // ENCRYPTING DATA WITH KEY
+        {
+           NSData *postData = [thePostData AES128EncryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
+           NSData *base64Encoded = [postData base64EncodedDataWithOptions:0];
+           thePostData = base64Encoded;
+        }
+        
         [theRequest setHTTPBody:thePostData];
-        
         [theRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[thePostData length]] forHTTPHeaderField:@"Content-Length"];
-        
     }
+    
     [self addGlobalHeader:theRequest];
     return theRequest;
     
@@ -78,7 +87,7 @@
     [request addValue:[ALUserDefaultsHandler getAppModuleName]
         forHTTPHeaderField:@"App-Module-Name"];
     
-    NSString *authStr = [NSString stringWithFormat:@"%@:%@",[ALUserDefaultsHandler getUserId] , [ALUserDefaultsHandler getDeviceKeyString]];
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@",[ALUserDefaultsHandler getUserId], [ALUserDefaultsHandler getDeviceKeyString]];
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *authString = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
     [request setValue:authString forHTTPHeaderField:@"Authorization"];

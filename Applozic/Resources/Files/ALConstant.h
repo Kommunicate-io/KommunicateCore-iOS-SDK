@@ -50,10 +50,13 @@
 #define IS_IPHONE_6 (IS_STANDARD_IPHONE_6 || IS_ZOOMED_IPHONE_6)
 #define IS_IPHONE_6_PLUS (IS_STANDARD_IPHONE_6_PLUS || IS_ZOOMED_IPHONE_6_PLUS)
 #define IS_OS_9_OR_LATER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0)
+#define IS_OS_EARLIER_THAN_10 ([[[UIDevice currentDevice] systemVersion] floatValue] < 10.0)
 
 #define CONNECTION_TYPE_USER_IMG_UPLOAD @"CONNECTION_TYPE_USER_IMG_UPLOAD"
 #define CONNECTION_TYPE_GROUP_IMG_UPLOAD @"CONNECTION_TYPE_GROUP_UPLOAD"
 #define IMAGE_UPLOAD_URL @"/rest/ws/upload/file"
+
+#define SOURCE_IOS 3
 
 typedef enum {
     //outbox
@@ -81,7 +84,7 @@ typedef enum {
 } NOTIFICATION_TYPE_MODE;
 
 typedef enum {
-
+    
     CLOSED = -1,
     BETA = 0,
     STARTER = 1,

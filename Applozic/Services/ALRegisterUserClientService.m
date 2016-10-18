@@ -7,7 +7,7 @@
 //
 
 #define INVALID_APPLICATIONID = @"INVALID_APPLICATIONID"
-#define VERSION_CODE @"106"
+#define VERSION_CODE @"108"
 
 #import "ALRegisterUserClientService.h"
 #import "ALRequestHandler.h"
@@ -37,6 +37,7 @@
     [user setPassword:[ALUserDefaultsHandler getPassword]];
     [user setUnreadCountType:[ALUserDefaultsHandler getUnreadCountType]];
     [user setDeviceApnsType:[ALUserDefaultsHandler getDeviceApnsType]];
+    [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     
     if([ALUserDefaultsHandler getAppModuleName] != NULL){
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
@@ -53,13 +54,13 @@
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
-       
+        
         NSString *statusStr = (NSString *)theJson;
         NSLog(@"RESPONSE_USER_REGISTRATION :: %@", statusStr);
-
+        
         if (theError)
         {
-            completion(nil,theError);
+            completion(nil, theError);
             return;
         }
         
@@ -77,27 +78,36 @@
             [ALUserDefaultsHandler setDeviceKeyString:response.deviceKey];
             [ALUserDefaultsHandler setUserKeyString:response.userKey];
             [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
-            if(response.imageLink){
+            
+            if(response.imageLink)
+            {
                 [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
             }
-            if(response.statusMessage){
+            if(response.statusMessage)
+            {
                 [ALUserDefaultsHandler setLoggedInUserStatus:response.statusMessage];
             }
             if(response.brokerURL && ![response.brokerURL isEqualToString:@""])
             {
                  NSArray * mqttURL = [response.brokerURL componentsSeparatedByString:@":"];
                  NSString * MQTTURL = [mqttURL[1] substringFromIndex:2];
-                 NSLog(@"URL:%@",MQTTURL);
+                 NSLog(@"MQTT_URL :: %@",MQTTURL);
                 [ALUserDefaultsHandler setMQTTURL:MQTTURL];
+            }
+            if(response.encryptionKey)
+            {
+                [ALUserDefaultsHandler setEncryptionKey:response.encryptionKey];
             }
             //[ALUserDefaultsHandler setLastSyncTime:(NSNumber *)response.lastSyncTime];
         }
         
-        @catch (NSException *exception) {
-            NSLog(@"EXCEPTION: %@",exception);
+        @catch (NSException *exception)
+        {
+            NSLog(@"EXCEPTION :: %@", exception.description);
         }
         
-        @finally {
+        @finally
+        {
             NSLog(@"..");
         }
         
@@ -107,7 +117,8 @@
         [ALUserDefaultsHandler setLastSyncChannelTime:(NSNumber *)response.currentTimeStamp];
         [self connect];
         ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
-        if(dbService.isMessageTableEmpty){
+        if(dbService.isMessageTableEmpty)
+        {
             [ALMessageService processLatestMessagesGroupByContact];
         }
         
@@ -182,15 +193,17 @@
   //  [[ALMQTTConversationService sharedInstance] unsubscribeToConversation];
 }
 
--(void) logout
+-(void)logoutWithCompletionHandler:(void(^)())completion
 {
     NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
     [[UIApplication sharedApplication] unregisterForRemoteNotifications];
     [ALUserDefaultsHandler clearAll];
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     [messageDBService deleteAllObjectsInCoreData];
     
     [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
+    
+    completion();
 }
 
 +(BOOL)isAppUpdated{
@@ -234,4 +247,20 @@
 
     
 }
+
+-(void)syncAccountStatus
+{
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/application/pricing/package", KBASE_URL];
+    NSString * paramString = [NSString stringWithFormat:@"applicationId=%@", [ALUserDefaultsHandler getApplicationKey]];
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
+    [ALResponseHandler processRequest:theRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
+        
+        if (theError)
+        {
+            NSLog(@"ERROR_SYNC_ACCOUNT_STATUS :: %@", theError.description);
+        }
+        NSLog(@"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
+    }];
+}
+
 @end

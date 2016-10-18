@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ALNewContactsViewController.h"
 
-@interface ALGroupDetailViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate>
+@interface ALGroupDetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, ALContactDelegate>
 
 @property (nonatomic) NSInteger memberCount;
 @property (strong, nonatomic) NSNumber * channelKeyID;

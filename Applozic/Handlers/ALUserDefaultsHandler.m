@@ -11,16 +11,19 @@
 
 @implementation ALUserDefaultsHandler
 
-+(void) setConversationContactImageVisibility:(BOOL)visibility{
++(void) setConversationContactImageVisibility:(BOOL)visibility
+{
     [[NSUserDefaults standardUserDefaults] setBool:visibility forKey:CONVERSATION_CONTACT_IMAGE_VISIBILITY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(BOOL) isConversationContactImageVisible {
++(BOOL) isConversationContactImageVisible
+{
     return [[NSUserDefaults standardUserDefaults] boolForKey:CONVERSATION_CONTACT_IMAGE_VISIBILITY];
 }
 
-+(void) setBottomTabBarHidden:(BOOL)visibleStatus {
++(void) setBottomTabBarHidden:(BOOL)visibleStatus
+{
     [[NSUserDefaults standardUserDefaults] setBool:visibleStatus forKey:BOTTOM_TAB_BAR_VISIBLITY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -129,11 +132,11 @@
 +(void)setEmailId:(NSString *)emailId
 {
     [[NSUserDefaults standardUserDefaults] setValue:emailId forKey:EMAIL_ID];
-    
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(NSString *)getEmailId{
++(NSString *)getEmailId
+{
     return [[NSUserDefaults standardUserDefaults] valueForKey:EMAIL_ID];
 }
     
@@ -141,20 +144,18 @@
 +(void)setDisplayName:(NSString *)displayName
 {
     [[NSUserDefaults standardUserDefaults] setValue:displayName forKey:DISPLAY_NAME];
-    
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(NSString *)getDisplayName{
++(NSString *)getDisplayName
+{
     return [[NSUserDefaults standardUserDefaults] valueForKey:DISPLAY_NAME];
 }
-
 
 //deviceKey String
 +(void)setDeviceKeyString:(NSString *)deviceKeyString
 {
     [[NSUserDefaults standardUserDefaults] setValue:deviceKeyString forKey:DEVICE_KEY_STRING];
-    
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -165,7 +166,6 @@
 +(void)setUserKeyString:(NSString *)suUserKeyString
 {
     [[NSUserDefaults standardUserDefaults] setValue:suUserKeyString forKey:USER_KEY_STRING];
-    
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -214,64 +214,66 @@
 }
 
 
-+(void)setServerCallDoneForMSGList:(BOOL) value forContactId:(NSString*)contactId{
-    if(!contactId){
++(void)setServerCallDoneForMSGList:(BOOL) value forContactId:(NSString*)contactId
+{
+    if(!contactId)
+    {
         return;
     }
     
     NSString * key = [MSG_LIST_CALL_SUFIX stringByAppendingString: contactId];
     [[NSUserDefaults standardUserDefaults] setBool:true forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
 }
 
-+(BOOL)isServerCallDoneForMSGList: (NSString *)contactId{
-    if(!contactId){
++(BOOL)isServerCallDoneForMSGList:(NSString *)contactId
+{
+    if(!contactId)
+    {
         return true;
     }
     NSString * key = [MSG_LIST_CALL_SUFIX stringByAppendingString: contactId];
     return [[NSUserDefaults standardUserDefaults] boolForKey:key];
-    
 }
 
-
-+(void) setProcessedNotificationIds:(NSMutableArray*) arrayWithIds{
-
++(void) setProcessedNotificationIds:(NSMutableArray*)arrayWithIds
+{
     [[NSUserDefaults standardUserDefaults] setObject:arrayWithIds forKey:PROCESSED_NOTIFICATION_IDS];
-
 }
 
-
-+(NSMutableArray*) getProcessedNotificationIds{
++(NSMutableArray*) getProcessedNotificationIds
+{
     return [[[NSUserDefaults standardUserDefaults] objectForKey:PROCESSED_NOTIFICATION_IDS] mutableCopy];
-
 }
 
-+(BOOL)isNotificationProcessd:(NSString*)withNotificationId{
-   
-    NSMutableArray * mutableArray = [ self getProcessedNotificationIds];
-    if(mutableArray ==nil){
++(BOOL)isNotificationProcessd:(NSString*)withNotificationId
+{
+    NSMutableArray * mutableArray = [self getProcessedNotificationIds];
+    
+    if(mutableArray == nil)
+    {
         mutableArray = [[NSMutableArray alloc]init];
     }
     
     BOOL isTheObjectThere = [mutableArray containsObject:withNotificationId];
     
-    if ( isTheObjectThere ){
+    if (isTheObjectThere){
        // [mutableArray removeObject:withNotificationId];
     }else {
         [mutableArray addObject:withNotificationId];
     }
     //WE will just store 20 notificationIds for processing...
-    if(mutableArray.count > 20){
-        [ mutableArray removeObjectAtIndex:0];
+    if(mutableArray.count > 20)
+    {
+        [mutableArray removeObjectAtIndex:0];
     }
     [self setProcessedNotificationIds:mutableArray];
     return isTheObjectThere;
     
 }
 
-+(void) setLastSeenSyncTime :(NSNumber*) lastSeenTime{
-    
++(void) setLastSeenSyncTime :(NSNumber*) lastSeenTime
+{
     NSLog(@"saving last seen time in the preference ...%@" ,lastSeenTime);
     [[NSUserDefaults standardUserDefaults] setDouble:[lastSeenTime doubleValue] forKey:LAST_SEEN_SYNC_TIME];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -285,24 +287,29 @@
 
 +(void)setShowLoadEarlierOption:(BOOL) value forContactId:(NSString*)contactId
 {
-    if(!contactId){
+    if(!contactId)
+    {
         return;
     }
     NSString *key = [SHOW_LOAD_ERLIER_MESSAGE stringByAppendingString:contactId];
     [[NSUserDefaults standardUserDefaults] setBool:value forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
 }
 
-+(BOOL)isShowLoadEarlierOption: (NSString *)contactId{
-    if(!contactId){
-        return false;
++(BOOL)isShowLoadEarlierOption:(NSString *)contactId
+{
+    if(!contactId)
+    {
+        return NO;
     }
     NSString *key = [SHOW_LOAD_ERLIER_MESSAGE stringByAppendingString:contactId];
-    if ( [[NSUserDefaults standardUserDefaults] valueForKey:key] ) {
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:key])
+    {
         return [[NSUserDefaults standardUserDefaults] boolForKey:key];
-    }else {
-        return true;
+    }
+    else
+    {
+        return YES;
     }
     
 }
@@ -311,11 +318,11 @@
 +(void)setNotificationTitle:(NSString *)notificationTitle
 {
     [[NSUserDefaults standardUserDefaults] setValue:notificationTitle forKey:NOTIFICATION_TITLE];
-    
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(NSString *)getNotificationTitle{
++(NSString *)getNotificationTitle
+{
     return [[NSUserDefaults standardUserDefaults] valueForKey:NOTIFICATION_TITLE];
 }
 
@@ -373,9 +380,10 @@
     return [[NSUserDefaults standardUserDefaults] boolForKey:CONTACT_VIEW_LOADED];
 }
 
-+(void)setServerCallDoneForUserInfo:(BOOL)value ForContact:(NSString*)contactId{
-  
-    if(!contactId){
++(void)setServerCallDoneForUserInfo:(BOOL)value ForContact:(NSString *)contactId
+{
+    if(!contactId)
+    {
         return;
     }
     
@@ -384,9 +392,10 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(BOOL)isServerCallDoneForUserInfoForContact:(NSString*)contactId
++(BOOL)isServerCallDoneForUserInfoForContact:(NSString *)contactId
 {
-    if(!contactId){
+    if(!contactId)
+    {
         return true;
     }
     
@@ -428,7 +437,7 @@
 +(NSString *)getFILEURL
 {
     NSString * kFileUrl = [[NSUserDefaults standardUserDefaults] valueForKey:APPLOZIC_FILE_URL];
-    return (kFileUrl && ![kFileUrl isEqualToString:@""] ) ? kFileUrl : @"https://applozic.appspot.com";
+    return (kFileUrl && ![kFileUrl isEqualToString:@""]) ? kFileUrl : @"https://applozic.appspot.com";
 }
 
 +(void)setMQTTPort:(NSString *)portNumber
@@ -443,7 +452,8 @@
     return (kPortNumber && ![kPortNumber isEqualToString:@""]) ? kPortNumber : @"1883";
 }
 
-+(void)setUserTypeId:(short)type{
++(void)setUserTypeId:(short)type
+{
     [[NSUserDefaults standardUserDefaults] setInteger:type forKey:USER_TYPE_ID];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -509,7 +519,6 @@
     short type = [[NSUserDefaults standardUserDefaults] integerForKey:USER_AUTHENTICATION_TYPE_ID];
     return type ? type : 0;
 }
-
 
 +(void)setUnreadCountType:(short)mode
 {
@@ -612,6 +621,17 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++(NSString *)getEncryptionKey
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:USER_ENCRYPTION_KEY];
+}
+
++(void)setEncryptionKey:(NSString *)encrptionKey
+{
+    [[NSUserDefaults standardUserDefaults] setValue:encrptionKey forKey:USER_ENCRYPTION_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 +(void)setUserPricingPackage:(short)pricingPackage
 {
     [[NSUserDefaults standardUserDefaults] setInteger:pricingPackage forKey:USER_PRICING_PACKAGE];
@@ -621,6 +641,17 @@
 +(short)getUserPricingPackage
 {
     return [[NSUserDefaults standardUserDefaults] integerForKey:USER_PRICING_PACKAGE];
+}
+
++(void)setEnableEncryption:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:DEVICE_ENCRYPTION_ENABLE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)getEnableEncryption
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:DEVICE_ENCRYPTION_ENABLE];
 }
 
 @end

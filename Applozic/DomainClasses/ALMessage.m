@@ -96,8 +96,8 @@
     
     // source
     
-    self.source = [self getStringFromJsonValue:messageJson[@"source"]];
-    
+//    self.source = [self getStringFromJsonValue:messageJson[@"source"]];
+     self.source = [self getShortFromJsonValue:messageJson[@"source"]];
     
     
     // contactIds

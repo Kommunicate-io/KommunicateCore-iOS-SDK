@@ -27,6 +27,10 @@
     
 +(void) sendMessages:(ALMessage *)message withCompletion:(void(^)(NSString * message, NSError * error)) completion;
 
++(void) sendMessage:(ALMessage *)alMessage
+withAttachmentAtLocation:(NSString *)attachmentLocalPath
+     andContentType:(short)contentype
+     withCompletion:(void(^)(NSString * message, NSError * error)) completion;
 
 +(void) getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void(^)(NSMutableArray  * message, NSError *error)) completion;
 

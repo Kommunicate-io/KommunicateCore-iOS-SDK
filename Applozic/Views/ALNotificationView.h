@@ -30,4 +30,6 @@
 
 -(void)noDataConnectionNotificationView;
 
+-(void)updateChatScreen:(UIViewController*)delegate;
+
 @end

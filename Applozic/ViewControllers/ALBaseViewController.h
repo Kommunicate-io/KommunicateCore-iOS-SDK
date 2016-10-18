@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ALBaseViewController : UIViewController
+@interface ALBaseViewController : UIViewController <UITextViewDelegate>
 
 @property (nonatomic, strong) NSString * placeHolderTxt;
 @property (nonatomic, retain) UIColor * placeHolderColor;
@@ -22,10 +22,10 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *checkBottomConstraint;
 @property (weak, nonatomic) IBOutlet UIButton *attachmentOutlet;
 @property (strong, nonatomic) UILabel * label;
-@property (strong, nonatomic) UILabel * typingLabel;
+//@property (strong, nonatomic) UILabel * typingLabel;
 @property (nonatomic) BOOL  individualLaunch;
 @property (weak, nonatomic) IBOutlet UIView * typingMessageView;
-
+@property (nonatomic, strong) NSArray * wordArray;
 @property (strong, nonatomic) UIBarButtonItem * callButton;
 @property (strong, nonatomic) NSMutableArray <UIBarButtonItem *> * navRightBarButtonItems;
 
@@ -33,7 +33,7 @@
 -(void) scrollTableViewToBottomWithAnimation:(BOOL) animated;
 - (IBAction)attachmentActionMethod:(id)sender;
 -(UIView *)setCustomBackButton;
--(void)makeCallContact;
+
 @property (strong, nonatomic) IBOutlet UIImageView *typeMsgBG;
 
 // ===Message Text View Constaints===
@@ -42,6 +42,7 @@
 
 @property (strong, nonatomic) UILabel *noConversationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *noConLabel;
+@property (weak, nonatomic) IBOutlet UILabel *typingLabel;
 
 -(void)setHeightOfTextViewDynamically;
 @property (weak, nonatomic) IBOutlet UIImageView *beakImageView;

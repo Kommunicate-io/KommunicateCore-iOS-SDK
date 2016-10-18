@@ -42,7 +42,9 @@
 
 @property (nonatomic, copy) NSString * type;
 
-@property (nonatomic, copy) NSString * source;
+//@property (nonatomic, copy) NSString * source;
+@property (nonatomic) short source;
+
 
 @property (nonatomic, copy) NSString * contactIds;
 

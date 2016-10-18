@@ -18,12 +18,17 @@
 
 typedef enum
 {
-    VIRTUAL,
-    PRIVATE,
-    PUBLIC,
-    SELLER,
-    SELF
-} GroupType;
+    VIRTUAL = 0,
+    PRIVATE = 1,
+    PUBLIC = 2,
+    SELLER = 3,
+    SELF = 4,
+    BROADCAST = 5,
+    OPEN = 6,
+    GROUP_OF_TWO = 7,
+    BROADCAST_ONE_BY_ONE = 106
+} CHANNEL_TYPE;
+
 
 @interface ALChannel : ALJson
 
@@ -37,6 +42,7 @@ typedef enum
 @property (nonatomic, strong) NSNumber *unreadCount;
 @property (nonatomic, copy) NSManagedObjectID *channelDBObjectId;
 @property (nonatomic, strong) NSMutableArray *membersName;
+@property (nonatomic, strong) NSMutableArray *removeMembers;
 @property (nonatomic, strong) ALConversationProxy *conversationProxy;
 
 -(id)initWithDictonary:(NSDictionary *)messageDictonary;

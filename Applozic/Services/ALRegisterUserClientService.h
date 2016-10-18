@@ -23,7 +23,10 @@
 
 -(void) disconnect;
 
--(void) logout;
+-(void)logoutWithCompletionHandler:(void(^)())completion;
 
 +(BOOL)isAppUpdated;
+
+-(void)syncAccountStatus;
+
 @end

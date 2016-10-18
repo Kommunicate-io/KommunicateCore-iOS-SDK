@@ -48,6 +48,7 @@ typedef enum
 @property short authenticationTypeId;
 @property short unreadCountType;
 @property short deviceApnsType;
+@property BOOL enableEncryption;
 
 @end
 

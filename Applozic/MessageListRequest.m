@@ -37,6 +37,10 @@
         paramString = [paramString stringByAppendingFormat:@"&endTime=%@",self.endTimeStamp.stringValue];
     }
     
+    if(self.startTimeStamp != nil)
+    {
+         paramString = [paramString stringByAppendingFormat:@"&startTime=%@",self.startTimeStamp.stringValue];
+    }
     
     if(self.conversationId){
         

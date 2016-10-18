@@ -28,14 +28,13 @@
 @end
 
 @implementation ALMapViewController
-{
-    
-}
+
 @synthesize locationManager, region;
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -44,7 +43,8 @@
     [self.locationManager requestAlwaysAuthorization];
     [self.locationManager requestWhenInUseAuthorization];
     
-    if([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]){
+    if([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)])
+    {
         [self.locationManager requestWhenInUseAuthorization];
     }
     
@@ -135,7 +135,8 @@
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
     
     // If the status is denied or only granted for when in use, display an alert
-    if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusDenied) {
+    if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusDenied)
+    {
         NSString *title;
         title = (status == kCLAuthorizationStatusDenied) ? @"Location services are off" : @"Background location is not enabled";
         NSString *message = @"To use background location you must turn on 'Always' in the Location Services Settings";
@@ -159,6 +160,10 @@
         // Send the user to the Settings for this app
         NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
         [[UIApplication sharedApplication] openURL:settingsURL];
+    }
+    else
+    {
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

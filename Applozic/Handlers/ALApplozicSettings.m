@@ -593,5 +593,27 @@ NOTIFICATION_DISABLE = 2
     return line ? (int)line : 4;
 }
 
++(NSString *)getAbuseWarningText
+{
+    NSString * msg = [[NSUserDefaults standardUserDefaults] valueForKey:ABUSE_WORDS_WARNING_TEXT];
+    return msg ? msg : @"AVOID USE OF ABUSE WORDS";
+}
+
++(void)setAbuseWarningText:(NSString *)warningText
+{
+    [[NSUserDefaults standardUserDefaults] setValue:warningText forKey:ABUSE_WORDS_WARNING_TEXT];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(void)setMessageAbuseMode:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:ENABLE_MSGTEXT_ABUSE_CHECK];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)getMessageAbuseMode
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:ENABLE_MSGTEXT_ABUSE_CHECK];
+}
 
 @end

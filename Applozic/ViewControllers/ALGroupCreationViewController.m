@@ -16,7 +16,6 @@
 #import "ALConnection.h"
 #import "ALConnectionQueueHandler.h"
 #import "UIImage+Utility.h"
-#import "ALUserProfileVC.h"
 #import "ALApplozicSettings.h"
 #import "ALUtilityClass.h"
 #import "ALConnection.h"
@@ -31,29 +30,45 @@
 #import "UIImageView+WebCache.h"
 #import "ALContactService.h"
 
-@interface ALGroupCreationViewController ()//<ALGroupCreationVCDelegate>
+@interface ALGroupCreationViewController ()
+
 @property (nonatomic,strong) UIImagePickerController * mImagePicker;
 @property (nonatomic,strong) NSString * mainFilePath;
 @property (nonatomic,strong) NSString * groupImageURL;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
-//@property (weak,nonatomic) ALNewContactsViewController* alNewContactViewController;
 @end
 
-@implementation ALGroupCreationViewController{
+@implementation ALGroupCreationViewController
+{
     UIBarButtonItem *nextContacts;
 }
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    nextContacts = [[UIBarButtonItem alloc] initWithTitle:@"Next"
-                                                    style:UIBarButtonItemStylePlain
-                                                   target:self
-                                                   action:@selector(launchContactSelection:)];
     
+    nextContacts = [[UIBarButtonItem alloc] init];
+    [nextContacts setStyle:UIBarButtonItemStylePlain];
+    [nextContacts setTarget:self];
+
     self.navigationItem.rightBarButtonItem = nextContacts;
-    self.automaticallyAdjustsScrollViewInsets=NO; //setting to NO helps show UITextView's text at view load
-    [self setupGroupIcon:self.groupIconView];
+    
+    if(self.isViewForUpdatingGroup)
+    {
+        [self setTitle:@"Group Update"];
+        [nextContacts setTitle:@"Update"];
+        [nextContacts setAction:@selector(updateGroupInfo:)];
+        
+    }
+    else
+    {
+        [nextContacts setTitle:@"Next"];
+        [nextContacts setAction:@selector(launchContactSelection:)];
+    }
+    
+    self.automaticallyAdjustsScrollViewInsets = NO; //setting to NO helps show UITextView's text at view load
+    [self setupGroupIcon];
     
     self.mImagePicker = [[UIImagePickerController alloc] init];
     self.mImagePicker.delegate = self;
@@ -62,7 +77,10 @@
     [self.activityIndicator setHidesWhenStopped:YES];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
     [self.groupNameInput becomeFirstResponder];
     self.descriptionTextView.hidden = NO;
     self.descriptionTextView.userInteractionEnabled = NO;
@@ -70,15 +88,21 @@
     // self.alNewContactViewController.delegateGroupCreation = self;
 }
 
-- (void)launchContactSelection:(id)sender {
-    
-    
+//=========================================================================================================================================
+#pragma mark - NAVIGATION RIGHT BUTTON SELECTORS : CREATION/UPDATE
+//=========================================================================================================================================
+
+- (void)launchContactSelection:(id)sender
+{
     //Check if group name text is empty
-    if([self.groupNameInput.text isEqualToString:@""]){
+    if([self.groupNameInput.text isEqualToString:@""])
+    {
         UIAlertController *alertController = [UIAlertController
                                               alertControllerWithTitle:@"Group Name"
                                               message:@"Please give the group name."
                                               preferredStyle:UIAlertControllerStyleAlert];
+        
+        [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
         
         UIAlertAction *okAction = [UIAlertAction
                                    actionWithTitle:NSLocalizedString(@"OK", @"OK action")
@@ -99,32 +123,59 @@
     UIViewController *groupCreation = [storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     
     //Setting groupName and forGroup flag
-    ((ALNewContactsViewController*)groupCreation).forGroup=[NSNumber numberWithInt:GROUP_CREATION];
-    ((ALNewContactsViewController*)groupCreation).groupName=self.groupNameInput.text;
-    ((ALNewContactsViewController*)groupCreation).groupImageURL=self.groupImageURL;
+    ((ALNewContactsViewController *)groupCreation).forGroup = [NSNumber numberWithInt:GROUP_CREATION];
+    ((ALNewContactsViewController *)groupCreation).groupName = self.groupNameInput.text;
+    ((ALNewContactsViewController *)groupCreation).groupImageURL = self.groupImageURL;
     
     //Moving to contacts view for group member selection
     [self.navigationController pushViewController:groupCreation animated:YES];
 }
 
-#pragma mark - Group Icon setup and events
-//========================================
--(void)setupGroupIcon:(UIImageView *)groupIconView{
-    groupIconView.clipsToBounds=YES;
-    groupIconView.layer.cornerRadius=self.groupIconView.frame.size.width/2;
-    groupIconView.layer.borderColor =[UIColor lightGrayColor].CGColor;
-    [self addGroupIconViewTapEventTo:groupIconView];
+- (void)updateGroupInfo:(id)sender
+{
+    if(!self.groupNameInput.text.length && !self.groupImageURL.length)
+    {
+        [ALUtilityClass showAlertMessage:@"You haven't update anything" andTitle:@"Wait!!!"];
+        return;
+    }
+    [self.loadingIndicator startAnimating];
+    ALChannelService *channelService = [ALChannelService new];
+    [channelService updateChannel:self.channelKey andNewName:self.groupNameInput.text
+                      andImageURL:self.groupImageURL orClientChannelKey:nil withCompletion:^(NSError *error) {
+        
+          if(!error)
+          {
+              [ALUtilityClass showAlertMessage:@"Group information successfully updated" andTitle:@"Response"];
+              [self.navigationController popViewControllerAnimated:YES];
+              [self.grpInfoDelegate updateGroupInformation];
+          }
+          [self.loadingIndicator stopAnimating];
+    }];
 }
 
--(void)addGroupIconViewTapEventTo:(UIImageView*)groupIconView{
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(uploadImage)];
+//=========================================================================================================================================
+#pragma mark - GROUP ICON VIEW SETUP
+//=========================================================================================================================================
+
+-(void)setupGroupIcon
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+          self.groupIconView.layer.cornerRadius = self.groupIconView.frame.size.width/2;
+          self.groupIconView.layer.masksToBounds = YES;
+          self.groupIconView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    });
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(uploadImage)];
     singleTap.numberOfTapsRequired = 1;
-    [groupIconView addGestureRecognizer:singleTap];
+    [self.groupIconView addGestureRecognizer:singleTap];
 }
 
 -(void)uploadImage
 {
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
     
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     
@@ -149,26 +200,42 @@
 
 -(void)uploadByCamera
 {
-    if (![UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera])
+    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera])
     {
-        [ALUtilityClass showAlertMessage:@"Camera is not available in device." andTitle:@"Error"];
-        return;
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                if (granted)
+                {
+                    self.mImagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                    self.mImagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *) kUTTypeImage, nil];
+                    [self presentViewController:self.mImagePicker animated:YES completion:nil];
+                }
+                else
+                {
+                    [ALUtilityClass permissionPopUpWithMessage:@"Enable Camera Permission" andViewController:self];
+                }
+            });
+        }];
     }
-    
-    self.mImagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    self.mImagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *) kUTTypeImage, nil];
-    [self presentViewController:self.mImagePicker animated:YES completion:nil];
-    
+    else
+    {
+        [ALUtilityClass showAlertMessage:@"Camera is not Available !!!" andTitle:@"OOPS !!!"];
+    }
 }
 
-#pragma mark - image picker delegates
-//===================================
+//=========================================================================================================================================
+#pragma mark - IMAGE PICKER DELEGATES
+//=========================================================================================================================================
+
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+{
     UIImage * rawImage = [info valueForKey:UIImagePickerControllerEditedImage];
     UIImage * normalizedImage = [ALUtilityClass getNormalizedImage:rawImage];
     [self.groupIconView setImage:normalizedImage];
@@ -176,7 +243,6 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
     self.mainFilePath = [self getImageFilePath:normalizedImage];
     [self confirmUserForGroupImage:normalizedImage];
-    
 }
 
 -(NSString *)getImageFilePath:(UIImage *)image
@@ -187,11 +253,12 @@
 
 -(void)confirmUserForGroupImage:(UIImage *)image
 {
-    
     image = [image getCompressedImageLessThanSize:1];
     UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"Confirmation"
                                                                     message:@"Are you sure to upload?"
                                                              preferredStyle:UIAlertControllerStyleAlert];
+    
+    [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
     
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
         [self.groupIconView setImage:DEFAULT_GROUP_ICON_IMAGE];
@@ -207,7 +274,7 @@
             return;
         }
         
-        NSString * uploadUrl = [[ALUserDefaultsHandler getBASEURL] stringByAppendingString:IMAGE_UPLOAD_URL];
+        NSString * uploadUrl = [KBASE_URL stringByAppendingString:IMAGE_UPLOAD_URL];
         
         self.groupImageUploadURL = uploadUrl;
         
@@ -272,6 +339,8 @@
                                                                         message:@"Unable to locate file on device"
                                                                  preferredStyle:UIAlertControllerStyleAlert];
         
+        [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
+        
         UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             [alert dismissViewControllerAnimated:YES completion:nil];
         }];
@@ -295,12 +364,11 @@
 -(void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten
 totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
-    NSLog(@"GROUP_IMAGE UPLOAD PROGRESS: %lu out of %lu",totalBytesWritten,totalBytesExpectedToWrite);
+    NSLog(@"GROUP_IMAGE UPLOAD PROGRESS :: %lu out of %lu",totalBytesWritten,totalBytesExpectedToWrite);
 }
 
 -(void)connectionDidFinishLoading:(ALConnection *)connection
 {
-    
     NSLog(@"CONNNECTION_FINISHED");
     [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:connection];
     if([connection.connectionType isEqualToString:CONNECTION_TYPE_GROUP_IMG_UPLOAD])

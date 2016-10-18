@@ -89,8 +89,8 @@
     [ALUserClientService userLastSeenDetail:lastSeenAt withCompletion:^(ALLastSeenSyncFeed * messageFeed) {
          NSMutableArray* lastSeenUpdateArray=   messageFeed.lastSeenArray;
         ALContactDBService *contactDBService =  [[ALContactDBService alloc]init];
-        for ( ALUserDetail * userDetail in lastSeenUpdateArray){
-            [ contactDBService updateUserDetail:userDetail];
+        for (ALUserDetail * userDetail in lastSeenUpdateArray){
+            [contactDBService updateUserDetail:userDetail];
         }
         completionMark(lastSeenUpdateArray);
     }];
@@ -106,7 +106,19 @@
         completionMark(userDetail);
 
     }];
+}
 
++(void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark
+{
+    [self userDetailServerCall:userId withCompletion:^(ALUserDetail *userDetail) {
+       
+        if(userDetail)
+        {
+            ALContactDBService *contactDB = [ALContactDBService new];
+            [contactDB updateUserDetail:userDetail];
+        }
+        completionMark(userDetail);
+    }];
 }
 
 +(void)updateUserDisplayName:(ALContact *)alContact
