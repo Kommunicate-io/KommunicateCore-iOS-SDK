@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "3.4.1"
+  s.version      = "3.4.2"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
   s.description  = "Applozic iOS SDK CocoaPods"
 
   s.homepage     = "https://github.com/AppLozic/Applozic-Chat-iOS-Framework"
-  s.screenshots  = "https://www.applozic.com/resources/1280/images/one-group-chat.png"
+  s.screenshots  = "https://www.applozic.com/resources/images/one-group-chat.png"
 
 
   # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

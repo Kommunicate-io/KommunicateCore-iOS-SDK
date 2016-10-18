@@ -22,12 +22,12 @@ Applozic Chat Framework for Cocoa Pod
 2) Go to project directory open pod file and add code in that
 
 ```
- pod 'Applozic', '3.4.1'
+ pod 'Applozic', '3.4.2'
 ```
 
 
 3) Download **ALChatManager** class and add to your project
-  
+
 [**ALChatManager.h**](https://raw.githubusercontent.com/AppLozic/Applozic-iOS-SDK/master/sample-with-framework/applozicdemo/ALChatManager.h)        
 
 [**ALChatManager.m**](https://raw.githubusercontent.com/AppLozic/Applozic-iOS-SDK/master/sample-with-framework/applozicdemo/ALChatManager.m)
