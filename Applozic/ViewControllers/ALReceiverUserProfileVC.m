@@ -42,8 +42,12 @@
 -(void)setUpProfileItems
 {
     [self.displayName setText:[self.alContact getDisplayName]];
-    NSString * lastSeenString = self.alContact.connected ? @"Online" : [self getLastSeenString:self.alContact.lastSeenAt];
-    [self.lastSeen setText: lastSeenString];
+    NSString * lastSeenString = @"";
+    if(self.alContact.lastSeenAt)
+    {
+        lastSeenString = self.alContact.connected ? @"Online" : [self getLastSeenString:self.alContact.lastSeenAt];
+    }
+    [self.lastSeen setText:lastSeenString];
     
     [self.userStatus setText:self.alContact.userStatus];
     [self.emailId setText:self.alContact.email ? self.alContact.email : @"Not Available"];

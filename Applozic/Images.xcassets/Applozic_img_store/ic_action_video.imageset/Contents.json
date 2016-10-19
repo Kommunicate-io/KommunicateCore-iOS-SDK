@@ -2,12 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "submit.png",
+      "filename" : "ic_action_video.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "submit@2x.png",
       "scale" : "2x"
     },
     {

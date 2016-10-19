@@ -53,7 +53,7 @@
     [self.mapKitView setShowsUserLocation:YES];
     [self.mapKitView setDelegate:self];
     self.geocoder = [[CLGeocoder alloc] init];
-    
+ 
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -133,7 +133,6 @@
 - (void)requestAlwaysAuthorization
 {
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-    
     // If the status is denied or only granted for when in use, display an alert
     if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusDenied)
     {
@@ -148,8 +147,8 @@
                                                   otherButtonTitles:@"Settings", nil];
         [alertView show];
     }
-    // The user has not enabled any location services. Request background authorization.
     else if (status == kCLAuthorizationStatusNotDetermined) {
+        // The user has not enabled any location services. Request background authorization.
         [locationManager requestAlwaysAuthorization];
     }
 }
