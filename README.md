@@ -22,7 +22,7 @@ Applozic Chat Framework for Cocoa Pod
 2) Go to project directory open pod file and add code in that
 
 ```
- pod 'Applozic', '3.4.4'
+ pod 'Applozic', '3.6.1'
 ```
 
 
@@ -41,8 +41,13 @@ Applozic Chat Framework for Cocoa Pod
 ```
 
 
-5) In **ALChatManager.h** replace ``` #define APPLICATION_ID @"applozic-sample-app ``` with your application key.
-
+5) Initiate **ALChatManager.h** Class Object
+ 
+```  
+NOTE: Replace "applozic-sample-app" by your application key
+ALChatManager * chatManager = [[ALChatManager alloc] initWithApplicationKey:@"applozic-sample-app"];
+ 
+```
 
 6) For Registering user and other customization follow [**Applozic iOS DOCS**](https://www.applozic.com/docs/ios-chat-sdk.html#step-2-login-register-user)
 
