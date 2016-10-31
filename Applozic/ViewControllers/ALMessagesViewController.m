@@ -210,17 +210,21 @@
     
     
     
-    [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:[UIColor blackColor],
+    [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                                       NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                                                                            size:NAVIGATION_TEXT_SIZE]}];
+                                                                                                            size:NAVIGATION_TEXT_SIZE]
+                                                                       }];
     
     self.navigationItem.title = [ALApplozicSettings getTitleForConversationScreen];
     
     if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
     {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:[UIColor whiteColor],
+        [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                                           NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
                                                                            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                                                                                size:NAVIGATION_TEXT_SIZE]}];
+                                                                                                                size:NAVIGATION_TEXT_SIZE]
+                                                                           }];
         
         self.navigationController.navigationBar.translucent = NO;
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
@@ -1106,13 +1110,21 @@
         return;
     }
     
-    if([ALDataNetworkConnection checkDataNetworkAvailable])
+    UIApplication *app = [UIApplication sharedApplication];
+    BOOL isBackgroundState = (app.applicationState == UIApplicationStateBackground);
+    
+    if([ALDataNetworkConnection checkDataNetworkAvailable] && !isBackgroundState)
+    {
         NSLog(@"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
+        
 //    dispatch_async(dispatch_get_main_queue(), ^{
+        
         NSLog(@"ALMessageVC subscribing channel again....");
         [self.alMqttConversationService subscribeToConversation];
+        
 //    });
-    self.mqttRetryCount++;
+        self.mqttRetryCount++;
+    }
 }
 
 -(void)callLastSeenStatusUpdate
@@ -1218,16 +1230,22 @@
 
 -(UIView *)setCustomBackButton:(NSString *)text
 {
-    UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUtilityClass getImageFromFramworkBundle:@"bbb.png"]];
+    UIImage * backImage = [ALUtilityClass getImageFromFramworkBundle:@"bbb.png"];
+    backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:backImage];
     [imageView setFrame:CGRectMake(-10, 0, 30, 30)];
-    [imageView setTintColor:[UIColor whiteColor]];
-    UILabel *label=[[UILabel alloc] initWithFrame:CGRectMake(imageView.frame.origin.x + imageView.frame.size.width - 5, imageView.frame.origin.y + 5 , 20, 15)];
-    [label setTextColor: [ALApplozicSettings getColorForNavigationItem]];
+    [imageView setTintColor:[ALApplozicSettings getColorForNavigationItem]];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(imageView.frame.origin.x + imageView.frame.size.width - 5,
+                                                               imageView.frame.origin.y + 5 , 20, 15)];
+    
+    [label setTextColor:[ALApplozicSettings getColorForNavigationItem]];
     [label setText:text];
     [label sizeToFit];
     
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageView.frame.size.width + label.frame.size.width, imageView.frame.size.height)];
-    view.bounds=CGRectMake(view.bounds.origin.x+8, view.bounds.origin.y-1, view.bounds.size.width, view.bounds.size.height);
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0,
+                                                            imageView.frame.size.width + label.frame.size.width, imageView.frame.size.height)];
+    
+    view.bounds = CGRectMake(view.bounds.origin.x + 8, view.bounds.origin.y - 1, view.bounds.size.width, view.bounds.size.height);
     [view addSubview:imageView];
     [view addSubview:label];
     

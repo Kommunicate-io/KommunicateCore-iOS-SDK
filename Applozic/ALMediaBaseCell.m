@@ -61,7 +61,7 @@
                                                                     100, 20)];
         
         self.mDateLabel.font = [UIFont fontWithName:[ALApplozicSettings getFontFace] size:DATE_LABEL_SIZE];
-        self.mDateLabel.textColor = [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:.5];
+        self.mDateLabel.textColor = [ALApplozicSettings getDateColor];
         self.mDateLabel.numberOfLines = 1;
         
         [self.contentView addSubview:self.mDateLabel];

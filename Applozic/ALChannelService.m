@@ -10,23 +10,7 @@
 #import "ALMessageClientService.h"
 #import "ALConversationService.h"
 
-#define AL_CREATE_GROUP_MESSAGE @"CREATE_GROUP_MESSAGE"
-#define AL_REMOVE_MEMBER_MESSAGE @"REMOVE_MEMBER_MESSAGE"
-#define AL_ADD_MEMBER_MESSAGE @"ADD_MEMBER_MESSAGE"
-#define AL_JOIN_MEMBER_MESSAGE @"JOIN_MEMBER_MESSAGE"
-#define AL_GROUP_NAME_CHANGE_MESSAGE @"GROUP_NAME_CHANGE_MESSAGE"
-#define AL_GROUP_ICON_CHANGE_MESSAGE @"GROUP_ICON_CHANGE_MESSAGE"
-#define AL_GROUP_LEFT_MESSAGE @"GROUP_LEFT_MESSAGE"
-#define AL_DELETED_GROUP_MESSAGE @"DELETED_GROUP_MESSAGE"
-
 @implementation ALChannelService
-{
-    BOOL isChannelLeaved;
-    BOOL isChannelRenamed;
-    BOOL isChannelDeleted;
-    BOOL isChannelMemberAdded;
-    BOOL isChannelMemberRemoved;
-}
 
 -(void)callForChannelServiceForDBInsertion:(NSString *)theJson
 {
@@ -182,7 +166,6 @@
     {
         return;
     }
-    
 }
 
 -(NSMutableDictionary *)getChannelMetaData
@@ -208,16 +191,23 @@
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
             withCompletion:(void(^)(NSError *error,ALAPIResponse *response))completion
 {
-    
-    if(channelKey != nil && userId != nil)
+    if((channelKey != nil || clientChannelKey != nil) && userId != nil)
     {
         [ALChannelClientService addMemberToChannel:userId orClientChannelKey:clientChannelKey
                                      andChannelKey:channelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
-            
+    
             if([response.status isEqualToString:@"success"])
             {
                 ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                [channelDBService addMemberToChannel:userId andChannelKey:channelKey];
+                if(clientChannelKey != nil)
+                {
+                    ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    [channelDBService addMemberToChannel:userId andChannelKey:alChannel.key];
+                }
+                else
+                {
+                    [channelDBService addMemberToChannel:userId andChannelKey:channelKey];
+                }
             }
             completion(error,response);
         }];
@@ -231,7 +221,7 @@
 -(void)removeMemberFromChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
                  withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
 {
-    if(channelKey != nil && userId != nil)
+    if((channelKey != nil || clientChannelKey != nil) && userId != nil)
     {
         [ALChannelClientService removeMemberFromChannel:userId orClientChannelKey:clientChannelKey
                                           andChannelKey:channelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
@@ -239,8 +229,15 @@
             if([response.status isEqualToString:@"success"])
             {
                 ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                [channelDBService removeMemberFromChannel:userId andChannelKey:channelKey];
-                isChannelMemberRemoved = YES;
+                if(clientChannelKey != nil)
+                {
+                    ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    [channelDBService removeMemberFromChannel:userId andChannelKey:alChannel.key];
+                }
+                else
+                {
+                    [channelDBService removeMemberFromChannel:userId andChannelKey:channelKey];
+                }
             }
             completion(error,response);
         }];
@@ -254,7 +251,7 @@
 -(void)deleteChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
       withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
 {
-    if(channelKey != nil)
+    if(channelKey != nil || clientChannelKey != nil)
     {
         [ALChannelClientService deleteChannel:channelKey orClientChannelKey:clientChannelKey
                                 withCompletion:^(NSError *error, ALAPIResponse *response) {
@@ -262,7 +259,15 @@
             if([response.status isEqualToString:@"success"])
             {
                 ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                [channelDBService deleteChannel:channelKey];
+                if(clientChannelKey != nil)
+                {
+                    ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    [channelDBService deleteChannel:alChannel.key];
+                }
+                else
+                {
+                    [channelDBService deleteChannel:channelKey];
+                }
             }
             completion(error, response);
         }];
@@ -284,7 +289,7 @@
 -(void)leaveChannel:(NSNumber *)channelKey andUserId:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey
      withCompletion:(void(^)(NSError *error))completion
 {
-    if(channelKey != nil && userId != nil)
+    if((channelKey != nil || clientChannelKey != nil) && userId != nil)
     {
         [ALChannelClientService leaveChannel:channelKey orClientChannelKey:clientChannelKey
                                   withUserId:(NSString *)userId andCompletion:^(NSError *error, ALAPIResponse *response) {
@@ -292,8 +297,18 @@
             if([response.status isEqualToString:@"success"])
             {
                 ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                [channelDBService removeMemberFromChannel:userId andChannelKey:channelKey];
-                [channelDBService setLeaveFlag:YES forChannel:channelKey];
+                if(clientChannelKey != nil)
+                {
+                    ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    [channelDBService removeMemberFromChannel:userId andChannelKey:alChannel.key];
+                    [channelDBService setLeaveFlag:YES forChannel:alChannel.key];
+                }
+                else
+                {
+                    [channelDBService removeMemberFromChannel:userId andChannelKey:channelKey];
+                    [channelDBService setLeaveFlag:YES forChannel:channelKey];
+                }
+
             }
             completion(error);
         }];
@@ -307,7 +322,7 @@
 -(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
       withCompletion:(void(^)(NSError *error))completion
 {
-    if(channelKey || clientChannelKey)
+    if(channelKey != nil || clientChannelKey != nil)
     {
         [ALChannelClientService updateChannel:channelKey orClientChannelKey:clientChannelKey
                                    andNewName:newName andImageURL:imageURL andCompletion:^(NSError *error, ALAPIResponse *response) {
@@ -315,7 +330,15 @@
             if([response.status isEqualToString:@"success"])
             {
                 ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                [channelDBService updateChannel:channelKey andNewName:newName orImageURL:imageURL];
+                if(clientChannelKey != nil)
+                {
+                    ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    [channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL];
+                }
+                else
+                {
+                    [channelDBService updateChannel:channelKey andNewName:newName orImageURL:imageURL];
+                }
             }
             completion(error);
         }];
@@ -348,7 +371,6 @@
 
 +(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion
 {
-    
     [ALChannelService setUnreadCountZeroForGroupID:channelKey];
     
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];

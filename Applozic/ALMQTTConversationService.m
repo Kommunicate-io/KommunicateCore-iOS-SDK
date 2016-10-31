@@ -330,7 +330,8 @@
     
 }
 
-- (void)connectionClosed:(MQTTSession *)session {
+- (void)connectionClosed:(MQTTSession *)session
+{
     NSLog(@"MQTT : CONNECTION CLOSED (MQTT DELEGATE)");
     [self.mqttConversationDelegate mqttConnectionClosed];
     

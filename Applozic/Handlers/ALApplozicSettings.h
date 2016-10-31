@@ -53,6 +53,9 @@
 #define MAX_TEXT_VIEW_LINES @"com.applozic.userdefault.MAX_TEXT_VIEW_LINES"
 #define ABUSE_WORDS_WARNING_TEXT @"com.applozic.userdefault.ABUSE_WORDS_WARNING_TEXT"
 #define ENABLE_MSGTEXT_ABUSE_CHECK @"com.applozic.userdefault.ENABLE_MSGTEXT_ABUSE_CHECK"
+#define MSG_DATE_COLOR @"com.applozic.userdefault.MSG_DATE_COLOR"
+#define MSG_SEPERATE_DATE_COLOR @"com.applozic.userdefault.MSG_SEPERATE_DATE_COLOR"
+#define ENABLE_RECEIVER_USER_PROFILE @"com.applozic.userdefault.ENABLE_RECEIVER_USER_PROFILE"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -223,5 +226,14 @@
 
 +(BOOL)getMessageAbuseMode;
 +(void)setMessageAbuseMode:(BOOL)flag;
+
++(UIColor *)getDateColor;
++(void)setDateColor:(UIColor *)dateColor;
+
++(UIColor *)getMsgDateColor;
++(void)setMsgDateColor:(UIColor *)dateColor;
+
++(BOOL)getReceiverUserProfileOption;
++(void)setReceiverUserProfileOption:(BOOL)flag;
 
 @end

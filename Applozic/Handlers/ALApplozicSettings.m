@@ -159,32 +159,36 @@
     return [[NSUserDefaults standardUserDefaults] valueForKey:NOTIFICATION_TITLE];
 }
 
-+(void)setMaxImageSizeForUploadInMB:(NSInteger)maxFileSize{
++(void)setMaxImageSizeForUploadInMB:(NSInteger)maxFileSize
+{
     [[NSUserDefaults standardUserDefaults] setInteger:maxFileSize forKey:IMAGE_UPLOAD_MAX_SIZE];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(NSInteger)getMaxImageSizeForUploadInMB{
++(NSInteger)getMaxImageSizeForUploadInMB
+{
     return [[NSUserDefaults standardUserDefaults] integerForKey:IMAGE_UPLOAD_MAX_SIZE];
-    
 }
 
-+(void) setMaxCompressionFactor:(double)maxCompressionRatio{
++(void) setMaxCompressionFactor:(double)maxCompressionRatio
+{
     [[NSUserDefaults standardUserDefaults] setDouble:maxCompressionRatio  forKey:IMAGE_COMPRESSION_FACTOR];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(double) getMaxCompressionFactor{
++(double) getMaxCompressionFactor
+{
     return [[NSUserDefaults standardUserDefaults] doubleForKey:IMAGE_COMPRESSION_FACTOR];
-    
 }
 
-+(void)setGroupOption:(BOOL)option{
++(void)setGroupOption:(BOOL)option
+{
     [[NSUserDefaults standardUserDefaults] setBool:option forKey:GROUP_ENABLE];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(BOOL)getGroupOption{
++(BOOL)getGroupOption
+{
     return [[NSUserDefaults standardUserDefaults] boolForKey:GROUP_ENABLE];
 }
 
@@ -614,6 +618,45 @@ NOTIFICATION_DISABLE = 2
 +(BOOL)getMessageAbuseMode
 {
     return [[NSUserDefaults standardUserDefaults] boolForKey:ENABLE_MSGTEXT_ABUSE_CHECK];
+}
+
++(void)setDateColor:(UIColor *)dateColor
+{
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:dateColor];
+    [[NSUserDefaults standardUserDefaults] setObject:colorData forKey:MSG_DATE_COLOR];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(UIColor *)getDateColor
+{
+    NSData *colorData = [[NSUserDefaults standardUserDefaults] objectForKey:MSG_DATE_COLOR];
+    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
+    return color ? color : [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:0.5];
+}
+
++(void)setMsgDateColor:(UIColor *)dateColor
+{
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:dateColor];
+    [[NSUserDefaults standardUserDefaults] setObject:colorData forKey:MSG_SEPERATE_DATE_COLOR];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(UIColor *)getMsgDateColor
+{
+    NSData *colorData = [[NSUserDefaults standardUserDefaults] objectForKey:MSG_SEPERATE_DATE_COLOR];
+    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
+    return color ? color : [UIColor blackColor];
+}
+
++(void)setReceiverUserProfileOption:(BOOL)flag  
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:ENABLE_RECEIVER_USER_PROFILE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)getReceiverUserProfileOption
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:ENABLE_RECEIVER_USER_PROFILE];
 }
 
 @end

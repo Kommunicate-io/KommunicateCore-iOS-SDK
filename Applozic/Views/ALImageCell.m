@@ -189,7 +189,6 @@ UIViewController * modalCon;
         [self setupProgress];
         
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
-        self.mDateLabel.textColor = [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:.5];
         
         if(alMessage.message.length > 0)
         {
@@ -310,7 +309,6 @@ UIViewController * modalCon;
         msgFrameHeight = self.mBubleImageView.frame.size.height;
         
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
-        self.mDateLabel.textColor = [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:.5];
         
         self.mDateLabel.frame = CGRectMake((self.mBubleImageView.frame.origin.x +
                                             self.mBubleImageView.frame.size.width) - theDateSize.width - DATE_PADDING_X,

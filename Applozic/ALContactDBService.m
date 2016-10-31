@@ -151,6 +151,7 @@
         userContact.contactImageUrl = contact.contactImageUrl;
         userContact.unreadCount = contact.unreadCount ? contact.unreadCount : [NSNumber numberWithInt:0];
         userContact.userStatus = contact.userStatus;
+        userContact.connected = contact.connected;
         if(contact.displayName)
         {
             userContact.displayName = contact.displayName;
@@ -296,6 +297,7 @@
     contact.unreadCount = userContact.unreadCount ? userContact.unreadCount : [NSNumber numberWithInt:0];
     contact.lastSeenAt = userContact.lastSeenAt;
     contact.userStatus = userContact.userStatus;
+    contact.connected = userContact.connected;
     
     NSError *error = nil;
     
@@ -410,6 +412,7 @@
     if(result.count > 0)
     {
         DB_CONTACT * dbContact = [result objectAtIndex:0];
+        dbContact.connected = userDetail.connected;
         dbContact.lastSeenAt = userDetail.lastSeenAtTime;
     }
     
@@ -603,6 +606,7 @@
         contact.localImageResourceName = dbContact.localImageResourceName;
         contact.unreadCount = dbContact.unreadCount;
         contact.userStatus = dbContact.userStatus;
+        contact.connected = dbContact.connected;
         
         [contactList addObject:contact];
     }

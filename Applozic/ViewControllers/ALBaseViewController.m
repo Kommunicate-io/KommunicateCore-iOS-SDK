@@ -208,20 +208,27 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 -(void)viewWillAppear:(BOOL)animated
 {
-     [super viewWillAppear:animated];
+    [super viewWillAppear:animated];
     [self registerForKeyboardNotifications];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSubViews) name:@"APP_ENTER_IN_FOREGROUND" object:nil];
     
-    [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName: [UIColor blackColor], NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace] size:NAVIGATION_TEXT_SIZE]}];
+    [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                                       NSForegroundColorAttributeName:[UIColor whiteColor],
+                                                                       NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                                                                            size:NAVIGATION_TEXT_SIZE]
+                                                                       }];
     
     if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
     {
         
-        [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName: [UIColor whiteColor], NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace] size:NAVIGATION_TEXT_SIZE]}];
+        [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                                           NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                                                                           NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                                                                               size:NAVIGATION_TEXT_SIZE]
+                                                                           }];
         self.navigationController.navigationBar.translucent = NO;
-        //[self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName: [ALApplozicSettings getColorForNavigationItem], NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace] size:NAVIGATION_TEXT_SIZE]}];
-        [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
+        [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     
         [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
@@ -351,13 +358,10 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
             [self scrollTableViewToBottomWithAnimation:YES];
         }
     }];
-
 }
-
 
 -(void) keyBoardWillHide:(NSNotification *) notification
 {
-
     NSString * theAnimationDuration = [self handleKeyboardNotification:notification];
     
     self.checkBottomConstraint.constant = 0;
@@ -490,16 +494,20 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 -(UIView *)setCustomBackButton
 {
-    UIImageView *imageView=[[UIImageView alloc] initWithImage: [ALUtilityClass getImageFromFramworkBundle:@"bbb.png"]];
+    UIImage * backImage = [ALUtilityClass getImageFromFramworkBundle:@"bbb.png"];
+    backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:backImage];
     [imageView setFrame:CGRectMake(-10, 0, 30, 30)];
-    [imageView setTintColor:[UIColor whiteColor]];
-    UILabel *label=[[UILabel alloc] initWithFrame:CGRectMake(imageView.frame.origin.x + imageView.frame.size.width - 5, imageView.frame.origin.y + 5 , 20, 15)];
-    [label setTextColor:[UIColor whiteColor]];
+    [imageView setTintColor:[ALApplozicSettings getColorForNavigationItem]];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(imageView.frame.origin.x + imageView.frame.size.width - 5,
+                                                               imageView.frame.origin.y + 5 , 20, 15)];
+    
+    [label setTextColor:[ALApplozicSettings getColorForNavigationItem]];
     [label setText:[ALApplozicSettings getTitleForBackButtonChatVC]];
     [label sizeToFit];
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageView.frame.size.width + label.frame.size.width, imageView.frame.size.height)];
-    view.bounds=CGRectMake(view.bounds.origin.x+8, view.bounds.origin.y-1, view.bounds.size.width, view.bounds.size.height);
+    view.bounds = CGRectMake(view.bounds.origin.x + 8, view.bounds.origin.y - 1, view.bounds.size.width, view.bounds.size.height);
     [view addSubview:imageView];
     [view addSubview:label];
     
@@ -513,6 +521,5 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
     return view;
 }
-
 
 @end

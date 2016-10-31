@@ -157,7 +157,11 @@
     if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
     {
         //        self.navigationController.navigationBar.translucent = NO;
-        [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName: [ALApplozicSettings getColorForNavigationItem], NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace] size:18]}];
+        [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                                           NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                                                                           NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                                                                               size:18]
+                                                                           }];
 
         [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
@@ -372,6 +376,11 @@
                 ALChannel * channel = (ALChannel *)[self.filteredContactList objectAtIndex:indexPath.row];
                 newContactCell.contactPersonName.text = [channel name];
                 [newContactCell.contactPersonImageView setImage:[UIImage imageNamed:@"applozic_group_icon.png"]];
+                NSURL * imageUrl = [NSURL URLWithString:channel.channelImageURL];
+                if(imageUrl)
+                {
+                    [newContactCell.contactPersonImageView sd_setImageWithURL:imageUrl];
+                }
                 [nameIcon setHidden:YES];
             }
             else

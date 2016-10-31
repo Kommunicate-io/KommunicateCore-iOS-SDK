@@ -294,10 +294,10 @@
     return  YES;
 }
 
--(void)notificationArrivedToApplication:(UIApplication*)application withDictionary:(NSDictionary *)userInfo{
-    
-     if(application.applicationState == UIApplicationStateInactive){
-        
+-(void)notificationArrivedToApplication:(UIApplication*)application withDictionary:(NSDictionary *)userInfo
+{
+     if(application.applicationState == UIApplicationStateInactive)
+     {
         /* 
         # App is transitioning from background to foreground (user taps notification), do what you need when user taps here!
          
@@ -305,11 +305,9 @@
         NSLog(@"APP_STATE_INACTIVE APP_DELEGATE");
          */
         [self processPushNotification:userInfo updateUI:[NSNumber numberWithInt:APP_STATE_INACTIVE]];
-        
     }
-
-    else if(application.applicationState == UIApplicationStateActive) {
-        
+    else if(application.applicationState == UIApplicationStateActive)
+    {
         /*
          # App is currently active, can update badges count here
        
@@ -317,30 +315,27 @@
          NSLog(@"APP_STATE_ACTIVE APP_DELEGATE");
          */
         [self processPushNotification:userInfo updateUI:[NSNumber numberWithInt:APP_STATE_ACTIVE]];
-        
     }
-    else if(application.applicationState == UIApplicationStateBackground){
-        
-        
+    else if(application.applicationState == UIApplicationStateBackground)
+    {
         /* # App is in background, if content-available key of your notification is set to 1, poll to your backend to retrieve data and update your interface here
         
         # SYNC ONLY
         NSLog(@"APP_STATE_BACKGROUND APP_DELEGATE");
         */
          [self processPushNotification:userInfo updateUI:[NSNumber numberWithInt:APP_STATE_BACKGROUND]];
-        
-        
     }
-   
 }
 
-+(void)applicationEntersForeground{
++(void)applicationEntersForeground
+{
    [[NSNotificationCenter defaultCenter] postNotificationName:@"appCameInForeground" object:nil];
 }
 
-+(void)userSync{
-
++(void)userSync
+{
     ALUserService *userService = [ALUserService new];
     [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
 }
+
 @end

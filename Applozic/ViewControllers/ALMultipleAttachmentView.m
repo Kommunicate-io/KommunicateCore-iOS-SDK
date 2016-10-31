@@ -68,11 +68,15 @@ static NSString * const reuseIdentifier = @"collectionCell";
 {
     if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
     {
-        [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName: [UIColor whiteColor], NSFontAttributeName: [UIFont fontWithName:[ALApplozicSettings getFontFace] size:NAVIGATION_TEXT_SIZE]}];
+        [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                                           NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                                                                           NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                                                                                size:NAVIGATION_TEXT_SIZE]
+                                                                           }];
 
         [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
-        [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
-        [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
+        [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
+        [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     }
 }
 
@@ -87,9 +91,11 @@ static NSString * const reuseIdentifier = @"collectionCell";
 
 -(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    [navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:
-                                                                      [ALApplozicSettings getColorForNavigationItem],
-                                                                  NSFontAttributeName: [UIFont fontWithName:@"Helvetica-Bold" size:18]}];
+    [navigationController.navigationBar setTitleTextAttributes: @{
+                                                                  NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+                                                                  NSFontAttributeName: [UIFont fontWithName:@"Helvetica-Bold"
+                                                                                                       size:18]
+                                                                  }];
     
     [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
     [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];

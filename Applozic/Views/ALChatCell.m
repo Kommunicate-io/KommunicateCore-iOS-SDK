@@ -109,7 +109,7 @@
         
         self.mDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 100, 25)];
         self.mDateLabel.font = [UIFont fontWithName:[ALApplozicSettings getFontFace] size:DATE_LABEL_SIZE];
-        self.mDateLabel.textColor = [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:.5];
+        self.mDateLabel.textColor = [ALApplozicSettings getDateColor];
         self.mDateLabel.numberOfLines = 1;
         [self.contentView addSubview:self.mDateLabel];
         
@@ -253,8 +253,6 @@
         
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
         
-        self.mDateLabel.textColor = [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:.5];
-        
         if(alContact.contactImageUrl)
         {
             NSURL * theUrl1 = [NSURL URLWithString:alContact.contactImageUrl];
@@ -317,7 +315,6 @@
         
         
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
-        self.mDateLabel.textColor = [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:.5];
         
         self.mMessageStatusImageView.frame = CGRectMake(self.mDateLabel.frame.origin.x + self.mDateLabel.frame.size.width,
                                                         self.mDateLabel.frame.origin.y,
@@ -410,7 +407,7 @@
     [self.mMessageLabel setTextAlignment:NSTextAlignmentCenter];
     [self.mMessageLabel setText:alMessage.message];
     [self.mMessageLabel setBackgroundColor:[UIColor clearColor]];
-    [self.mMessageLabel setTextColor:[UIColor blackColor]];
+    [self.mMessageLabel setTextColor:[ALApplozicSettings getMsgDateColor]];
     self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0, 0, USER_PROFILE_HEIGHT);
     
 }

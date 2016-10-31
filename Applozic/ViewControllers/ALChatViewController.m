@@ -920,6 +920,7 @@
     titleLabelButton.frame = CGRectMake(0, 0, 70, 44);
     [titleLabelButton addTarget:self action:@selector(didTapTitleView:) forControlEvents:UIControlEventTouchUpInside];
     titleLabelButton.userInteractionEnabled = YES;
+    [titleLabelButton setTitleColor:[ALApplozicSettings getColorForNavigationItem] forState:UIControlStateNormal];
     
 //    if(!(self.individualLaunch) || [ALUserDefaultsHandler isServerCallDoneForUserInfoForContact:[self.alContact userId]])
 //    {
@@ -3393,14 +3394,21 @@
         return;
     }
     
-    if([ALDataNetworkConnection checkDataNetworkAvailable])
+    UIApplication *app = [UIApplication sharedApplication];
+    BOOL isBackgroundState = (app.applicationState == UIApplicationStateBackground);
+    
+    if([ALDataNetworkConnection checkDataNetworkAvailable] && !isBackgroundState)
+    {
         NSLog(@"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
+        
 //    dispatch_async(dispatch_get_main_queue(), ^{
     
         [self.mqttObject subscribeToConversation];
         [self subscrbingChannel];
+        
 //    });
-    self.mqttRetryCount++;
+        self.mqttRetryCount++;
+    }
 }
 
 -(void)appWillEnterForegroundInChat:(NSNotification *)notification
@@ -3576,6 +3584,11 @@
 
 -(void)getUserInformation
 {
+    if(![ALApplozicSettings getReceiverUserProfileOption])
+    {
+        return;
+    }
+    
     [self.mActivityIndicator startAnimating];
 
     UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic"

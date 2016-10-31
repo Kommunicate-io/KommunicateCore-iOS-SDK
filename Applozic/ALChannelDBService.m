@@ -634,6 +634,7 @@
     }
     else
     {
+        NSLog(@"CHANNEL_NOT_FOUND :: %@",clientChannelKey);
         return nil;
     }
 }
@@ -643,7 +644,7 @@
     DB_CHANNEL * dbChannel = [self getChannelByClientChannelKey:clientChannelKey];
     ALChannel *alChannel = [[ALChannel alloc] init];
     
-    if (!alChannel)
+    if (!dbChannel)
     {
         return nil;
     }
