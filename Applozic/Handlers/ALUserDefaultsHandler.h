@@ -14,6 +14,8 @@
 #define EMAIL_ID @"com.applozic.userdefault.EMAIL_ID"
 #define USER_ID @"com.applozic.userdefault.USER_ID"
 #define APN_DEVICE_TOKEN @"com.applozic.userdefault.APN_DEVICE_TOKEN"
+#define GOOGLE_MAP_API_KEY @"com.applozic.userdefault.GOOGLE_MAP_API_KEY"
+
 #define LAST_SYNC_TIME @"com.applozic.userdefault.LAST_SYNC_TIME"
 #define CONVERSATION_DB_SYNCED @"com.applozic.userdefault.CONVERSATION_DB_SYNCED"
 #define LOGOUT_BUTTON_VISIBLITY @"com.applozic.userdefault.LOGOUT_BUTTON_VISIBLITY"
@@ -224,5 +226,9 @@
 
 +(BOOL)getEnableEncryption;
 +(void)setEnableEncryption:(BOOL)flag;
+
++(void) setGoogleMapAPIKey:(NSString *)googleMapAPIKey;
++(NSString *) getGoogleMapAPIKey;
+
 
 @end

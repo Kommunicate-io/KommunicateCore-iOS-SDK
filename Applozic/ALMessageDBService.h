@@ -66,4 +66,8 @@
 
 -(NSUInteger)getMessagesCountFromDBForUser:(NSString *)userId;
 
+-(ALMessage *)getLatestMessageForUser:(NSString *)userId;
+
+-(ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
+
 @end

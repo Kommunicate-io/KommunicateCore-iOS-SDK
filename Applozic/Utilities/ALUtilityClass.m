@@ -166,13 +166,14 @@
     return mimeType;
 }
 
-+(CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize {
++(CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize
+{
     CGSize constraintSize;
     constraintSize.height = MAXFLOAT;
     constraintSize.width = width;
     NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          [UIFont fontWithName:fontName size:fontSize], NSFontAttributeName,
-                                          nil];
+                                          [UIFont fontWithName:fontName size:fontSize], NSFontAttributeName,nil];
+    
     CGRect frame = [text boundingRectWithSize:constraintSize
                                       options:NSStringDrawingUsesLineFragmentOrigin
                                    attributes:attributesDictionary

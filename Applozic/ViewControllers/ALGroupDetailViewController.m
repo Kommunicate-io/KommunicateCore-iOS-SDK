@@ -635,6 +635,12 @@
 
 -(void)updateGroupView
 {
+    
+    if([ALApplozicSettings isGroupInfoEditDisabled]){
+        NSLog(@"group edit is disabled");
+        return;
+    }
+
     UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
     ALGroupCreationViewController * grpUpdate = [storyBoard instantiateViewControllerWithIdentifier:@"ALGroupCreationViewController"];
     grpUpdate.isViewForUpdatingGroup = YES;

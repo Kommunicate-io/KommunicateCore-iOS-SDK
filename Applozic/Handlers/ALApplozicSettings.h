@@ -18,7 +18,12 @@
 #define NOTIFICATION_TITLE @"com.applozic.userdefault.NOTIFICATION_TITLE"
 #define IMAGE_COMPRESSION_FACTOR @"com.applozic.userdefault.IMAGE_COMPRESSION_FACTOR"
 #define IMAGE_UPLOAD_MAX_SIZE @"com.applozic.userdefault.IMAGE_UPLOAD_MAX_SIZE"
+
 #define GROUP_ENABLE @"com.applozic.userdefault.GROUP_ENABLE"
+
+#define GROUP_INFO_DISABLED @"com.applozic.userdefault.GROUP_INFO_DISABLED"
+#define GROUP_INFO_EDIT_DISABLED @"com.applozic.userdefault.GROUP_INFO_EDIT_DISABLED"
+
 #define MAX_SEND_ATTACHMENT @"com.applozic.userdefault.MAX_SEND_ATTACHMENT"
 #define FILTER_CONTACT @"com.applozic.userdefault.FILTER_CONTACT"
 #define FILTER_CONTACT_START_TIME @"com.applozic.userdefault.FILTER_CONTACT_START_TIME"
@@ -56,6 +61,8 @@
 #define MSG_DATE_COLOR @"com.applozic.userdefault.MSG_DATE_COLOR"
 #define MSG_SEPERATE_DATE_COLOR @"com.applozic.userdefault.MSG_SEPERATE_DATE_COLOR"
 #define ENABLE_RECEIVER_USER_PROFILE @"com.applozic.userdefault.ENABLE_RECEIVER_USER_PROFILE"
+#define CUSTOM_MSG_FONT_SIZE @"com.applozic.userdefault.CUSTOM_MSG_FONT_SIZE"
+#define CUSTOM_MSG_FONT @"com.applozic.userdefault.CUSTOM_MSG_FONT"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -235,5 +242,18 @@
 
 +(BOOL)getReceiverUserProfileOption;
 +(void)setReceiverUserProfileOption:(BOOL)flag;
+
++(float)getCustomMessageFontSize;
++(void)setCustomMessageFontSize:(float)fontSize;
+
++(NSString *)getCustomMessageFont;
++(void)setCustomMessageFont:(NSString *)font;
+
+
++(void) setGroupInfoDisabled:(BOOL)flag;
++(BOOL) isGroupInfoDisabled;
+
++(void) setGroupInfoEditDisabled:(BOOL)flag;
++(BOOL) isGroupInfoEditDisabled;
 
 @end

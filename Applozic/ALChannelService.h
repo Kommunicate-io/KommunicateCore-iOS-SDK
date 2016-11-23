@@ -72,4 +72,6 @@
 
 -(BOOL)isLoginUserInChannel:(NSNumber *)channelKey;
 
+-(NSMutableArray *)getAllChannelList;
+
 @end

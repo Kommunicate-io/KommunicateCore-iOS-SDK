@@ -206,7 +206,7 @@
 -(void)formMapURL{
     
     //static map location
-    NSString * staticMapLocationURL=[NSString stringWithFormat:@"http://maps.googleapis.com/maps/api/staticmap?center=%.8f,%.8f&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%.8f,%.8f",region.center.latitude, region.center.longitude,region.center.latitude, region.center.longitude];
+    NSString * staticMapLocationURL=[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%.8f,%.8f&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%.8f,%.8f&key=%@",region.center.latitude, region.center.longitude,region.center.latitude, region.center.longitude,[ALUserDefaultsHandler getGoogleMapAPIKey]];
     
     if([ALDataNetworkConnection checkDataNetworkAvailable])
     {

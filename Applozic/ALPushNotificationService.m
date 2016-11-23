@@ -65,17 +65,16 @@
         if(notificationId && [ALUserDefaultsHandler isNotificationProcessd:notificationId])
         {
             NSLog(@"Returning from ALPUSH because notificationId is already processed... %@",notificationId);
-            
             if([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive)
             {
-                NSLog(@"App Inactive");
+                NSLog(@"ALAPNs : APP_IS_INACTIVE");
                 [self assitingNotificationMessage:notificationMsg andDictionary:dict];
             }
             else
             {
-                NSLog(@"App Inactive False");
+                NSLog(@"ALAPNs : APP_IS_ACTIVE");
             }
-
+            
             return true;
         }
         //TODO : check if notification is alreday received and processed...
@@ -87,30 +86,9 @@
                                        withCompletion:^(NSMutableArray *message, NSError *error) { }];
             
             NSLog(@"ALPushNotificationService's SYNC CALL");
-            [dict setObject:alertValue forKey:@"alertValue"];
+            [dict setObject:(alertValue ? alertValue : @"") forKey:@"alertValue"];
             
             [self assitingNotificationMessage:notificationMsg andDictionary:dict];
-            
-//            ALPushAssist* assistant=[[ALPushAssist alloc] init];
-//            if(!assistant.isOurViewOnTop){
-//                [dict setObject:@"apple push notification.." forKey:@"Calledfrom"];
-//                [assistant assist:notificationMsg and:dict ofUser:notificationMsg];
-//                
-//            }
-//            else
-//            {
-//                NSLog(@"Over View not on top");
-//                [dict setObject:alertValue forKey:@"alertValue"];
-//                [[ NSNotificationCenter defaultCenter] postNotificationName:@"pushNotification"
-//                                                                     object:notificationMsg
-//                                                                   userInfo:dict];
-//
-//                [[ NSNotificationCenter defaultCenter] postNotificationName:@"notificationIndividualChat"
-//                                                                     object:notificationMsg
-//                                                                   userInfo:dict];
-//            }
-
-           
             
         }
         else if ([type isEqualToString:@"MESSAGE_SENT"]||[type isEqualToString:@"APPLOZIC_02"])
@@ -262,24 +240,25 @@
     else if(assistant.isGroupDetailViewOnTop){
             
         //Group Detail View Controller
-        [[ NSNotificationCenter defaultCenter] postNotificationName:@"popGroupDetailsAndLoadChat"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"popGroupDetailsAndLoadChat"
                                                              object:notificationMsg
                                                            userInfo:dict];
     }
     else
     {
-        
+        NSLog(@"ASSISTING : OUR_VIEW_IS_IN_TOP");
         // Message View Controller
-        [[ NSNotificationCenter defaultCenter] postNotificationName:@"pushNotification"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"pushNotification"
                                                              object:notificationMsg
                                                            userInfo:dict];
         //Chat View Controller
-        [[ NSNotificationCenter defaultCenter] postNotificationName:@"notificationIndividualChat"
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"notificationIndividualChat"
                                                              object:notificationMsg
                                                            userInfo:dict];
     }
 
 }
+
 -(BOOL)processUserBlockNotification:(NSDictionary *)theMessageDict andUserBlockFlag:(BOOL)flag
 {
     NSArray *mqttMSGArray = [[theMessageDict valueForKey:@"message"] componentsSeparatedByString:@":"];

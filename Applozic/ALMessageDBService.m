@@ -602,7 +602,7 @@
     
     ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
-    theRequest.predicate =[NSPredicate predicateWithFormat:@"sentToServer = %@ and type= %@ and deletedFlag = %@",@"0",@"5",@(NO)];
+    theRequest.predicate = [NSPredicate predicateWithFormat:@"sentToServer = %@ and type= %@ and deletedFlag = %@",@"0",@"5",@(NO)];
     
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES]]];
     NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
@@ -633,6 +633,60 @@
     return count;
     
 }
+
+//============================================================================================================
+#pragma mark GET LATEST MESSAGE FOR USER/CHANNEL
+//============================================================================================================
+
+-(ALMessage *)getLatestMessageForUser:(NSString *)userId
+{
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactId = %@ and groupId = nil and deletedFlag = %@",userId,@(NO)];
+    [request setPredicate:predicate];
+    [request setFetchLimit:1];
+    
+    [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+    NSArray *messagesArray = [dbHandler.managedObjectContext executeFetchRequest:request error:nil];
+    
+    if(messagesArray.count)
+    {
+        DB_Message * dbMessage = [messagesArray objectAtIndex:0];
+        ALMessage * alMessage = [self createMessageEntity:dbMessage];
+        return alMessage;
+    }
+    
+    return nil;
+}
+
+-(ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag
+{
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"groupId = %@ and deletedFlag = %@",channelKey,@(NO)];
+    
+    if(flag)
+    {
+        predicate = [NSPredicate predicateWithFormat:@"groupId = %@ and deletedFlag = %@ and contentType != 10",channelKey,@(NO)];
+    }
+    
+    [request setPredicate:predicate];
+    [request setFetchLimit:1];
+    
+    [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+    NSArray *messagesArray = [dbHandler.managedObjectContext executeFetchRequest:request error:nil];
+    
+    if(messagesArray.count)
+    {
+        DB_Message * dbMessage = [messagesArray objectAtIndex:0];
+        ALMessage * alMessage = [self createMessageEntity:dbMessage];
+        return alMessage;
+    }
+    
+    return nil;
+}
+
 
 /////////////////////////////  FETCH CONVERSATION WITH PAGE SIZE  /////////////////////////////
 

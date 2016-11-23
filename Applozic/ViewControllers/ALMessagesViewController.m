@@ -47,7 +47,7 @@
 // Constants
 #define DEFAULT_TOP_LANDSCAPE_CONSTANT -34
 #define DEFAULT_TOP_PORTRAIT_CONSTANT -64
-#define MQTT_MAX_RETRY 3
+#define MQTT_MAX_RETRY 0
 
 //==============================================================================================================================================
 // Private interface
@@ -1129,7 +1129,7 @@
 
 -(void)callLastSeenStatusUpdate
 {
-    [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime]  withCompletion:^(NSMutableArray * userDetailArray)
+    [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray * userDetailArray)
      {
          for(ALUserDetail * userDetail in userDetailArray)
          {
@@ -1284,11 +1284,7 @@
     NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
     [messageArray sortUsingDescriptors:descriptors];
     [self updateMessageList:messageArray];
-    
-    if(self.mqttRetryCount >= 3)
-    {
-        self.mqttRetryCount = 0;
-    }
+
 }
 
 //==============================================================================================================================================

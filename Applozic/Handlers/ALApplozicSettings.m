@@ -659,4 +659,51 @@ NOTIFICATION_DISABLE = 2
     return [[NSUserDefaults standardUserDefaults] boolForKey:ENABLE_RECEIVER_USER_PROFILE];
 }
 
++(void)setCustomMessageFontSize:(float)fontSize
+{
+    [[NSUserDefaults standardUserDefaults] setFloat:fontSize forKey:CUSTOM_MSG_FONT_SIZE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(float)getCustomMessageFontSize
+{
+    float size = [[NSUserDefaults standardUserDefaults] floatForKey:CUSTOM_MSG_FONT_SIZE];
+    return size ? size : 14;
+}
+
++(void)setCustomMessageFont:(NSString *)font 
+{
+    [[NSUserDefaults standardUserDefaults] setValue:font forKey:CUSTOM_MSG_FONT];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+ 
++(NSString *)getCustomMessageFont
+{
+    NSString * font = [[NSUserDefaults standardUserDefaults] valueForKey:CUSTOM_MSG_FONT];
+    return font ? font : @"Helvetica";
+}
+
++(void)setGroupInfoDisabled:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:GROUP_INFO_DISABLED];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isGroupInfoDisabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:GROUP_INFO_DISABLED];
+
+}
+
++(void)setGroupInfoEditDisabled:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:GROUP_INFO_EDIT_DISABLED];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isGroupInfoEditDisabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:GROUP_INFO_EDIT_DISABLED];
+}
+
 @end

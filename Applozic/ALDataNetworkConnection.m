@@ -34,18 +34,21 @@
     }
     else
     {
-          NSLog(@"NETWORK ISN'T AVAILABLE");
+        NSLog(@"NETWORK ISN'T AVAILABLE");
     }
     
     return canReach;
 }
 
-+(BOOL)noInternetConnectionNotification{
-    if(![ALDataNetworkConnection checkDataNetworkAvailable]){
++(BOOL)noInternetConnectionNotification
+{
+    if(![ALDataNetworkConnection checkDataNetworkAvailable])
+    {
         [TSMessage showNotificationWithTitle:@"Unable to connect to Internet" type:TSMessageNotificationTypeError];
         return YES;
     }
-    else{
+    else
+    {
         return NO;
     }
 }

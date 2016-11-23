@@ -677,11 +677,13 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     NSLog(@"OFFLINE_FAILED_TO_UPLOAD : %@", error);
 }
 
-+(ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString*)text{
++(ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString*)text
+{
     return [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_CUSTOM toSendTo:to withText:text];;
 }
 
-+(ALMessage *)createHiddenMessageEntitySentTo:(NSString*)to withText:(NSString*)text{
++(ALMessage *)createHiddenMessageEntitySentTo:(NSString*)to withText:(NSString*)text
+{
     return [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_HIDDEN toSendTo:to withText:text];
 }
 
@@ -722,6 +724,22 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
 {
     ALMessageDBService * dbService = [ALMessageDBService new];
     return [dbService getMessagesCountFromDBForUser:userId];
+}
+
+//============================================================================================================
+#pragma mark GET LATEST MESSAGE FOR USER/CHANNEL
+//============================================================================================================
+
+-(ALMessage *)getLatestMessageForUser:(NSString *)userId
+{
+    ALMessageDBService *alMsgDBService = [[ALMessageDBService alloc] init];
+    return [alMsgDBService getLatestMessageForUser:userId];
+}
+
+-(ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag
+{
+    ALMessageDBService *alMsgDBService = [[ALMessageDBService alloc] init];
+    return [alMsgDBService getLatestMessageForChannel:channelKey excludeChannelOperations:flag];
 }
 
 @end

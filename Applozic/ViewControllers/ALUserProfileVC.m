@@ -111,7 +111,10 @@
     self.userNameLabel.text = [myContact getDisplayName];
     self.userDesignationLabel.text = @"Manager";
     [self.userStatusLabel setText:[ALUserDefaultsHandler getLoggedInUserStatus] ? [ALUserDefaultsHandler getLoggedInUserStatus] : @"Profile Status"];
-   
+ 
+    BOOL checkMode = ([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE);
+    [self.notificationToggle setOn:(!checkMode) animated:YES];
+    
 }
 
 -(void)commonNavBarTheme:(UINavigationController *)navigationController
@@ -204,25 +207,38 @@
 
 - (IBAction)notificationToggle:(id)sender {
 
-    [self.activityIndicator startAnimating];
     BOOL flag = [self.notificationToggle isOn];
+    if([ALDataNetworkConnection noInternetConnectionNotification])
+    {
+        [self.notificationToggle setOn:(!flag) animated:YES];
+        return;
+    }
+    
+    [self.activityIndicator startAnimating];
+    
     short modeValue = 2;
     if(flag)
     {
         modeValue = 0;
     }
-
-    [self.notificationToggle setOn:flag animated:YES];
     
     [ALRegisterUserClientService updateNotificationMode:modeValue withCompletion:^(ALRegistrationResponse *response, NSError *error) {
         
         NSLog(@"RESPONSE :: %@",response.message);
         NSLog(@"RESPONSE_ERROR :: %@",error.description);
-        [ALUtilityClass showAlertMessage:@"Notification setting updated!!!" andTitle:@"Alert"];
-        [ALUserDefaultsHandler setNotificationMode:modeValue];
+        if(!error)
+        {
+            [ALUtilityClass showAlertMessage:@"Notification setting updated!!!" andTitle:@"Alert"];
+            [ALUserDefaultsHandler setNotificationMode:modeValue];
+            [self.notificationToggle setOn:flag animated:YES];
+        }
+        else
+        {
+            [ALUtilityClass showAlertMessage:@"Unable to update!!!" andTitle:@"Alert"];
+            [self.notificationToggle setOn:(!flag) animated:YES];
+        }
         [self.activityIndicator stopAnimating];
     }];
-    
 }
 
 -(void)uploadImage

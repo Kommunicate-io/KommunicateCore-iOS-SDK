@@ -60,9 +60,7 @@
                 ALChannelDBService *dbService = [[ALChannelDBService alloc] init];
                 [dbService createChannel:alChannel2];
             }
-            
             completion (alChannel2);
-            
         }];
     }
 }
@@ -110,6 +108,12 @@
 {
     NSMutableArray * memberList = [NSMutableArray arrayWithArray:[self getListOfAllUsersInChannel:channelKey]];
     return ([memberList containsObject:[ALUserDefaultsHandler getUserId]]);
+}
+
+-(NSMutableArray *)getAllChannelList
+{
+    ALChannelDBService * channelDB = [[ALChannelDBService alloc] init];
+    return [channelDB getAllChannelKeyAndName];
 }
 
 //==========================================================================================================================================

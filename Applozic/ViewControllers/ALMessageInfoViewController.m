@@ -131,22 +131,21 @@
 {
     ALContactCell *contactCell = (ALContactCell *)[tableView dequeueReusableCellWithIdentifier:@"userCell"];
     
-    [self setTableCellView: contactCell];
-    ALMessageInfo *msgInfo;
-    if(indexPath.section == 0)
-    {
-        return 0;
-    }
-    else if(indexPath.section == 1)
-    {
-        msgInfo = readList[indexPath.row];
-        [self cellAtIndexPath:msgInfo inSection:indexPath.section];
-    }
-    else
-    {
-        msgInfo = deliveredList[indexPath.row];
-        [self cellAtIndexPath:msgInfo inSection:indexPath.section];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+       
+        [self setTableCellView: contactCell];
+        ALMessageInfo *msgInfo;
+        if(indexPath.section == 1)
+        {
+            msgInfo = readList[indexPath.row];
+            [self cellAtIndexPath:msgInfo inSection:indexPath.section];
+        }
+        else if(indexPath.section == 2)
+        {
+            msgInfo = deliveredList[indexPath.row];
+            [self cellAtIndexPath:msgInfo inSection:indexPath.section];
+        }
+    });
     
     return contactCell;
 }

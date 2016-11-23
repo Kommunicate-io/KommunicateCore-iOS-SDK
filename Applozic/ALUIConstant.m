@@ -9,6 +9,7 @@
 @import UIKit;
 #import "ALUIConstant.h"
 #import "ALUtilityClass.h"
+#import "ALApplozicSettings.h"
 
 @implementation ALUIConstant
 
@@ -23,7 +24,7 @@
 {
     CGSize theTextSize = [ALUtilityClass getSizeForText:theMessage.message
                                                maxWidth:cellFrame.size.width - 115
-                                                   font:@"Helvetica-Bold"
+                                                   font:[ALApplozicSettings getFontFace]
                                                fontSize:15];
     
     return theTextSize;
@@ -95,11 +96,18 @@
     return HEIGHT;
 }
 
-+(CGFloat)getCustomChatCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame{
-    CGSize theTextSize = [self textSize:alMessage andCellFrame:cellFrame];
-    CGFloat HEIGHT = theTextSize.height + 20;
++(CGFloat)getCustomChatCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
+{
+    CGSize theTextSize = [ALUtilityClass getSizeForText:alMessage.message
+                                               maxWidth:cellFrame.size.width - 115
+                                                   font:[ALApplozicSettings getCustomMessageFont]
+                                               fontSize:[ALApplozicSettings getCustomMessageFontSize]];
+    
+    CGFloat HEIGHT = theTextSize.height + 40;
+    
     return HEIGHT;
 }
+
 + (CGFloat) getCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
 {
     
@@ -119,8 +127,8 @@
     {
         return [self getAudioCellHeight];
     }
-    else if (alMessage.contentType == ALMESSAGE_CONTENT_CUSTOM){
-        
+    else if (alMessage.contentType == ALMESSAGE_CONTENT_CUSTOM)
+    {
          return [self getCustomChatCellHeight:alMessage andCellFrame:cellFrame];
     }
     else if (alMessage.fileMeta.thumbnailUrl == nil && !alMessage.fileMeta.contentType)
@@ -139,7 +147,6 @@
     {
         return [self getDocumentCellHeight];
     }
-    
 }
 
 @end

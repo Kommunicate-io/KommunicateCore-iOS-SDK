@@ -212,8 +212,8 @@
     
     if([ALDataNetworkConnection checkDataNetworkAvailable])
     {
-        NSString * finalURl = [NSString stringWithFormat:@"http://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@",
-                               latLongArgument,latLongArgument];
+        NSString * finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
+                               latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
         
         theUrl = [NSURL URLWithString:finalURl];
         [self.mImageView sd_setImageWithURL:theUrl];
@@ -257,7 +257,6 @@
     }
     
     NSString *latLongArgument = [NSString stringWithFormat:@"%@,%@", latLog[0], latLog[1]];
-    
     return latLongArgument;
 }
 
@@ -270,7 +269,7 @@
 
 -(void)showMaps:(UITapGestureRecognizer *)sender
 {
-    NSString * URLString = [NSString stringWithFormat:@"http://maps.google.com/maps?q=loc:%@",[self formatLocationJson:super.mMessage]];
+    NSString * URLString = [NSString stringWithFormat:@"https://maps.google.com/maps?q=loc:%@",[self formatLocationJson:super.mMessage]];
     NSURL * locationURL = [NSURL URLWithString:URLString];
     [[UIApplication sharedApplication] openURL:locationURL];
 }

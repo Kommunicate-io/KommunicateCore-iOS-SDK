@@ -654,4 +654,16 @@
     return [[NSUserDefaults standardUserDefaults] boolForKey:DEVICE_ENCRYPTION_ENABLE];
 }
 
++(void)setGoogleMapAPIKey:(NSString *)googleMapAPIKey
+{
+    [[NSUserDefaults standardUserDefaults] setValue:googleMapAPIKey forKey:GOOGLE_MAP_API_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSString*)getGoogleMapAPIKey
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:GOOGLE_MAP_API_KEY];
+}
+
+
 @end

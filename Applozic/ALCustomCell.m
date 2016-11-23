@@ -22,6 +22,9 @@
 {
     [super populateCell:alMessage viewSize:viewSize];
 
+    [self.mMessageLabel setFont:[UIFont fontWithName:[ALApplozicSettings getCustomMessageFont]
+                                                size:[ALApplozicSettings getCustomMessageFontSize]]];
+    
     [self.mMessageLabel setTextAlignment:NSTextAlignmentCenter];
     [self.mMessageLabel setText:alMessage.message];
     [self.mMessageLabel setBackgroundColor:[UIColor clearColor]];
@@ -34,27 +37,29 @@
     self.mChannelMemberName.hidden = YES;
     self.mMessageStatusImageView.hidden = YES;
     
+    CGSize theTextSize = [ALUtilityClass getSizeForText:alMessage.message maxWidth:viewSize.width - 115
+                                                   font:self.mMessageLabel.font.fontName
+                                               fontSize:self.mMessageLabel.font.pointSize];
     
-    CGSize theTextSize = [ALUtilityClass getSizeForText:alMessage.message maxWidth:viewSize.width-115 font:self.mMessageLabel.font.fontName fontSize:self.mMessageLabel.font.pointSize];
+    int padding  =  10;
     
-    int padding  =  10 ;
-    CGPoint theTextPoint = CGPointMake(([UIScreen mainScreen].bounds.size.width/2)-(theTextSize.width/2)-padding,
-                                       padding/2);
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGFloat bubbleWidth = theTextSize.width + (2 * padding);
     
-    CGRect frame = CGRectMake(theTextPoint.x,
-                              theTextPoint.y,
-                              theTextSize.width + (2*padding),
-                              theTextSize.height + padding);
+    CGPoint theTextPoint = CGPointMake((screenSize.width - bubbleWidth)/2, 0);
+    
+    CGRect frame = CGRectMake(theTextPoint.x, theTextPoint.y,
+                              bubbleWidth, theTextSize.height + (2 * padding));
 
     self.mBubleImageView.backgroundColor = [ALApplozicSettings getCustomMessageBackgroundColor];
     [self.mBubleImageView setFrame:frame];
     [self.mBubleImageView setHidden:NO];
     
-    [self.mMessageLabel setFrame: CGRectMake(frame.origin.x,
-                                             padding,
-                                             frame.size.width,
-                                             frame.size.height)];
+    [self.mMessageLabel setFrame: CGRectMake(self.mBubleImageView.frame.origin.x + padding ,padding,
+                                             theTextSize.width,
+                                             theTextSize.height)];
 
     return self;
 }
+
 @end
