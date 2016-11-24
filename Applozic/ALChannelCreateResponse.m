@@ -7,6 +7,8 @@
 //
 
 #import "ALChannelCreateResponse.h"
+#import "ALUserDetail.h"
+#import "ALContactDBService.h"
 
 @implementation ALChannelCreateResponse  
 
@@ -18,7 +20,7 @@
     {
         NSDictionary *JSONDictionary = [JSONString valueForKey:@"response"];
         self.alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionary];
-        
+        [self pasreUserDetails:[[NSMutableArray alloc] initWithArray:[JSONDictionary objectForKey:@"users"]]];
         return self;
     }
     else
@@ -26,6 +28,15 @@
         return nil;
     }
     
+}
+-(void) pasreUserDetails:(NSMutableArray * ) userDetailJsonArray {
+    
+    for(NSDictionary *JSONDictionaryObject in userDetailJsonArray)
+    {
+        ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:JSONDictionaryObject];
+        ALContactDBService * contactDB = [ALContactDBService new];
+        [contactDB updateUserDetail: userDetail];
+    }
 }
 
 @end
