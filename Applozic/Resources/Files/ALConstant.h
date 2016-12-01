@@ -7,14 +7,14 @@
 
 #import "ALUserDefaultsHandler.h"
 
-//#define KBASE_URL ([ALUserDefaultsHandler getBASEURL])
-//#define MQTT_URL ([ALUserDefaultsHandler getMQTTURL])
-//#define KBASE_FILE_URL ([ALUserDefaultsHandler getFILEURL])
-//#define MQTT_PORT ([ALUserDefaultsHandler getMQTTPort])
+#define KBASE_URL ([ALUserDefaultsHandler getBASEURL])
+#define MQTT_URL ([ALUserDefaultsHandler getMQTTURL])
+#define KBASE_FILE_URL ([ALUserDefaultsHandler getFILEURL])
+#define MQTT_PORT ([ALUserDefaultsHandler getMQTTPort])
 
-#define KBASE_URL @"https://www.applozic.com"
-#define MQTT_URL @"apps.applozic.com"
-#define KBASE_FILE_URL @"https://applozic.appspot.com"
+//#define KBASE_URL @"https://apps.applozic.com"
+//#define MQTT_URL @"apps.applozic.com"
+//#define KBASE_FILE_URL @"https://applozic.appspot.com"
 
 //#define KBASE_URL @"https://test.applozic.com"
 //#define MQTT_URL @"staging.applozic.com"
@@ -24,7 +24,7 @@
 //#define MQTT_URL @"staging.applozic.com"
 //#define KBASE_FILE_URL @"https://mobi-com-alpha.appspot.com"
 
-#define MQTT_PORT @"1883"
+//#define MQTT_PORT @"1883"
 
 #define GREY_COLOR ([UIColor colorWithWhite:0.7 alpha:0.1])
 #define TEXT_VIEW_TO_MESSAGE_VIEW_RATIO 1.4 // Proper scolling.... 

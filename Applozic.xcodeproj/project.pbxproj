@@ -264,6 +264,8 @@
 		982F13111C05D6050024678E /* MQTTSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 982F13011C05D6040024678E /* MQTTSessionManager.m */; };
 		982F13121C05D6050024678E /* MQTTSSLSecurityPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = 982F13021C05D6040024678E /* MQTTSSLSecurityPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		982F13131C05D6050024678E /* MQTTSSLSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 982F13031C05D6040024678E /* MQTTSSLSecurityPolicy.m */; };
+		C70984311DF06B18009796A2 /* ALUserDetailListFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = C709842F1DF06B18009796A2 /* ALUserDetailListFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C70984321DF06B18009796A2 /* ALUserDetailListFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C70984301DF06B18009796A2 /* ALUserDetailListFeed.m */; };
 		CA48CD75EC9E50D727F11CA8 /* libPods-Applozic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BABEB56A0F9F0ADBE804E94 /* libPods-Applozic.a */; };
 /* End PBXBuildFile section */
 
@@ -528,6 +530,8 @@
 		982F13011C05D6040024678E /* MQTTSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MQTTSessionManager.m; path = Applozic/MQTT/MQTTSessionManager.m; sourceTree = "<group>"; };
 		982F13021C05D6040024678E /* MQTTSSLSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MQTTSSLSecurityPolicy.h; path = Applozic/MQTT/MQTTSSLSecurityPolicy.h; sourceTree = "<group>"; };
 		982F13031C05D6040024678E /* MQTTSSLSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MQTTSSLSecurityPolicy.m; path = Applozic/MQTT/MQTTSSLSecurityPolicy.m; sourceTree = "<group>"; };
+		C709842F1DF06B18009796A2 /* ALUserDetailListFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUserDetailListFeed.h; path = Applozic/ALUserDetailListFeed.h; sourceTree = "<group>"; };
+		C70984301DF06B18009796A2 /* ALUserDetailListFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALUserDetailListFeed.m; path = Applozic/ALUserDetailListFeed.m; sourceTree = "<group>"; };
 		DEC034D945995489DB2E901D /* Pods-Applozic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Applozic.release.xcconfig"; path = "Pods/Target Support Files/Pods-Applozic/Pods-Applozic.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1055,6 +1059,8 @@
 		6DDE81831C27D8A1009B8CF9 /* user */ = {
 			isa = PBXGroup;
 			children = (
+				C709842F1DF06B18009796A2 /* ALUserDetailListFeed.h */,
+				C70984301DF06B18009796A2 /* ALUserDetailListFeed.m */,
 				6D7756BB1D5B82000025560B /* ALAPIResponse.h */,
 				6D7756BC1D5B82000025560B /* ALAPIResponse.m */,
 				6D7756BD1D5B82000025560B /* ALContactsResponse.h */,
@@ -1260,6 +1266,7 @@
 				463957321DB6CC4B0093D632 /* ALVCardClass.h in Headers */,
 				6D95476B1BE38DFF00776652 /* ALContactService.h in Headers */,
 				6D46B6C51BD025060014A5D3 /* ALMapViewController.h in Headers */,
+				C70984311DF06B18009796A2 /* ALUserDetailListFeed.h in Headers */,
 				6D36F2081BFF3EE3003D46D3 /* ALApplozicSettings.h in Headers */,
 				6D9547691BE38DFF00776652 /* ALContactDBService.h in Headers */,
 				6D6DF1541BC5364C00EBA00F /* UIImage+Utility.h in Headers */,
@@ -1479,6 +1486,7 @@
 				6D7757241D5B83AA0025560B /* ALHyperLabel.m in Sources */,
 				6D6DF17F1BC5364C00EBA00F /* ALUser.m in Sources */,
 				982F130B1C05D6050024678E /* MQTTMessage.m in Sources */,
+				C70984321DF06B18009796A2 /* ALUserDetailListFeed.m in Sources */,
 				6D6DF1731BC5364C00EBA00F /* ALFileMetaInfo.m in Sources */,
 				6D7757151D5B83660025560B /* TSMessage.m in Sources */,
 				982F13091C05D6050024678E /* MQTTEncoder.m in Sources */,
