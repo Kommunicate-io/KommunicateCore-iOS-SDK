@@ -68,6 +68,13 @@
    return  [alContactDBService getOverallUnreadCountForContactsFromDB];
 }
 
+-(BOOL) isContactExist:(NSString *) value{
+   
+    DB_CONTACT* contact= [alContactDBService getContactByKey:@"userId" value:value];
+    return !(contact==nil);
+    
+}
+
 #pragma mark addition APIS
 
 
@@ -84,7 +91,9 @@
 #pragma mark fetching APIS
 
 
-- (ALContact *)loadContactByKey:(NSString *) key value:(NSString*) value{
+- (ALContact *)loadContactByKey:(NSString *) key value:(NSString*) value
+
+{
     return [alContactDBService loadContactByKey:key value:value];
 
 }

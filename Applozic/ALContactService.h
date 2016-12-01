@@ -40,4 +40,6 @@
 
 -(NSNumber *)getOverallUnreadCountForContact;
 
+-(BOOL) isContactExist:(NSString *) value;
+
 @end

@@ -37,6 +37,7 @@
 @property (nonatomic, strong) NSMutableArray * contactsInGroup;
 @property (nonatomic, assign) id <ALContactDelegate> delegate;
 @property (nonatomic) BOOL directContactVCLaunch;
+@property(nonatomic,strong) ALMessage *alMessage;
 
 - (IBAction)segmentControlAction:(id)sender;
 -(UIView *)setCustomBackButton:(NSString *)text;

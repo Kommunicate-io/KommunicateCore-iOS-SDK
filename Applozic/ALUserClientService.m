@@ -14,6 +14,7 @@
 #import "ALResponseHandler.h"
 #import "NSString+Encode.h"
 #import "ALAPIResponse.h"
+#import "ALUserDetailListFeed.h"
 
 @implementation ALUserClientService
 
@@ -393,5 +394,45 @@
         
     }];
 }
+
+// POST CALL
+
+-(void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)ob withCompletion:(void(^)(NSMutableArray * userDetailArray, NSError * theError))completionMark
+{
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/detail",KBASE_URL];
+    
+    NSError * error;
+    NSData * postdata = [NSJSONSerialization dataWithJSONObject:ob.dictionary options:0 error:&error];
+    NSString *paramString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
+    
+    NSLog(@"PARAM_POST_CALL : %@",paramString);
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"USERS_DETAILS_FOR_ONLINE_CONTACT_LIMIT_POST" WithCompletionHandler:^(id theJson, NSError *theError) {
+        
+        NSLog(@"SEVER_RESPONSE_POST_CONTACT : %@", (NSString *)theJson);
+        if (theError)
+        {
+            completionMark(nil, theError);
+            NSLog(@"ERROR_SEVER_RESPONSE_POST_CONTACT : %@", theError);
+            return;
+        }
+        
+        NSArray * jsonArray = [NSArray arrayWithArray:(NSArray *)theJson];
+        if(jsonArray.count)
+        {
+            NSMutableArray * ALLUserDetailArray = [NSMutableArray new];
+            NSDictionary * JSONDictionary = (NSDictionary *)theJson;
+            for (NSDictionary * theDictionary in JSONDictionary)
+            {
+                ALUserDetail * userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+                [ALLUserDetailArray addObject:userDetail];
+            }
+            completionMark(ALLUserDetailArray, theError);
+        }
+    }];
+}
+
 
 @end

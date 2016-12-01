@@ -384,4 +384,26 @@
     }];
 }
 
+-(void) fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray * array, NSError *error))completion
+
+{
+    
+    ALUserDetailListFeed *ob = [ALUserDetailListFeed new];
+    [ob setArray:userArray];
+    ob.contactSync = YES;
+    ALUserClientService *clientService = [ALUserClientService new];
+    ALContactDBService *dbService = [ALContactDBService new];
+
+    [clientService subProcessUserDetailServerCallPOST:ob withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+        
+        
+        if(userDetailArray && userDetailArray.count)
+        {
+            [dbService addUserDetails:userDetailArray];
+        }
+        completion(userDetailArray,theError);
+    }];
+    
+}
+
 @end

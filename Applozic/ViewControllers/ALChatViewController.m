@@ -145,6 +145,7 @@
     [self loadChatView];
     self.placeHolderTxt = @"Write a Message...";
     self.sendMessageTextView.text = self.placeHolderTxt;
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -161,6 +162,10 @@
         [self.sendMessageTextView setScrollEnabled:YES];
 
     }];
+    if(self.alMessage){
+        [self handleMessageForward:self.alMessage];
+        
+    }
     
 }
 
@@ -518,6 +523,7 @@
     if(![self.alMessageWrapper getUpdatedMessageArray].count && [ALApplozicSettings getVisibilityNoConversationLabelChatVC])
     {
         [self.noConLabel setHidden:NO];
+
         return;
     }
     [self.noConLabel setHidden:YES];
@@ -1022,6 +1028,31 @@
 -(BOOL)canBecomeFirstResponder
 {
     return YES;
+}
+
+-(void)handleMessageForward:(ALMessage* )almessage{
+    
+    ALMessage * message = [self getMessageToPost];
+    message.message  = almessage.message;
+    message.metadata = almessage.metadata;
+    message.fileMeta = almessage.fileMeta;
+    message.imageFilePath = almessage.imageFilePath;
+    message.fileMetaKey = almessage.fileMetaKey;
+
+    if( message.imageFilePath ){
+        [self processAttachment:message.imageFilePath andMessageText:message.message  andContentType:almessage.contentType];
+        self.alMessage=nil;
+        [self showNoConversationLabel];
+        return;
+    }
+    //SEND MESSAGE
+    [[self.alMessageWrapper getUpdatedMessageArray] addObject:message];
+    [self showNoConversationLabel];
+    [self sendMessage:message];
+    [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
+    [self setRefreshMainView:TRUE];
+    [self scrollTableViewToBottomWithAnimation:YES];
+    self.alMessage=nil;
 }
 
 //==============================================================================================================================================

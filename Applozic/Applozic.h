@@ -100,5 +100,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/MQTTEncoder.h>
 #import <Applozic/MQTTDecoder.h>
 #import <Applozic/HexColors.h>
+#import <Applozic/ALUserDetailListFeed.h>
 
 

@@ -10,6 +10,7 @@
 #import "ALLastSeenSyncFeed.h"
 #import "ALContact.h"
 #import "ALContactsResponse.h"
+#import "ALUserDetailListFeed.h"
 
 @interface ALUserClientService : NSObject
 
@@ -45,5 +46,7 @@
 
 -(void)updateUserDisplayName:(NSString *)displayName andUserImageLink:(NSString *)imageLink userStatus:(NSString *)status
               withCompletion:(void (^)(id theJson, NSError * error))completionHandler;
+
+-(void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)ob withCompletion:(void(^)(NSMutableArray * userDetailArray, NSError * theError))completionMark;
 
 @end

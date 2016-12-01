@@ -38,6 +38,9 @@
 @property (nonatomic, strong) NSNumber * channelKey;
 @property (nonatomic, strong) NSString * channelName;
 @property (nonatomic, strong) NSNumber * conversationId;
+@property (strong, nonatomic) ALMessage * alMessage;
+
+
 @property (nonatomic) BOOL refreshMainView;
 @property (nonatomic) BOOL refresh;
 @property (strong, nonatomic) NSString * displayName;

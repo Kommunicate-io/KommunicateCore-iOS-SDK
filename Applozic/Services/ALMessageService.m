@@ -288,6 +288,10 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                         }else{
                             [ALMessageService incrementContactUnreadCount:message];
                         }
+                        if (message.groupId != nil && message.contentType == 10) {
+                            ALChannelService *channelService = [[ALChannelService alloc] init];
+                            [channelService syncCallForChannel];
+                        }
                     }
                     
                     [ALUserService processContactFromMessages:messageArray withCompletion:^{

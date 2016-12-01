@@ -17,6 +17,13 @@
 
 #import "ALChannelClientService.h"
 #import "NSString+Encode.h"
+#import "ALContactService.h"
+#import "ALUserClientService.h"
+#import "ALContactDBService.h"
+#import "ALContactDBService.h"
+#import "ALUserDetailListFeed.h"
+#import "ALUserService.h"
+
 
 @interface ALChannelClientService ()
 
@@ -44,7 +51,33 @@
         {
             NSLog(@"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
             ALChannelCreateResponse *response = [[ALChannelCreateResponse alloc] initWithJSONString:theJson];
-            completion(error, response.alChannel);
+            NSMutableArray * members = response.alChannel.removeMembers;
+            ALContactService * contactService = [ALContactService new];
+            NSMutableArray* userNotPresentIds =[NSMutableArray new];
+            for(NSString * userId in members)
+            {
+                if(![contactService isContactExist:userId])
+                {
+                    [userNotPresentIds addObject:userId];
+                }
+            }
+            if(userNotPresentIds.count>0)
+            {
+                NSLog(@"Call userDetails...");
+                
+                ALUserService *alUserService = [ALUserService new];
+                [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                    NSLog(@"User detail response sucessfull.");
+                    completion(error, response.alChannel);
+                    
+                }];
+            }
+            else
+            {
+                
+                NSLog(@"No user for userDetails");
+                completion(error, response.alChannel);
+            }
         }
     }];
 }
@@ -80,9 +113,9 @@
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
     NSLog(@"PARAM_STRING :: %@", theParamString);
-
+    
     [ALResponseHandler processRequest:theRequest andTag:@"CREATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *theError) {
-
+        
         ALChannelCreateResponse *response = nil;
         
         if (theError)
@@ -214,7 +247,7 @@
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, UPDATE_CHANNEL_URL];
     
     NSMutableDictionary *dictionary = [NSMutableDictionary new];
-   
+    
     if(newName.length)
     {
         [dictionary setObject:newName forKey:@"newName"];
@@ -280,13 +313,40 @@
         }
         else
         {
+            NSMutableArray* userNotPresentIds =[NSMutableArray new];
             response = [[ALChannelSyncResponse alloc] initWithJSONString:theJson];
+            ALContactService * contactService = [ALContactService new];
+            
+            for(ALChannel * channel in response.alChannelArray){
+                
+                for(NSString * userId in channel.membersName){
+                    
+                    if(![contactService isContactExist:userId]){
+                        [userNotPresentIds addObject:userId];
+                    }
+                }
+            }
+            if(userNotPresentIds.count>0)
+            {
+                
+                NSLog(@"Call userDetails...");
+                ALUserService *alUserService = [ALUserService new];
+                [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                    NSLog(@"User detail response sucessfull.");
+                    completion(error, response);
+                }];
+            }
+            else
+            {
+            
+                completion(error, response);
+            }
+            
         }
         
-        NSLog(@"RESPONSE_CHANNEL_SYNCHRONIZATION :: %@", (NSString *)theJson);
-        completion(error, response);
+        
     }];
-
+    
 }
 
 -(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion
