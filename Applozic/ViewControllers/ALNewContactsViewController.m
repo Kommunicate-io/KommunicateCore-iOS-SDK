@@ -522,13 +522,26 @@
     NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_CONTACT"];
     
     [theRequest setReturnsDistinctResults:YES];
-    
-    if(![ALUserDefaultsHandler getLoginUserConatactVisibility])
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId!=%@",[ALUserDefaultsHandler getUserId]];
-        [theRequest setPredicate:predicate];
+    NSPredicate * contactFilterPredicate;
+    NSMutableArray * filterArray =  [ALApplozicSettings getContactTypeToFilter];
+   
+    if(filterArray){
+        contactFilterPredicate = [NSPredicate predicateWithFormat:@"contactType IN %@", filterArray];
     }
     
+    if(![ALUserDefaultsHandler getLoginUserConatactVisibility]){
+       NSPredicate* predicate=  [NSPredicate predicateWithFormat:@"userId!=%@",[ALUserDefaultsHandler getUserId]];
+        if(contactFilterPredicate){
+            contactFilterPredicate =[NSCompoundPredicate andPredicateWithSubpredicates:@[contactFilterPredicate, predicate]];
+        }else{
+            contactFilterPredicate =predicate;
+        }
+    }
+    
+    if(contactFilterPredicate){
+        [theRequest setPredicate:contactFilterPredicate];
+    }
+
     NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
     
     for (DB_CONTACT *dbContact in theArray)
@@ -543,6 +556,8 @@
         contact.contactImageUrl = dbContact.contactImageUrl;
         contact.email = dbContact.email;
         contact.localImageResourceName = dbContact.localImageResourceName;
+        contact.contactType = dbContact.contactType;
+
         
         [self.contactList addObject:contact];
     }

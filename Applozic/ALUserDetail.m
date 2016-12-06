@@ -38,6 +38,8 @@
     self.contactNumber = [JSONString valueForKey:@"phoneNumber"];
     
     self.userStatus = [JSONString valueForKey:@"statusMessage"];
+    self.userTypeId = [JSONString valueForKey:@"userTypeId"];
+
 }
 
 -(void)userDetail

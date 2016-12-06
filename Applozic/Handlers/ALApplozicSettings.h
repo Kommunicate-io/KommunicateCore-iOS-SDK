@@ -63,6 +63,8 @@
 #define ENABLE_RECEIVER_USER_PROFILE @"com.applozic.userdefault.ENABLE_RECEIVER_USER_PROFILE"
 #define CUSTOM_MSG_FONT_SIZE @"com.applozic.userdefault.CUSTOM_MSG_FONT_SIZE"
 #define CUSTOM_MSG_FONT @"com.applozic.userdefault.CUSTOM_MSG_FONT"
+#define FILTER_ONLY_CONTACT_TYPE_ID @"com.applozic.userdefault.FILTER_ONLY_CONTACT_TYPE_ID"
+
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -255,5 +257,9 @@
 
 +(void) setGroupInfoEditDisabled:(BOOL)flag;
 +(BOOL) isGroupInfoEditDisabled;
+
+
++(void) setContactTypeToFilter:(NSMutableArray*)arrayWithIds;
++(NSMutableArray*) getContactTypeToFilter;
 
 @end

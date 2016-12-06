@@ -43,5 +43,8 @@
 
 @property (nonatomic) BOOL block;
 @property (nonatomic) BOOL blockBy;
+@property (nonatomic,retain) NSNumber * userTypeId;
+@property (nonatomic,retain) NSNumber * contactType;
+
 
 @end

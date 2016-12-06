@@ -42,4 +42,8 @@
 
 -(BOOL) isContactExist:(NSString *) value;
 
+-(BOOL) updateOrInsert:(ALContact*)contact;
+
+-(void) updateOrInsertListOfContacts:(NSMutableArray *)contacts;
+
 @end

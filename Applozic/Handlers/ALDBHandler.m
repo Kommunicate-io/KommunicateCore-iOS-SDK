@@ -294,7 +294,9 @@
         userContact.contactImageUrl = contact.contactImageUrl;
         userContact.displayName = contact.displayName;
         userContact.localImageResourceName = contact.localImageResourceName;
-        
+        if(contact.contactType){
+            userContact.contactType = contact.contactType;
+        }
     }
     
     NSError *error = nil;
@@ -345,6 +347,8 @@
      contact.localImageResourceName = dbContact.localImageResourceName;
      contact.connected = dbContact.connected;
      contact.lastSeenAt = dbContact.lastSeenAt;
+     contact.contactType = dbContact.contactType;
+
      return contact;
 }
 
@@ -401,6 +405,7 @@
     contact.contactImageUrl = userContact.contactImageUrl;
     
     contact.localImageResourceName = userContact.localImageResourceName;
+    contact.contactType = userContact.contactType;
     
     NSError *error = nil;
     

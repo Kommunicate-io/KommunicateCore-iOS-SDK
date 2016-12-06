@@ -49,6 +49,9 @@ typedef enum
 @property short unreadCountType;
 @property short deviceApnsType;
 @property BOOL enableEncryption;
+@property NSNumber* contactType;
+
+
 
 @end
 

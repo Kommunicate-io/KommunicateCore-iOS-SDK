@@ -156,6 +156,9 @@
         {
             userContact.displayName = contact.displayName;
         }
+        if(contact.contactType){
+            userContact.contactType = contact.contactType;
+        }
         userContact.localImageResourceName = contact.localImageResourceName;
     }
     
@@ -298,6 +301,9 @@
     contact.lastSeenAt = userContact.lastSeenAt;
     contact.userStatus = userContact.userStatus;
     contact.connected = userContact.connected;
+    contact.contactType = userContact.contactType;
+    contact.userTypeId = userContact.userTypeId;
+
     
     NSError *error = nil;
     

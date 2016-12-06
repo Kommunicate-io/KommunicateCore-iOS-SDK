@@ -706,4 +706,14 @@ NOTIFICATION_DISABLE = 2
     return [[NSUserDefaults standardUserDefaults] boolForKey:GROUP_INFO_EDIT_DISABLED];
 }
 
++(void) setContactTypeToFilter:(NSMutableArray*)arrayWithIds
+{
+    [[NSUserDefaults standardUserDefaults] setObject:arrayWithIds forKey:FILTER_ONLY_CONTACT_TYPE_ID];
+}
+
++(NSMutableArray*) getContactTypeToFilter
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:FILTER_ONLY_CONTACT_TYPE_ID] mutableCopy];
+}
+
 @end

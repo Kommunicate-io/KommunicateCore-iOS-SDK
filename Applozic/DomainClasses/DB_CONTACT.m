@@ -24,5 +24,9 @@
 @dynamic block;
 @dynamic blockBy;
 @dynamic userStatus;
+@dynamic userTypeId;
+@dynamic contactType;
+
+
 
 @end

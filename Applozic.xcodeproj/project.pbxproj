@@ -120,7 +120,6 @@
 		6D6DF1D41BC5364C00EBA00F /* KAProgressLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF1321BC5364C00EBA00F /* KAProgressLabel.m */; };
 		6D6DF1D51BC5364C00EBA00F /* TPPropertyAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D6DF1331BC5364C00EBA00F /* TPPropertyAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D6DF1D61BC5364C00EBA00F /* TPPropertyAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF1341BC5364C00EBA00F /* TPPropertyAnimation.m */; };
-		6D6DF1D91BC5364C00EBA00F /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6D6DF1371BC5364C00EBA00F /* AppLozic.xcdatamodeld */; };
 		6D73B2FD1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D73B2FB1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D73B2FE1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D73B2FC1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.m */; };
 		6D7756711D5B7EEC0025560B /* ALChatLauncher.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D77566F1D5B7EEC0025560B /* ALChatLauncher.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -266,6 +265,7 @@
 		982F13131C05D6050024678E /* MQTTSSLSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 982F13031C05D6040024678E /* MQTTSSLSecurityPolicy.m */; };
 		C70984311DF06B18009796A2 /* ALUserDetailListFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = C709842F1DF06B18009796A2 /* ALUserDetailListFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C70984321DF06B18009796A2 /* ALUserDetailListFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C70984301DF06B18009796A2 /* ALUserDetailListFeed.m */; };
+		C74AE7161DF6837300A09961 /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C74AE7131DF6837300A09961 /* AppLozic.xcdatamodeld */; };
 		CA48CD75EC9E50D727F11CA8 /* libPods-Applozic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BABEB56A0F9F0ADBE804E94 /* libPods-Applozic.a */; };
 /* End PBXBuildFile section */
 
@@ -385,7 +385,6 @@
 		6D6DF1321BC5364C00EBA00F /* KAProgressLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KAProgressLabel.m; sourceTree = "<group>"; };
 		6D6DF1331BC5364C00EBA00F /* TPPropertyAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPPropertyAnimation.h; sourceTree = "<group>"; };
 		6D6DF1341BC5364C00EBA00F /* TPPropertyAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPPropertyAnimation.m; sourceTree = "<group>"; };
-		6D6DF1381BC5364C00EBA00F /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
 		6D73B2FB1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALReceiverUserProfileVC.h; sourceTree = "<group>"; };
 		6D73B2FC1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALReceiverUserProfileVC.m; sourceTree = "<group>"; };
 		6D77566F1D5B7EEC0025560B /* ALChatLauncher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALChatLauncher.h; path = Applozic/ALChatLauncher.h; sourceTree = "<group>"; };
@@ -532,6 +531,8 @@
 		982F13031C05D6040024678E /* MQTTSSLSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MQTTSSLSecurityPolicy.m; path = Applozic/MQTT/MQTTSSLSecurityPolicy.m; sourceTree = "<group>"; };
 		C709842F1DF06B18009796A2 /* ALUserDetailListFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUserDetailListFeed.h; path = Applozic/ALUserDetailListFeed.h; sourceTree = "<group>"; };
 		C70984301DF06B18009796A2 /* ALUserDetailListFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALUserDetailListFeed.m; path = Applozic/ALUserDetailListFeed.m; sourceTree = "<group>"; };
+		C74AE7141DF6837300A09961 /* AppLozic 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 2.xcdatamodel"; sourceTree = "<group>"; };
+		C74AE7151DF6837300A09961 /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
 		DEC034D945995489DB2E901D /* Pods-Applozic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Applozic.release.xcconfig"; path = "Pods/Target Support Files/Pods-Applozic/Pods-Applozic.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -916,11 +917,11 @@
 		6D6DF1E21BC537B300EBA00F /* database */ = {
 			isa = PBXGroup;
 			children = (
+				C74AE7131DF6837300A09961 /* AppLozic.xcdatamodeld */,
 				6D7756FB1D5B82ED0025560B /* DB_CHANNEL_USER_X.h */,
 				6D7756FC1D5B82ED0025560B /* DB_CHANNEL_USER_X.m */,
 				6D7756FD1D5B82ED0025560B /* DB_CHANNEL.h */,
 				6D7756FE1D5B82ED0025560B /* DB_CHANNEL.m */,
-				6D6DF1371BC5364C00EBA00F /* AppLozic.xcdatamodeld */,
 				6D6DF0911BC5364C00EBA00F /* ALDBHandler.h */,
 				6D6DF0921BC5364C00EBA00F /* ALDBHandler.m */,
 				6D6DF0DC1BC5364C00EBA00F /* DB_Message.m */,
@@ -1418,6 +1419,7 @@
 				6D6DF1811BC5364C00EBA00F /* DB_CONTACT.m in Sources */,
 				6D7756DE1D5B82000025560B /* ALUserClientService.m in Sources */,
 				6D77573E1D5B84E70025560B /* ALAudioCell.m in Sources */,
+				C74AE7161DF6837300A09961 /* AppLozic.xcdatamodeld in Sources */,
 				6D7756891D5B7FBE0025560B /* ALConversationCreateResponse.m in Sources */,
 				6D6DF1711BC5364C00EBA00F /* ALContact.m in Sources */,
 				6D6DF1631BC5364C00EBA00F /* ALContactCell.m in Sources */,
@@ -1466,7 +1468,6 @@
 				293446141D4F426F007BD1B4 /* ALImageActivity.m in Sources */,
 				6D7756921D5B7FBE0025560B /* DB_ConversationProxy.m in Sources */,
 				463957331DB6CC4B0093D632 /* ALVCardClass.m in Sources */,
-				6D6DF1D91BC5364C00EBA00F /* AppLozic.xcdatamodeld in Sources */,
 				6D6DF1771BC5364C00EBA00F /* ALMessage.m in Sources */,
 				6D7757481D5B85100025560B /* ALLocationCell.m in Sources */,
 				6D7756B01D5B80DF0025560B /* ALChannelDBService.m in Sources */,
@@ -1718,12 +1719,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		6D6DF1371BC5364C00EBA00F /* AppLozic.xcdatamodeld */ = {
+		C74AE7131DF6837300A09961 /* AppLozic.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				6D6DF1381BC5364C00EBA00F /* AppLozic.xcdatamodel */,
+				C74AE7141DF6837300A09961 /* AppLozic 2.xcdatamodel */,
+				C74AE7151DF6837300A09961 /* AppLozic.xcdatamodel */,
 			);
-			currentVersion = 6D6DF1381BC5364C00EBA00F /* AppLozic.xcdatamodel */;
+			currentVersion = C74AE7141DF6837300A09961 /* AppLozic 2.xcdatamodel */;
 			name = AppLozic.xcdatamodeld;
 			path = Applozic/AppLozic.xcdatamodeld;
 			sourceTree = "<group>";
