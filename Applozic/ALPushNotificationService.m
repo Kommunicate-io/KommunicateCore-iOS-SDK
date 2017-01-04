@@ -65,7 +65,8 @@
         if(notificationId && [ALUserDefaultsHandler isNotificationProcessd:notificationId])
         {
             NSLog(@"Returning from ALPUSH because notificationId is already processed... %@",notificationId);
-            if([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive)
+            BOOL isInactive = ([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive);
+            if(isInactive && ([type isEqualToString:MT_SYNC] || [type isEqualToString:MT_MESSAGE_SENT]))
             {
                 NSLog(@"ALAPNs : APP_IS_INACTIVE");
                 [self assitingNotificationMessage:notificationMsg andDictionary:dict];

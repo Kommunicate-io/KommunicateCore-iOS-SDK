@@ -46,7 +46,12 @@
 }
 
 -(ALTopicDetail*)getTopicDetail {
-    return (self.topicDetailJson)?[[ALTopicDetail alloc] initWithJSONString:self.topicDetailJson]: nil;
+    NSError *jsonError;
+    NSData *objectData = [self.topicDetailJson dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:objectData
+                                                         options:NSJSONReadingMutableContainers
+                                                           error:&jsonError];
+    return (self.topicDetailJson)?[[ALTopicDetail alloc] initWithDictonary:json]: nil;
 }
 
 +(NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy{

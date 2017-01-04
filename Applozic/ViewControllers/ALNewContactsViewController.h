@@ -9,6 +9,7 @@
 #define GROUP_CREATION 1
 #define GROUP_ADDITION 2
 #define REGULAR_CONTACTS 0
+#define LAUNCH_GROUP_OF_TWO 4
 
 #import <UIKit/UIKit.h>
 #import "ALChannelService.h"
@@ -41,5 +42,14 @@
 
 - (IBAction)segmentControlAction:(id)sender;
 -(UIView *)setCustomBackButton:(NSString *)text;
+
+/********************
+LAUNCH FOR SUB GROUP
+*********************/
+
+@property (nonatomic, strong) ALChannel * parentChannel;
+@property (nonatomic, strong) NSMutableArray * childChannels;
+
+-(void)launchProcessForSubgroups;
 
 @end

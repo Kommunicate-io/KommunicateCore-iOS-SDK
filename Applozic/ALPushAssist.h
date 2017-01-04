@@ -22,4 +22,5 @@
 -(BOOL)isMessageViewOnTop;
 -(BOOL)isChatViewOnTop;
 -(BOOL)isGroupDetailViewOnTop;
+-(BOOL)isMessageContainerOnTop;
 @end

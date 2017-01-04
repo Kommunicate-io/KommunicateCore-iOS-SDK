@@ -190,21 +190,21 @@
 
 -(void)proactivelyConnectMQTT
 {
-    ALPushAssist * assitant  = [[ALPushAssist alloc] init];
-    if(assitant.isOurViewOnTop)
-    {
+    ALPushAssist * assitant = [[ALPushAssist alloc] init];
+//    if(assitant.isOurViewOnTop)
+//    {
         ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
         [alMqttConversationService  subscribeToConversation];
-    }
+//    }
 }
 
 -(void)proactivelyDisconnectMQTT
 {
     ALPushAssist * assitant = [[ALPushAssist alloc] init];
-    if(assitant.isOurViewOnTop){
+//    if(assitant.isOurViewOnTop){
         ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
         [alMqttConversationService  unsubscribeToConversation];
-    }
+//    }
 }
 
 //receiver

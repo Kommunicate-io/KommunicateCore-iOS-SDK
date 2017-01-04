@@ -21,7 +21,10 @@
 
 +(void)getChannelInfo:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
-+(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion;
++(void)createChannel:(NSString *)channelName andParentChannelKey:(NSNumber *)parentChannelKey
+  orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink
+         channelType:(short)type andMetaData:(NSMutableDictionary *)metaData
+      withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion;
 
 +(void)addMemberToChannel:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey andChannelKey:(NSNumber *)channelKey withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
@@ -33,9 +36,23 @@
 
 
 +(void)updateChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
-          andNewName:(NSString *)newName andImageURL:(NSString *)imageURL andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+          andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList
+       andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 +(void)syncCallForChannel:(NSNumber *)channelKey andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
 
 -(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
+
++(void)addChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey
+        withCompletion:(void (^)(id json, NSError * error))completion;
+
++(void)removeChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey
+           withCompletion:(void (^)(id json, NSError * error))completion;
+
++(void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList andClientParentKey:(NSString *)clientParentKey
+              withCompletion:(void (^)(id json, NSError * error))completion;
+
++(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList andClientParentKey:(NSString *)clientParentKey
+                 withCompletion:(void (^)(id json, NSError * error))completion;
+
 @end

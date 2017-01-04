@@ -716,4 +716,49 @@ NOTIFICATION_DISABLE = 2
     return [[[NSUserDefaults standardUserDefaults] objectForKey:FILTER_ONLY_CONTACT_TYPE_ID] mutableCopy];
 }
 
++(NSString *)getCustomNavigationControllerClassName
+{
+    NSString * className = [[NSUserDefaults standardUserDefaults] stringForKey:CUSTOM_NAVIGATION_CLASS_NAME];
+    return className;
+}
+
++(void)setNavigationControllerClassName:(NSString *)className
+{
+    [[NSUserDefaults standardUserDefaults] setObject:className forKey:CUSTOM_NAVIGATION_CLASS_NAME];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(void)setSubGroupLaunchFlag:(BOOL)flag 
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:SUB_GROUP_LAUNCH];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)getSubGroupLaunchFlag
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:SUB_GROUP_LAUNCH];
+}
+
++(void)setListOfViewControllers:(NSArray *)viewList
+{
+    [[NSUserDefaults standardUserDefaults] setObject:viewList forKey:VIEW_CONTROLLER_ARRAY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSArray *)getListOfViewControllers
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:VIEW_CONTROLLER_ARRAY];
+}
+
++(NSString *)getMsgContainerVC
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:MSG_CONTAINER_VC];
+}
+
++(void)setMsgContainerVC:(NSString *)className
+{
+    [[NSUserDefaults standardUserDefaults] setValue:className forKey:MSG_CONTAINER_VC];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

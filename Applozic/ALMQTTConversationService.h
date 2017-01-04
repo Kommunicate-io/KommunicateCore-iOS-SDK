@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MQTTSession.h"
-#import "MQTTSessionManager.h"
+#import "MQTTClient.h"
 #import "ALMessage.h"
 #import "ALUserDetail.h"
 #import "ALSyncCallService.h"

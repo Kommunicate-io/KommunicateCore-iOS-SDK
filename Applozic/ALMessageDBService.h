@@ -25,8 +25,8 @@
 //Add Message APIS
 -(NSMutableArray *)addMessageList:(NSMutableArray*) messageList;
 -(DB_Message*)addMessage:(ALMessage*) message;
--(void)getMessages;
--(void)fetchAndRefreshFromServer;
+-(void)getMessages:(NSMutableArray *)subGroupList;
+-(void)fetchAndRefreshFromServer:(NSMutableArray *)subGroupList;
 -(void)fetchConversationsGroupByContactId;
 -(void)fetchAndRefreshQuickConversationWithCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 

@@ -34,15 +34,34 @@
 }
 
 
--(BOOL) isOurViewOnTop{
-    return ( [self.topViewController isKindOfClass:[ALMessagesViewController class]]
+-(BOOL) isOurViewOnTop
+{
+    NSArray * VCList = [ALApplozicSettings getListOfViewControllers];
+    if(VCList)
+    {
+        for (NSString * className in VCList)
+        {
+            if([self.topViewController isKindOfClass:NSClassFromString(className)])
+            {
+                return YES;
+            }
+        }
+    }
+    
+    return ( [self isMessageContainerOnTop]
+            ||[self.topViewController isKindOfClass:[ALMessagesViewController class]]
             ||[self.topViewController isKindOfClass:[ALChatViewController class]]
             ||[self.topViewController isKindOfClass:[ALGroupDetailViewController class]]
             ||[self.topViewController isKindOfClass:[ALNewContactsViewController class]]);
 }
 
 -(BOOL)isMessageViewOnTop{
-    return ([self.topViewController isKindOfClass:[ALMessagesViewController class]]);
+    return ([self.topViewController isKindOfClass:[ALMessagesViewController class]] || [self isMessageContainerOnTop]);
+}
+
+-(BOOL)isMessageContainerOnTop
+{
+    return ([self.topViewController isKindOfClass:NSClassFromString([ALApplozicSettings getMsgContainerVC])]);
 }
 
 -(BOOL)isChatViewOnTop{

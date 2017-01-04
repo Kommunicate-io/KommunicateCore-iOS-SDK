@@ -116,6 +116,14 @@
         
         groupName = [NSString stringWithFormat:@"%@",(alchannel.name != nil ? alchannel.name : self.groupId)];
         
+        if (alchannel.type == GROUP_OF_TWO)
+        {
+            NSMutableArray * array = [[alchannel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
+            [array removeObject:[ALUserDefaultsHandler getUserId]];
+            ALContact * grpContact = [contactDbService loadContactByKey:@"userId" value:array[1]];
+            groupName = [grpContact getDisplayName];
+        }
+        
         NSArray *notificationComponents = [alcontact.getDisplayName componentsSeparatedByString:@":"];
         if(notificationComponents.count > 1)
         {

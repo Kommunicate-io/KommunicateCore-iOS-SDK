@@ -23,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 @property (weak, nonatomic) IBOutlet UITableView *mTableView;
 @property (strong,nonatomic) NSString * groupImageUploadURL;
+@property (nonatomic,strong) NSString * groupImageURL;
 
 /**************************************
  CASE IF UPDATING GROUP INFORMATION
@@ -31,8 +32,15 @@
 
 @property (nonatomic) BOOL isViewForUpdatingGroup;
 @property (nonatomic, strong) NSNumber * channelKey;
+@property (nonatomic, strong) NSString * channelName;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loadingIndicator;
 
 @property (nonatomic, strong) id <ALGroupInfoDelegate> grpInfoDelegate;
+
+/**************************************
+ CASE SUB GROUP
+ **************************************/
+
+@property (nonatomic, strong) NSNumber * parentChannelKey;
 
 @end

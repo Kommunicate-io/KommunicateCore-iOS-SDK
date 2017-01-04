@@ -19,4 +19,7 @@
 @dynamic userCount;
 @dynamic unreadCount;
 @dynamic isLeft;
+@dynamic parentGroupKey;
+@dynamic parentClientGroupKey;
+
 @end

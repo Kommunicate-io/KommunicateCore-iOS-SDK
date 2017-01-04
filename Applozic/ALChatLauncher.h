@@ -39,5 +39,8 @@
 
 -(void)launchChatListWithUserOrGroup:(NSString *)userId withChannel:(NSNumber*)channelKey andViewControllerObject:(UIViewController *)viewController;
 
+-(void)launchChatListWithCustomNavigationBar:(UIViewController *)viewController;
+
+-(void)launchChatListWithParentKey:(NSNumber *)parentKey andViewControllerObject:(UIViewController *)viewController;
 
 @end

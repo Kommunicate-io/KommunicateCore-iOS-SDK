@@ -35,11 +35,16 @@
 -(NSString *)stringFromChannelUserList:(NSNumber *)key;
 
 -(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey
-      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink withCompletion:(void(^)(ALChannel *alChannel))completion;
+      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink
+      withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
 -(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray
         andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData
-      withCompletion:(void(^)(ALChannel *alChannel))completion;
+      withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+
+-(void)createChannel:(NSString *)channelName andParentChannelKey:(NSNumber *)parentChannelKey orClientChannelKey:(NSString *)clientChannelKey
+      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink channelType:(short)type
+         andMetaData:(NSMutableDictionary *)metaData withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
             withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
@@ -58,7 +63,7 @@
 -(void)syncCallForChannel;
 
 -(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
-      withCompletion:(void(^)(NSError *error))completion;
+       orChildKeys:(NSMutableArray *)childKeysList withCompletion:(void(^)(NSError *error))completion;
 
 +(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
@@ -73,5 +78,21 @@
 -(BOOL)isLoginUserInChannel:(NSNumber *)channelKey;
 
 -(NSMutableArray *)getAllChannelList;
+
+-(NSMutableArray *)fetchChildChannelsWithParentKey:(NSNumber *)parentGroupKey;
+
+-(void)processChildGroups:(ALChannel *)alChannel;
+
+-(void)addChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey
+        withCompletion:(void(^)(id json, NSError *error))completion;
+
+-(void)removeChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey
+           withCompletion:(void(^)(id json, NSError *error))completion;
+
+-(void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList andParentKey:(NSString *)clientParentKey
+              withCompletion:(void(^)(id json, NSError *error))completion;
+
+-(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList andParentKey:(NSString *)clientParentKey
+                 withCompletion:(void(^)(id json, NSError *error))completion;
 
 @end

@@ -64,7 +64,10 @@
 #define CUSTOM_MSG_FONT_SIZE @"com.applozic.userdefault.CUSTOM_MSG_FONT_SIZE"
 #define CUSTOM_MSG_FONT @"com.applozic.userdefault.CUSTOM_MSG_FONT"
 #define FILTER_ONLY_CONTACT_TYPE_ID @"com.applozic.userdefault.FILTER_ONLY_CONTACT_TYPE_ID"
-
+#define CUSTOM_NAVIGATION_CLASS_NAME @"com.applozic.userdefault.NAVIGATION_CONTROLLER_CLASS_NAME"
+#define SUB_GROUP_LAUNCH @"com.applozic.userdefault.SUB_GROUP_LAUNCH"
+#define VIEW_CONTROLLER_ARRAY @"com.applozic.userdefault.VIEW_CONTROLLER_ARRAY"
+#define MSG_CONTAINER_VC @"com.applozic.userdefault.MSG_CONTAINER_VC"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -261,5 +264,17 @@
 
 +(void) setContactTypeToFilter:(NSMutableArray*)arrayWithIds;
 +(NSMutableArray*) getContactTypeToFilter;
+
++(NSString *)getCustomNavigationControllerClassName; 
++(void)setNavigationControllerClassName:(NSString *)className;
+
++(BOOL)getSubGroupLaunchFlag;
++(void)setSubGroupLaunchFlag:(BOOL)flag;
+
++(NSArray *)getListOfViewControllers;
++(void)setListOfViewControllers:(NSArray *)viewList;
+
++(void)setMsgContainerVC:(NSString *)className;
++(NSString *)getMsgContainerVC;
 
 @end

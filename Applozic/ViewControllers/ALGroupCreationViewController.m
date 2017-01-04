@@ -34,7 +34,6 @@
 
 @property (nonatomic,strong) UIImagePickerController * mImagePicker;
 @property (nonatomic,strong) NSString * mainFilePath;
-@property (nonatomic,strong) NSString * groupImageURL;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end
@@ -59,7 +58,8 @@
         [self setTitle:@"Group Update"];
         [nextContacts setTitle:@"Update"];
         [nextContacts setAction:@selector(updateGroupInfo:)];
-        
+        self.groupNameInput.text = self.channelName;
+        [self setProfileImage];
     }
     else
     {
@@ -86,6 +86,20 @@
     self.descriptionTextView.userInteractionEnabled = NO;
     [self.tabBarController.tabBar setHidden:YES];
     // self.alNewContactViewController.delegateGroupCreation = self;
+    
+}
+
+-(void)setProfileImage
+{
+    NSURL *imageURL = [NSURL URLWithString:self.groupImageURL];
+    if(imageURL.path.length)
+    {
+        [self.groupIconView sd_setImageWithURL:imageURL];
+    }
+    else
+    {
+        [self.groupIconView setImage:DEFAULT_GROUP_ICON_IMAGE];
+    }
 }
 
 //=========================================================================================================================================
@@ -120,28 +134,38 @@
     //Moving forward to member selection
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
                                                          bundle:[NSBundle bundleForClass:ALGroupCreationViewController.class]];
-    UIViewController *groupCreation = [storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
+    ALNewContactsViewController *contactsVC = [storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     
     //Setting groupName and forGroup flag
-    ((ALNewContactsViewController *)groupCreation).forGroup = [NSNumber numberWithInt:GROUP_CREATION];
-    ((ALNewContactsViewController *)groupCreation).groupName = self.groupNameInput.text;
-    ((ALNewContactsViewController *)groupCreation).groupImageURL = self.groupImageURL;
+    contactsVC.forGroup = [NSNumber numberWithInt:GROUP_CREATION];
+    contactsVC.groupName = self.groupNameInput.text;
+    contactsVC.groupImageURL = self.groupImageURL;
+    
+    if([ALApplozicSettings getSubGroupLaunchFlag])
+    {
+        ALChannelService *channelService = [ALChannelService new];
+        ALChannel *parentChannel = [channelService getChannelByKey:self.parentChannelKey];
+        contactsVC.parentChannel = parentChannel;
+        contactsVC.childChannels = [[NSMutableArray alloc] initWithArray:[channelService fetchChildChannelsWithParentKey:parentChannel.key]];
+    }
     
     //Moving to contacts view for group member selection
-    [self.navigationController pushViewController:groupCreation animated:YES];
+    [self.navigationController pushViewController:contactsVC animated:YES];
 }
 
 - (void)updateGroupInfo:(id)sender
 {
-    if(!self.groupNameInput.text.length && !self.groupImageURL.length)
+    if(!self.groupNameInput.text.length)
     {
         [ALUtilityClass showAlertMessage:@"You haven't update anything" andTitle:@"Wait!!!"];
         return;
     }
     [self.loadingIndicator startAnimating];
+    
+    self.groupImageURL = self.groupImageURL ? self.groupImageURL : @"";
     ALChannelService *channelService = [ALChannelService new];
     [channelService updateChannel:self.channelKey andNewName:self.groupNameInput.text
-                      andImageURL:self.groupImageURL orClientChannelKey:nil withCompletion:^(NSError *error) {
+                      andImageURL:self.groupImageURL orClientChannelKey:nil orChildKeys:nil withCompletion:^(NSError *error) {
         
           if(!error)
           {
@@ -187,6 +211,18 @@
         
         [self uploadByCamera];
     }]];
+    
+    if(self.isViewForUpdatingGroup && self.groupImageURL.length)
+    {
+        UIAlertAction * removeAction = [UIAlertAction actionWithTitle:@"Remove Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            
+            self.groupImageURL = @"";
+            [self setProfileImage];
+        }];
+        
+        [removeAction setValue:[UIColor redColor] forKey:@"titleTextColor"];
+        [alertController addAction:removeAction];
+    }
     
     [self presentViewController:alertController animated:YES completion:nil];
 }

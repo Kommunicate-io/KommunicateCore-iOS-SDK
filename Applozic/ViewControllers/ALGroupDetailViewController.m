@@ -26,14 +26,15 @@
     NSArray * colors;
 }
 
-@property (nonatomic,retain) UILabel * memberNameLabel;
-@property (nonatomic,retain) UILabel * firstLetterLabel;
-@property (nonatomic,retain) UIImageView * memberIconImageView;
-@property (nonatomic,retain) NSString * groupName;
-@property (nonatomic,retain) UILabel * adminLabel;
-@property (nonatomic,retain) UILabel * lastSeenLabel;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
-@property (nonatomic,strong) ALMQTTConversationService * mqttObject;
+@property (nonatomic, retain) UILabel * memberNameLabel;
+@property (nonatomic, retain) UILabel * firstLetterLabel;
+@property (nonatomic, retain) UIImageView * memberIconImageView;
+@property (nonatomic, retain) NSString * groupName;
+@property (nonatomic, retain) UILabel * adminLabel;
+@property (nonatomic, retain) UILabel * lastSeenLabel;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) ALMQTTConversationService * mqttObject;
+@property (nonatomic, strong) ALChannel * alChannel;
 
 @end
 
@@ -96,8 +97,8 @@
     [self setTitle:@"Group Details"];
     
     ALChannelService * channnelService = [[ALChannelService alloc] init];
-    ALChannel *alChannel = [channnelService getChannelByKey:self.channelKeyID];
-    self.groupName = alChannel.name;
+    self.alChannel = [channnelService getChannelByKey:self.channelKeyID];
+    self.groupName = self.alChannel.name;
     isAdmin = [channnelService checkAdmin:self.channelKeyID];
 
     memberNames = [[NSMutableArray alloc] init];
@@ -237,13 +238,24 @@
 //==================================
 -(void)addNewMember
 {
-    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
-                                                         bundle:[NSBundle bundleForClass:self.class]];
-    UIViewController *contactsViewController = [storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
-    ((ALNewContactsViewController *)contactsViewController).contactsInGroup = [NSMutableArray arrayWithArray:[memberIds array]];
-    ((ALNewContactsViewController *)contactsViewController).forGroup = [NSNumber numberWithInt:GROUP_ADDITION];
-    ((ALNewContactsViewController *)contactsViewController).delegate = self;    
-    [self.navigationController pushViewController:contactsViewController animated:YES];
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:self.class]];
+    
+    ALNewContactsViewController *contactsVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
+    
+    contactsVC.contactsInGroup = [NSMutableArray arrayWithArray:[memberIds array]];
+    contactsVC.forGroup = [NSNumber numberWithInt:GROUP_ADDITION];
+    contactsVC.delegate = self;
+    
+    // check if this launch for subgroup
+    ALChannelService * channelService = [[ALChannelService alloc] init];
+    
+    if([ALApplozicSettings getSubGroupLaunchFlag])
+    {
+        ALChannel *parentChannel = [channelService getChannelByKey:self.alChannel.parentKey ? self.alChannel.parentKey : self.alChannel.key];
+        contactsVC.parentChannel = parentChannel;
+        contactsVC.childChannels = [[NSMutableArray alloc] initWithArray:[channelService fetchChildChannelsWithParentKey:parentChannel.key]];
+    }
+    [self.navigationController pushViewController:contactsVC animated:YES];
 }
 
 -(void)addNewMembertoGroup:(ALContact *)alcontact withCompletion:(void(^)(NSError *error,ALAPIResponse *response))completion
@@ -251,10 +263,10 @@
     [[self activityIndicator] startAnimating];
     self.memberIdToAdd = alcontact.userId;
     ALChannelService * channelService = [[ALChannelService alloc] init];
-     [channelService addMemberToChannel:self.memberIdToAdd andChannelKey:self.channelKeyID orClientChannelKey:nil
+    [channelService addMemberToChannel:self.memberIdToAdd andChannelKey:self.channelKeyID orClientChannelKey:nil
                           withCompletion:^(NSError *error, ALAPIResponse *response) {
          
-         if(!error)
+         if(!error && [response.status isEqualToString:@"success"])
          {
              [memberIds addObject:self.memberIdToAdd];
              [self.tableView reloadData];
@@ -483,10 +495,7 @@
 
 -(void)setMemberIcon:(NSInteger)row
 {
-    ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
-    ALChannel *channel = [channelDBService loadChannelByKey:self.channelKeyID];
-    
-    if([channel.adminKey isEqualToString:memberIds[row]])
+    if([self.alChannel.adminKey isEqualToString:memberIds[row]])
     {
         [self.adminLabel setHidden:NO];
     }
@@ -499,7 +508,7 @@
     [self.memberIconImageView setHidden:NO];
     
     ALContactDBService * alContactDBService = [[ALContactDBService alloc] init];
-     ALContact * alContact = [alContactDBService loadContactByKey:@"userId" value:memberIds[row]];
+    ALContact * alContact = [alContactDBService loadContactByKey:@"userId" value:memberIds[row]];
     
     if (![alContact.userId isEqualToString:[ALUserDefaultsHandler getUserId]])
     {
@@ -576,10 +585,9 @@
         UIImageView *imageView = [[UIImageView alloc] initWithImage:
                                   [ALUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
         
-        ALChannelDBService * channelDBService = [ALChannelDBService new];
-        ALChannel *alChannel = [channelDBService loadChannelByKey:self.channelKeyID];
-        NSURL * imageUrl = [NSURL URLWithString:alChannel.channelImageURL];
-        if(imageUrl)
+
+        NSURL * imageUrl = [NSURL URLWithString:self.alChannel.channelImageURL];
+        if(imageUrl.path.length)
         {
             [imageView sd_setImageWithURL:imageUrl];
         }
@@ -646,6 +654,8 @@
     grpUpdate.isViewForUpdatingGroup = YES;
     grpUpdate.channelKey = self.channelKeyID;
     grpUpdate.grpInfoDelegate = self;
+    grpUpdate.channelName = self.alChannel.name;
+    grpUpdate.groupImageURL = self.alChannel.channelImageURL;
     [self.navigationController pushViewController:grpUpdate animated:YES];
 }
 

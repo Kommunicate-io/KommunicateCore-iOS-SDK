@@ -22,7 +22,7 @@ Applozic Chat Framework for Cocoa Pod
 2) Go to project directory open pod file and add code in that
 
 ```
- pod 'Applozic', '3.7.3'
+ pod 'Applozic', '3.8.1'
 ```
 
 
@@ -42,7 +42,7 @@ Applozic Chat Framework for Cocoa Pod
 
 
 5) Initiate **ALChatManager.h** Class Object
- 
+
 ```  
 NOTE: Replace "applozic-sample-app" by your application key
 

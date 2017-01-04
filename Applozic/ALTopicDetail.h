@@ -25,6 +25,8 @@
 @property (nonatomic, strong) NSString *value1;
 @property (nonatomic, strong) NSString *key2;
 @property (nonatomic, strong) NSString *value2;
+@property (nonatomic, strong) NSString *topicId;
+@property (nonatomic,strong)  NSMutableArray *fallBackTemplateList;
 
 
 

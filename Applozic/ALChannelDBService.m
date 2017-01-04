@@ -32,6 +32,7 @@
         ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
         newChannelUserX.key = channel.key;
         newChannelUserX.userKey = member;
+        newChannelUserX.parentKey = channel.parentKey;
         [memberArray addObject:newChannelUserX];
     }
     
@@ -95,11 +96,12 @@
     {
         theChannelEntity.userCount = channel.userCount;
     }
+    theChannelEntity.parentGroupKey = channel.parentKey;
+    theChannelEntity.parentClientGroupKey = channel.parentClientKey;
     theChannelEntity.channelImageURL = channel.channelImageURL;
     theChannelEntity.type = channel.type;
     theChannelEntity.adminId = channel.adminKey;
     theChannelEntity.unreadCount = channel.unreadCount;
-    
     
     return theChannelEntity;
 }
@@ -147,6 +149,7 @@
         //channelUserX.channelDBObjectId = dbChannelUserX.objectID;
         [channelUserXArray addObject:channelUserX];
     }
+
     NSError *error = nil;
     [theDBHandler.managedObjectContext save:&error];
     if(error)
@@ -165,6 +168,7 @@
     {
         theChannelUserXEntity.channelKey = channelUserX.key;
         theChannelUserXEntity.userId = channelUserX.userKey;
+        theChannelUserXEntity.parentGroupKey = channelUserX.parentKey;        
         //        theChannelUserXEntity.status = channelUserX.status;
     }
     
@@ -208,6 +212,8 @@
         return nil;
     }
     
+    alChannel.parentKey = dbChannel.parentGroupKey;
+    alChannel.parentClientKey = dbChannel.parentClientGroupKey;
     alChannel.key = dbChannel.channelKey;
     alChannel.clientChannelKey = dbChannel.clientChannelKey;
     alChannel.name = dbChannel.channelDisplayName;
@@ -317,6 +323,8 @@
     
     if(dbChannel)
     {
+        channel.parentKey = dbChannel.parentGroupKey;
+        channel.parentClientKey = dbChannel.parentClientGroupKey;
         channel.key = dbChannel.channelKey;
         channel.clientChannelKey = dbChannel.clientChannelKey;
         channel.name = dbChannel.channelDisplayName;
@@ -351,7 +359,6 @@
     
     if(array.count)
     {
-        
         NSManagedObject *manageOBJ = [array objectAtIndex:0];
         [theDBHandler.managedObjectContext deleteObject:manageOBJ];
         [theDBHandler.managedObjectContext save:nil];
@@ -413,6 +420,8 @@
         for(DB_CHANNEL * dbChannel in array)
         {
             ALChannel* channel = [[ALChannel alloc] init];
+            channel.parentKey = dbChannel.parentGroupKey;
+            channel.parentClientKey = dbChannel.parentClientGroupKey;
             channel.key = dbChannel.channelKey;
             channel.clientChannelKey = dbChannel.clientChannelKey;
             channel.name = dbChannel.channelDisplayName;            
@@ -444,7 +453,7 @@
     return unreadCount;
 }
 
--(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orImageURL:(NSString *)imageURL
+-(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -463,8 +472,13 @@
         if(newName.length) {
             dbChannel.channelDisplayName = newName;
         }
-        if(imageURL.length) {
-            dbChannel.channelImageURL = imageURL;
+
+        dbChannel.channelImageURL = imageURL;
+
+        if(childKeysList.count) {
+            for(NSNumber * childKey in childKeysList) {
+                [self updateChannelParentKey:childKey andWithParentKey:channelKey isAdding:YES];
+            }
         }
         [dbHandler.managedObjectContext save:nil];
     }
@@ -474,9 +488,48 @@
     }
 }
 
--(void)updateUnreadCountChannel:(NSNumber *)channelKey
-                    unreadCount:(NSNumber *)unreadCount{
+-(void) updateChannelParentKey:(NSNumber *)channelKey andWithParentKey:(NSNumber *)channelParentKey isAdding:(BOOL)flag
+{
+    DB_CHANNEL *parentChannel = [self getChannelByKey:channelParentKey];
+    DB_CHANNEL *childChannel = [self getChannelByKey:channelKey];
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     
+    if(flag)
+    {
+        childChannel.parentGroupKey = parentChannel.channelKey;
+        childChannel.parentClientGroupKey = parentChannel.clientChannelKey;
+    }
+    else
+    {
+        childChannel.parentGroupKey = nil;
+        childChannel.parentClientGroupKey = nil;
+    }
+    
+    [dbHandler.managedObjectContext save:nil];
+}
+
+-(void)updateClientChannelParentKey:(NSString *)clientChildKey andWithClientParentKey:(NSString *)clientParentKey isAdding:(BOOL)flag
+{
+    DB_CHANNEL *parentChannel = [self getChannelByClientChannelKey:clientParentKey];
+    DB_CHANNEL *childChannel = [self getChannelByClientChannelKey:clientChildKey];
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    
+    if(flag)
+    {
+        childChannel.parentGroupKey = parentChannel.channelKey;
+        childChannel.parentClientGroupKey = parentChannel.clientChannelKey;
+    }
+    else
+    {
+        childChannel.parentGroupKey = nil;
+        childChannel.parentClientGroupKey = nil;
+    }
+    
+    [dbHandler.managedObjectContext save:nil];
+}
+
+-(void)updateUnreadCountChannel:(NSNumber *)channelKey unreadCount:(NSNumber *)unreadCount
+{
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
@@ -498,7 +551,6 @@
     {
         NSLog(@"NO CHANNEL FOUND");
     }
-
 }
 
 -(void)setLeaveFlag:(BOOL)flag forChannel:(NSNumber *)groupId
@@ -649,7 +701,9 @@
         return nil;
     }
     
-    alChannel.key = dbChannel.channelKey;                      
+    alChannel.parentKey = dbChannel.parentGroupKey;
+    alChannel.parentClientKey = dbChannel.parentClientGroupKey;
+    alChannel.key = dbChannel.channelKey;
     alChannel.clientChannelKey = dbChannel.clientChannelKey;
     alChannel.name = dbChannel.channelDisplayName;
     alChannel.unreadCount = dbChannel.unreadCount;
@@ -658,6 +712,43 @@
     alChannel.channelImageURL = dbChannel.channelImageURL;
     
     return alChannel;
+}
+
+-(NSMutableArray *)fetchChildChannels:(NSNumber *)parentGroupKey
+{
+    NSMutableArray *childArray = [[NSMutableArray alloc] init];
+    
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parentGroupKey = %@",parentGroupKey];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *fetchError = nil;
+    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+    
+    NSLog(@"CHILD CHANNEL FOUND : %lu WITH PARENT KEY : %@",result.count, parentGroupKey);
+    NSLog(@"ERROR (IF-ANY) : %@",fetchError.description);
+    
+    for(DB_CHANNEL *dbChannel in result)
+    {
+        ALChannel *alChannel = [[ALChannel alloc] init];
+        
+        alChannel.parentKey = dbChannel.parentGroupKey;
+        alChannel.parentClientKey = dbChannel.parentClientGroupKey;
+        alChannel.key = dbChannel.channelKey;
+        alChannel.clientChannelKey = dbChannel.clientChannelKey;
+        alChannel.name = dbChannel.channelDisplayName;
+        alChannel.unreadCount = dbChannel.unreadCount;
+        alChannel.adminKey = dbChannel.adminId;
+        alChannel.type = dbChannel.type;
+        alChannel.channelImageURL = dbChannel.channelImageURL;
+        
+        [childArray addObject:alChannel];
+    }
+    
+    return childArray;
 }
 
 @end

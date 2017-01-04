@@ -13,6 +13,7 @@
 @protocol ALMessagesViewDelegate <NSObject>
 
 @optional
+
 -(void)handleCustomActionFromMsgVC:(UIViewController *)chatView andWithMessage:(ALMessage *)alMessage;
 
 @end
@@ -44,6 +45,14 @@
 @property (strong, nonatomic) NSNumber * conversationId;
 
 -(void)insertChannelMessage:(NSNumber *)channelKey;
+
+/*****************
+ SUB_GROUP LAUNCH
+*****************/
+
+@property (strong, nonatomic) NSNumber *parentGroupKey;
+@property (strong, nonatomic) NSMutableArray *childGroupList;
+-(void)intializeSubgroupMessages;
 
 @end
 

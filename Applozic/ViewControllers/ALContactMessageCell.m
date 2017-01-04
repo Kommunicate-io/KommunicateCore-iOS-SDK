@@ -188,7 +188,6 @@
                                            theDateSize.width , DATE_HEIGHT);
         
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
-        self.mDateLabel.textColor = [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:.5];
         
         self.mMessageStatusImageView.frame = CGRectMake(self.mDateLabel.frame.origin.x + self.mDateLabel.frame.size.width,
                                                         self.mDateLabel.frame.origin.y, 20, 20);

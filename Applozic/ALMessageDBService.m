@@ -26,17 +26,18 @@
 
 //Add message APIS
 
--(NSMutableArray *) addMessageList:(NSMutableArray*) messageList {
+-(NSMutableArray *) addMessageList:(NSMutableArray*) messageList
+{
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
    
     ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
     for (ALMessage * theMessage in messageList) {
         
-        NSManagedObject *message =  [self getMessageByKey:@"key" value:theMessage.key];
+        NSManagedObject *message = [self getMessageByKey:@"key" value:theMessage.key];
         if(message==nil){
             theMessage.sentToServer = YES;
             
-            DB_Message * theMessageEntity= [self createMessageEntityForDBInsertionWithMessage:theMessage];
+            DB_Message * theMessageEntity = [self createMessageEntityForDBInsertionWithMessage:theMessage];
             theMessage.msgDBObjectId = theMessageEntity.objectID;
             
             [messageArray addObject:theMessage];
@@ -292,20 +293,28 @@
     #pragma mark - ALMessagesViewController DB Operations.
 //------------------------------------------------------------------------------------------------------------------
 
--(void)getMessages {
-
-    if ( [self isMessageTableEmpty ] ) { // db is not synced
-        [self fetchAndRefreshFromServer];
+-(void)getMessages:(NSMutableArray *)subGroupList
+{
+    if ([self isMessageTableEmpty])  // db is not synced
+    {
+        [self fetchAndRefreshFromServer:subGroupList];
         [self syncConactsDB];
     }
     else // db is synced
     {
         //fetch data from db
-        [self fetchConversationsGroupByContactId];
+        if(subGroupList && [ALApplozicSettings getSubGroupLaunchFlag])  // case for sub group
+        {
+            [self fetchSubGroupConversations:subGroupList];
+        }
+        else
+        {
+           [self fetchConversationsGroupByContactId];
+        }
     }
 }
 
--(void)fetchAndRefreshFromServer
+-(void)fetchAndRefreshFromServer:(NSMutableArray *)subGroupList
 {    
     [self syncConverstionDBWithCompletion:^(BOOL success, NSMutableArray * theArray) {
         
@@ -316,7 +325,14 @@
             [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
             // add default contacts
             //fetch data from db
-            [self fetchConversationsGroupByContactId];
+            if(subGroupList && [ALApplozicSettings getSubGroupLaunchFlag])
+            {
+                [self fetchSubGroupConversations:subGroupList];
+            }
+            else
+            {
+                [self fetchConversationsGroupByContactId];
+            }
         }
     }];
 }
@@ -708,6 +724,41 @@
         
     }];
     
+}
+
+/************************************
+FETCH LATEST MESSSAGE FOR SUB GROUPS
+************************************/
+
+-(void)fetchSubGroupConversations:(NSMutableArray *)subGroupList
+{
+    NSMutableArray * subGroupMsgArray = [NSMutableArray new];
+    
+    for(ALChannel * alChannel in subGroupList)
+    {
+        ALMessage * alMessage = [self getLatestMessageForChannel:alChannel.key excludeChannelOperations:NO];
+        if(alMessage)
+        {
+            [subGroupMsgArray addObject:alMessage];
+            if(alChannel.type == GROUP_OF_TWO)
+            {
+                NSMutableArray * array = [[alChannel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
+                
+                if(![array containsObject:[ALUserDefaultsHandler getUserId]])
+                {
+                    [subGroupMsgArray removeObject:alMessage];
+                }
+            }
+        }
+    }
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:NO];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSMutableArray *sortedArray = [[subGroupMsgArray sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
+    
+    if ([self.delegate respondsToSelector:@selector(getMessagesArray:)]) {
+        [self.delegate getMessagesArray:sortedArray];
+    }
 }
 
 

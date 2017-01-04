@@ -26,7 +26,7 @@
     self.value1 = [self getStringFromJsonValue:messageJson[@"value1"]];
     self.key2 = [self getStringFromJsonValue:messageJson[@"key2"]];
     self.value2 = [self getStringFromJsonValue:messageJson[@"value2"]];
-   
+
 }
 
 

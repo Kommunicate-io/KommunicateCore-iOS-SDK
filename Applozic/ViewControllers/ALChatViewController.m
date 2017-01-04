@@ -64,7 +64,7 @@
 #include <tgmath.h>
 @import AddressBookUI;
 
-#define MQTT_MAX_RETRY 0
+#define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
 
 
@@ -166,7 +166,6 @@
         [self handleMessageForward:self.alMessage];
         
     }
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -733,7 +732,8 @@
     [self.label setHidden:NO];
     
     NSLog(@"USER_STATE BLOCKED : %i AND BLOCKED BY : %i", contact.block, contact.blockBy);
-    if((contact.blockBy || contact.block) && !self.channelKey)
+    NSLog(@"USER : %@", contact.userId);
+    if((contact.blockBy || contact.block) && (self.alChannel.type == GROUP_OF_TWO || !self.channelKey))
     {
         [self.label setHidden:YES];
         [self.typingLabel setHidden:YES];
@@ -955,19 +955,27 @@
 -(void)setButtonTitle
 {
     ALChannelService *channelService = [[ALChannelService alloc] init];
-    ALChannel *alChannel = [channelService getChannelByKey:self.channelKey];
-    [titleLabelButton setTitle:alChannel.name forState:UIControlStateNormal];
+    self.alChannel = [channelService getChannelByKey:self.channelKey];
+    [titleLabelButton setTitle:self.alChannel.name forState:UIControlStateNormal];
+    if(self.alChannel.type == GROUP_OF_TWO)
+    {
+        NSLog(@"CURENT clientChannelKey :: %@",self.alChannel.clientChannelKey);
+        NSMutableArray * array = [[self.alChannel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
+        [array removeObject:[ALUserDefaultsHandler getUserId]];
+        ALContactService * contactService = [ALContactService new];
+        self.alContact = [contactService loadContactByKey:@"userId" value:array[1]];
+        [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
+    }
 }
 
 -(void)didTapTitleView:(id)sender
 {
-    //If one to one chat, launch receiver profile.
     if(self.contactIds && !self.channelKey)
     {
         [self getUserInformation];
-   
-    }else if ( ![ALApplozicSettings isGroupInfoDisabled] ){
-        
+    }
+    else if (![ALApplozicSettings isGroupInfoDisabled] && (self.alChannel.type != GROUP_OF_TWO))
+    {
         UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
         ALGroupDetailViewController * groupDetailViewController = (ALGroupDetailViewController*)[storyboard instantiateViewControllerWithIdentifier:@"ALGroupDetailViewController"];
         groupDetailViewController.channelKeyID = self.channelKey;
@@ -975,7 +983,6 @@
         
         [self.navigationController pushViewController:groupDetailViewController animated:YES];
     }
-
 }
 
 -(void)fetchMessageFromDB
@@ -1479,12 +1486,12 @@
     [view addSubview:imageView];
     
     UILabel * topLeft = [[UILabel alloc] init];
-    topLeft.text =topicDetail.title;
+    topLeft.text = topicDetail.title;
     topLeft.frame = CGRectMake(imageView.frame.size.width + 10,
                                25, (view.frame.size.width-imageView.frame.size.width)/2, 50);
     
     UILabel * bottomLeft = [[UILabel alloc] init];
-    bottomLeft.text =topicDetail.subtitle;
+    bottomLeft.text = topicDetail.subtitle;
     bottomLeft.frame = CGRectMake(imageView.frame.size.width + 10, 58,
                                   (view.frame.size.width-imageView.frame.size.width)/2, 50);
     bottomLeft.numberOfLines = 1;
@@ -1637,8 +1644,8 @@
 #pragma mark - Picker View Done and View Update Methods
 //==============================================================================================================================================
 
--(void)donePicking:(id)sender{
-    
+-(void)donePicking:(id)sender
+{
     self.tableViewBottomToAttachment.constant = 0;
     [UIView animateWithDuration:0.4 animations:^{
         
@@ -2304,7 +2311,7 @@
         [self openVideoCamera];
     }]];
 
-    if(!self.channelKey && !self.conversationId)
+    if((!self.channelKey && !self.conversationId) || (self.alChannel.type == GROUP_OF_TWO))
     {
         [theController addAction:[UIAlertAction actionWithTitle:@"Block User" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             
@@ -2966,7 +2973,7 @@
 
 -(void)serverCallForLastSeen
 {
-    if([self isGroup])
+    if([self isGroup] && self.alChannel.type != GROUP_OF_TWO)
     {
         return;
     }
@@ -2991,7 +2998,8 @@
 
 -(void)updateLastSeenAtStatus: (ALUserDetail *) alUserDetail
 {
-    
+    NSLog(@"USER DET : %@",alUserDetail.userId);
+    NSLog(@"self.contactIds : %@",self.contactIds);
     [self setRefreshMainView:TRUE];
     
     double value = [alUserDetail.lastSeenAtTime doubleValue];
@@ -2999,9 +3007,23 @@
     if(self.channelKey != nil)
     {
         ALChannelService * channelService = [[ALChannelService alloc] init];
-        [self.label setText:[channelService stringFromChannelUserList:self.channelKey]];
+        if(self.alChannel.type == GROUP_OF_TWO && [alUserDetail.userId isEqualToString:self.contactIds])
+        {
+            if(value > 0)
+            {
+                [self formatDateTime:alUserDetail andValue:value];
+            }
+            else
+            {
+                [self.label setText:@""];
+            }
+        }
+        else if (self.alChannel.type != GROUP_OF_TWO)
+        {
+            [self.label setText:[channelService stringFromChannelUserList:self.channelKey]];
+        }
     }
-    else if(value > 0)
+    else if (value > 0)
     {
         if ([alUserDetail.userId isEqualToString:self.contactIds])
         {
@@ -3398,7 +3420,7 @@
     ALContactService *cntService = [ALContactService new];
     ALContact *contact = [cntService loadContactByKey:@"userId" value:userId];
     
-    if(flag && ([self.alContact.userId isEqualToString:userId] || self.channelKey))
+    if(flag && [self.alContact.userId isEqualToString:userId])
     {
         NSString * space = @"    ";
         NSString * msg = [self.alContact getDisplayName];
