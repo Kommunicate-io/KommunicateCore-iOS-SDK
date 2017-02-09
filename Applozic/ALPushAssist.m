@@ -17,7 +17,7 @@
 #import "ALAppLocalNotifications.h"
 #import "ALGroupDetailViewController.h"
 #import "ALNewContactsViewController.h"
-
+#import "ALUserProfileVC.h"
 
 @implementation ALPushAssist
 // WHEN NON-APPLOZIC VIEWs OPENED
@@ -48,11 +48,19 @@
         }
     }
     
-    return ( [self isMessageContainerOnTop]
-            ||[self.topViewController isKindOfClass:[ALMessagesViewController class]]
+    return ( [self isMessageViewOnTop]
             ||[self.topViewController isKindOfClass:[ALChatViewController class]]
             ||[self.topViewController isKindOfClass:[ALGroupDetailViewController class]]
-            ||[self.topViewController isKindOfClass:[ALNewContactsViewController class]]);
+            ||[self.topViewController isKindOfClass:[ALNewContactsViewController class]]
+            ||[self.topViewController isKindOfClass:[ALUserProfileVC class]]);
+}
+
+-(BOOL)isUserProfileVCOnTop{
+    return ([self.topViewController isKindOfClass:[ALUserProfileVC class]]);
+}
+
+-(BOOL)isContactVCOnTop{
+    return ([self.topViewController isKindOfClass:[ALNewContactsViewController class]]);
 }
 
 -(BOOL)isMessageViewOnTop{

@@ -42,17 +42,21 @@ typedef enum
 @property (nonatomic, strong) NSNumber *unreadCount;
 @property (nonatomic, copy) NSManagedObjectID *channelDBObjectId;
 @property (nonatomic, strong) NSMutableArray *membersName;
+@property (nonatomic, strong) NSMutableArray *membersId;
 @property (nonatomic, strong) NSMutableArray *removeMembers;
 @property (nonatomic, strong) ALConversationProxy *conversationProxy;
 @property (nonatomic, strong) NSNumber *parentKey;
 @property (nonatomic, strong) NSString *parentClientKey;
 @property (nonatomic, strong) NSMutableArray * groupUsers;
 @property (nonatomic, strong) NSMutableArray * childKeys;
-
+@property (nonatomic, strong) NSNumber * notificationAfterTime;
+@property (nonatomic, strong) NSNumber * deletedAtTime;
 
 
 -(id)initWithDictonary:(NSDictionary *)messageDictonary;
 -(void)parseMessage:(id) messageJson;
 -(NSNumber *)getChannelMemberParentKey:(NSString *)userId;
+-(BOOL) isNotificationMuted;
+-(NSString*)getReceiverIdInGroupOfTwo;
 
 @end

@@ -22,5 +22,8 @@
 -(BOOL)isMessageViewOnTop;
 -(BOOL)isChatViewOnTop;
 -(BOOL)isGroupDetailViewOnTop;
+-(BOOL)isContactVCOnTop;
 -(BOOL)isMessageContainerOnTop;
+-(BOOL)isUserProfileVCOnTop;
+
 @end

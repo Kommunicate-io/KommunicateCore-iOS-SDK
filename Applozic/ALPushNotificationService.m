@@ -238,13 +238,6 @@
         [dict setObject:@"apple push notification.." forKey:@"Calledfrom"];
         [assistant assist:notificationMsg and:dict ofUser:notificationMsg];
     }
-    else if(assistant.isGroupDetailViewOnTop){
-            
-        //Group Detail View Controller
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"popGroupDetailsAndLoadChat"
-                                                             object:notificationMsg
-                                                           userInfo:dict];
-    }
     else
     {
         NSLog(@"ASSISTING : OUR_VIEW_IS_IN_TOP");

@@ -10,6 +10,8 @@
 #import "ALMessageClientService.h"
 #import "ALConversationService.h"
 #import "ALChannelUser.h"
+#import "ALMuteRequest.h"
+#import "ALAPIResponse.h"
 
 @implementation ALChannelService
 
@@ -59,7 +61,7 @@
 -(void)getChannelInformation:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void (^)(ALChannel *alChannel3)) completion
 {
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-    ALChannel *alChannel1 = [channelDBService checkChannelEntity:channelKey];
+    ALChannel *alChannel1 = [channelDBService loadChannelByKey:channelKey];
     
     if(alChannel1)
     {
@@ -77,6 +79,20 @@
             completion (alChannel2);
         }];
     }
+}
+
++(BOOL)isChannelDeleted:(NSNumber *)groupId
+{
+    ALChannelDBService *dbSerivce = [[ALChannelDBService alloc] init];
+    BOOL flag = [dbSerivce isChannelDeleted:groupId];
+    return flag;
+}
+
++(BOOL)isChannelMuted:(NSNumber *)groupId
+{
+    ALChannelService * channelService = [[ALChannelService alloc] init];
+    ALChannel *channel = [channelService getChannelByKey:groupId];
+    return [channel isNotificationMuted];
 }
 
 -(BOOL)isChannelLeft:(NSNumber *)groupID
@@ -301,6 +317,7 @@
     [grpMetaData setObject:@":groupName icon changed" forKey:AL_GROUP_ICON_CHANGE_MESSAGE];
     [grpMetaData setObject:@":userName left" forKey:AL_GROUP_LEFT_MESSAGE];
     [grpMetaData setObject:@":groupName deleted" forKey:AL_DELETED_GROUP_MESSAGE];
+    [grpMetaData setObject:@(NO) forKey:@"HIDE"];
     
     return grpMetaData;
 }
@@ -553,5 +570,16 @@
     ALChannel * channel = [channelDBService loadChannelByKey:channelKey];
     channel.unreadCount = [NSNumber numberWithInt:0];
 }
-
+    
+-(void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError *error))completion
+{
+    ALChannelClientService * clientService = [[ALChannelClientService alloc] init];
+    [clientService muteChannel:muteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
+        ALChannelDBService * dbService = [ALChannelDBService new];
+        [dbService updateMuteAfterTime:muteRequest.notificationAfterTime andChnnelKey:muteRequest.id];
+        completion(response,error);
+        
+    }];
+}
+    
 @end

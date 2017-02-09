@@ -69,6 +69,10 @@
 
 -(BOOL)isChannelLeft:(NSNumber*)groupID;
 
++(BOOL)isChannelDeleted:(NSNumber *)groupId;
+
++(BOOL)isChannelMuted:(NSNumber *)groupId;
+
 +(void)setUnreadCountZeroForGroupID:(NSNumber*)channelKey;
 
 -(NSNumber *)getOverallUnreadCountForChannel;
@@ -94,5 +98,7 @@
 
 -(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList andParentKey:(NSString *)clientParentKey
                  withCompletion:(void(^)(id json, NSError *error))completion;
+    
+-(void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError *error))completion;
 
 @end

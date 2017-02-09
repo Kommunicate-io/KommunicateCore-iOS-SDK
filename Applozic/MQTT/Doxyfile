@@ -762,6 +762,7 @@ INPUT                  = ../../README.md \
 			 MQTTCFSocketTransport.h \
 			 MQTTSSLSecurityPolicy.h \
 			 MQTTSSLSecurityPolicyTransport.h \
+			 MQTTWebsocketTransport/MQTTWebsocketTransport.h \
 			 MQTTPersistence.h \
 			 MQTTInMemoryPersistence.h \
 			 MQTTCoreDataPersistence.h

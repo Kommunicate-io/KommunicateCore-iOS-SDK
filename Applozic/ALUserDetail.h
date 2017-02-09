@@ -25,7 +25,7 @@
 @property (nonatomic, strong)  NSArray * valueArray;
 @property (nonatomic, strong)  NSString * userIdString;
 @property (nonatomic, strong) NSNumber * userTypeId;
-
+@property (nonatomic, strong) NSNumber * deletedAtTime;
 
 -(void)setUserDetails:(NSString *)jsonString;
 

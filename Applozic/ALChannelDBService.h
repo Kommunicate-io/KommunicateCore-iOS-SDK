@@ -61,6 +61,8 @@
 
 -(BOOL)isChannelLeft:(NSNumber *)groupId;
 
+-(BOOL)isChannelDeleted:(NSNumber *)groupId;
+
 -(void) updateChannelParentKey:(NSNumber *)channelKey
               andWithParentKey:(NSNumber *)channelParentKey isAdding:(BOOL)flag;
 
@@ -76,5 +78,7 @@
 -(void)addedMembersArray:(NSMutableArray *)memberArray andChannelKey:(NSNumber *)channelKey;
 
 -(NSMutableArray *)fetchChildChannels:(NSNumber *)parentGroupKey;
+
+-(void)updateMuteAfterTime:(NSNumber*)notificationAfterTime andChnnelKey:(NSNumber*)channelKey;
 
 @end

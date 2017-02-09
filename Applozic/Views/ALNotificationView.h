@@ -26,6 +26,8 @@
 
 -(void)showGroupLeftMessage;
 
++(void)showLocalNotification:(NSString *)text;
+
 @property (retain, nonatomic) ALMessage * alMessageObject;
 
 -(void)noDataConnectionNotificationView;

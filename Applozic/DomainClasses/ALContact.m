@@ -34,6 +34,7 @@
      self.connected = [[dict valueForKey:@"connected"] boolValue];
     self.unreadCount = [dict objectForKey:@"unreadCount"];
     self.userStatus = [dict objectForKey:@"statusMessage"];
+    self.deletedAtTime = [dict objectForKey:@"deletedAtTime"];
 }
 
 -(NSString *)getDisplayName

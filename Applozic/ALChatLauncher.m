@@ -54,46 +54,92 @@
 {
     self.chatLauncherFLAG = [NSNumber numberWithInt:1];
     
-    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+    if(groupID){
+        [self launchIndividualChatForGroup:userId withGroupId:groupID withDisplayName:nil andViewControllerObject:viewController andWithText:text];
+    }else{
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+        
+        ALChatViewController * chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
+        
+        chatView.channelKey = groupID;
+        chatView.contactIds = userId;
+        chatView.text = text;
+        chatView.individualLaunch = YES;
+        chatView.chatViewDelegate = self;
+        
+        NSLog(@"CALLED_VIA_NOTIFICATION");
+        
+        UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:chatView];
+        conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
+    }
     
-    ALChatViewController * chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     
-    chatView.channelKey = groupID;
-    chatView.contactIds = userId;
-    chatView.text = text;
-    chatView.individualLaunch = YES;
-    chatView.chatViewDelegate = self;
-    
-    NSLog(@"CALLED_VIA_NOTIFICATION");
-    
-    UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:chatView];
-    conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
 }
 
 
 -(void)launchIndividualChat:(NSString *)userId withGroupId:(NSNumber*)groupID
             withDisplayName:(NSString*)displayName andViewControllerObject:(UIViewController *)viewController andWithText:(NSString *)text
 {
-
-    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
-                                
-                                                         bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     
-    ALChatViewController *chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
-    
-    chatView.channelKey = groupID;
-    chatView.contactIds = userId;
-    chatView.text = text;
-    chatView.individualLaunch = YES;
-    chatView.displayName = displayName;
-    chatView.chatViewDelegate = self;
-    
-    UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];;
-    conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve ;
-    [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
+    if( groupID){
+        [self launchIndividualChatForGroup:userId withGroupId:groupID withDisplayName:displayName andViewControllerObject:viewController andWithText:text];
+    }else{
+        
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
+                                    
+                                                             bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+        ALChatViewController *chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
+        chatView.channelKey = groupID;
+        chatView.contactIds = userId;
+        chatView.text = text;
+        chatView.individualLaunch = YES;
+        chatView.displayName = displayName;
+        chatView.chatViewDelegate = self;
+        
+        UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];;
+        conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve ;
+        [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
+        
+    }
     
 }
+
+-(void)launchIndividualChatForGroup:(NSString *)userId withGroupId:(NSNumber*)groupID
+                    withDisplayName:(NSString*)displayName andViewControllerObject:(UIViewController *)viewController andWithText:(NSString *)text
+{
+    
+    ALChannelService * channelService  =  [ALChannelService new];
+    [channelService getChannelInformation:groupID
+                       orClientChannelKey:nil
+     
+                           withCompletion:^(ALChannel *alChannel) {
+                               //Channel information
+                               
+                               
+                               NSLog(@" alChannel ###%@ ", alChannel.name);
+                               UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
+                                                           
+                                                                                    bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+                               
+                               ALChatViewController *chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
+                               
+                               chatView.channelKey = groupID;
+                               chatView.text = text;
+                               chatView.contactIds = userId;
+                               chatView.individualLaunch = YES;
+                               chatView.displayName = displayName;
+                               chatView.chatViewDelegate = self;
+                               
+                               UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];;
+                               conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve ;
+                               [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
+                               
+                           }];
+    
+    
+}
+
 
 -(void)launchChatList:(NSString *)title andViewControllerObject:(UIViewController *)viewController
 {
@@ -131,7 +177,7 @@
     contcatListView.directContactVCLaunch = YES;
     UINavigationController *conversationViewNavController = [[UINavigationController alloc] initWithRootViewController:contcatListView];
     [uiViewController presentViewController:conversationViewNavController animated:YES completion:nil];
-
+    
 }
 
 -(void)launchIndividualContextChat:(ALConversationProxy *)alConversationProxy andViewControllerObject:(UIViewController *)viewController

@@ -33,6 +33,7 @@
         ALChannelService *channelService = [[ALChannelService alloc] init];
         [channelService syncCallForChannel];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"MQTT_APPLOZIC_01" object:alMessage];
 }
 
 -(void) updateConnectedStatus: (ALUserDetail *) alUserDetail {

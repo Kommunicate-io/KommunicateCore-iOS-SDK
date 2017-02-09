@@ -96,6 +96,8 @@
     {
         theChannelEntity.userCount = channel.userCount;
     }
+    theChannelEntity.notificationAfterTime = channel.notificationAfterTime;
+    theChannelEntity.deletedAtTime = channel.deletedAtTime;
     theChannelEntity.parentGroupKey = channel.parentKey;
     theChannelEntity.parentClientGroupKey = channel.parentClientKey;
     theChannelEntity.channelImageURL = channel.channelImageURL;
@@ -182,8 +184,8 @@
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:theDBHandler.managedObjectContext];
-    [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:@"userId"]];
     [fetchRequest setEntity:entity];
+    [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:@"userId"]];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", channelKey];
     [fetchRequest setPredicate:predicate];
@@ -196,7 +198,13 @@
     }
     else
     {
-        memberList = [NSMutableArray arrayWithArray:fetchedObjects];
+        
+         NSMutableArray* users = [NSMutableArray arrayWithArray:fetchedObjects];
+        
+         for (NSDictionary * theDictionary in users)
+         {
+             [memberList addObject:[theDictionary valueForKey:@"userId"]];
+         }
     }
     
     return memberList;
@@ -221,6 +229,10 @@
     alChannel.unreadCount = dbChannel.unreadCount;
     alChannel.adminKey = dbChannel.adminId;
     alChannel.type = dbChannel.type;
+    alChannel.membersName = [self getChannelMembersList:key];
+    alChannel.membersId = [self getChannelMembersList:key];
+    alChannel.notificationAfterTime = dbChannel.notificationAfterTime;
+    alChannel.deletedAtTime = dbChannel.deletedAtTime;
     
     return alChannel;
 }
@@ -332,6 +344,7 @@
         channel.type = dbChannel.type;
         channel.unreadCount = dbChannel.unreadCount;
         channel.channelImageURL = dbChannel.channelImageURL;
+        channel.deletedAtTime = dbChannel.deletedAtTime;
         
         return channel;
     }
@@ -429,7 +442,8 @@
             channel.type = dbChannel.type;
             channel.unreadCount = dbChannel.unreadCount;
             channel.channelImageURL = dbChannel.channelImageURL;
-            
+            channel.deletedAtTime = dbChannel.deletedAtTime;
+
             [alChannels addObject:channel];
         }
     }
@@ -575,6 +589,12 @@
     return dbChannel.isLeft;
 }
 
+-(BOOL)isChannelDeleted:(NSNumber *)groupId
+{
+    DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
+    return (dbChannel.deletedAtTime != nil);
+}
+
 -(void)processArrayAfterSyncCall:(NSMutableArray *)channelArray
 {
     for(ALChannel *channelObject in channelArray)
@@ -710,6 +730,8 @@
     alChannel.adminKey = dbChannel.adminId;
     alChannel.type = dbChannel.type;
     alChannel.channelImageURL = dbChannel.channelImageURL;
+    alChannel.deletedAtTime = dbChannel.deletedAtTime;
+
     
     return alChannel;
 }
@@ -744,11 +766,24 @@
         alChannel.adminKey = dbChannel.adminId;
         alChannel.type = dbChannel.type;
         alChannel.channelImageURL = dbChannel.channelImageURL;
+        alChannel.deletedAtTime = dbChannel.deletedAtTime;
+
         
         [childArray addObject:alChannel];
     }
     
     return childArray;
 }
+
+-(void)updateMuteAfterTime:(NSNumber*)notificationAfterTime andChnnelKey:(NSNumber*)channelKey
+{
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    
+    DB_CHANNEL *dbChannel = [self getChannelByKey:channelKey];
+    dbChannel.notificationAfterTime = notificationAfterTime;
+    [dbHandler.managedObjectContext save:nil];
+
+}
+
 
 @end

@@ -68,6 +68,7 @@
 #define SUB_GROUP_LAUNCH @"com.applozic.userdefault.SUB_GROUP_LAUNCH"
 #define VIEW_CONTROLLER_ARRAY @"com.applozic.userdefault.VIEW_CONTROLLER_ARRAY"
 #define MSG_CONTAINER_VC @"com.applozic.userdefault.MSG_CONTAINER_VC"
+#define GROUP_DELETED_TITLE @"com.applozic.userdefault.GROUP_DELETED_TITLE"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -276,5 +277,8 @@
 
 +(void)setMsgContainerVC:(NSString *)className;
 +(NSString *)getMsgContainerVC;
+
++(NSString *)getGroupDeletedTitle;
++(void)setGroupDeletedTitle:(NSString *)title;
 
 @end

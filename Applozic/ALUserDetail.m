@@ -39,6 +39,8 @@
     
     self.userStatus = [JSONString valueForKey:@"statusMessage"];
     self.userTypeId = [JSONString valueForKey:@"userTypeId"];
+    
+    self.deletedAtTime = [JSONString valueForKey:@"deletedAtTime"];
 
 }
 
@@ -52,6 +54,7 @@
 //    NSLog(@"IMAGE LINK: %@",self.imageLink);
 //    NSLog(@"Display Name: %@",self.displayName);
 //    NSLog(@"Contact Number : %@",self.contactNumber);
+//    NSLog(@"DeletedAt : %@",self.deletedAtTime);
  
 }
 
@@ -70,6 +73,7 @@
     self.imageLink  = [self getStringFromJsonValue:json[@"imageLink"]];
     self.contactNumber = [self getStringFromJsonValue:json[@"phoneNumber"]];
     self.userStatus = [self getStringFromJsonValue:json[@"statusMessage"]];
+    self.deletedAtTime = [self getNSNumberFromJsonValue:json[@"deletedAtTime"]];
 }
 
 -(NSString *)getDisplayName

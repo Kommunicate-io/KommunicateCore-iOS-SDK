@@ -150,16 +150,26 @@
 
 -(void)viewDidDisappear:(BOOL)animated
 {
-    if (self.navigationController.viewControllers.count == 1)
+    BOOL profileFlag = NO;
+    UIViewController *VC = self.tabBarController.selectedViewController;
+    UINavigationController *navVC = (UINavigationController *)VC;
+    
+    for(UIViewController *VC in navVC.viewControllers)
     {
-        NSLog(@"CLOSING_MQTT_CONNECTIONS");
+        if([NSStringFromClass([VC class]) isEqualToString:@"ALUserProfileVC"])
+        {
+            profileFlag = YES;
+        }
+    }
+    
+    if (self.navigationController.viewControllers.count == 1 && !profileFlag)
+    {
+        NSLog(@"MSG VC : CLOSING_MQTT_CONNECTIONS");
 //        dispatch_async(dispatch_get_main_queue(), ^{
             [self.alMqttConversationService unsubscribeToConversation];
 //        });
     }
 }
-
-
 
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -325,6 +335,7 @@
 {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
+    contactVC.forGroup = [NSNumber numberWithInt:REGULAR_CONTACTS];
     
     if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
     {
@@ -443,9 +454,8 @@
             {
                 if(channel && channel.type == GROUP_OF_TWO)
                 {
-                    NSMutableArray * array = [[channel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
-                    [array removeObject:[ALUserDefaultsHandler getUserId]];
-                    ALContact *grpContact = [contactDBService loadContactByKey:@"userId" value:array[1]];
+                    ALContact *grpContact = [contactDBService loadContactByKey:@"userId" value:[channel getReceiverIdInGroupOfTwo]];
+                
                     contactCell.onlineImageMarker.hidden = (!grpContact.connected);
                 }
                 else
@@ -695,10 +705,9 @@
                 {
                     if(alChannel.type == GROUP_OF_TWO)
                     {
-                        NSMutableArray * array = [[alChannel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
-                        [array removeObject:[ALUserDefaultsHandler getUserId]];
+                        NSString * receiverId =  [alChannel getReceiverIdInGroupOfTwo];
                         ALContactService * contactService = [ALContactService new];
-                        grpContact = [contactService loadContactByKey:@"userId" value:array[1]];
+                        grpContact = [contactService loadContactByKey:@"userId" value:receiverId];
                         contactCell.mUserNameLabel.text = [grpContact getDisplayName];
                         contactCell.onlineImageMarker.hidden = (!grpContact.connected);
                     }
@@ -921,12 +930,12 @@
         
         ALChannelService *channelService = [[ALChannelService alloc] init];
         ALChannel *alChannel = [channelService getChannelByKey:message.groupId];
+       
         if(alChannel.type == GROUP_OF_TWO)
         {
-            NSMutableArray * array = [[alChannel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
-            [array removeObject:[ALUserDefaultsHandler getUserId]];
+            NSString* contactId = [alChannel getReceiverIdInGroupOfTwo];
             ALContactService * contactService = [ALContactService new];
-            ALContact * alContact = [contactService loadContactByKey:@"userId" value:array[1]];
+            ALContact * alContact = [contactService loadContactByKey:@"userId" value:contactId];
             self.detailChatViewController.contactIds = alContact.userId;
         }
 
@@ -986,16 +995,16 @@
         ALMessage * alMessageobj = self.mContactsMessageListArray[indexPath.row];
         
         ALChannelService *channelService = [ALChannelService new];
+        ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
+        
         if([channelService isChannelLeft:[alMessageobj getGroupId]])
         {
             NSArray * filteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
                                        [NSPredicate predicateWithFormat:@"groupId = %@",[alMessageobj getGroupId]]];
             
-            ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
             [dbService deleteAllMessagesByContact:nil orChannelKey:[alMessageobj getGroupId]];
             [ALChannelService setUnreadCountZeroForGroupID:[alMessageobj getGroupId]];
             [self subProcessDeleteMessageThread:filteredArray];
-            
             return;
         }
         
@@ -1022,6 +1031,12 @@
             }
             
             [self subProcessDeleteMessageThread:theFilteredArray];
+                                   
+            if([ALChannelService isChannelDeleted:[alMessageobj getGroupId]])
+            {
+                ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+                [channelDBService deleteChannel:[alMessageobj getGroupId]];
+            }
         }];
     }
 }
@@ -1137,7 +1152,7 @@
     ALMessageDBService *dBService = [ALMessageDBService new];
     dBService.delegate = self;
     
-    ALPushAssist* top=[[ALPushAssist alloc] init];
+    ALPushAssist* top = [[ALPushAssist alloc] init];
     [self.detailChatViewController setRefresh: YES];
     
     if ([self.detailChatViewController contactIds] != nil || [self.detailChatViewController channelKey] != nil)
@@ -1147,6 +1162,12 @@
     else if (top.isMessageViewOnTop && (![alMessage.type isEqualToString:@"5"]))
     {
         [self updateMessageList:messageArray];
+        
+        if (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId])
+        {
+            return;
+        }
+        
         ALNotificationView * alnotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
         

@@ -48,9 +48,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(thirdPartyNotificationHandler:)
                                                  name:@"showNotificationAndLaunchChat" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(popGroupDetailsAndLoadChatHandler:)
-                                                 name:@"popGroupDetailsAndLoadChat" object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForegroundBase:)
                                                  name:UIApplicationWillEnterForegroundNotification object:nil];
     
@@ -254,6 +251,10 @@
         if(alertValue)
         {
             NSLog(@"posting to notification....%@",notification.userInfo);
+            if (groupId && [ALChannelService isChannelMuted:groupId])
+            {
+                return;
+            }
             [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId delegate:self];
         }
         else
@@ -285,29 +286,6 @@
         self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:APPLICATION_KEY];
         [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID andViewControllerObject:pushAssistant.topViewController andWithText:nil];
     }
-}
-
--(void)popGroupDetailsAndLoadChatHandler:(NSNotification *)notification{    
-    NSLog(@"NOTIFICATION OBJECT :%@ USERINFO :%@",notification.object,notification.userInfo);
-    ALPushAssist* pushAssistant = [[ALPushAssist alloc] init];
-    
-    ALGroupDetailViewController * groupDeatilView = (ALGroupDetailViewController *)pushAssistant.topViewController;
-    [groupDeatilView.navigationController popViewControllerAnimated:YES];
-    
-    
-    UIViewController * topViewController = pushAssistant.topViewController;
-    NSArray * allViewControllers = [[topViewController navigationController] viewControllers];
-    
-    for (UIViewController *viewController in allViewControllers){
-        
-        if ([viewController isKindOfClass:[ALChatViewController class]]){
-            
-            ALChatViewController * chatViewController = (ALChatViewController*)viewController;
-            
-            [topViewController.navigationController popToViewController:chatViewController animated:YES];
-        }
-    }
-    
 }
 
 -(void)dealloc

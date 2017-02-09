@@ -21,6 +21,9 @@
 #import "ALApplozicSettings.h"
 #import "ALConstant.h"
 #import "ALGroupDetailViewController.h"
+#import "ALUserProfileVC.h"
+
+
 @implementation ALNotificationView
     
 
@@ -98,7 +101,7 @@
     NSString * title; // Title of Notification Banner (Display Name or Group Name)
     NSString * subtitle = self.text; //Message to be shown
     
-    ALPushAssist * top=[[ALPushAssist alloc] init];
+    ALPushAssist * top = [[ALPushAssist alloc] init];
     
     ALContactDBService * contactDbService = [[ALContactDBService alloc] init];
     ALContact * alcontact = [contactDbService loadContactByKey:@"userId" value:self.contactId];
@@ -118,9 +121,7 @@
         
         if (alchannel.type == GROUP_OF_TWO)
         {
-            NSMutableArray * array = [[alchannel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
-            [array removeObject:[ALUserDefaultsHandler getUserId]];
-            ALContact * grpContact = [contactDbService loadContactByKey:@"userId" value:array[1]];
+            ALContact * grpContact = [contactDbService loadContactByKey:@"userId" value:[alchannel getReceiverIdInGroupOfTwo]];
             groupName = [grpContact getDisplayName];
         }
         
@@ -195,17 +196,62 @@
              NSLog(@"onTopMessageVC: ContactID %@ and ChannelID %@",self.contactId, self.groupId);
              [class2 createDetailChatViewController:_contactId];
              self.checkContactId = [NSString stringWithFormat:@"%@",self.contactId];
-             
          }
          else if([delegate isKindOfClass:[ALChatViewController class]] && top.isChatViewOnTop){
-             
              [self updateChatScreen:delegate];
+         }
+         else if ([delegate isKindOfClass:[ALGroupDetailViewController class]] && top.isGroupDetailViewOnTop){
+             ALGroupDetailViewController *groupDeatilVC = (ALGroupDetailViewController *)delegate;
+             [[(ALGroupDetailViewController *)delegate navigationController] popViewControllerAnimated:YES];
+             [self updateChatScreen:groupDeatilVC.alChatViewController];
+         }
+         else if ([delegate isKindOfClass:[ALUserProfileVC class]] && top.isUserProfileVCOnTop)
+         {
+             NSLog(@"OnTop UserProfile VC : ContactID %@ and ChannelID %@",self.contactId, self.groupId);
+             ALUserProfileVC * userProfileVC = (ALUserProfileVC *)delegate;
+             [userProfileVC.tabBarController setSelectedIndex:0];
+             UINavigationController *navVC = (UINavigationController *)userProfileVC.tabBarController.selectedViewController;
+             ALMessagesViewController *msgVC = (ALMessagesViewController *)[[navVC viewControllers] objectAtIndex:0];
+             if(self.groupId)
+             {
+                 msgVC.channelKey = self.groupId;
+             }
+             else
+             {
+                 msgVC.channelKey = nil;
+                 self.groupId = nil;
+             }
+             [msgVC createDetailChatViewController:self.contactId];
+         }
+         else if ([delegate isKindOfClass:[ALNewContactsViewController class]] && top.isContactVCOnTop)
+         {
+             NSLog(@"OnTop CONTACT VC : ContactID %@ and ChannelID %@",self.contactId, self.groupId);
+             ALNewContactsViewController *contactVC = (ALNewContactsViewController *)delegate;
+             ALMessagesViewController *msgVC = (ALMessagesViewController *)[contactVC.navigationController.viewControllers objectAtIndex:0];
+             
+             if(self.groupId)
+             {
+                 msgVC.channelKey = self.groupId;
+             }
+             else
+             {
+                 msgVC.channelKey = nil;
+                 self.groupId = nil;
+             }
+             
+             [msgVC createDetailChatViewController:self.contactId];
+
+             NSMutableArray * viewsArray = [NSMutableArray arrayWithArray:msgVC.navigationController.viewControllers];
+             
+             if ([viewsArray containsObject:contactVC])
+             {
+                 [viewsArray removeObject:contactVC];
+             }
+             
+             msgVC.navigationController.viewControllers = viewsArray;
              
          }
-         else if ([delegate isKindOfClass:[ALChatViewController class]] && top.isGroupDetailViewOnTop){
-             [[(ALGroupDetailViewController *)delegate navigationController] popViewControllerAnimated:YES];
-             [self updateChatScreen:delegate];
-         }else{
+         else{
              NSLog(@"View Already Opened and Notification coming already");
          }
 }
@@ -215,7 +261,8 @@
                            canBeDismissedByUser:YES];
 }
 
--(void)updateChatScreen:(UIViewController*)delegate{
+-(void)updateChatScreen:(UIViewController*)delegate
+{
     // Chat View is Opened....
     ALChatViewController * class1 = (ALChatViewController*)delegate;
     NSLog(@"onTopChatVC: ContactID %@ and ChannelID %@",self.contactId, self.groupId);
@@ -255,7 +302,12 @@
 {
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
     [TSMessage showNotificationWithTitle:@"No Internet Connectivity" type:TSMessageNotificationTypeWarning];
-    
+}
+
++(void)showLocalNotification:(NSString *)text
+{
+    [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
+    [TSMessage showNotificationWithTitle:text type:TSMessageNotificationTypeWarning];
 }
 
 @end

@@ -16,6 +16,8 @@
 #import "ALChannelFeed.h"
 #import "ALChannelCreateResponse.h"
 #import "ALChannelSyncResponse.h"
+#import "ALMuteRequest.h"
+#import "ALAPIResponse.h"
 
 @interface ALChannelClientService : NSObject
 
@@ -54,5 +56,8 @@
 
 +(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList andClientParentKey:(NSString *)clientParentKey
                  withCompletion:(void (^)(id json, NSError * error))completion;
+    
+-(void) muteChannel:(ALMuteRequest *)ALMuteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion;
+
 
 @end

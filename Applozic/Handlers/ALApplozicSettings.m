@@ -761,4 +761,16 @@ NOTIFICATION_DISABLE = 2
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++(NSString *)getGroupDeletedTitle
+{
+    NSString * title = [[NSUserDefaults standardUserDefaults] stringForKey:GROUP_DELETED_TITLE];
+    return title ? title : @"This Group has been Deleted";
+}
+
++(void)setGroupDeletedTitle:(NSString *)title;
+{
+    [[NSUserDefaults standardUserDefaults] setObject:title forKey:GROUP_DELETED_TITLE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

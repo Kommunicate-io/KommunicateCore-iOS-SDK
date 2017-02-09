@@ -8,6 +8,7 @@
 
 #import "ALChannel.h"
 #import "ALChannelUser.h"
+#import "ALUserDefaultsHandler.h"
 
 
 @interface ALChannel ()
@@ -15,6 +16,8 @@
 @end
 
 @implementation ALChannel
+
+@synthesize membersName = _membersName;
 
 -(id)initWithDictonary:(NSDictionary *)messageDictonary
 {
@@ -31,11 +34,18 @@
     self.adminKey = [self getStringFromJsonValue:messageJson[@"adminId"]];
     self.unreadCount = [self getNSNumberFromJsonValue:messageJson[@"unreadCount"]];
     //self.userCount = [self getNSNumberFromJsonValue:messageJson[@""]];
-    self.membersName = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersName"]];
+//    self.membersName = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersName"]];
+    [self setMembersName: [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersName"]]];
+    self.membersId = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersId"]];
+    
     self.removeMembers = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"removedMembersId"]];
     self.type = [self getShortFromJsonValue:messageJson[@"type"]];
     self.childKeys = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"childKeys"]];
-
+    
+    self.notificationAfterTime = [self getNSNumberFromJsonValue:messageJson[@"notificationAfterTime"]];
+    
+    self.deletedAtTime = [self getNSNumberFromJsonValue:messageJson[@"deletedAtTime"]];
+    
     self.parentKey = [self getNSNumberFromJsonValue:messageJson[@"parentKey"]];
     self.parentClientKey = [self getStringFromJsonValue:messageJson[@"parentClientGroupId"]];
     
@@ -61,5 +71,40 @@
     
     return nil;
 }
+
+-(BOOL)isNotificationMuted{
+    
+    long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970] ] longValue ]*1000L;
+    if(_notificationAfterTime){
+        return ([_notificationAfterTime longValue]> secsUtc1970);
+    }
+    return NO;
+}
+
+-(void)setMembersName:(NSMutableArray *)membersName {
+    _membersName = membersName;
+}
+
+-(NSMutableArray *)membersName
+{
+//    return _membersName ? _membersName : self.membersId;
+    return self.membersId;
+}
+
+-(NSString*)getReceiverIdInGroupOfTwo{
+    
+    if(self.type!=GROUP_OF_TWO){
+        return nil;
+    }
+    
+    for(NSString* userId in self.membersName)
+    {
+        if(!([userId isEqualToString:[ALUserDefaultsHandler getUserId]]) ){
+            return userId;
+        }
+    }
+    return nil;
+}
+            
 
 @end

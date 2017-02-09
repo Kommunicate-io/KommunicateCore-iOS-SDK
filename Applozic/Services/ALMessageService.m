@@ -23,6 +23,7 @@
 #import "ALContactDBService.h"
 #import "ALContactService.h"
 #import "ALConversationService.h"
+#import "ALMessage.h"
 #include <tgmath.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
@@ -134,10 +135,36 @@ static ALMessageClientService *alMsgClientService;
     ALMessageClientService *alMessageClientService = [[ALMessageClientService alloc] init];
     
     [alMessageClientService getMessageListForUser:messageListRequest
-                   withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
-        
-        completion(messages, error,userDetailArray);
-        
+                   withCompletion:^(NSMutableArray *messages,
+                                    NSError *error,
+                                    NSMutableArray *userDetailArray) {
+                       ALContactService *contactService = [ALContactService new];
+                       NSMutableArray * userNotPresentIds = [NSMutableArray new];
+                      
+                       for(ALMessage* msg  in messages){
+                           
+                           NSString* contactId = msg.to;
+                           
+                           if(![contactService isContactExist:contactId]){
+                               [userNotPresentIds addObject:contactId];
+                           }
+                           
+                       }
+                       
+                       if(userNotPresentIds.count>0)
+                       {
+                           NSLog(@"Call userDetails...");
+                           ALUserService *alUserService = [ALUserService new];
+                           [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                               NSLog(@"User detail response sucessfull.");
+                               completion(messages, error,userDetailArray);
+                           }];
+                       }
+                       else
+                       {
+                           
+                           completion(messages, error,userDetailArray);
+                       }
     }];
 }
 
@@ -169,7 +196,6 @@ static ALMessageClientService *alMsgClientService;
         if(!theError)
         {
             statusStr = (NSString*)theJson;
-            //TODO: move to db layer
             ALSendMessageResponse  *response = [[ALSendMessageResponse alloc] initWithJSONString:statusStr ];
             
             ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
@@ -186,7 +212,8 @@ static ALMessageClientService *alMsgClientService;
             alMessage.inProgress = dbMessage.inProgress.boolValue;
             alMessage.isUploadFailed=dbMessage.isUploadFailed.boolValue;
             alMessage.status = dbMessage.status;
-        
+            
+            
             [theDBHandler.managedObjectContext save:nil];
         }else{
             NSLog(@" got error while sending messages");

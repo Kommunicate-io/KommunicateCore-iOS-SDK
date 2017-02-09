@@ -26,7 +26,6 @@
 @dynamic userStatus;
 @dynamic userTypeId;
 @dynamic contactType;
-
-
+@dynamic deletedAtTime;
 
 @end

@@ -7,13 +7,16 @@
 //
 
 #define CHANNEL_INFO_URL @"/rest/ws/group/info"
-#define CHANNEL_SYNC_URL @"/rest/ws/group/list"
+//#define CHANNEL_SYNC_URL @"/rest/ws/group/list"
+#define CHANNEL_SYNC_URL @"/rest/ws/group/v3/list"
 #define CREATE_CHANNEL_URL @"/rest/ws/group/create"
 #define DELETE_CHANNEL_URL @"/rest/ws/group/delete"
 #define LEFT_CHANNEL_URL @"/rest/ws/group/left"
 #define ADD_MEMBER_TO_CHANNEL_URL @"/rest/ws/group/add/member"
 #define REMOVE_MEMBER_FROM_CHANNEL_URL @"/rest/ws/group/remove/member"
 #define UPDATE_CHANNEL_URL @"/rest/ws/group/update"
+#define UPDATE_GROUP_USER @"/rest/ws/group/user/update"
+
 
 /************************************************
  SUB GROUP URL : ADD A SINGLE CHILD
@@ -38,6 +41,7 @@
 #import "ALContactDBService.h"
 #import "ALUserDetailListFeed.h"
 #import "ALUserService.h"
+#import "ALMuteRequest.h"
 
 
 @interface ALChannelClientService ()
@@ -514,5 +518,31 @@
     }];
 }
 
+    
+-(void) muteChannel:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion
+{
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,UPDATE_GROUP_USER];
+    NSError * error;
+   
+    NSData * postdata = [NSJSONSerialization dataWithJSONObject:alMuteRequest.dictionary options:0 error:&error];
+    NSString *paramString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"MUTE_GROUP" WithCompletionHandler:^(id theJson, NSError *theError) {
+       
+        if (theError)
+        {
+            NSLog(@" muteChannel :: %@", theError);
+            completion(nil, theError);
+            return;
+        }
+        ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        completion(response, nil);
+        
+    }];
+
+}
 
 @end

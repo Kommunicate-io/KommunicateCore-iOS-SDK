@@ -16,6 +16,8 @@
 #import "ALDataNetworkConnection.h"
 #import "ALMQTTConversationService.h"
 #import "ALGroupCreationViewController.h"
+#import "ALPushAssist.h"
+
 
 @interface ALGroupDetailViewController () <ALGroupInfoDelegate>
 {
@@ -24,6 +26,7 @@
     BOOL isAdmin;
     CGFloat screenWidth;
     NSArray * colors;
+    ALChannel *alchannel;
 }
 
 @property (nonatomic, retain) UILabel * memberNameLabel;
@@ -46,6 +49,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(groupDetailsSyncCall) name:@"GroupDetailTableReload" object:nil];
     self.lastSeenMembersArray = [[NSMutableArray alloc] init];
+    self.alChannel =[[ALChannelService new] getChannelByKey:self.channelKeyID];
+    NSLog(@"## self.alChannel ::", self.alChannel.notificationAfterTime);
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -53,17 +58,107 @@
     [super viewWillAppear:animated];
     [self setupView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUser:) name:@"USER_DETAIL_OTHER_VC" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAPNS:) name:@"pushNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMQTTNotification:) name:@"MQTT_APPLOZIC_01" object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAIL_OTHER_VC" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MQTT_APPLOZIC_01" object:nil];
 }
 
 -(void)updateUser:(NSNotification *)notifyObj
 {
     [self.tableView reloadData];
+}
+
+-(void)showMQTTNotification:(NSNotification *)notifyObject
+{
+    ALMessage * alMessage = (ALMessage *)notifyObject.object;
+    BOOL flag = (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]);
+    
+    if (![alMessage.type isEqualToString:@"5"] && !flag)
+    {
+        ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
+                                                                           withAlertMessage:alMessage.message];
+        [alNotification nativeNotification:self];
+    }
+}
+
+-(void)handleAPNS:(NSNotification *)notification
+{
+    NSString * contactId = notification.object;
+    NSLog(@"GROUP_DETAIL_VC_NOTIFICATION_OBJECT : %@",contactId);
+    NSDictionary *dict = notification.userInfo;
+    NSNumber * updateUI = [dict valueForKey:@"updateUI"];
+    NSString * alertValue = [dict valueForKey:@"alertValue"];
+    
+    NSArray * myArray = [contactId componentsSeparatedByString:@":"];
+    NSNumber * channelKey = nil;
+    if(myArray.count > 2)
+    {
+        channelKey = @([myArray[1] intValue]);
+    }
+    
+    ALPushAssist *pushAssist = [ALPushAssist new];
+    
+    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && pushAssist.isGroupDetailViewOnTop)
+    {
+        ALMessage *alMessage = [[ALMessage alloc] init];
+        alMessage.message = alertValue;
+        NSArray *myArray = [alMessage.message componentsSeparatedByString:@":"];
+        
+        if(myArray.count > 1)
+        {
+            alertValue = [NSString stringWithFormat:@"%@", myArray[1]];
+        }
+        else
+        {
+            alertValue = myArray[0];
+        }
+        
+        alMessage.message = alertValue;
+        alMessage.contactIds = contactId;
+        alMessage.groupId = channelKey;
+        
+        if (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId])
+        {
+            return;
+        }
+        
+        ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
+                                                                           withAlertMessage:alMessage.message];
+        [alNotification nativeNotification:self];
+    }
+    else if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
+    {
+        NSLog(@"######## GROUP DETAIL VC : APP_STATE_INACTIVE #########");
+
+        ALGroupDetailViewController * groupDetailVC = self;
+        ALMessagesViewController *msgVC = (ALMessagesViewController *)[self.navigationController.viewControllers objectAtIndex:0];
+        
+        if(channelKey)
+        {
+            msgVC.channelKey = channelKey;
+        }
+        else
+        {
+            msgVC.channelKey = nil;
+        }
+        
+        ALChatViewController * chatVC = (ALChatViewController *)self.alChatViewController;
+        NSMutableArray * viewsArray = [NSMutableArray arrayWithArray:msgVC.navigationController.viewControllers];
+        [viewsArray removeObject:chatVC];
+        msgVC.navigationController.viewControllers = viewsArray;
+        [msgVC createDetailChatViewController:contactId];
+        viewsArray = [NSMutableArray arrayWithArray:msgVC.navigationController.viewControllers];
+        [viewsArray removeObject:groupDetailVC];
+        msgVC.navigationController.viewControllers = viewsArray;
+    }
+
 }
 
 -(void)setNavigationColor
@@ -86,7 +181,6 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-
 }
 
 -(void)setupView
@@ -157,9 +251,9 @@
         case 0:
         {
             if(isAdmin && ![self isThisChannelLeft:self.channelKeyID] && [ALApplozicSettings getGroupMemberAddOption])
-                return 2;
+                return 3;
             else
-                return 1;
+                return 2;
         }break;
         case 1:
         {
@@ -211,7 +305,19 @@
         {
             if(indexPath.row == 1){
                 
+                if([self.alChannel isNotificationMuted])
+                {
+                    [self unmuteGroup];
+                    
+                }else{
+                    
+                    [self showActionSheet];
+                }
+            }
+            else if(indexPath.row==2)
+            {
                 [self addNewMember];
+
             }
         }
             break;
@@ -228,6 +334,7 @@
             [self checkAndconfirm:@"Confirm" withMessage:@"Are you sure?" otherButtonTitle:@"Yes"]; 
             
         }break;
+            
         default:break;
     }
     
@@ -470,6 +577,11 @@
                     [self.memberNameLabel setFont:[UIFont boldSystemFontOfSize:18]];
                     self.memberNameLabel.text = [NSString stringWithFormat:@"%@", self.groupName];
                 }
+                else if(indexPath.row==1)
+                {
+                    self.memberNameLabel.text = [self.alChannel isNotificationMuted]
+                    ? [NSString stringWithFormat:@"Unmute Group"] : [NSString stringWithFormat:@"Mute Group"];
+                }
                 else
                 {
                     self.memberNameLabel.textColor = self.view.tintColor;
@@ -664,4 +776,68 @@
     [self.tableView reloadData];
 }
 
+//==============================================================================================================================================
+#pragma mark - ACTIONSHEET METHODS
+//==============================================================================================================================================
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    long currentTimeStemp = [[NSNumber numberWithLong:([[NSDate date] timeIntervalSince1970]*1000)] longValue];
+    
+                        
+    NSNumber * notificationAfterTime =0;
+    
+    switch(buttonIndex){
+            
+        case 0:
+            
+            notificationAfterTime= [NSNumber numberWithLong:(currentTimeStemp + 8*60*60*1000)];
+            break;
+            
+        case 1:
+            notificationAfterTime= [NSNumber numberWithDouble:(currentTimeStemp + 7*24*60*60*1000)];
+            break;
+            
+        case 2:
+            notificationAfterTime= [NSNumber numberWithDouble:(currentTimeStemp + 365*24*60*60*1000)];
+            break;
+            
+        default:break;
+    }
+    
+    if(notificationAfterTime)
+    {
+        [self sendMuteRequestWithTime:notificationAfterTime];
+    }
+}
+
+-(void) showActionSheet
+{
+    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"8 Hrs ",@"1 Week",@"1 Year", nil];
+    [actionSheet showInView:self.view];
+}
+
+-(void) unmuteGroup {
+    long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970] ] longValue ]*1000L;
+
+    [self sendMuteRequestWithTime:[NSNumber numberWithLong:secsUtc1970]];
+}
+
+
+-(void) sendMuteRequestWithTime:(NSNumber*) time{
+    
+    ALMuteRequest * alMuteRequest = [ALMuteRequest new];
+    alMuteRequest.id = self.channelKeyID;
+    alMuteRequest.notificationAfterTime= time;
+    ALChannelService *alChannelService = [[ALChannelService alloc]init];
+    [[self activityIndicator] startAnimating];
+    [alChannelService muteChannel:alMuteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
+        NSLog(@"actionSheet response from server:: %@", response.status);
+        [[self activityIndicator] stopAnimating];
+        self.alChannel.notificationAfterTime= alMuteRequest.notificationAfterTime;
+        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:0];
+        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationNone];
+        
+    }];
+}
 @end

@@ -140,6 +140,7 @@
     contact.lastSeenAt = dbContact.lastSeenAt;
     contact.unreadCount= dbContact.unreadCount;
     contact.userStatus = dbContact.userStatus;
+    contact.deletedAtTime = dbContact.deletedAtTime;
     
     return contact;
 }

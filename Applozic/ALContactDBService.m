@@ -160,6 +160,7 @@
             userContact.contactType = contact.contactType;
         }
         userContact.localImageResourceName = contact.localImageResourceName;
+        userContact.deletedAtTime = contact.deletedAtTime;
     }
     
     NSError *error = nil;
@@ -245,6 +246,7 @@
     contact.block = dbContact.block;
     contact.blockBy = dbContact.blockBy;
     contact.userStatus = dbContact.userStatus;
+    contact.deletedAtTime = dbContact.deletedAtTime;
     
     return contact;
 }
@@ -303,7 +305,7 @@
     contact.connected = userContact.connected;
     contact.contactType = userContact.contactType;
     contact.userTypeId = userContact.userTypeId;
-
+    contact.deletedAtTime = userContact.deletedAtTime;
     
     NSError *error = nil;
     
@@ -369,20 +371,22 @@
         dbContact.contactImageUrl = userDetail.imageLink;
         dbContact.contactNumber = userDetail.contactNumber;
         dbContact.userStatus = userDetail.userStatus;
+        dbContact.deletedAtTime = userDetail.deletedAtTime;
 
     }
     else
     {
          // Add contact in DB.
-         ALContact * contact = [[ALContact alloc] init];
-         contact.userId = userDetail.userId;
-         contact.unreadCount = userDetail.unreadCount;
-         contact.lastSeenAt = userDetail.lastSeenAtTime;
-         contact.displayName = userDetail.displayName;
-         contact.contactImageUrl = userDetail.imageLink;
-         contact.contactNumber = userDetail.contactNumber;
-         contact.connected = userDetail.connected;
-         contact.userStatus = userDetail.userStatus;
+        ALContact * contact = [[ALContact alloc] init];
+        contact.userId = userDetail.userId;
+        contact.unreadCount = userDetail.unreadCount;
+        contact.lastSeenAt = userDetail.lastSeenAtTime;
+        contact.displayName = userDetail.displayName;
+        contact.contactImageUrl = userDetail.imageLink;
+        contact.contactNumber = userDetail.contactNumber;
+        contact.connected = userDetail.connected;
+        contact.userStatus = userDetail.userStatus;
+        contact.deletedAtTime = userDetail.deletedAtTime;
         
         [self addContact:contact];
     }
@@ -613,6 +617,7 @@
         contact.unreadCount = dbContact.unreadCount;
         contact.userStatus = dbContact.userStatus;
         contact.connected = dbContact.connected;
+        contact.deletedAtTime = dbContact.deletedAtTime;
         
         [contactList addObject:contact];
     }

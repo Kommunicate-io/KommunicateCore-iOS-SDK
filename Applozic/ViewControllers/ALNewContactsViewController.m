@@ -26,6 +26,7 @@
 #import "ALNotificationView.h"
 #import "ALUserService.h"
 #import "ALContactService.h"
+#import "ALPushAssist.h"
 
 #define DEFAULT_TOP_LANDSCAPE_CONSTANT -34
 #define DEFAULT_TOP_PORTRAIT_CONSTANT -64
@@ -152,7 +153,6 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    
     [super viewWillAppear:animated];
     self.groupOrContacts = [NSNumber numberWithInt:SHOW_CONTACTS]; //default
     self.navigationItem.leftBarButtonItem = nil;
@@ -173,9 +173,23 @@
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
         
     }
-    
+  
     BOOL groupRegular = [self.forGroup isEqualToNumber:[NSNumber numberWithInt:REGULAR_CONTACTS]];
     BOOL subGroupContacts = [self.forGroup isEqualToNumber:[NSNumber numberWithInt:LAUNCH_GROUP_OF_TWO]];
+    
+    if(groupRegular)
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(showMQTTNotification:)
+                                                     name:@"MQTT_APPLOZIC_01"
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleAPNS:)
+                                                     name:@"pushNotification"
+                                                   object:nil];
+    }
+    
     if((!groupRegular && self.forGroup != NULL && !subGroupContacts)){
         [self updateView];
     }
@@ -191,6 +205,86 @@
     self.searchBar.frame = CGRectMake(0,y, self.view.frame.size.width, 40);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUser:) name:@"USER_DETAIL_OTHER_VC" object:nil];
+}
+
+-(void)showMQTTNotification:(NSNotification *)notifyObject
+{
+    ALMessage * alMessage = (ALMessage *)notifyObject.object;
+    
+    BOOL flag = (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]);
+
+    if (![alMessage.type isEqualToString:@"5"] && !flag)
+    {
+        ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
+                                                                           withAlertMessage:alMessage.message];
+        [alNotification nativeNotification:self];
+    }
+}
+
+-(void)handleAPNS:(NSNotification *)notification
+{
+    NSString * contactId = notification.object;
+    NSLog(@"CONTACT_VC_NOTIFICATION_OBJECT : %@",contactId);
+    NSDictionary *dict = notification.userInfo;
+    NSNumber * updateUI = [dict valueForKey:@"updateUI"];
+    NSString * alertValue = [dict valueForKey:@"alertValue"];
+    
+    NSArray * myArray = [contactId componentsSeparatedByString:@":"];
+    NSNumber * channelKey = nil;
+    if(myArray.count > 2)
+    {
+        channelKey = @([myArray[1] intValue]);
+    }
+    ALPushAssist *pushAssist = [ALPushAssist new];
+    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && pushAssist.isContactVCOnTop)
+    {
+        NSLog(@"######## CONTACT VC : APP_STATE_ACTIVE #########");
+        
+        ALMessage *alMessage = [[ALMessage alloc] init];
+        alMessage.message = alertValue;
+        NSArray *myArray = [alMessage.message componentsSeparatedByString:@":"];
+        
+        if(myArray.count > 1)
+        {
+            alertValue = [NSString stringWithFormat:@"%@", myArray[1]];
+        }
+        else
+        {
+            alertValue = myArray[0];
+        }
+        
+        alMessage.message = alertValue;
+        alMessage.contactIds = contactId;
+        alMessage.groupId = channelKey;
+        
+        ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
+                                                                           withAlertMessage:alMessage.message];
+        [alNotification nativeNotification:self];
+    }
+    else if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
+    {
+        NSLog(@"######## CONTACT VC : APP_STATE_INACTIVE #########");
+        ALNewContactsViewController * contactVC = self;
+        ALMessagesViewController *msgVC = (ALMessagesViewController *)[self.navigationController.viewControllers objectAtIndex:0];
+        
+        if(channelKey)
+        {
+            msgVC.channelKey = channelKey;
+        }
+        else
+        {
+            msgVC.channelKey = nil;
+        }
+        
+        [msgVC createDetailChatViewController:contactId];
+        
+        NSMutableArray * viewsArray = [NSMutableArray arrayWithArray:msgVC.navigationController.viewControllers];
+        if ([viewsArray containsObject:contactVC])
+        {
+            [viewsArray removeObject:contactVC];
+        }
+        msgVC.navigationController.viewControllers = viewsArray;
+    }
 }
 
 - (void)updateView
@@ -216,9 +310,11 @@
 
 -(void) viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     [self.tabBarController.tabBar setHidden: NO];
     self.forGroup = [NSNumber numberWithInt:0];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAIL_OTHER_VC" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MQTT_APPLOZIC_01" object:nil];
 }
 
 -(void)updateUser:(NSNotification *)notifyObj
