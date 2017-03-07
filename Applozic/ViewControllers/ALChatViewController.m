@@ -61,6 +61,7 @@
 #import "ALUIConstant.h"
 #import "ALReceiverUserProfileVC.h"
 #import "PSPDFTextView.h"
+#import "ALChannelMsgCell.h"
 #include <tgmath.h>
 @import AddressBookUI;
 
@@ -266,12 +267,11 @@
                 NSLog(@"mqttObject is not found...");
             }
 //        });
-        
-        if(![self isGroup])
-        {
-            [self serverCallForLastSeen];
-        }
-        
+    }
+    
+    if(![self isGroup])
+    {
+        [self serverCallForLastSeen];
     }
     
     [self setTitle];
@@ -298,6 +298,7 @@
     [self setCallButtonInNavigationBar];
     [self checkIfChannelLeft];
     [self checkUserBlockStatus];
+    [self checkUserDeleted];
     [self showNoConversationLabel];
     [self hideKeyBoardOnEmptyList];
     
@@ -741,6 +742,18 @@
     }
 }
 
+-(void)checkUserDeleted
+{
+    ALContactService *cnService = [[ALContactService alloc] init];
+    BOOL isUserDeleted = [cnService isUserDeleted:self.contactIds];
+    [self freezeView:isUserDeleted];
+    [self.label setHidden:isUserDeleted];
+    if (isUserDeleted)
+    {
+        [ALNotificationView showLocalNotification:[ALApplozicSettings getUserDeletedText]];
+    }
+}
+
 //==============================================================================================================================================
 #pragma mark - USER BLOCK ALERT HANDLER
 //==============================================================================================================================================
@@ -850,6 +863,7 @@
     [self.mTableView registerClass:[ALContactMessageCell class] forCellReuseIdentifier:@"ContactMessageCell"];
     [self.mTableView registerClass:[ALLocationCell class] forCellReuseIdentifier:@"LocationCell"];
     [self.mTableView registerClass:[ALCustomCell class] forCellReuseIdentifier:@"CustomCell"];
+    [self.mTableView registerClass:[ALChannelMsgCell class] forCellReuseIdentifier:@"ALChannelMsgCell"];
     
     if([ALApplozicSettings getContextualChatOption])
     {
@@ -1066,7 +1080,7 @@
     message.fileMetaKey = almessage.fileMetaKey;
 
     if( message.imageFilePath ){
-        [self processAttachment:message.imageFilePath andMessageText:message.message  andContentType:almessage.contentType];
+        [self processAttachment:message.imageFilePath andMessageText:message.message andContentType:almessage.contentType];
         self.alMessage=nil;
         [self showNoConversationLabel];
         return;
@@ -1339,8 +1353,8 @@
         [self.view layoutIfNeeded];
         return theCell;
     }
-    else if (theMessage.contentType == ALMESSAGE_CONTENT_CUSTOM){
-        
+    else if (theMessage.contentType == ALMESSAGE_CONTENT_CUSTOM)
+    {
         ALCustomCell * theCell = (ALCustomCell *)[tableView dequeueReusableCellWithIdentifier:@"CustomCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
@@ -1348,7 +1362,16 @@
         [self.view layoutIfNeeded];
         return theCell;
     }
-    else if (theMessage.fileMeta.thumbnailUrl == nil && !theMessage.fileMeta.contentType)       // textCell
+    else if(theMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
+    {
+        ALChannelMsgCell * theCell = (ALChannelMsgCell *)[tableView dequeueReusableCellWithIdentifier:@"ALChannelMsgCell"];
+        theCell.tag = indexPath.row;
+        theCell.delegate = self;
+        [theCell populateCell:theMessage viewSize:self.view.frame.size];
+        [self.view layoutIfNeeded];
+        return theCell;
+    }
+    else if (theMessage.contentType == ALMESSAGE_CONTENT_DEFAULT)       // textCell
     {
         ALChatCell *theCell = (ALChatCell *)[tableView dequeueReusableCellWithIdentifier:@"ChatCell"];
         theCell.tag = indexPath.row;
@@ -1411,7 +1434,7 @@
 -(BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ALMessage *msgCell = self.alMessageWrapper.messageArray[indexPath.row];
-    if([msgCell.type isEqualToString:@"100"] || msgCell.contentType ==(short)10)
+    if([msgCell.type isEqualToString:@"100"] || msgCell.contentType ==(short)ALMESSAGE_CHANNEL_NOTIFICATION)
     {
         return  NO;
     }
@@ -1732,11 +1755,11 @@
     ALMessage * theMessage = [ALMessage new];
     
     theMessage.type = @"5";
-    theMessage.contactIds = self.contactIds;//1
-    theMessage.to = self.contactIds;//2
+    theMessage.contactIds = self.contactIds;
+    theMessage.to = self.contactIds;
     theMessage.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
     theMessage.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
-    theMessage.message = self.sendMessageTextView.text;//3
+    theMessage.message = self.sendMessageTextView.text;
     theMessage.sendToDevice = NO;
     theMessage.shared = NO;
     theMessage.fileMeta = nil;
@@ -1744,7 +1767,7 @@
     theMessage.key = [[NSUUID UUID] UUIDString];
     theMessage.delivered = NO;
     theMessage.fileMetaKey = nil;//4
-    theMessage.contentType = 0; //TO-DO chnge after...
+    theMessage.contentType = ALMESSAGE_CONTENT_DEFAULT;
     theMessage.groupId = self.channelKey;
     theMessage.conversationId  = self.conversationId;
     theMessage.source = SOURCE_IOS;
@@ -2953,7 +2976,7 @@
                 
                 if(![msg isHiddenMessage])  // Filters Hidden Messages
                 {
-                    NSLog(@"insterting message at index 0 ::%@", msg.key);
+                    //NSLog(@"insterting message at index 0 ::%@", msg.key);
                     [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
                     [self.noConLabel setHidden:YES];
                 }
@@ -3001,11 +3024,11 @@
         if(alUserDetail)
         {
             [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:alUserDetail.userId];
-            [alUserDetail userDetail];
             [[[ALContactDBService alloc] init] updateUserDetail:alUserDetail];
             [self setTitle];
             [self updateLastSeenAtStatus:alUserDetail];
             [self setCallButtonInNavigationBar];
+            [self checkUserDeleted];
         }
         else
         {

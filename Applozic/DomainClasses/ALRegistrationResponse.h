@@ -23,4 +23,6 @@
 @property NSString *encryptionKey;
 @property short pricingPackage;
 
+-(BOOL)isRegisteredSuccessfully;
+
 @end

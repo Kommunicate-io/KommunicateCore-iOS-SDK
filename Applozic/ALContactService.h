@@ -46,4 +46,6 @@
 
 -(void) updateOrInsertListOfContacts:(NSMutableArray *)contacts;
 
+-(BOOL)isUserDeleted:(NSString *)userId;
+
 @end

@@ -125,6 +125,7 @@ static ALMessageClientService *alMsgClientService;
         NSLog(@"message list is coming from DB %ld", (unsigned long)messageList.count);
     }
     
+    
     ALChannelService *channelService = [[ALChannelService alloc] init];
     if(messageListRequest.channelKey && ![channelService isLoginUserInChannel:messageListRequest.channelKey])
     {
@@ -133,6 +134,7 @@ static ALMessageClientService *alMsgClientService;
     }
     
     ALMessageClientService *alMessageClientService = [[ALMessageClientService alloc] init];
+    ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
     
     [alMessageClientService getMessageListForUser:messageListRequest
                    withCompletion:^(NSMutableArray *messages,
@@ -157,12 +159,13 @@ static ALMessageClientService *alMsgClientService;
                            ALUserService *alUserService = [ALUserService new];
                            [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
                                NSLog(@"User detail response sucessfull.");
+                               [alContactDBService addUserDetails:userDetailArray];
                                completion(messages, error,userDetailArray);
                            }];
                        }
                        else
                        {
-                           
+                           [alContactDBService addUserDetails:userDetailArray];
                            completion(messages, error,userDetailArray);
                        }
     }];
@@ -193,28 +196,40 @@ static ALMessageClientService *alMsgClientService;
     [alMessageClientService sendMessage:messageDict WithCompletionHandler:^(id theJson, NSError *theError) {
         
         NSString *statusStr=nil;
+        
         if(!theError)
         {
-            statusStr = (NSString*)theJson;
-            ALSendMessageResponse  *response = [[ALSendMessageResponse alloc] initWithJSONString:statusStr ];
+            ALAPIResponse  *apiResponse = [[ALAPIResponse alloc] initWithJSONString:theJson ];
+            ALSendMessageResponse  *response = [[ALSendMessageResponse alloc] initWithJSONString:apiResponse.response];
             
-            ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
+            if(!response.isSuccess){
+                theError = [NSError errorWithDomain:@"Applozic" code:1
+                                           userInfo:[NSDictionary
+                                                     dictionaryWithObject:@"error sedning message"
+                                                     forKey:NSLocalizedDescriptionKey]];
+                
+            }else{
+                
+                ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
+                
+                dbMessage.key = response.messageKey;
+                dbMessage.inProgress = [NSNumber numberWithBool:NO];
+                dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
+                dbMessage.createdAt =response.createdAt;
+                
+                dbMessage.sentToServer=[NSNumber numberWithBool:YES];
+                dbMessage.status = [NSNumber numberWithInt:SENT];
+                [theDBHandler.managedObjectContext save:nil];
 
-            dbMessage.key = response.messageKey;
-            dbMessage.inProgress = [NSNumber numberWithBool:NO];
-            dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
-            dbMessage.createdAt =response.createdAt;
-            dbMessage.sentToServer=[NSNumber numberWithBool:YES];
-            dbMessage.status = [NSNumber numberWithInt:SENT];
+                alMessage.key = dbMessage.key;
+                alMessage.sentToServer= dbMessage.sentToServer.boolValue;
+                alMessage.inProgress = dbMessage.inProgress.boolValue;
+                alMessage.isUploadFailed=dbMessage.isUploadFailed.boolValue;
+                alMessage.status = dbMessage.status;
+                alMessage.msgDBObjectId = dbMessage.objectID;
+                
+            }
             
-            alMessage.key = dbMessage.key;
-            alMessage.sentToServer= dbMessage.sentToServer.boolValue;
-            alMessage.inProgress = dbMessage.inProgress.boolValue;
-            alMessage.isUploadFailed=dbMessage.isUploadFailed.boolValue;
-            alMessage.status = dbMessage.status;
-            
-            
-            [theDBHandler.managedObjectContext save:nil];
         }else{
             NSLog(@" got error while sending messages");
         }
@@ -315,7 +330,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                         }else{
                             [ALMessageService incrementContactUnreadCount:message];
                         }
-                        if (message.groupId != nil && message.contentType == 10) {
+                        if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                             ALChannelService *channelService = [[ALChannelService alloc] init];
                             [channelService syncCallForChannel];
                         }
@@ -382,7 +397,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 +(BOOL)isIncrementRequired:(ALMessage *)message{
     
     if([message.status isEqualToNumber:[NSNumber numberWithInt:DELIVERED_AND_READ]]
-       || (message.groupId && message.contentType == 10)
+       || (message.groupId && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
        || [message.type isEqualToString:@"5"]
        || [message isHiddenMessage]){
         
@@ -745,10 +760,9 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
 
 +(ALMessage *)createMessageWithMetaData:(NSMutableDictionary *)metaData andReceiverId:(NSString *)receiverId andMessageText:(NSString *)msgTxt
 {
-    ALMessage * theMessage = [self createMessageEntityOfContentType:0 toSendTo:receiverId withText:msgTxt];
+    ALMessage * theMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:receiverId withText:msgTxt];
     theMessage.metadata = metaData;
     return theMessage;
-
 }
 
 -(NSUInteger)getMessagsCountForUser:(NSString *)userId

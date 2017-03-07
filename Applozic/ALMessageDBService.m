@@ -684,7 +684,7 @@
     
     if(flag)
     {
-        predicate = [NSPredicate predicateWithFormat:@"groupId = %@ and deletedFlag = %@ and contentType != 10",channelKey,@(NO)];
+        predicate = [NSPredicate predicateWithFormat:@"groupId = %@ and deletedFlag = %@ and contentType != %i",channelKey,@(NO),ALMESSAGE_CHANNEL_NOTIFICATION];
     }
     
     [request setPredicate:predicate];

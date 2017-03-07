@@ -51,7 +51,10 @@ typedef enum
 @property BOOL enableEncryption;
 @property NSNumber* contactType;
 
-
+-(instancetype)initWithUserId:(NSString *)userId
+                     password:(NSString *)password
+                        email:(NSString *)email
+               andDisplayName:(NSString *)displayName;
 
 @end
 

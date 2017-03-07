@@ -11,5 +11,24 @@
 @implementation ALSendMessageResponse
 
 
+-(id)initWithJSONString:(NSString *)JSONString
+{
+    [self parseMessage:JSONString];
+    return self;
+}
+
+-(void)parseMessage:(id) json;
+{
+    self.messageKey = [self getStringFromJsonValue:json[@"messageKey"]];
+    self.createdAt = [self getNSNumberFromJsonValue:json[@"createdAt"]];
+    self.conversationId =  [self getNSNumberFromJsonValue:json[@"conversationId"]];
+    
+}
+
+
+-(BOOL)isSuccess{
+    
+    return (self.messageKey && self.createdAt);
+}
 
 @end

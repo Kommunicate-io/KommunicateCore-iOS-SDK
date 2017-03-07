@@ -20,5 +20,6 @@
 @property(nonatomic,retain) NSNumber * conversationId;
 
 -(NSString*)getParamString;
+-(BOOL)isFirstCall;
 
 @end

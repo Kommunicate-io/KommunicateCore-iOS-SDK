@@ -20,4 +20,7 @@
 @property (nonatomic, assign) NSNumber *createdAt;
 
 @property (nonatomic, copy) NSNumber * conversationId;
+
+-(BOOL)isSuccess;
+
 @end

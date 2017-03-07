@@ -26,6 +26,11 @@
 {
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/client",KBASE_URL];
    
+    [ALUserDefaultsHandler setUserId:user.userId];
+    [ALUserDefaultsHandler setPassword:user.password];
+    [ALUserDefaultsHandler setDisplayName:user.displayName];
+    [ALUserDefaultsHandler setEmailId:user.email];
+    
     [ALUserDefaultsHandler setApplicationKey: user.applicationId];
     [user setPrefContactAPI:2];
     [user setEmailVerified:true];
@@ -137,6 +142,7 @@
         ALUser *user = [[ALUser alloc] init];
         [user setApplicationId: [ALUserDefaultsHandler getApplicationKey]];
         [user setUserId:[ALUserDefaultsHandler getUserId]];
+        [user setPassword:[ALUserDefaultsHandler getPassword]];
         [self initWithCompletion:user withCompletion: completion];
     }
 }
@@ -156,8 +162,15 @@
     [user setPrefContactAPI:2];
     [user setEmailVerified:true];
     [user setDeviceType:4];
+    [user setDeviceApnsType:[ALUserDefaultsHandler getDeviceApnsType]];
     [user setAppVersionCode: VERSION_CODE];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
+    
+    if([ALUserDefaultsHandler getAppModuleName] != NULL){
+        [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
+    }
+    [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
+    
     
     NSError * error;
     NSData * postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];

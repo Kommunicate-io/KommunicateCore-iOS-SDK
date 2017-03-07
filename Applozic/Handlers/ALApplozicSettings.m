@@ -9,6 +9,7 @@
 #import "ALApplozicSettings.h"
 #import "ALUserDefaultsHandler.h"
 #import "ALConstant.h"
+#import "ALUtilityClass.h"
 
 @interface ALApplozicSettings ()
 
@@ -770,6 +771,70 @@ NOTIFICATION_DISABLE = 2
 +(void)setGroupDeletedTitle:(NSString *)title;
 {
     [[NSUserDefaults standardUserDefaults] setObject:title forKey:GROUP_DELETED_TITLE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSString *)getUserDeletedText
+{
+    NSString *text = [[NSUserDefaults standardUserDefaults] valueForKey:USER_DELETED_TEXT];
+    return text ? text : @"User has been deleted";
+}
+
++(void)setUserDeletedText:(NSString *)text
+{
+    [[NSUserDefaults standardUserDefaults] setValue:text forKey:USER_DELETED_TEXT];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(UIImage *)getChatListTabIcon
+{
+    NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:CHAT_LIST_TAB_ICON];
+    UIImage *defaultImg = [ALUtilityClass getImageFromFramworkBundle:@"chat_default.png"];
+    UIImage *customImg = [UIImage imageNamed:stringtext];
+    return customImg ? customImg : defaultImg;
+}
+
++(void)setChatListTabIcon:(NSString *)imageName
+{
+    [[NSUserDefaults standardUserDefaults] setValue:imageName forKey:CHAT_LIST_TAB_ICON];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSString *)getChatListTabTitle
+{
+    NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:CHAT_LIST_TAB_TITLE];
+    return (stringtext && stringtext.length) ? stringtext : @"Chats";
+}
+
++(void)setChatListTabTitle:(NSString *)title
+{
+    [[NSUserDefaults standardUserDefaults] setValue:title forKey:CHAT_LIST_TAB_TITLE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(UIImage *)getProfileTabIcon
+{
+    NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:USER_PROFILE_TAB_ICON];
+    UIImage *defaultImg = [ALUtilityClass getImageFromFramworkBundle:@"contact_default.png"];
+    UIImage *customImg = [UIImage imageNamed:stringtext];
+    return customImg ? customImg : defaultImg;
+}
+
++(void)setProfileTabIcon:(NSString *)imageName
+{
+    [[NSUserDefaults standardUserDefaults] setValue:imageName forKey:USER_PROFILE_TAB_ICON];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSString *)getProfileTabTitle
+{
+    NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:USER_PROFILE_TAB_TITLE];
+    return (stringtext && stringtext.length) ? stringtext : @"Profile";
+}
+
++(void)setProfileTabTitle:(NSString *)title
+{
+    [[NSUserDefaults standardUserDefaults] setValue:title forKey:USER_PROFILE_TAB_TITLE];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

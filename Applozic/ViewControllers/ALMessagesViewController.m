@@ -463,8 +463,8 @@
                     [contactCell.onlineImageMarker setHidden:YES];
                 }
             }
-            
-            if((alContact.block || alContact.blockBy))
+            BOOL isUserDeleted = [contactDBService isUserDeleted:msg.contactIds];
+            if(alContact.block || alContact.blockBy || isUserDeleted)
             {
                 [contactCell.onlineImageMarker setHidden:YES];
             }
@@ -692,6 +692,7 @@
             
             ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
             ALContact *alContact = [contactDBService loadContactByKey:@"userId" value: message.to];
+            BOOL isUserDeleted = [contactDBService isUserDeleted:message.to];
             
             ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
             ALChannel * alChannel = [channelDBService loadChannelByKey:message.groupId];
@@ -762,7 +763,7 @@
                 [contactCell.onlineImageMarker setHidden:YES];
             }
 
-            if(alContact.block || alContact.blockBy)
+            if(alContact.block || alContact.blockBy || isUserDeleted)
             {
                 [contactCell.onlineImageMarker setHidden:YES];
             }
@@ -1230,8 +1231,8 @@
         
         ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
         ALContact *alContact = [contactDBService loadContactByKey:@"userId" value:alUserDetail.userId];
-        
-        if(alContact.block || alContact.blockBy)
+        BOOL isUserDeleted = [contactDBService isUserDeleted:alUserDetail.userId];
+        if(alContact.block || alContact.blockBy || isUserDeleted)
         {
             [contactCell.onlineImageMarker setHidden:YES];
         }

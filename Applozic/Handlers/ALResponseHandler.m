@@ -64,7 +64,7 @@
            data = theData;
        }
                               
-        if ([tag isEqualToString:@"SEND MESSAGE"] || [tag isEqualToString:@"CREATE FILE URL"] || [tag isEqualToString:@"IMAGE POSTING"])
+        if ([tag isEqualToString:@"CREATE FILE URL"] || [tag isEqualToString:@"IMAGE POSTING"])
         {
             theJson = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             

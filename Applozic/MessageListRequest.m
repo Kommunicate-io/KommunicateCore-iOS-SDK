@@ -32,15 +32,22 @@
         paramString = [NSString stringWithFormat:@"userId=%@&startIndex=%@&pageSize=%@",self.userId,self.startIndex,self.pageSize];
     }
     
-    if(self.endTimeStamp!=nil){
+    if(self.endTimeStamp!=nil && !self.isFirstCall){
         
         paramString = [paramString stringByAppendingFormat:@"&endTime=%@",self.endTimeStamp.stringValue];
     }
     
-    if(self.startTimeStamp != nil)
+    if( self.isFirstCall )
+    {
+        self.startTimeStamp=[NSNumber numberWithInteger:1];
+    }
+    
+    if(self.startTimeStamp != nil )
     {
          paramString = [paramString stringByAppendingFormat:@"&startTime=%@",self.startTimeStamp.stringValue];
     }
+    
+   
     
     if(self.conversationId){
         
@@ -57,4 +64,12 @@
     
     return paramString;
 }
+
+-(BOOL)isFirstCall{
+    
+    NSString * key = self.channelKey ? [self.channelKey stringValue]: self.userId;
+    return (![ALUserDefaultsHandler isServerCallDoneForMSGList:key]);
+}
+
+
 @end

@@ -18,12 +18,9 @@
 #define NOTIFICATION_TITLE @"com.applozic.userdefault.NOTIFICATION_TITLE"
 #define IMAGE_COMPRESSION_FACTOR @"com.applozic.userdefault.IMAGE_COMPRESSION_FACTOR"
 #define IMAGE_UPLOAD_MAX_SIZE @"com.applozic.userdefault.IMAGE_UPLOAD_MAX_SIZE"
-
 #define GROUP_ENABLE @"com.applozic.userdefault.GROUP_ENABLE"
-
 #define GROUP_INFO_DISABLED @"com.applozic.userdefault.GROUP_INFO_DISABLED"
 #define GROUP_INFO_EDIT_DISABLED @"com.applozic.userdefault.GROUP_INFO_EDIT_DISABLED"
-
 #define MAX_SEND_ATTACHMENT @"com.applozic.userdefault.MAX_SEND_ATTACHMENT"
 #define FILTER_CONTACT @"com.applozic.userdefault.FILTER_CONTACT"
 #define FILTER_CONTACT_START_TIME @"com.applozic.userdefault.FILTER_CONTACT_START_TIME"
@@ -69,6 +66,12 @@
 #define VIEW_CONTROLLER_ARRAY @"com.applozic.userdefault.VIEW_CONTROLLER_ARRAY"
 #define MSG_CONTAINER_VC @"com.applozic.userdefault.MSG_CONTAINER_VC"
 #define GROUP_DELETED_TITLE @"com.applozic.userdefault.GROUP_DELETED_TITLE"
+#define USER_DELETED_TEXT @"com.applozic.userdefault.USER_DELETED_TEXT"
+
+#define CHAT_LIST_TAB_ICON @"com.applozic.userdefault.CHAT_LIST_TAB_ICON"
+#define USER_PROFILE_TAB_ICON @"com.applozic.userdefault.USER_PROFILE_TAB_ICON"
+#define CHAT_LIST_TAB_TITLE @"com.applozic.userdefault.CHAT_LIST_TAB_TITLE"
+#define USER_PROFILE_TAB_TITLE @"com.applozic.userdefault.USER_PROFILE_TAB_TITLE"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -255,13 +258,11 @@
 +(NSString *)getCustomMessageFont;
 +(void)setCustomMessageFont:(NSString *)font;
 
-
 +(void) setGroupInfoDisabled:(BOOL)flag;
 +(BOOL) isGroupInfoDisabled;
 
 +(void) setGroupInfoEditDisabled:(BOOL)flag;
 +(BOOL) isGroupInfoEditDisabled;
-
 
 +(void) setContactTypeToFilter:(NSMutableArray*)arrayWithIds;
 +(NSMutableArray*) getContactTypeToFilter;
@@ -280,5 +281,20 @@
 
 +(NSString *)getGroupDeletedTitle;
 +(void)setGroupDeletedTitle:(NSString *)title;
+
++(NSString *)getUserDeletedText;
++(void)setUserDeletedText:(NSString *)text;
+
++(UIImage *)getChatListTabIcon;
++(void)setChatListTabIcon:(NSString *)imageName;
+
++(NSString *)getChatListTabTitle;
++(void)setChatListTabTitle:(NSString *)title;
+
++(UIImage *)getProfileTabIcon;
++(void)setProfileTabIcon:(NSString *)imageName;
+
++(NSString *)getProfileTabTitle;
++(void)setProfileTabTitle:(NSString *)title;
 
 @end

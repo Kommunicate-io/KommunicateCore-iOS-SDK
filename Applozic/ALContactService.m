@@ -145,5 +145,9 @@
     return contact;
 }
 
+-(BOOL)isUserDeleted:(NSString *)userId
+{
+    return [alContactDBService isUserDeleted:userId];
+}
 
 @end

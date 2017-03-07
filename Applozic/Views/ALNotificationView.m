@@ -135,7 +135,7 @@
             contactName = alcontact.getDisplayName;
         }
         
-        if(self.alMessageObject.contentType == 10)
+        if(self.alMessageObject.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
         {
             title = self.text;
             subtitle = @"";

@@ -645,7 +645,7 @@
     }
     
     if(![ALUserDefaultsHandler getLoginUserConatactVisibility]){
-       NSPredicate* predicate=  [NSPredicate predicateWithFormat:@"userId!=%@",[ALUserDefaultsHandler getUserId]];
+       NSPredicate* predicate=  [NSPredicate predicateWithFormat:@"userId!=%@ AND deletedAtTime == nil",[ALUserDefaultsHandler getUserId]];
         if(contactFilterPredicate){
             contactFilterPredicate =[NSCompoundPredicate andPredicateWithSubpredicates:@[contactFilterPredicate, predicate]];
         }else{
@@ -1084,7 +1084,7 @@
     theMessage.fileMeta = nil;
     theMessage.key = @"welcome-message-temp-key-string";
     theMessage.fileMetaKey = @"";//4
-    theMessage.contentType = 0;
+    theMessage.contentType = ALMESSAGE_CONTENT_DEFAULT;
     theMessage.type = @"101";
     theMessage.message = @"You have created a new group, Say Hi to members :)";
     theMessage.groupId = channelKey;

@@ -28,4 +28,16 @@
    
     return self;
 }
+
+-(BOOL)isRegisteredSuccessfully
+{
+    if ([self.message isEqualToString:@"REGISTERED"]
+        || [self.message isEqualToString:@"REGISTERED.WITHOUTREGISTRATIONID"]
+        ||  [self.message isEqualToString:@"UPDATED"]) {
+        
+        return YES;
+    }
+    return NO;
+}
+
 @end

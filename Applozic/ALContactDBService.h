@@ -56,5 +56,6 @@
 
 -(NSMutableArray *)getAllContactsFromDB;
 -(NSNumber *)getOverallUnreadCountForContactsFromDB;
+-(BOOL)isUserDeleted:(NSString *)userId;
 
 @end

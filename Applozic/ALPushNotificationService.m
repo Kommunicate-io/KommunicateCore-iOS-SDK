@@ -34,7 +34,7 @@
 {
     NSString *type = (NSString *)[dictionary valueForKey:@"AL_KEY"];
     NSLog(@"APNs GOT NEW MESSAGE & NOTIFICATION TYPE :: %@", type);
-    BOOL prefixCheck = ([type hasPrefix:APPLOZIC_PREFIX]);
+    BOOL prefixCheck = ([type hasPrefix:APPLOZIC_PREFIX]) || ([type hasPrefix:@"MT_"]);
     return (type != nil && ([ALPushNotificationService.ApplozicNotificationTypes containsObject:type] || prefixCheck));
 }
 
@@ -115,14 +115,14 @@
                 NSLog(@"APPLOZIC_02 Sync Call Completed");
             }];
         }
-        else if ([type isEqualToString:@"MESSAGE_DELIVERED"]||[type isEqualToString:MT_DELIVERED]){
+        else if ([type isEqualToString:@"MT_MESSAGE_DELIVERED"]||[type isEqualToString:MT_DELIVERED]){
             
             NSArray *deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * pairedKey = deliveryParts[0];
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED];
             [[ NSNotificationCenter defaultCenter] postNotificationName:@"report_DELIVERED" object:deliveryParts[0] userInfo:dictionary];
         }
-        else if ([type isEqualToString:@"MESSAGE_DELIVERED_READ"]||[type isEqualToString:@"APPLOZIC_08"]){
+        else if ([type isEqualToString:@"MT_MESSAGE_DELIVERED_READ"]||[type isEqualToString:@"APPLOZIC_08"]){
             
             NSArray  * deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * pairedKey = deliveryParts[0];

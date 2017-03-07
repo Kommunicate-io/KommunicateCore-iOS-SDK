@@ -21,7 +21,7 @@
 
 -(void)sendTextMessage:(NSString*)text andtoContact:(NSString*)toContactId {
     
-    ALMessage * almessage = [self createMessageEntityOfContentType:0 toSendTo:toContactId withText:text];
+    ALMessage * almessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
     
     [ALMessageService sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
         

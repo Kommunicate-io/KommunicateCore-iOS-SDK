@@ -1,4 +1,4 @@
-//
+
 //  ALAPIResponse.m
 //  Applozic
 //
@@ -20,7 +20,7 @@
 {
     self.status = [self getStringFromJsonValue:json[@"status"]];
     self.generatedAt = [self getNSNumberFromJsonValue:json[@"generatedAt"]];
-//    self.response = [json valueForKey:json[@"response"]];
+    self.response =  [json valueForKey:@"response"];
     
     NSLog(@"self.generatedAt : %@",self.generatedAt);
     NSLog(@"self.status : %@",self.status);
