@@ -23,6 +23,7 @@
 
 @optional
 
+-(void) mqttDidConnected;
 -(void) reloadDataForUserBlockNotification:(NSString *)userId andBlockFlag:(BOOL)flag;
 -(void)updateUserDetail:(NSString *)userId;
 

@@ -23,5 +23,6 @@
 @dynamic parentClientGroupKey;
 @dynamic notificationAfterTime;
 @dynamic deletedAtTime;
+@dynamic metadata;
 
 @end

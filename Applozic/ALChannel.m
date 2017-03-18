@@ -40,6 +40,9 @@
     
     self.removeMembers = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"removedMembersId"]];
     self.type = [self getShortFromJsonValue:messageJson[@"type"]];
+    
+    self.metadata = [[NSMutableDictionary alloc] initWithDictionary:[messageJson objectForKey:@"metadata"]];
+   
     self.childKeys = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"childKeys"]];
     
     self.notificationAfterTime = [self getNSNumberFromJsonValue:messageJson[@"notificationAfterTime"]];
@@ -105,6 +108,30 @@
     }
     return nil;
 }
-            
+
+-(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string
+{
+    NSData * data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSPropertyListFormat format;
+    NSMutableDictionary * dictionary;
+
+    @try
+    {
+        NSError * error;
+        dictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
+                                                                        format:&format
+                                                                         error:&error];
+        if(!dictionary)
+        {
+//            NSLog(@"ERROR: COULD NOT PARSE META-DATA : %@", error.description);
+        }
+    }
+    @catch(NSException * exp)
+    {
+//         NSLog(@"METADATA_DICTIONARY_EXCEPTION :: %@", exp.description);
+    }
+    
+    return dictionary;
+}
 
 @end

@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#define INVALID_APPLICATIONID = @"INVALID_APPLICATIONID"
+#define INVALID_APPLICATIONID @"INVALID_APPLICATIONID"
 #define VERSION_CODE @"109"
+#define LOGOUT_URL @"/rest/ws/device/logout"
 
 #import "ALRegisterUserClientService.h"
 #import "ALRequestHandler.h"
@@ -19,6 +20,7 @@
 #import "ALApplozicSettings.h"
 #import "ALMQTTConversationService.h"
 #import "ALMessageService.h"
+#import "ALConstant.h"
 
 @implementation ALRegisterUserClientService
 
@@ -206,17 +208,28 @@
   //  [[ALMQTTConversationService sharedInstance] unsubscribeToConversation];
 }
 
--(void)logoutWithCompletionHandler:(void(^)())completion
+-(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion
 {
-    NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
-    [[UIApplication sharedApplication] unregisterForRemoteNotifications];
-    [ALUserDefaultsHandler clearAll];
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-    [messageDBService deleteAllObjectsInCoreData];
+    NSString *urlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,LOGOUT_URL];
+    NSMutableURLRequest * request = [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil];
     
-    [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
-    
-    completion();
+    [ALResponseHandler processRequest:request andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
+        
+        NSLog(@"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
+        ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        if(!error && [response.status isEqualToString:@"success"])
+        {
+            NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
+//            [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+            [ALUserDefaultsHandler clearAll];
+            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+            [messageDBService deleteAllObjectsInCoreData];
+            
+            [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
+        }
+        
+        completion(response,error);
+    }];
 }
 
 +(BOOL)isAppUpdated{

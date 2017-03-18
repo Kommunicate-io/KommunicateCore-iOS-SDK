@@ -80,7 +80,7 @@
     ALMessage * alMessage = (ALMessage *)notifyObject.object;
     BOOL flag = (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]);
     
-    if (![alMessage.type isEqualToString:@"5"] && !flag)
+    if (![alMessage.type isEqualToString:@"5"] && !flag && ![alMessage msgHidden])
     {
         ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
@@ -124,7 +124,7 @@
         alMessage.contactIds = contactId;
         alMessage.groupId = channelKey;
         
-        if (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId])
+        if ((alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]) || [alMessage msgHidden])
         {
             return;
         }

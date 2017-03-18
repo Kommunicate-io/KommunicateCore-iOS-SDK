@@ -10,7 +10,7 @@
 #import "ALRegistrationResponse.h"
 #import "ALUser.h"
 #import "ALConstant.h"
-
+#import "ALAPIResponse.h"
 
 @interface ALRegisterUserClientService : NSObject
 
@@ -23,7 +23,7 @@
 
 -(void) disconnect;
 
--(void)logoutWithCompletionHandler:(void(^)())completion;
+-(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 +(BOOL)isAppUpdated;
 

@@ -205,11 +205,15 @@
         
         ALMessageDBService *almessageDBService = [[ALMessageDBService alloc] init];
         [almessageDBService addMessageList:messageListResponse.messageList];
+        
         ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
         
+        ALChannelService *channelService = [[ALChannelService alloc] init];
+        [channelService callForChannelServiceForDBInsertion:theJson];
+        
         completion(messageListResponse.messageList, nil, messageListResponse.userDetailsList);
-       NSLog(@"MSG_LIST RESPONSE :: %@",(NSString *)theJson);
+        NSLog(@"MSG_LIST RESPONSE :: %@",(NSString *)theJson);
         
     }];
     

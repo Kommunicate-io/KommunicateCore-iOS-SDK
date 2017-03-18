@@ -45,7 +45,8 @@
 
 -(NSMutableArray*)getAllChannelKeyAndName;
 
--(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList;
+-(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName
+          orImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList isUpdatingMetaData:(BOOL)flag;
 
 -(void)processArrayAfterSyncCall:(NSMutableArray *)channelArray;
 

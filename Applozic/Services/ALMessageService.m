@@ -54,9 +54,7 @@ static ALMessageClientService *alMsgClientService;
         else{
             NSLog(@"Message List Response Nil");
         }
-        
     }];
-    
 }
 
 +(void)getMessagesListGroupByContactswithCompletionService:(void(^)(NSMutableArray * messages, NSError * error))completion
@@ -80,11 +78,11 @@ static ALMessageClientService *alMsgClientService;
                                                 withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
 {
     
-/*____If latest_message of a contact is Hidden Message then get MessageList of that user from server___*/
+/*____If latest_message of a contact is HIDDEN MESSAGE OR MESSSAGE HIDE = TRUE, then get MessageList of that user from server___*/
     
     for(ALMessage * alMessage in alMessageList.messageList)
     {
-        if(![alMessage isHiddenMessage])
+        if(![alMessage isHiddenMessage] && ![alMessage isMsgHidden])
         {
             continue;
         }
@@ -188,7 +186,7 @@ static ALMessageClientService *alMsgClientService;
     else
     {
         NSLog(@"message found in DB just getting it not inserting new one...");
-        dbMessage =(DB_Message*)[dbService getMeesageById:alMessage.msgDBObjectId error:&theError];
+        dbMessage = (DB_Message*)[dbService getMeesageById:alMessage.msgDBObjectId error:&theError];
     }
     //convert to dic
     NSDictionary * messageDict = [alMessage dictionary];
@@ -333,7 +331,11 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                         if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                             ALChannelService *channelService = [[ALChannelService alloc] init];
                             [channelService syncCallForChannel];
+                            if([message isMsgHidden]) {
+                                [messageArray removeObject:message];
+                            }
                         }
+                        
                     }
                     
                     [ALUserService processContactFromMessages:messageArray withCompletion:^{

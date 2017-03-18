@@ -156,6 +156,8 @@
     
     self.metadata = [[NSMutableDictionary  alloc] initWithDictionary:messageJson[@"metadata"]];
     
+    self.msgHidden = [self isMsgHidden];
+    
 }
 
 
@@ -276,5 +278,10 @@
     return metaDataDictionary;
 }
 
+-(BOOL)isMsgHidden
+{
+    BOOL hide = [[self.metadata objectForKey:@"hide"] boolValue];
+    return hide;
+}
 
 @end

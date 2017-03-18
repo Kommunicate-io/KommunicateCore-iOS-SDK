@@ -134,6 +134,9 @@
     }
     else if(alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
     {
+        if ([alMessage isMsgHidden]){
+            return 0;
+        }
         return [self getChannelMsgCellHeight:alMessage andCellFrame:cellFrame];
     }
     else if ([alMessage.fileMeta.contentType hasPrefix:@"video"])

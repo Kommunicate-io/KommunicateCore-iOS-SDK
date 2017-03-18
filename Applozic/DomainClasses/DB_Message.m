@@ -38,5 +38,6 @@
 @dynamic status;
 @dynamic pairedMessageKey;
 @dynamic metadata;
+@dynamic msgHidden;
 
 @end

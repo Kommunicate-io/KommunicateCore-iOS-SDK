@@ -26,7 +26,6 @@
     
     for(ALChannel *channel in alChannelFeed.channelFeedsList)
     {
-
         for(NSString *memberName in channel.membersName)
         {
             ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
@@ -489,17 +488,17 @@
 }
 
 //===========================================================================================================================
-#pragma mark RENAME CHANNEL (FROM DEVICE SIDE)
+#pragma mark UPDATE CHANNEL (FROM DEVICE SIDE)
 //===========================================================================================================================
 
 -(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL
-  orClientChannelKey:(NSString *)clientChannelKey orChildKeys:(NSMutableArray *)childKeysList
+  orClientChannelKey:(NSString *)clientChannelKey isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData orChildKeys:(NSMutableArray *)childKeysList
       withCompletion:(void(^)(NSError *error))completion
 {
     if(channelKey != nil || clientChannelKey != nil)
     {
         [ALChannelClientService updateChannel:channelKey orClientChannelKey:clientChannelKey
-                                   andNewName:newName andImageURL:imageURL orChildKeys:childKeysList andCompletion:^(NSError *error, ALAPIResponse *response) {
+                                   andNewName:newName andImageURL:imageURL metadata:metaData orChildKeys:childKeysList andCompletion:^(NSError *error, ALAPIResponse *response) {
             
             if([response.status isEqualToString:@"success"])
             {
@@ -507,11 +506,11 @@
                 if(clientChannelKey != nil)
                 {
                     ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
-                    [channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList];
+                    [channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag];
                 }
                 else
                 {
-                    [channelDBService updateChannel:channelKey andNewName:newName orImageURL:imageURL orChildKeys:childKeysList];
+                    [channelDBService updateChannel:channelKey andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag];
                 }
             }
             completion(error);

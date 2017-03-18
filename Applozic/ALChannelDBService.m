@@ -104,6 +104,7 @@
     theChannelEntity.type = channel.type;
     theChannelEntity.adminId = channel.adminKey;
     theChannelEntity.unreadCount = channel.unreadCount;
+    theChannelEntity.metadata = channel.metadata.description;
     
     return theChannelEntity;
 }
@@ -233,6 +234,7 @@
     alChannel.membersId = [self getChannelMembersList:key];
     alChannel.notificationAfterTime = dbChannel.notificationAfterTime;
     alChannel.deletedAtTime = dbChannel.deletedAtTime;
+    alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
     
     return alChannel;
 }
@@ -345,6 +347,7 @@
         channel.unreadCount = dbChannel.unreadCount;
         channel.channelImageURL = dbChannel.channelImageURL;
         channel.deletedAtTime = dbChannel.deletedAtTime;
+        channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
         
         return channel;
     }
@@ -443,7 +446,8 @@
             channel.unreadCount = dbChannel.unreadCount;
             channel.channelImageURL = dbChannel.channelImageURL;
             channel.deletedAtTime = dbChannel.deletedAtTime;
-
+            channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
+            
             [alChannels addObject:channel];
         }
     }
@@ -467,7 +471,8 @@
     return unreadCount;
 }
 
--(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList
+-(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName
+          orImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList isUpdatingMetaData:(BOOL)flag
 {
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -487,7 +492,9 @@
             dbChannel.channelDisplayName = newName;
         }
 
-        dbChannel.channelImageURL = imageURL;
+        if (!flag){
+            dbChannel.channelImageURL = imageURL;
+        }
 
         if(childKeysList.count) {
             for(NSNumber * childKey in childKeysList) {
@@ -731,7 +738,7 @@
     alChannel.type = dbChannel.type;
     alChannel.channelImageURL = dbChannel.channelImageURL;
     alChannel.deletedAtTime = dbChannel.deletedAtTime;
-
+    alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
     
     return alChannel;
 }
@@ -767,8 +774,8 @@
         alChannel.type = dbChannel.type;
         alChannel.channelImageURL = dbChannel.channelImageURL;
         alChannel.deletedAtTime = dbChannel.deletedAtTime;
+        alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
 
-        
         [childArray addObject:alChannel];
     }
     
@@ -782,8 +789,6 @@
     DB_CHANNEL *dbChannel = [self getChannelByKey:channelKey];
     dbChannel.notificationAfterTime = notificationAfterTime;
     [dbHandler.managedObjectContext save:nil];
-
 }
-
 
 @end

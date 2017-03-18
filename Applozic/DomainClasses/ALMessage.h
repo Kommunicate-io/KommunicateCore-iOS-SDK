@@ -101,7 +101,9 @@
 -(NSNumber *)getGroupId;
 -(NSString *)getNotificationText;
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
+-(BOOL)isMsgHidden;
 
 @property (nonatomic,assign) BOOL deleted;
+@property (nonatomic, assign) BOOL msgHidden;
 
 @end

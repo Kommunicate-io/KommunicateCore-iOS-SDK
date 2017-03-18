@@ -117,9 +117,7 @@
     self.alMqttConversationService = [ALMQTTConversationService sharedInstance];
     self.alMqttConversationService.mqttConversationDelegate = self;
     
-//    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.alMqttConversationService subscribeToConversation];
-//    });
+    [self.alMqttConversationService subscribeToConversation];
     
     CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height +
     [UIApplication sharedApplication].statusBarFrame.size.height;
@@ -165,9 +163,7 @@
     if (self.navigationController.viewControllers.count == 1 && !profileFlag)
     {
         NSLog(@"MSG VC : CLOSING_MQTT_CONNECTIONS");
-//        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.alMqttConversationService unsubscribeToConversation];
-//        });
+        [self.alMqttConversationService unsubscribeToConversation];
     }
 }
 
@@ -1096,6 +1092,11 @@
 #pragma mark - MQTT SERVICE DELEGATE METHODS
 //==============================================================================================================================================
 
+-(void)mqttDidConnected
+{
+    
+}
+
 -(void)updateCallForUser:(NSNotification *)notifyObj
 {
     NSString *userID = (NSString *)notifyObj.object;
@@ -1164,7 +1165,7 @@
     {
         [self updateMessageList:messageArray];
         
-        if (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId])
+        if ((alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]) || [alMessage isMsgHidden])
         {
             return;
         }
@@ -1257,13 +1258,8 @@
     if([ALDataNetworkConnection checkDataNetworkAvailable] && !isBackgroundState)
     {
         NSLog(@"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
-        
-//    dispatch_async(dispatch_get_main_queue(), ^{
-        
         NSLog(@"ALMessageVC subscribing channel again....");
         [self.alMqttConversationService subscribeToConversation];
-        
-//    });
         self.mqttRetryCount++;
     }
 }

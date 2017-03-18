@@ -51,12 +51,13 @@ typedef enum
 @property (nonatomic, strong) NSMutableArray * childKeys;
 @property (nonatomic, strong) NSNumber * notificationAfterTime;
 @property (nonatomic, strong) NSNumber * deletedAtTime;
-
+@property (nonatomic, strong) NSMutableDictionary * metadata;
 
 -(id)initWithDictonary:(NSDictionary *)messageDictonary;
 -(void)parseMessage:(id) messageJson;
 -(NSNumber *)getChannelMemberParentKey:(NSString *)userId;
 -(BOOL) isNotificationMuted;
 -(NSString*)getReceiverIdInGroupOfTwo;
+-(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
 
 @end

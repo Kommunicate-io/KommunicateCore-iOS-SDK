@@ -24,5 +24,6 @@
 @property (nonatomic) BOOL isLeft;
 @property (nonatomic, strong) NSNumber* notificationAfterTime;
 @property (nonatomic, strong) NSNumber* deletedAtTime;
+@property (nonatomic, retain) NSString * metadata;
 
 @end

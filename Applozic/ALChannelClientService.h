@@ -38,8 +38,8 @@
 
 
 +(void)updateChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
-          andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList
-       andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+          andNewName:(NSString *)newName andImageURL:(NSString *)imageURL metadata:(NSMutableDictionary *)metaData
+         orChildKeys:(NSMutableArray *)childKeysList andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 +(void)syncCallForChannel:(NSNumber *)channelKey andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
 

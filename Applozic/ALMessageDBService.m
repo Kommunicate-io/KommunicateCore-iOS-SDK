@@ -34,7 +34,8 @@
     for (ALMessage * theMessage in messageList) {
         
         NSManagedObject *message = [self getMessageByKey:@"key" value:theMessage.key];
-        if(message==nil){
+        if(message==nil)
+        {
             theMessage.sentToServer = YES;
             
             DB_Message * theMessageEntity = [self createMessageEntityForDBInsertionWithMessage:theMessage];
@@ -54,7 +55,8 @@
 }
 
 
--(DB_Message*)addMessage:(ALMessage*) message{
+-(DB_Message*)addMessage:(ALMessage*) message
+{
     ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
     DB_Message* dbMessag = [self createMessageEntityForDBInsertionWithMessage:message];
     [theDBHandler.managedObjectContext save:nil];
@@ -394,8 +396,8 @@
         }
         
         [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
-        [theRequest setPredicate:[NSPredicate predicateWithFormat:@"groupId==%d AND deletedFlag == %@ AND contentType != %i",
-                                  [theDictionary[@"groupId"] intValue],@(NO),ALMESSAGE_CONTENT_HIDDEN]];
+        [theRequest setPredicate:[NSPredicate predicateWithFormat:@"groupId==%d AND deletedFlag == %@ AND contentType != %i AND msgHidden == %@",
+                                  [theDictionary[@"groupId"] intValue],@(NO),ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
         [theRequest setFetchLimit:1];
         
         NSArray * groupMsgArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
@@ -418,8 +420,8 @@
     for (NSDictionary * theDictionary in userMsgArray) {
         
         NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
-        [theRequest setPredicate:[NSPredicate predicateWithFormat:@"contactId = %@ and groupId=nil and deletedFlag == %@ AND contentType != %i",
-                                  theDictionary[@"contactId"],@(NO),ALMESSAGE_CONTENT_HIDDEN]];
+        [theRequest setPredicate:[NSPredicate predicateWithFormat:@"contactId = %@ and groupId=nil and deletedFlag == %@ AND contentType != %i AND msgHidden == %@",theDictionary[@"contactId"],@(NO),ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
+        
         [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
         [theRequest setFetchLimit:1];
         
@@ -473,14 +475,15 @@
     theMessageEntity.delivered = [NSNumber numberWithBool:theMessage.delivered];
     theMessageEntity.sentToServer = [NSNumber numberWithBool:theMessage.sentToServer];
     theMessageEntity.filePath = theMessage.imageFilePath;
-    theMessageEntity.inProgress = [ NSNumber numberWithBool:theMessage.inProgress];
+    theMessageEntity.inProgress = [NSNumber numberWithBool:theMessage.inProgress];
     theMessageEntity.isUploadFailed=[ NSNumber numberWithBool:theMessage.isUploadFailed];
     theMessageEntity.contentType = theMessage.contentType;
     theMessageEntity.deletedFlag=[NSNumber numberWithBool:theMessage.deleted];
     theMessageEntity.conversationId = theMessage.conversationId;
     theMessageEntity.pairedMessageKey = theMessage.pairedMessageKey;
     theMessageEntity.metadata = theMessage.metadata.description;
-
+    theMessageEntity.msgHidden = [NSNumber numberWithBool:[theMessage isMsgHidden]];
+    
     if(theMessage.getGroupId)
     {
         theMessageEntity.groupId = theMessage.groupId;
@@ -540,6 +543,7 @@
     theMessage.conversationId = theEntity.conversationId;
     theMessage.pairedMessageKey = theEntity.pairedMessageKey;
     theMessage.metadata = [theMessage getMetaDataDictionary:theEntity.metadata];
+    theMessage.msgHidden = [theEntity.msgHidden boolValue];
 
     // file meta info
     if(theEntity.fileMetaInfo){
