@@ -255,7 +255,24 @@
             {
                 return;
             }
-            [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId delegate:self];
+            if(groupId)
+            {
+                
+                [[ALChannelService new] getChannelInformation:groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
+                    
+                    [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId delegate:self];
+
+                }];
+            }
+            else
+            {
+                
+                [[ALUserService new] getUserDetail:self.contactId withCompletion:^(ALContact *contact) {
+                    [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId delegate:self];
+
+                    
+                }];
+            }
         }
         else
         {

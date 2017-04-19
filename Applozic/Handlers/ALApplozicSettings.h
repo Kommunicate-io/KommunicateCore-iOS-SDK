@@ -63,15 +63,18 @@
 #define FILTER_ONLY_CONTACT_TYPE_ID @"com.applozic.userdefault.FILTER_ONLY_CONTACT_TYPE_ID"
 #define CUSTOM_NAVIGATION_CLASS_NAME @"com.applozic.userdefault.NAVIGATION_CONTROLLER_CLASS_NAME"
 #define SUB_GROUP_LAUNCH @"com.applozic.userdefault.SUB_GROUP_LAUNCH"
+#define GROUP_OF_TWO_FLAG @"com.applozic.userdefault.GROUP_OF_TWO_FLAG"
+#define BROADCAST_GROUP_ENABLE @"com.applozic.userdefault.BROADCAST_GROUP_ENABLE"
 #define VIEW_CONTROLLER_ARRAY @"com.applozic.userdefault.VIEW_CONTROLLER_ARRAY"
 #define MSG_CONTAINER_VC @"com.applozic.userdefault.MSG_CONTAINER_VC"
 #define GROUP_DELETED_TITLE @"com.applozic.userdefault.GROUP_DELETED_TITLE"
 #define USER_DELETED_TEXT @"com.applozic.userdefault.USER_DELETED_TEXT"
-
 #define CHAT_LIST_TAB_ICON @"com.applozic.userdefault.CHAT_LIST_TAB_ICON"
 #define USER_PROFILE_TAB_ICON @"com.applozic.userdefault.USER_PROFILE_TAB_ICON"
 #define CHAT_LIST_TAB_TITLE @"com.applozic.userdefault.CHAT_LIST_TAB_TITLE"
 #define USER_PROFILE_TAB_TITLE @"com.applozic.userdefault.USER_PROFILE_TAB_TITLE"
+#define OPEN_CHAT_ON_USER_PROFILE_TAP @"com.applozic.userdefault.OPEN_CHAT_ON_USER_PROFILE_TAP"
+
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -264,6 +267,12 @@
 +(void) setGroupInfoEditDisabled:(BOOL)flag;
 +(BOOL) isGroupInfoEditDisabled;
 
++(void)setGroupOfTwoFlag:(BOOL)flag;
++(BOOL)getGroupOfTwoFlag;
+
++(void)setBroadcastGroupEnable:(BOOL)flag;
++(BOOL)isBroadcastGroupEnable;
+
 +(void) setContactTypeToFilter:(NSMutableArray*)arrayWithIds;
 +(NSMutableArray*) getContactTypeToFilter;
 
@@ -296,5 +305,8 @@
 
 +(NSString *)getProfileTabTitle;
 +(void)setProfileTabTitle:(NSString *)title;
+
++(BOOL)isChatOnTapUserProfile;
++(void)openChatOnTapUserProfile:(BOOL)flag;
 
 @end

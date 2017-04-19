@@ -17,15 +17,12 @@
 #import "ALContactService.h"
 #import "ALMessageClientService.h"
 #import "ALApplozicSettings.h"
+#import "ALChannelService.h"
+#import "ALChannel.h"
 
-@implementation ALMessageDBService{
-    ALMessageDBService  * dbService;
-
-}
-
+@implementation ALMessageDBService
 
 //Add message APIS
-
 -(NSMutableArray *) addMessageList:(NSMutableArray*) messageList
 {
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
@@ -652,6 +649,68 @@
     NSUInteger count = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:nil];
     return count;
     
+}
+
+//============================================================================================================
+#pragma mark ADD BROADCAST MESSAGE TO DB
+//============================================================================================================
+
++(void)addBroadcastMessageToDB:(ALMessage *)alMessage {
+
+    ALChannelService *channelService = [[ALChannelService alloc] init];
+    ALChannel *alChannel = [channelService getChannelByKey:alMessage.groupId];
+    if (alChannel.type == BROADCAST)
+    {
+        ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+        NSMutableArray * memberList = [channelService getListOfAllUsersInChannel:alMessage.groupId];
+        [memberList removeObject:[ALUserDefaultsHandler getUserId]];
+        NSManagedObjectContext * MOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        MOC.persistentStoreCoordinator = dbHandler.persistentStoreCoordinator;
+        [MOC performBlock:^{
+            
+            for (NSString *userId in memberList)
+            {
+                NSLog(@"BROADCAST_CHANNEL_MEMBER : %@",userId);
+                DB_Message * dbMsgEntity = [NSEntityDescription insertNewObjectForEntityForName:@"DB_Message"
+                                                                         inManagedObjectContext:dbHandler.managedObjectContext];
+                dbMsgEntity.contactId = userId;
+                dbMsgEntity.createdAt = alMessage.createdAtTime;
+                dbMsgEntity.deviceKey = alMessage.deviceKey;
+                dbMsgEntity.status = alMessage.status;
+                dbMsgEntity.isSentToDevice = [NSNumber numberWithBool:alMessage.sendToDevice];
+                dbMsgEntity.isShared = [NSNumber numberWithBool:alMessage.shared];
+                dbMsgEntity.isStoredOnDevice = [NSNumber numberWithBool:alMessage.storeOnDevice];
+                dbMsgEntity.key = [NSString stringWithFormat:@"%@-%@", alMessage.key, userId];
+                dbMsgEntity.messageText = alMessage.message;
+                dbMsgEntity.userKey = alMessage.userKey;
+                dbMsgEntity.to = userId;
+                dbMsgEntity.type = alMessage.type;
+                dbMsgEntity.delivered = [NSNumber numberWithBool:alMessage.delivered];
+                dbMsgEntity.sentToServer = [NSNumber numberWithBool:alMessage.sentToServer];
+                dbMsgEntity.filePath = alMessage.imageFilePath;
+                dbMsgEntity.inProgress = [NSNumber numberWithBool:alMessage.inProgress];
+                dbMsgEntity.isUploadFailed = [NSNumber numberWithBool:alMessage.isUploadFailed];
+                dbMsgEntity.contentType = alMessage.contentType;
+                dbMsgEntity.deletedFlag = [NSNumber numberWithBool:alMessage.deleted];
+                dbMsgEntity.conversationId = alMessage.conversationId;
+                dbMsgEntity.pairedMessageKey = alMessage.pairedMessageKey;
+                dbMsgEntity.metadata = alMessage.metadata.description;
+                dbMsgEntity.msgHidden = [NSNumber numberWithBool:[alMessage isMsgHidden]];
+                
+                if(alMessage.fileMeta != nil)
+                {
+                    ALMessageDBService * classSelf = [[self alloc] init];
+                    DB_FileMetaInfo * fileInfo = [classSelf createFileMetaInfoEntityForDBInsertionWithMessage:alMessage.fileMeta];
+                    dbMsgEntity.fileMetaInfo = fileInfo;
+                }
+                
+                NSError * error;
+                BOOL flag = [dbHandler.managedObjectContext save:&error];
+                NSLog(@"ERROR(IF_ANY) BROADCAST MSG : %@ and flag : %i",error.description, flag);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"BROADCAST_MSG_UPDATE" object:nil];
+        }];
+    }
 }
 
 //============================================================================================================

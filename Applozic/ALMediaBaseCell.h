@@ -39,6 +39,9 @@
 -(void) showAnimationForMsgInfo:(BOOL)flag;
 -(void) processTapGesture:(ALMessage *)alMessage;
 
+@optional
+-(void) processUserChatView:(ALMessage *)alMessage;
+
 @end
 
 @interface ALMediaBaseCell : UITableViewCell <KAProgressLabelDelegate>
@@ -61,6 +64,7 @@
 -(void)setupProgress;
 -(void)dowloadRetryButtonAction;
 -(void)hidePlayButtonOnUploading;
+-(void)openUserChatVC;
 
 @property (nonatomic, strong) UILabel *sizeLabel;
 @property (nonatomic, strong) UIView *downloadRetryView;

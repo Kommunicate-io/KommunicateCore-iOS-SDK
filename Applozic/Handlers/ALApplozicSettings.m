@@ -740,6 +740,28 @@ NOTIFICATION_DISABLE = 2
     return [[NSUserDefaults standardUserDefaults] boolForKey:SUB_GROUP_LAUNCH];
 }
 
++(void)setGroupOfTwoFlag:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:GROUP_OF_TWO_FLAG];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)getGroupOfTwoFlag
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:GROUP_OF_TWO_FLAG];
+}
+
++(void)setBroadcastGroupEnable:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:BROADCAST_GROUP_ENABLE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isBroadcastGroupEnable
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:BROADCAST_GROUP_ENABLE];
+}
+
 +(void)setListOfViewControllers:(NSArray *)viewList
 {
     [[NSUserDefaults standardUserDefaults] setObject:viewList forKey:VIEW_CONTROLLER_ARRAY];
@@ -836,6 +858,17 @@ NOTIFICATION_DISABLE = 2
 {
     [[NSUserDefaults standardUserDefaults] setValue:title forKey:USER_PROFILE_TAB_TITLE];
     [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(void)openChatOnTapUserProfile:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:OPEN_CHAT_ON_USER_PROFILE_TAP];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isChatOnTapUserProfile
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:OPEN_CHAT_ON_USER_PROFILE_TAP];
 }
 
 @end

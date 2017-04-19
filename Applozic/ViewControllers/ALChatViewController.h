@@ -82,4 +82,9 @@
 -(void)checkUserBlockStatus;
 -(void)updateChannelSubscribing:(NSNumber *)oldChannelKey andNewChannel:(NSNumber *)newChannelKey;
 -(void)subProcessDetailUpdate:(ALUserDetail *)userId;
+-(void)addBroadcastMessageToDB:(ALMessage *)alMessage;
+
+-(void)subscrbingChannel;
+-(void)unSubscrbingChannel;
+
 @end

@@ -127,6 +127,11 @@
         tapForCustomView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processTapGesture)];
         tapForCustomView.numberOfTapsRequired = 1;
         
+        UITapGestureRecognizer *tapForOpenChat = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processOpenChat)];
+        tapForOpenChat.numberOfTapsRequired = 1;
+        [self.mUserProfileImageView setUserInteractionEnabled:YES];
+        [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
+        
         self.hyperLinkArray = [NSMutableArray new];
     }
     
@@ -473,6 +478,11 @@
 -(void)processTapGesture
 {
     [self.delegate processALMessage:self.mMessage];
+}
+
+-(void)processOpenChat
+{
+    [self.delegate openUserChat:self.mMessage];
 }
 
 -(void)processHyperLink

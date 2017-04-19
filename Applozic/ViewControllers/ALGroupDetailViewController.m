@@ -17,6 +17,7 @@
 #import "ALMQTTConversationService.h"
 #import "ALGroupCreationViewController.h"
 #import "ALPushAssist.h"
+#import "ALChannelUser.h"
 
 
 @interface ALGroupDetailViewController () <ALGroupInfoDelegate>
@@ -250,7 +251,11 @@
     {
         case 0:
         {
-            if(isAdmin && ![self isThisChannelLeft:self.channelKeyID] && [ALApplozicSettings getGroupMemberAddOption])
+            ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+            
+            ALChannelUserX *alChannelUserX =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
+            
+            if(alChannelUserX.role.intValue != MEMBER && ![self isThisChannelLeft:self.channelKeyID] && [ALApplozicSettings getGroupMemberAddOption])
                 return 3;
             else
                 return 2;
@@ -261,7 +266,7 @@
         }break;
         case 2:
         {
-            if([ALApplozicSettings getGroupExitOption]) 
+            if([ALApplozicSettings getGroupExitOption])
             {
                 return 1;
             }
@@ -276,6 +281,9 @@
         }
     }
 }
+
+
+
 
 #pragma mark - Table Row Height
 //================================
@@ -317,13 +325,16 @@
             else if(indexPath.row==2)
             {
                 [self addNewMember];
-
+                
             }
         }
             break;
         case 1:
         {
-            if(isAdmin
+            ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+            ALChannelUserX *alChannelUserX =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
+            
+            if(alChannelUserX.role.intValue != MEMBER
                && ![self isThisChannelLeft:self.channelKeyID]
                &&  [ALApplozicSettings getGroupMemberRemoveOption]){
                 [self removeMember:indexPath.row];
@@ -331,7 +342,7 @@
         }break;
         case 2:{
             //Exit group
-            [self checkAndconfirm:@"Confirm" withMessage:@"Are you sure?" otherButtonTitle:@"Yes"]; 
+            [self checkAndconfirm:@"Confirm" withMessage:@"Are you sure?" otherButtonTitle:@"Yes"];
             
         }break;
             
@@ -340,6 +351,7 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
+
 
 #pragma mark - Add New Member Methods
 //==================================
@@ -466,7 +478,7 @@
                     NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
                     for (UIViewController *viewController in allViewControllers)
                     {
-                        if ([viewController isKindOfClass: [ALMessagesViewController class]])
+                        if ([ALPushAssist isViewObjIsMsgVC:viewController] || [ALPushAssist isViewObjIsMsgContainerVC:viewController])
                         {
                             [self.navigationController popToViewController:viewController animated:YES];
                         }
@@ -485,6 +497,7 @@
     return flag;
 }
 
+
 #pragma mark - Remove Memember (for admin)
 //=======================================
 -(void)removeMember:(NSInteger)row
@@ -498,6 +511,7 @@
     }
     else
     {
+        
         UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil
                                                                                 message:nil
                                                                          preferredStyle:UIAlertControllerStyleActionSheet];
@@ -505,27 +519,87 @@
         [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
         
         [theController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-        [theController addAction:[UIAlertAction
-                                  actionWithTitle:[NSString stringWithFormat:@"Remove %@",memberNames[row]]
-                                            style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction *action) {
-                                                
+        
+        if ([ALApplozicSettings isChatOnTapUserProfile])
+        {
+            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Message %@", memberNames[row]]
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction *action) {
+                                                                
+                                                                ALGroupDetailViewController * groupDetailVC = self;
+                                                                ALMessagesViewController *msgVC = (ALMessagesViewController *)[self.navigationController.viewControllers objectAtIndex:0];
+                                                                msgVC.channelKey = nil;
+                                                                ALChatViewController * chatVC = (ALChatViewController *)self.alChatViewController;
+                                                                NSMutableArray * viewsArray = [NSMutableArray arrayWithArray:msgVC.navigationController.viewControllers];
+                                                                [viewsArray removeObject:chatVC];
+                                                                msgVC.navigationController.viewControllers = viewsArray;
+                                                                [msgVC createDetailChatViewController:removeMemberID];
+                                                                viewsArray = [NSMutableArray arrayWithArray:msgVC.navigationController.viewControllers];
+                                                                [viewsArray removeObject:groupDetailVC];
+                                                                msgVC.navigationController.viewControllers = viewsArray;
+                                                            }]];
+        }
+        
+        
+        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+        ALChannelUserX *alChannelUserX =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
+        
+       ALChannelUserX *alChannelUserXLoggedInUser =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
 
-            [self turnUserInteractivityForNavigationAndTableView:NO];
-            ALChannelService * alchannelService = [[ALChannelService alloc] init];
-            [alchannelService removeMemberFromChannel:removeMemberID andChannelKey:self.channelKeyID orClientChannelKey:nil withCompletion:^(NSError *error, ALAPIResponse *response) {
-                
-                if(!error)
-                {
-                    [memberIds removeObjectAtIndex:row];
-                    [self setupView];
-                    [self.tableView reloadData];
-                }
-
-                [self turnUserInteractivityForNavigationAndTableView:YES];
-            }];
-                  
-        }]];
+        
+        if(alChannelUserXLoggedInUser.role.intValue !=MEMBER && alChannelUserXLoggedInUser.role.intValue != USER){
+            
+            UIAlertAction *removeAction = [UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove %@", memberNames[row]]
+                                                                   style:UIAlertActionStyleDefault
+                                                                 handler:^(UIAlertAction *action) {
+                                                                     
+                                                                     [self turnUserInteractivityForNavigationAndTableView:NO];
+                                                                     ALChannelService * alchannelService = [[ALChannelService alloc] init];
+                                                                     [alchannelService removeMemberFromChannel:removeMemberID andChannelKey:self.channelKeyID
+                                                                                            orClientChannelKey:nil withCompletion:^(NSError *error, ALAPIResponse *response) {
+                                                                                                
+                                                                                                if(!error)
+                                                                                                {
+                                                                                                    [memberIds removeObjectAtIndex:row];
+                                                                                                    [self setupView];
+                                                                                                    [self.tableView reloadData];
+                                                                                                }
+                                                                                                
+                                                                                                [self turnUserInteractivityForNavigationAndTableView:YES];
+                                                                                            }];
+                                                                     
+                                                                 }];
+            
+            [removeAction setValue:[UIColor redColor] forKey:@"titleTextColor"];
+            [theController addAction:removeAction];
+            
+        }
+        
+        if(alChannelUserX.role.intValue != ADMIN){
+            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Make admin %@", memberNames[row]]
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction *action) {
+                                                                
+                                                                ALChannelService *channelService = [ALChannelService new];
+                                                                ALChannelUser * alChannelUsers = [ALChannelUser new];
+                                                                alChannelUsers.role = [NSNumber numberWithInt:1];
+                                                                alChannelUsers.userId = memberIds[row];
+                                                                NSMutableArray * channelUsers = [NSMutableArray new];
+                                                                [channelUsers addObject:alChannelUsers.dictionary];
+                                                                
+                                                                [channelService updateChannel:self.channelKeyID andNewName:nil
+                                                                                  andImageURL:nil orClientChannelKey:nil isUpdatingMetaData:NO metadata:nil orChildKeys:nil orChannelUsers: channelUsers withCompletion:^(NSError *error) {
+                                                                                      
+                                                                                      if(!error)
+                                                                                      {
+                                                                                          [ALUtilityClass showAlertMessage:@"Group information successfully updated" andTitle:@"Response"];
+                                                                                          [self setupView];
+                                                                                          [self.tableView reloadData];
+                                                                                      }
+                                                                                  }];
+                                                            }]];
+        }
+        
         
         [self presentViewController:theController animated:YES completion:nil];
     }
@@ -556,9 +630,9 @@
 {
     ALContactCell * memberCell = (ALContactCell*)[tableView dequeueReusableCellWithIdentifier:@"memberCell" forIndexPath:indexPath];
     [memberCell setSeparatorInset:UIEdgeInsetsMake(0, 0, 0, 0)];
-   
-    dispatch_async(dispatch_get_main_queue(), ^{
     
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
         [self setupCellItems:memberCell];
         [self.firstLetterLabel setHidden:YES];
         [self.memberIconImageView setHidden:YES];
@@ -605,14 +679,24 @@
     return memberCell;
 }
 
+
 -(void)setMemberIcon:(NSInteger)row
 {
-    if([self.alChannel.adminKey isEqualToString:memberIds[row]])
+    
+    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+    ALChannelUserX *alChannelUserX = [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
+    
+    NSLog(@"@@@@@alChannelUserX GRP_ID %@",alChannelUserX.key);
+    NSLog(@"@@@@@alChannelUserX id %@",alChannelUserX.userKey);
+    NSLog(@"@@@@@alChannelUserX row %@",memberIds[row]);
+    NSLog(@"@@@@@alChannelUserX %@",alChannelUserX.role);
+    
+    if(alChannelUserX.role.intValue == ADMIN)
     {
         [self.adminLabel setHidden:NO];
     }
     
-//    Member Name Label
+    //    Member Name Label
     [self.memberNameLabel setTextAlignment:NSTextAlignmentLeft];
     self.memberNameLabel.text = [NSString stringWithFormat:@"%@", memberNames[row]];
     

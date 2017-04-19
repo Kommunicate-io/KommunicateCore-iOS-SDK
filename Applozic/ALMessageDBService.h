@@ -70,4 +70,6 @@
 
 -(ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
 
++(void)addBroadcastMessageToDB:(ALMessage *)alMessage;
+
 @end

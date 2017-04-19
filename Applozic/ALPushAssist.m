@@ -112,4 +112,14 @@
     }
 }
 
++ (BOOL)isViewObjIsMsgVC:(UIViewController *)viewObj
+{
+    return ([viewObj isKindOfClass:[ALMessagesViewController class]]);
+}
+
++ (BOOL)isViewObjIsMsgContainerVC:(UIViewController *)viewObj
+{
+    return ([viewObj isKindOfClass:NSClassFromString([ALApplozicSettings getMsgContainerVC])]);
+}
+
 @end

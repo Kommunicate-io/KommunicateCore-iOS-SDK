@@ -37,9 +37,8 @@
 +(void)leaveChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withUserId:(NSString *)userId andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 
-+(void)updateChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
-          andNewName:(NSString *)newName andImageURL:(NSString *)imageURL metadata:(NSMutableDictionary *)metaData
-         orChildKeys:(NSMutableArray *)childKeysList andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
++(void)updateChannel:channelKey orClientChannelKey:clientChannelKey andNewName:newName andImageURL:imageURL metadata:metaData orChildKeys:childKeysList orChannelUsers:(NSMutableArray *)channelUsers andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+
 
 +(void)syncCallForChannel:(NSNumber *)channelKey andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
 

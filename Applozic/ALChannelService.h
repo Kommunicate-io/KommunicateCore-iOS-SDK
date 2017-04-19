@@ -62,9 +62,8 @@
 
 -(void)syncCallForChannel;
 
--(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL
-  orClientChannelKey:(NSString *)clientChannelKey isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData
-         orChildKeys:(NSMutableArray *)childKeysList withCompletion:(void(^)(NSError *error))completion;
+-(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
+  isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData orChildKeys:(NSMutableArray *)childKeysList orChannelUsers:(NSMutableArray *)channelUsers withCompletion:(void(^)(NSError *error))completion;
 
 +(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
@@ -101,5 +100,12 @@
                  withCompletion:(void(^)(id json, NSError *error))completion;
     
 -(void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError *error))completion;
+
+-(void)createBroadcastChannelWithMembersList:(NSMutableArray *)memberArray
+                                 andMetaData:(NSMutableDictionary *)metaData
+                              withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+
+-(ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey;
+
 
 @end

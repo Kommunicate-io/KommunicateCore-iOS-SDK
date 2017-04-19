@@ -507,6 +507,11 @@
     [self.playPauseStop setHidden:YES];
 }
 
+-(void)openUserChatVC
+{
+    [self.delegate processUserChatView:self.mMessage];
+}
+
 - (void)msgInfo:(id)sender
 {
     [self.delegate showAnimationForMsgInfo:YES];

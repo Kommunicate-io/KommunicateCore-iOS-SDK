@@ -186,7 +186,6 @@
     self.comingFromBackground = YES;
     
     typingStat = NO;
-    self.comingFromBackground = YES;
     
     if([self isReloadRequired])
     {
@@ -1302,6 +1301,14 @@
         [self.mqttObject sendTypingStatus:self.alContact.applicationId userID:self.contactIds
                             andChannelKey:self.channelKey typing:typingStat];
     }
+}
+
+//==============================================================================================================================================
+#pragma mark - BROADCAST MESSAGE PROCESS
+//==============================================================================================================================================
+
+-(void)addBroadcastMessageToDB:(ALMessage *)alMessage {
+    [ALMessageService addBroadcastMessageToDB:alMessage];
 }
 
 //==============================================================================================================================================
@@ -2604,8 +2611,9 @@
             [self handleErrorStatus:theMessage];
             return;
         }
+        [self addBroadcastMessageToDB:theMessage];
         [self.mTableView reloadData];
-        [self setRefreshMainView:TRUE];
+        [self setRefreshMainView:YES];
     }];
 }
 
@@ -3048,7 +3056,7 @@
     if(self.channelKey != nil)
     {
         ALChannelService * channelService = [[ALChannelService alloc] init];
-        if(self.alChannel.type == GROUP_OF_TWO && [alUserDetail.userId isEqualToString:self.contactIds])
+        if(self.alChannel.type == GROUP_OF_TWO )
         {
             if(value > 0)
             {
@@ -3295,13 +3303,11 @@
     
     if(minHeight.size.height == textSize.size.height)
     {
-        if([textView.text isEqualToString:@""] ||
-           [textView.text isEqualToString:self.placeHolderTxt])
+        if([textView.text isEqualToString:@""]|| [textView.text isEqualToString:self.placeHolderTxt])
         {
-            [super setHeightOfTextViewDynamically];
+            [super setHeightOfTextViewDynamically:NO];
             self.textMessageViewHeightConstaint.constant = 56.0;
         }
-        //        NSLog(@"CASE SINGLE");
         return;
     }
     
@@ -3317,7 +3323,7 @@
         //Untill max rows are achieved than SCROLL
         [textView setScrollEnabled:NO];
         [UIView animateWithDuration:0.4 animations:^{
-            [super setHeightOfTextViewDynamically];
+            [super setHeightOfTextViewDynamically:YES];
         }];
         //        NSLog(@"CASE INCRESE/DECREASE");
     }
@@ -3399,10 +3405,10 @@
 //Message Delivered/Read
 -(void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status
 {
-    if([[self contactIds] isEqualToString: contactId])
-    {
+   // if([[self contactIds] isEqualToString: contactId])
+    //{
         [self updateDeliveryReport:messageKey withStatus:status];
-    }
+    //}
 }
 
 //Conversation Delivered/Read
@@ -3557,12 +3563,11 @@
 //    }
 //    else
 //    {
-
-    [self.alMessageWrapper addLatestObjectToArray:[NSMutableArray arrayWithArray:sortedArray]];
-    [self.mTableView reloadData];
-    [super scrollTableViewToBottomWithAnimation:YES];
+        [self.alMessageWrapper addLatestObjectToArray:[NSMutableArray arrayWithArray:sortedArray]];
+        [self.mTableView reloadData];
+        [super scrollTableViewToBottomWithAnimation:YES];
     
-    if(self.comingFromBackground){
+    if (self.comingFromBackground) {
         [self markConversationRead];
     }
     //}
@@ -3592,7 +3597,7 @@
 
 -(BOOL)isGroup
 {
-    return !(self.channelKey == nil || [self.channelKey intValue] == 0 || self.channelKey== NULL);
+    return !(self.channelKey == nil || [self.channelKey intValue] == 0 || self.channelKey == NULL);
 }
 
 //==============================================================================================================================================
@@ -3678,6 +3683,43 @@
 {
     [self.chatViewDelegate handleCustomActionFromChatVC:self andWithMessage:message];
 }
+
+-(void)openUserChatOnTap:(NSString *)userId
+{
+    BOOL tapFlag = ([ALApplozicSettings isChatOnTapUserProfile] && [self isGroup]);
+    
+    if (!tapFlag)
+    {
+        return;
+    }
+    
+    [UIView transitionWithView:self.view duration:0.1
+                       options:UIViewAnimationOptionTransitionNone
+                    animations:^{
+                       
+                        self.channelKey = nil;
+                        self.contactIds = userId;
+                        self.conversationId = nil;
+                        [self reloadView];
+                        if(![ALUserDefaultsHandler isServerCallDoneForMSGList:userId])
+                        {
+                            [self processLoadEarlierMessages:YES];
+                        }
+                        [self markConversationRead];
+                    }
+                    completion:NULL];
+}
+
+-(void)openUserChat:(ALMessage *)alMessage
+{
+    [self openUserChatOnTap:alMessage.to];
+}
+
+-(void) processUserChatView:(ALMessage *)alMessage
+{
+    [self openUserChatOnTap:alMessage.to];
+}
+
 //==============================================================================================================================================
 #pragma mark - MEDIA BASE CELL DELEGATE CALLED BY TAP GESTURE
 //==============================================================================================================================================

@@ -19,6 +19,10 @@
 -(void) showAnimation:(BOOL)flag;
 -(void) processALMessage:(ALMessage *) message;
 
+@optional
+
+-(void)openUserChat:(ALMessage *)alMessage;
+
 @end
 
 @interface ALChatCell : UITableViewCell

@@ -314,6 +314,13 @@
         [self.videoPlayFrontView setHidden:NO];
         [self setVideoThumbnail:filePath];
     }
+    else
+    {
+        [self.mImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
+        [self.videoPlayFrontView setHidden:YES];
+        [self.mImageView removeGestureRecognizer:self.tapper];
+
+    }
     
     [self.mImageView setContentMode:UIViewContentModeScaleAspectFit];
     [self.mImageView setBackgroundColor:[UIColor whiteColor]];
@@ -418,6 +425,11 @@
         
         NSLog(@"DELETE MESSAGE ERROR :: %@", error.description);
     }];
+}
+
+-(void)openUserChatVC
+{
+    [self.delegate processUserChatView:self.mMessage];
 }
 
 - (void)msgInfo:(id)sender

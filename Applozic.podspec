@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "3.8.5"
+  s.version      = "3.8.6"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -51,9 +51,9 @@ Pod::Spec.new do |s|
   #  profile URL.
   #
 
-  s.author             = { "Abhishek" => "abhishekthapliyal7579@gmail.com" }
-  # Or just: s.author    = "abhishek"
-  # s.authors            = { "abhishek" => "abhishekthapliyal7579@gmail.com" }
+  s.author             = { "Adarsh" => "adarsh@applozic.com" }
+  # Or just: s.author    = "Adarsh"
+  # s.authors            = { "Adarsh" => "adarsh@applozic.com" }
   # s.social_media_url   = "http://twitter.com/abhishek"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

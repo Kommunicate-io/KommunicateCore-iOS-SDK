@@ -71,7 +71,7 @@
 -(BOOL) isContactExist:(NSString *) value{
    
     DB_CONTACT* contact= [alContactDBService getContactByKey:@"userId" value:value];
-    return !(contact==nil);
+    return !(contact.lastSeenAt==nil);
     
 }
 #pragma update OR insert contact

@@ -389,19 +389,18 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 -(void)setHeightOfTextViewDynamically
 {
     
-    [self subProcessSetHeightOfTextViewDynamically];
+    [self setHeightOfTextViewDynamically:YES];
     
-//    self.noConversationLabel.frame = CGRectMake(0,
-//                                                self.typingLabel.frame.origin.y -
-//                                                (self.typingLabel.frame.size.height+10),
-//                                                tempFrame.size.width,
-//                                                tempFrame.size.height);
-//    
-   
-    //- (self.textMessageViewHeightConstaint.constant + typingIndicatorHeight + navigationWidth)
+}
 
-
-    [self scrollTableViewToBottomWithAnimation:YES];
+-(void)setHeightOfTextViewDynamically:(BOOL)scroll
+{
+    
+    [self subProcessSetHeightOfTextViewDynamically];
+    if(scroll)
+    {
+        [self scrollTableViewToBottomWithAnimation:YES];
+    }
     [self.view layoutIfNeeded];
     
 }
@@ -413,11 +412,6 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     self.textViewHeightConstraint.constant =  sizeThatFitsTextView.height;
     
     self.textMessageViewHeightConstaint.constant = (self.typingMessageView.frame.size.height-self.sendMessageTextView.frame.size.height) + sizeThatFitsTextView.height + paddingForTextMessageViewHeight;
-    
-//    self.typingLabel.frame = CGRectMake(0,
-//                                        keyboardEndFrame.origin.y - (self.textMessageViewHeightConstaint.constant + typingIndicatorHeight + navigationWidth),
-//                                        self.view.frame.size.width, typingIndicatorHeight);
-    
 }
 
 -(void) scrollTableViewToBottomWithAnimation:(BOOL) animated

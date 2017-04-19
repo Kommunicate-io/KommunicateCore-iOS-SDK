@@ -14,6 +14,7 @@
 @implementation ALMediaBaseCell
 {
     float heightLocation;
+    UITapGestureRecognizer * tapForUserChatView;
 }
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -110,6 +111,12 @@
         {
             heightLocation = 280.0;
         }
+        
+        [self.mUserProfileImageView setUserInteractionEnabled:YES];
+        tapForUserChatView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openUserChatVC)];
+        tapForUserChatView.numberOfTapsRequired = 1;
+        [self.mUserProfileImageView addGestureRecognizer:tapForUserChatView];
+        
     }
     
     return self;
@@ -140,6 +147,11 @@
 
 -(void)cancelAction{
 
+}
+
+-(void)openUserChatVC
+{
+    
 }
 
 @end

@@ -86,7 +86,7 @@
     NSArray * keyArray = [dictionary allKeys];
     for(NSString * defaultKeyString in keyArray)
     {
-        if([defaultKeyString hasPrefix:KEY_PREFIX])
+        if([defaultKeyString hasPrefix:KEY_PREFIX] && ![defaultKeyString isEqualToString:APN_DEVICE_TOKEN])
         {
             [[NSUserDefaults standardUserDefaults] removeObjectForKey:defaultKeyString];
             [[NSUserDefaults standardUserDefaults] synchronize];

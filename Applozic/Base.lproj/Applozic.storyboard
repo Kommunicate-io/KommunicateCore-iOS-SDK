@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nQk-LM-enC">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nQk-LM-enC">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -50,11 +50,24 @@
                                                         <color key="titleColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                 </button>
+                                                <button opaque="NO" tag="102" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rY1-d5-lFk">
+                                                    <rect key="frame" x="8" y="11" width="150" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="150" id="Qnb-xP-plf"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <state key="normal" title="New Broadcast">
+                                                        <color key="titleColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailingMargin" secondItem="lgk-it-0jV" secondAttribute="trailing" constant="8" id="AIw-3O-STL"/>
+                                                <constraint firstItem="rY1-d5-lFk" firstAttribute="top" secondItem="L3w-n8-49r" secondAttribute="topMargin" constant="3" id="BJt-xb-IwM"/>
                                                 <constraint firstItem="lgk-it-0jV" firstAttribute="centerY" secondItem="L3w-n8-49r" secondAttribute="centerY" id="JE7-Yc-XzB"/>
+                                                <constraint firstItem="rY1-d5-lFk" firstAttribute="bottom" secondItem="L3w-n8-49r" secondAttribute="bottomMargin" id="dVL-Hs-TPY"/>
                                                 <constraint firstItem="lgk-it-0jV" firstAttribute="top" secondItem="L3w-n8-49r" secondAttribute="topMargin" constant="2" id="gPy-9f-lan"/>
+                                                <constraint firstItem="rY1-d5-lFk" firstAttribute="leading" secondItem="L3w-n8-49r" secondAttribute="leadingMargin" id="pRy-dm-Tm5"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -87,13 +100,13 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_action_camera" translatesAutoresizingMaskIntoConstraints="NO" id="ng6-Us-xRU">
-                                                    <rect key="frame" x="90" y="38" width="27" height="24"/>
+                                                    <rect key="frame" x="90" y="38" width="27" height="25"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="27" id="K9t-DK-prk"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Image Label " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nFm-Yv-yQF">
-                                                    <rect key="frame" x="122" y="40" width="118" height="22"/>
+                                                    <rect key="frame" x="122" y="41" width="118" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="118" id="MT4-6C-INF"/>
                                                     </constraints>
@@ -120,7 +133,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="MMessageLabel" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mUK-kK-XjJ">
-                                                    <rect key="frame" x="92" y="40" width="360" height="22"/>
+                                                    <rect key="frame" x="92" y="41" width="360" height="22"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                                     <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -215,7 +228,7 @@
                                 <action selector="backButtonAction:" destination="BYZ-38-t0r" id="vWD-0a-q4j"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="3pR-ud-INa">
+                        <barButtonItem key="rightBarButtonItem" title="contact" id="3pR-ud-INa">
                             <connections>
                                 <action selector="navigationRightButtonAction:" destination="BYZ-38-t0r" id="tds-rS-yDu"/>
                             </connections>
@@ -701,7 +714,7 @@
         <scene sceneID="uwJ-c5-MKc">
             <objects>
                 <collectionViewController storyboardIdentifier="collectionView" title="Attachment" extendedLayoutIncludesOpaqueBars="YES" id="5ds-lt-Orl" customClass="ALMultipleAttachmentView" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="Cdp-1x-xZh">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Cdp-1x-xZh">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1280,7 +1293,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="nR9-3H-cTW" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" id="70j-Xw-YMX"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="aLk-X7-wot">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="aLk-X7-wot">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1299,7 +1312,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="MNB-7r-ca3" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="contacts" id="rAD-Rw-MBT"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="GCi-77-i4P">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="GCi-77-i4P">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -1515,7 +1528,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="izp-vg-4yT">
-                            <rect key="frame" x="0.0" y="0.0" width="600" height="204"/>
+                            <rect key="frame" x="0.0" y="64" width="600" height="204"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ky4-is-ZmF">
@@ -1727,7 +1740,7 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="cae-ki-ei4" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" id="fx6-zu-YmW"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Apy-Bi-oR6">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Apy-Bi-oR6">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

@@ -12,12 +12,14 @@
 #import "ALContact.h"
 #import "ALContactDBService.h"
 #import "ALContact.h"
+#import "ALChannelUser.h"
 
 @interface ALChannelDBService ()
 
 @end
 
 @implementation ALChannelDBService
+
 
 -(void)createChannel:(ALChannel *)channel
 {
@@ -38,9 +40,26 @@
     
     [self insertChannelUserX:memberArray];
     
+    
     [self addedMembersArray:channel.membersName andChannelKey:channel.key];
     [self removedMembersArray:channel.removeMembers andChannelKey:channel.key];
+    
+    for(ALChannelUser * channelUser  in channel.groupUsers)
+    {
+        if(channelUser.parentGroupKey)
+        {
+            [self updateParentKeyInChannelUserX:channel.key andWithParentKey:channelUser.parentGroupKey addUserId:channelUser.userId];
+        }
+        
+        if(channelUser.role)
+        {
+            [self updateRoleInChannelUserX:channel.key  andUserId:channelUser.userId withRoleType:channelUser.role];
+        }
+        
+    }
+    
 }
+
 
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey
 {
@@ -263,6 +282,131 @@
     }
 }
 
+
+
+-(ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey{
+    
+    DB_CHANNEL_USER_X *dbChannelUserX = [self getChannelUserX:channelKey];
+    ALChannelUserX *alChannelUserX = [[ALChannelUserX alloc] init];
+    
+    if (!dbChannelUserX)
+    {
+        return nil;
+    }
+    
+    alChannelUserX.key =dbChannelUserX.channelKey;
+    alChannelUserX.parentKey =dbChannelUserX.parentGroupKey;
+    alChannelUserX.userKey =dbChannelUserX.userId;
+    alChannelUserX.status = dbChannelUserX.status;
+    alChannelUserX.unreadCount =dbChannelUserX.unreadCount;
+    alChannelUserX.role = dbChannelUserX.role;
+    return alChannelUserX;
+}
+
+
+
+
+-(DB_CHANNEL_USER_X *)getChannelUserXByUserId:(NSNumber *)channelKey andUserId:(NSString *) userId
+{
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:dbHandler.managedObjectContext];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey == %@ AND userId == %@", channelKey, userId];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *fetchError = nil;
+    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+    
+    if (result.count)
+    {
+        DB_CHANNEL_USER_X *dbChannelUserX = [result objectAtIndex:0];
+        return dbChannelUserX;
+    }
+    else
+    {
+        return nil;
+    }
+}
+
+
+-(DB_CHANNEL_USER_X *)getChannelUserX:channelKey{
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:dbHandler.managedObjectContext];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *fetchError = nil;
+    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+    
+    if (result.count)
+    {
+        DB_CHANNEL_USER_X *dbChannelUserX = [result objectAtIndex:0];
+        return dbChannelUserX;
+    }
+    else
+    {
+        return nil;
+    }
+}
+
+
+
+-(ALChannelUserX *)loadChannelUserXByUserId:(NSNumber *)channelKey andUserId:(NSString *)userId{
+    
+    DB_CHANNEL_USER_X *dbChannelUserX = [self getChannelUserXByUserId:channelKey andUserId:userId];
+    ALChannelUserX *alChannelUserX = [[ALChannelUserX alloc] init];
+    
+    if (!dbChannelUserX)
+    {
+        return nil;
+    }
+    
+    alChannelUserX.key = dbChannelUserX.channelKey;
+    alChannelUserX.parentKey =dbChannelUserX.parentGroupKey;
+    alChannelUserX.userKey = dbChannelUserX.userId;
+    alChannelUserX.status = dbChannelUserX.status;
+    alChannelUserX.unreadCount = dbChannelUserX.unreadCount;
+    alChannelUserX.role = dbChannelUserX.role;
+    
+    return alChannelUserX;
+}
+
+
+
+
+
+
+
+
+-(void)updateParentKeyInChannelUserX:(NSNumber *)channelKey andWithParentKey:(NSNumber *)parentKey addUserId :(NSString *) userId
+{
+    
+    DB_CHANNEL_USER_X *channelUserX =  [self getChannelUserXByUserId:channelKey andUserId:userId];
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    
+    channelUserX.parentGroupKey = parentKey;
+    [dbHandler.managedObjectContext save:nil];
+    
+}
+
+-(void)updateRoleInChannelUserX:(NSNumber *)channelKey andUserId:(NSString *)userId withRoleType:(NSNumber*)role
+{
+    
+    DB_CHANNEL_USER_X *channelUserX = [self getChannelUserXByUserId:channelKey andUserId:userId];
+    
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    
+    channelUserX.role = role;
+    
+    [dbHandler.managedObjectContext save:nil];
+    
+}
+
 -(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key
 {
     NSMutableArray *memberList = [[NSMutableArray alloc] init];
@@ -471,9 +615,9 @@
     return unreadCount;
 }
 
--(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName
-          orImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList isUpdatingMetaData:(BOOL)flag
-{
+
+-(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName orImageURL:(NSString *)imageURL orChildKeys:(NSMutableArray *)childKeysList isUpdatingMetaData:(BOOL)flag  orChannelUsers:(NSMutableArray *)channelUsers{
+    
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
@@ -491,16 +635,31 @@
         if(newName.length) {
             dbChannel.channelDisplayName = newName;
         }
-
+        
         if (!flag){
             dbChannel.channelImageURL = imageURL;
         }
-
+        
         if(childKeysList.count) {
             for(NSNumber * childKey in childKeysList) {
                 [self updateChannelParentKey:childKey andWithParentKey:channelKey isAdding:YES];
             }
         }
+        for(NSDictionary * chUserDict in channelUsers)
+        {
+            ALChannelUser * channelUser = [[ALChannelUser alloc] initWithDictonary:chUserDict];
+            if(channelUser.parentGroupKey)
+            {
+                [self updateParentKeyInChannelUserX:channelKey andWithParentKey:channelUser.parentGroupKey addUserId:channelUser.userId];
+            }
+            
+            if(channelUser.role)
+            {
+                [self updateRoleInChannelUserX:channelKey andUserId:channelUser.userId withRoleType:channelUser.role];
+            }
+            
+        }
+        
         [dbHandler.managedObjectContext save:nil];
     }
     else
@@ -508,6 +667,7 @@
         NSLog(@"UPDATE_CHANNEL_DB : NO CHANNEL FOUND");
     }
 }
+
 
 -(void) updateChannelParentKey:(NSNumber *)channelKey andWithParentKey:(NSNumber *)channelParentKey isAdding:(BOOL)flag
 {
@@ -742,6 +902,10 @@
     
     return alChannel;
 }
+
+
+
+
 
 -(NSMutableArray *)fetchChildChannels:(NSNumber *)parentGroupKey
 {

@@ -147,6 +147,10 @@
     {
         return [self getAudioCellHeight];
     }
+    else if ([alMessage.fileMeta.contentType hasPrefix:@"image"])
+    {
+        return [self getImageCellHeight:alMessage andCellFrame:cellFrame];
+    }
     else if (alMessage.contentType == ALMESSAGE_CONTENT_CUSTOM)
     {
          return [self getCustomChatCellHeight:alMessage andCellFrame:cellFrame];
@@ -154,10 +158,6 @@
     else if (alMessage.contentType == ALMESSAGE_CONTENT_DEFAULT)
     {
         return [self getChatCellHeight:alMessage andCellFrame:cellFrame];
-    }
-    else if ([alMessage.fileMeta.contentType hasPrefix:@"image"])
-    {
-        return [self getImageCellHeight:alMessage andCellFrame:cellFrame];
     }
     else if (alMessage.contentType == (short)ALMESSAGE_CONTENT_VCARD)
     {
