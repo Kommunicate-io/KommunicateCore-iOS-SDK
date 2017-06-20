@@ -301,6 +301,8 @@
 		C7A07AF61EA6A13900065E87 /* ALSubViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C7A07AF41EA6A13900065E87 /* ALSubViewController.h */; };
 		C7A07AF71EA6A13900065E87 /* ALSubViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A07AF51EA6A13900065E87 /* ALSubViewController.m */; };
 		C7A07AFA1EA6A17A00065E87 /* Main.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7A07AF81EA6A17A00065E87 /* Main.strings */; };
+		C7C413FD1EF9871B00C48AE5 /* AlApplicationInfoFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = C7C413FB1EF9871B00C48AE5 /* AlApplicationInfoFeed.h */; };
+		C7C413FE1EF9871B00C48AE5 /* AlApplicationInfoFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C413FC1EF9871B00C48AE5 /* AlApplicationInfoFeed.m */; };
 		CA48CD75EC9E50D727F11CA8 /* libPods-Applozic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BABEB56A0F9F0ADBE804E94 /* libPods-Applozic.a */; };
 /* End PBXBuildFile section */
 
@@ -607,6 +609,8 @@
 		C7A07AF41EA6A13900065E87 /* ALSubViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALSubViewController.h; path = Applozic/ViewControllers/ALSubViewController.h; sourceTree = "<group>"; };
 		C7A07AF51EA6A13900065E87 /* ALSubViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALSubViewController.m; path = Applozic/ViewControllers/ALSubViewController.m; sourceTree = "<group>"; };
 		C7A07AF91EA6A17A00065E87 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Applozic/en.lproj/Main.strings; sourceTree = "<group>"; };
+		C7C413FB1EF9871B00C48AE5 /* AlApplicationInfoFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AlApplicationInfoFeed.h; path = Applozic/AlApplicationInfoFeed.h; sourceTree = "<group>"; };
+		C7C413FC1EF9871B00C48AE5 /* AlApplicationInfoFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlApplicationInfoFeed.m; path = Applozic/AlApplicationInfoFeed.m; sourceTree = "<group>"; };
 		DEC034D945995489DB2E901D /* Pods-Applozic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Applozic.release.xcconfig"; path = "Pods/Target Support Files/Pods-Applozic/Pods-Applozic.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1147,6 +1151,8 @@
 		6DDE81831C27D8A1009B8CF9 /* user */ = {
 			isa = PBXGroup;
 			children = (
+				C7C413FB1EF9871B00C48AE5 /* AlApplicationInfoFeed.h */,
+				C7C413FC1EF9871B00C48AE5 /* AlApplicationInfoFeed.m */,
 				C709842F1DF06B18009796A2 /* ALUserDetailListFeed.h */,
 				C70984301DF06B18009796A2 /* ALUserDetailListFeed.m */,
 				6D7756BB1D5B82000025560B /* ALAPIResponse.h */,
@@ -1268,6 +1274,7 @@
 				6D6DF1881BC5364C00EBA00F /* ALConstant.h in Headers */,
 				6D6DF1D31BC5364C00EBA00F /* KAProgressLabel.h in Headers */,
 				6D6DF16A1BC5364C00EBA00F /* ALMessageClientService.h in Headers */,
+				C7C413FD1EF9871B00C48AE5 /* AlApplicationInfoFeed.h in Headers */,
 				6D6DF1421BC5364C00EBA00F /* ALDBHandler.h in Headers */,
 				6D6DF15E1BC5364C00EBA00F /* ALChatCell.h in Headers */,
 				6D6DF1761BC5364C00EBA00F /* ALMessage.h in Headers */,
@@ -1541,6 +1548,7 @@
 				6D08770A1D01B0FE00DB491A /* UIView+Toast.m in Sources */,
 				46AC59881E1D386E00A87291 /* MQTTCFSocketDecoder.m in Sources */,
 				46AC598A1E1D386E00A87291 /* MQTTCFSocketEncoder.m in Sources */,
+				C7C413FE1EF9871B00C48AE5 /* AlApplicationInfoFeed.m in Sources */,
 				6D6DF1651BC5364C00EBA00F /* ALNewContactCell.m in Sources */,
 				46AC59A71E1D386E00A87291 /* MQTTSSLSecurityPolicyEncoder.m in Sources */,
 				6D7756BA1D5B80DF0025560B /* ALChannelUserX.m in Sources */,

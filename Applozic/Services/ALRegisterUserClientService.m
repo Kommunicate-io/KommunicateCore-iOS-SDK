@@ -21,13 +21,14 @@
 #import "ALMQTTConversationService.h"
 #import "ALMessageService.h"
 #import "ALConstant.h"
+#import "ALUserService.h"
 
 @implementation ALRegisterUserClientService
 
 -(void) initWithCompletion:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion
 {
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/client",KBASE_URL];
-   
+    
     [ALUserDefaultsHandler setUserId:user.userId];
     [ALUserDefaultsHandler setPassword:user.password];
     [ALUserDefaultsHandler setDisplayName:user.displayName];
@@ -85,6 +86,7 @@
             [ALUserDefaultsHandler setDeviceKeyString:response.deviceKey];
             [ALUserDefaultsHandler setUserKeyString:response.userKey];
             [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
+            [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
             
             if(response.imageLink)
             {
@@ -96,9 +98,9 @@
             }
             if(response.brokerURL && ![response.brokerURL isEqualToString:@""])
             {
-                 NSArray * mqttURL = [response.brokerURL componentsSeparatedByString:@":"];
-                 NSString * MQTTURL = [mqttURL[1] substringFromIndex:2];
-                 NSLog(@"MQTT_URL :: %@",MQTTURL);
+                NSArray * mqttURL = [response.brokerURL componentsSeparatedByString:@":"];
+                NSString * MQTTURL = [mqttURL[1] substringFromIndex:2];
+                NSLog(@"MQTT_URL :: %@",MQTTURL);
                 [ALUserDefaultsHandler setMQTTURL:MQTTURL];
             }
             if(response.encryptionKey)
@@ -131,6 +133,10 @@
         
     }];
     
+    ALUserService * alUserService = [ALUserService new];
+    [alUserService updateUserApplicationInfo];
+    
+    
 }
 
 
@@ -154,7 +160,7 @@
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/update",KBASE_URL];
     
     ALUser * user = [ALUser new];
-
+    
     [user setUserId:[ALUserDefaultsHandler getUserId]];
     [user setApplicationId:[ALUserDefaultsHandler getApplicationKey]];
     [user setNotificationMode:notificationMode];
@@ -171,6 +177,11 @@
     if([ALUserDefaultsHandler getAppModuleName] != NULL){
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     }
+    
+    if([ALUserDefaultsHandler getNotificationSoundFileName] != nil){
+        [user setNotificationSoundFileName:[ALUserDefaultsHandler getNotificationSoundFileName]];
+    }
+    
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
     
     
@@ -202,10 +213,10 @@
 
 -(void) disconnect {
     
-   // ALMQTTConversationService *ob  = [[ALMQTTConversationService alloc] init];
+    // ALMQTTConversationService *ob  = [[ALMQTTConversationService alloc] init];
     //[ob sendTypingStatus:[ALUserDefaultsHandler getApplicationKey] userID:[ALUserDefaultsHandler getUserId] typing:NO];
     
-  //  [[ALMQTTConversationService sharedInstance] unsubscribeToConversation];
+    //  [[ALMQTTConversationService sharedInstance] unsubscribeToConversation];
 }
 
 -(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion
@@ -220,7 +231,7 @@
         if(!error && [response.status isEqualToString:@"success"])
         {
             NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
-//            [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+            //            [[UIApplication sharedApplication] unregisterForRemoteNotifications];
             [ALUserDefaultsHandler clearAll];
             ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
             [messageDBService deleteAllObjectsInCoreData];
@@ -270,7 +281,7 @@
         }
         NSLog(@"Response: APP UPDATED:%@",theJson);
     }];
-
+    
     
 }
 

@@ -25,7 +25,7 @@
     self.imageLink = [registrationResponse valueForKey:@"imageLink"];
     self.encryptionKey = [registrationResponse valueForKey:@"encryptionKey"];
     self.pricingPackage = [[registrationResponse valueForKey:@"pricingPackage"] shortValue];
-   
+    self.notificationSoundFileName = [registrationResponse valueForKey:@"notificationSoundFileName"];
     return self;
 }
 

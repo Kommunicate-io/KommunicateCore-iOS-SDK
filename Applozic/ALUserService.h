@@ -60,5 +60,6 @@
 
 -(void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion;
 
+-(void)updateUserApplicationInfo;
 
 @end

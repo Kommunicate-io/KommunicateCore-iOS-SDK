@@ -54,7 +54,9 @@
 #define USER_PRICING_PACKAGE @"com.applozic.userdefault.USER_PRICING_PACKAGE"
 #define DEVICE_APNS_TYPE_ID @"com.applozic.userdefault.DEVICE_APNS_TYPE"
 #define DEVICE_ENCRYPTION_ENABLE @"com.applozic.userdefault.DEVICE_ENCRYPTION_ENABLE"
-
+#define NOTIFICATION_SOUND_FILE_NAME @"com.applozic.userdefault.NOTIFICATION_SOUND_FILE_NAME"
+#define AL_CONTACT_SERVER_CALL_IS_DONE @"com.applozic.userdefault.AL_CONTACT_SERVER_CALL_IS_DONE"
+#define AL_CONTACT_SCROLLING_DONE @"com.applozic.userdefault.AL_CONTACT_SCROLLING_DONE"
 #define KEY_PREFIX @"com.applozic.userdefault"
 
 
@@ -229,6 +231,15 @@
 
 +(void) setGoogleMapAPIKey:(NSString *)googleMapAPIKey;
 +(NSString *) getGoogleMapAPIKey;
+
++(NSString *) getNotificationSoundFileName;
++(void) setNotificationSoundFileName:(NSString *) notificationSoundFileName;
+
++(BOOL)isContactServerCallIsDone;
++(void)setContactServerCallIsDone:(BOOL)flag;
+
++(BOOL)isContactScrollingIsInProgress;
++(void)setContactScrollingIsInProgress:(BOOL)flag;
 
 
 @end

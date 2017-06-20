@@ -138,6 +138,9 @@ static ALMessageClientService *alMsgClientService;
                    withCompletion:^(NSMutableArray *messages,
                                     NSError *error,
                                     NSMutableArray *userDetailArray) {
+                       
+                       [alContactDBService addUserDetails:userDetailArray];
+
                        ALContactService *contactService = [ALContactService new];
                        NSMutableArray * userNotPresentIds = [NSMutableArray new];
                       
@@ -163,7 +166,6 @@ static ALMessageClientService *alMsgClientService;
                        }
                        else
                        {
-                           [alContactDBService addUserDetails:userDetailArray];
                            completion(messages, error,userDetailArray);
                        }
     }];

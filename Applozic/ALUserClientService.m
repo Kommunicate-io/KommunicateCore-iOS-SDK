@@ -15,6 +15,7 @@
 #import "NSString+Encode.h"
 #import "ALAPIResponse.h"
 #import "ALUserDetailListFeed.h"
+#import "AlApplicationInfoFeed.h"
 
 @implementation ALUserClientService
 
@@ -433,6 +434,40 @@
         }
     }];
 }
+
+
+//========================================================================================================================
+#pragma mark UPDATE Application info
+//========================================================================================================================
+
+-(void) updateApplicationInfoDeatils:(AlApplicationInfoFeed *)applicationInfoDeatils withCompletion:(void (^)(NSString *json, NSError *error))completion{
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/apps/customer/application/info/update",KBASE_URL];
+    NSError *error;
+    NSData * postdata = [NSJSONSerialization dataWithJSONObject:applicationInfoDeatils.dictionary options:0 error:&error];
+    NSString *paramString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_APPLICATION_INFO" WithCompletionHandler:^(id theJson, NSError *theError) {
+        
+        NSLog(@"Update Application Info reponse  :: %@",(NSString *)theJson);
+        NSString * jsonString  = (NSString *)theJson;
+        
+        if(jsonString != nil  && [jsonString isEqualToString:@"/success/"] ){
+            completion(theJson, theError);
+        }else{
+            NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
+                                                     userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON FOR UPDATEING THE APPLICATION INFO"
+                                                                                          forKey:NSLocalizedDescriptionKey]];
+            completion(theJson, reponseError);
+            return ;
+        }
+        
+    }];
+    
+}
+
 
 
 @end

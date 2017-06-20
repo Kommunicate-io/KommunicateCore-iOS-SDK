@@ -281,7 +281,12 @@
 -(void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError * error))completion
 {
     ALUserClientService * clientService = [ALUserClientService new];
-    NSNumber * startTime = [ALApplozicSettings getStartTime];
+    NSNumber * startTime;
+    if(![ALUserDefaultsHandler isContactServerCallIsDone]){
+        startTime = 0;
+    }else{
+        startTime  = [ALApplozicSettings getStartTime];
+    }
     NSUInteger pageSize = (NSUInteger)CONTACT_PAGE_SIZE;
     
     [clientService getListOfRegisteredUsers:startTime andPageSize:pageSize withCompletion:^(ALContactsResponse * response, NSError * error) {
@@ -292,6 +297,7 @@
             return;
         }
         
+        [ALApplozicSettings setStartTime:response.lastFetchTime];
         ALContactDBService * dbServie = [ALContactDBService new];
         [dbServie updateFilteredContacts:response];
         completion(error);
@@ -299,7 +305,6 @@
     }];
     
 }
-
 //===============================================================================================
 #pragma ONLINE FETCH CONTACT API
 //===============================================================================================
@@ -430,6 +435,19 @@
             ALContact * alContact = [contactDBService loadContactByKey:@"userId" value:userId];
             completion(alContact);
         }
+}
+
+-(void)updateUserApplicationInfo{
+    
+    AlApplicationInfoFeed *userApplicationInfo = [AlApplicationInfoFeed new];
+    userApplicationInfo.applicationKey = [ALUserDefaultsHandler getApplicationKey];
+    userApplicationInfo.bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    
+    ALUserClientService *clientService = [ALUserClientService new];
+    [clientService updateApplicationInfoDeatils:userApplicationInfo withCompletion:^(NSString *json, NSError *error) {
+        NSLog(@"Response For user application update reponse :%@",json);
+    }];
+    
 }
 
 

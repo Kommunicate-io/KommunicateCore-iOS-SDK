@@ -665,5 +665,38 @@
     return [[NSUserDefaults standardUserDefaults] valueForKey:GOOGLE_MAP_API_KEY];
 }
 
++(NSString*)getNotificationSoundFileName
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:NOTIFICATION_SOUND_FILE_NAME];
+}
+
+
++(void)setNotificationSoundFileName:(NSString *)notificationSoundFileName
+{
+    [[NSUserDefaults standardUserDefaults] setValue:notificationSoundFileName forKey:NOTIFICATION_SOUND_FILE_NAME];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(void)setContactServerCallIsDone:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:AL_CONTACT_SERVER_CALL_IS_DONE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isContactServerCallIsDone
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:AL_CONTACT_SERVER_CALL_IS_DONE];
+}
+
++(void)setContactScrollingIsInProgress:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:AL_CONTACT_SCROLLING_DONE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isContactScrollingIsInProgress
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:AL_CONTACT_SCROLLING_DONE];
+}
 
 @end
