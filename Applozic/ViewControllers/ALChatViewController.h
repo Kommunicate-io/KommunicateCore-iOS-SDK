@@ -87,4 +87,6 @@
 -(void)subscrbingChannel;
 -(void)unSubscrbingChannel;
 
+-(void)postMessage;
+
 @end

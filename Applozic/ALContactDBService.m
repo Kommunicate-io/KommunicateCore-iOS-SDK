@@ -170,7 +170,7 @@
     
     if (!success) {
         
-        NSLog(@"updateContact DB ERROR :%@",error);
+        NSLog(@"updateContactFERROR :%@",error);
     }
     
     return success;
@@ -441,18 +441,6 @@
 -(NSUInteger)markConversationAsDeliveredAndRead:(NSString*)contactId
 {
     NSArray *messages =  [self getUnreadMessagesForIndividual:contactId];
-//    if(messages.count > 0)
-//    {
-//        NSBatchUpdateRequest *req= [[NSBatchUpdateRequest alloc] initWithEntityName:@"DB_Message"];
-//        req.predicate = [NSPredicate predicateWithFormat:@"contactId==%@ and groupId=0",contactId];
-//        req.propertiesToUpdate = @{
-//                                   @"status" : @(DELIVERED_AND_READ)
-//                                   };
-//        req.resultType = NSUpdatedObjectsCountResultType;
-//        ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
-//        NSBatchUpdateResult *res = (NSBatchUpdateResult *)[dbHandler.managedObjectContext executeRequest:req error:nil];
-//        NSLog(@"%@ objects updated", res.result);
-//    }
 
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     for (DB_Message *dbMessage in messages)
@@ -462,7 +450,6 @@
     NSError *error = nil;
     [dbHandler.managedObjectContext save:&error];
     NSLog(@"ERROR(IF-ANY) WHILE UPDATING DELIVERED_AND_READ : %@",error.description);
-    
     
     return messages.count;
 }

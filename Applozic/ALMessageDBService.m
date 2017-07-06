@@ -17,6 +17,7 @@
 #import "ALContactService.h"
 #import "ALMessageClientService.h"
 #import "ALApplozicSettings.h"
+#import "ALAudioVideoBaseVC.h"
 #import "ALChannelService.h"
 #import "ALChannel.h"
 
@@ -31,7 +32,7 @@
     for (ALMessage * theMessage in messageList) {
         
         NSManagedObject *message = [self getMessageByKey:@"key" value:theMessage.key];
-        if(message==nil)
+        if(message==nil && ![theMessage isPushNotificationMessage] )
         {
             theMessage.sentToServer = YES;
             
@@ -479,7 +480,7 @@
     theMessageEntity.conversationId = theMessage.conversationId;
     theMessageEntity.pairedMessageKey = theMessage.pairedMessageKey;
     theMessageEntity.metadata = theMessage.metadata.description;
-    theMessageEntity.msgHidden = [NSNumber numberWithBool:[theMessage isMsgHidden]];
+    theMessageEntity.msgHidden = [NSNumber numberWithBool:[theMessage isHiddenMessage]];
     
     if(theMessage.getGroupId)
     {
@@ -695,7 +696,7 @@
                 dbMsgEntity.conversationId = alMessage.conversationId;
                 dbMsgEntity.pairedMessageKey = alMessage.pairedMessageKey;
                 dbMsgEntity.metadata = alMessage.metadata.description;
-                dbMsgEntity.msgHidden = [NSNumber numberWithBool:[alMessage isMsgHidden]];
+                dbMsgEntity.msgHidden = [NSNumber numberWithBool:[alMessage isHiddenMessage]];
                 
                 if(alMessage.fileMeta != nil)
                 {

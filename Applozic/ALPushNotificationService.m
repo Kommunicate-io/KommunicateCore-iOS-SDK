@@ -15,6 +15,7 @@
 #import "ALMessagesViewController.h"
 #import "ALPushAssist.h"
 #import "ALUserService.h"
+#import "ALNotificationView.h"
 
 
 
@@ -55,12 +56,19 @@
         
         NSString *type = (NSString *)[dictionary valueForKey:@"AL_KEY"];
         NSString *alValueJson = (NSString *)[dictionary valueForKey:@"AL_VALUE"];
+        
         NSData* data = [alValueJson dataUsingEncoding:NSUTF8StringEncoding];
         
         NSError *error = nil;
         NSDictionary *theMessageDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         NSString *notificationMsg = [theMessageDict valueForKey:@"message"];
-        NSLog(@"APN_OBJECT_MESSAGE :: %@",notificationMsg);
+       
+        //CHECK for any special messages...
+        if ([self processMetaData:theMessageDict withAlert:alertValue withUpdateUI:updateUI])
+        {
+            return true;
+        }
+        
         NSString *notificationId = (NSString *)[theMessageDict valueForKey:@"id"];
         if(notificationId && [ALUserDefaultsHandler isNotificationProcessd:notificationId])
         {
@@ -251,6 +259,24 @@
                                                            userInfo:dict];
     }
 
+}
+
+-(BOOL)processMetaData:(NSDictionary*)dict withAlert:alertValue withUpdateUI:(NSNumber *)updateUI
+{
+    
+    NSDictionary * metadataDictionary =  [dict valueForKey:@"messageMetaData"];
+    
+    if( metadataDictionary && [metadataDictionary valueForKey:APPLOZIC_CATEGORY_KEY] && [[metadataDictionary valueForKey:APPLOZIC_CATEGORY_KEY] isEqualToString:CATEGORY_PUSHNNOTIFICATION] )
+    {
+        NSLog(@" Puhs notification with category, just open app %@",[metadataDictionary valueForKey:APPLOZIC_CATEGORY_KEY]);
+        if([updateUI intValue] == APP_STATE_ACTIVE)
+        {
+            [ALNotificationView showPromotionalNotifications:alertValue];
+        }
+        
+        return true;
+    }
+    return false;
 }
 
 -(BOOL)processUserBlockNotification:(NSDictionary *)theMessageDict andUserBlockFlag:(BOOL)flag

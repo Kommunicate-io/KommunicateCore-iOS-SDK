@@ -58,6 +58,7 @@
 #define AL_CONTACT_SERVER_CALL_IS_DONE @"com.applozic.userdefault.AL_CONTACT_SERVER_CALL_IS_DONE"
 #define AL_CONTACT_SCROLLING_DONE @"com.applozic.userdefault.AL_CONTACT_SCROLLING_DONE"
 #define KEY_PREFIX @"com.applozic.userdefault"
+#define GROUP_FILTER_LAST_SYNC_TIME @"com.applozic.GROUP_FILTER_LAST_SYNC_TIME"
 
 
 #import <Foundation/Foundation.h>
@@ -240,6 +241,10 @@
 
 +(BOOL)isContactScrollingIsInProgress;
 +(void)setContactScrollingIsInProgress:(BOOL)flag;
+
++(void) setLastGroupFilterSyncTime: (NSNumber *) lastSyncTime;
++(NSNumber *)getLastGroupFilterSyncTIme;
+
 
 
 @end

@@ -16,6 +16,8 @@
 #define REMOVE_MEMBER_FROM_CHANNEL_URL @"/rest/ws/group/remove/member"
 #define UPDATE_CHANNEL_URL @"/rest/ws/group/update"
 #define UPDATE_GROUP_USER @"/rest/ws/group/user/update"
+#define CHANNEL_INFO_ON_IDS @"/rest/ws/group/details"
+#define CHANNEL_FILTER_API @"/rest/ws/group/filter"
 
 
 /************************************************
@@ -554,6 +556,108 @@
         
     }];
 
+}
+
+-(void)getChannelInfoByIdsOrClientIds:(NSMutableArray*)channelIds
+                          orClinetChannelIds:(NSMutableArray*) clientChannelIds
+                              withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
+
+{
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_INFO_ON_IDS];
+    NSString * theParamString=nil ;
+    NSMutableArray * channelinfoList = [[NSMutableArray alloc] init];
+    //For client groupId
+    if(clientChannelIds)
+    {
+        
+        for( NSString * clientId in clientChannelIds)
+        {
+            if(theParamString)
+            {
+                theParamString = [theParamString stringByAppendingString: [NSString stringWithFormat:@"&clientGroupIds=%@",clientId ]];
+
+            }
+            else
+            {
+                theParamString = [NSString stringWithFormat:@"clientGroupIds=%@",clientId ];
+
+            }
+        }
+    }
+    
+   
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    [ALResponseHandler processRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
+        
+        if(error)
+        {
+            NSLog(@"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
+            completion(nil,error);
+
+        }
+        else
+        {
+            NSLog(@"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
+        }
+        
+        ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
+        NSMutableArray * array = (NSMutableArray*)response.response;
+        
+        for ( NSMutableDictionary *dic  in array)
+        {
+            ALChannel * channel = [[ALChannel alloc] initWithDictonary:dic];
+            [channelinfoList addObject:channel];
+        }
+        
+        completion(channelinfoList,error);
+    }];
+    
+}
+
+-(void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
+{
+ 
+    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_FILTER_API];
+    NSMutableArray * channelinfoList = [[NSMutableArray alloc] init];
+    NSString * theParamString = @"";
+    
+    theParamString = [NSString stringWithFormat:@"pageSize=%@", GROUP_FETCH_BATCH_SIZE];
+    
+    
+   if(endTime)
+    {
+        theParamString = [NSString stringWithFormat:@"pageSize=%@&endTime=%@", GROUP_FETCH_BATCH_SIZE , endTime];
+    }
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"CHANNEL_FILTER" WithCompletionHandler:^(id theJson, NSError *error) {
+        
+        if(error)
+        {
+            NSLog(@"Error in Channel filter call Request %@", error);
+            completion(nil,error);
+            return;
+        }
+        
+        NSLog(@" Channel response : %@", theJson);
+
+        ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
+        NSNumber * lastFetchTime = [NSNumber numberWithLong:[[response.response valueForKey:@"lastFetchTime"] longValue]];
+        [ALUserDefaultsHandler setLastGroupFilterSyncTime:lastFetchTime];
+        
+        NSDictionary * theChannelFeedDict = [response.response valueForKey:@"groups"];
+      
+        for ( NSMutableDictionary *dic  in theChannelFeedDict)
+        {
+            ALChannel * channel = [[ALChannel alloc] initWithDictonary:dic];
+            [channelinfoList addObject:channel];
+        }
+        
+        completion(channelinfoList,error);
+    }];
+    
 }
 
 @end

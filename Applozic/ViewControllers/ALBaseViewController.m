@@ -18,6 +18,7 @@
 #import "ALApplozicSettings.h"
 #import "ALChatLauncher.h"
 #import "ALMessagesViewController.h"
+#import "ALNavigationController.h"
 
 static CGFloat const sendTextViewCornerRadius = 15.0f;
 
@@ -134,7 +135,20 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     {
         [self.navRightBarButtonItems addObject:refreshButton];
     }
-
+    
+    if([ALApplozicSettings getCustomNavigationControllerClassName])
+    {
+       ALNavigationController * customnavController = (ALNavigationController*)self.navigationController;
+       
+       NSMutableArray * customButtons = [customnavController getCustomButtons];
+       
+       for(UIView* buttonView in customButtons)
+       {
+           UIBarButtonItem * barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonView];
+           [self.navRightBarButtonItems addObject:barButtonItem];
+       }
+       
+    }
     self.navigationItem.rightBarButtonItems = [self.navRightBarButtonItems mutableCopy];
     
     self.label = [[UILabel alloc] init];
@@ -514,5 +528,6 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
     return view;
 }
+
 
 @end

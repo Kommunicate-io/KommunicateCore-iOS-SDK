@@ -34,4 +34,8 @@
 
 -(void)updateChatScreen:(UIViewController*)delegate;
 
++(void)showNotification:(NSString *)message;
++(void)showPromotionalNotifications:(NSString *)text;
+
+
 @end

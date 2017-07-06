@@ -349,7 +349,7 @@
     
     //   CHECKING IF MESSAGE META-DATA DICTIONARY HAVE SOME DATA
     
-    if(self.mMessage.metadata.count)
+    if(self.mMessage.metadata.count && (alMessage.contentType != 102) && (alMessage.contentType != 103))
     {
         [self.mBubleImageView setUserInteractionEnabled:YES];
         [self.mBubleImageView addGestureRecognizer:tapForCustomView];

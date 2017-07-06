@@ -699,4 +699,15 @@
     return [[NSUserDefaults standardUserDefaults] boolForKey:AL_CONTACT_SCROLLING_DONE];
 }
 
++(void) setLastGroupFilterSyncTime: (NSNumber *) lastSyncTime
+{
+    [[NSUserDefaults standardUserDefaults] setDouble:[lastSyncTime doubleValue] forKey:GROUP_FILTER_LAST_SYNC_TIME];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
++(NSNumber *)getLastGroupFilterSyncTIme
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:GROUP_FILTER_LAST_SYNC_TIME];
+
+}
+
 @end

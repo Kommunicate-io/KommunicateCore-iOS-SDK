@@ -67,6 +67,8 @@
 #define BROADCAST_GROUP_ENABLE @"com.applozic.userdefault.BROADCAST_GROUP_ENABLE"
 #define VIEW_CONTROLLER_ARRAY @"com.applozic.userdefault.VIEW_CONTROLLER_ARRAY"
 #define MSG_CONTAINER_VC @"com.applozic.userdefault.MSG_CONTAINER_VC"
+#define AUDIO_VIDEO_CLASS @"com.applozic.userdefault.AUDIO_VIDEO_CLASS"
+#define CLIENT_STORYBOARD @"com.applozic.userdefault.CLIENT_STORYBOARD"
 #define GROUP_DELETED_TITLE @"com.applozic.userdefault.GROUP_DELETED_TITLE"
 #define USER_DELETED_TEXT @"com.applozic.userdefault.USER_DELETED_TEXT"
 #define CHAT_LIST_TAB_ICON @"com.applozic.userdefault.CHAT_LIST_TAB_ICON"
@@ -74,6 +76,9 @@
 #define CHAT_LIST_TAB_TITLE @"com.applozic.userdefault.CHAT_LIST_TAB_TITLE"
 #define USER_PROFILE_TAB_TITLE @"com.applozic.userdefault.USER_PROFILE_TAB_TITLE"
 #define OPEN_CHAT_ON_USER_PROFILE_TAP @"com.applozic.userdefault.OPEN_CHAT_ON_USER_PROFILE_TAP"
+#define MESSAGE_REPLY_ENABLED @"com.applozic.userdefault.MESSAGE_REPLY_MESSAGE"
+#define AV_ENABLED @"com.applozic.userfefault.AV_ENABLED"
+
 
 
 #import <Foundation/Foundation.h>
@@ -288,6 +293,11 @@
 +(void)setMsgContainerVC:(NSString *)className;
 +(NSString *)getMsgContainerVC;
 
++(NSString *)getAudioVideoClassName;
++(void)setAudioVideoClassName:(NSString *)className;
+
++(NSString *)getClientStoryBoard;
++(void)setClientStoryBoard:(NSString *)storyboard;
 +(NSString *)getGroupDeletedTitle;
 +(void)setGroupDeletedTitle:(NSString *)title;
 
@@ -308,5 +318,12 @@
 
 +(BOOL)isChatOnTapUserProfile;
 +(void)openChatOnTapUserProfile:(BOOL)flag;
+
++(BOOL)isReplyOptionEnabled;
++(void)replyOptionEnabled:(BOOL)flag;
+
++(BOOL)isAudioVideoEnabled;
++(void)setAudioVideoEnabled:(BOOL)flag;
+
 
 @end

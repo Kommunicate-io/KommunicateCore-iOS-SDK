@@ -48,5 +48,11 @@
 +(void)openApplicationSettings;
 +(void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController;
 +(void)setAlertControllerFrame:(UIAlertController *)alertController andViewController:(UIViewController *)viewController;
++(void)movementAnimation:(UIButton *)button andHide:(BOOL)flag;
++(NSString *)getDevieUUID;
++(BOOL)checkDeviceKeyString:(NSString *)string;
++(void)setImageFromURL:(NSString *)urlString andImageView:(UIImageView *)imageView;
++(NSString *)stringFromTimeInterval:(NSTimeInterval)interval;
++(UIImage *)getVOIPMessageImage:(ALMessage *)alMessage;
 
 @end

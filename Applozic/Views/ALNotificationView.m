@@ -72,13 +72,19 @@
     {
         return @"Shared an Audio";
     }
+    else if (alMessage.contentType ==AV_CALL_CONTENT_THREE)
+    {
+        return [alMessage getVOIPMessageText];
+
+    }
     else if (alMessage.contentType == ALMESSAGE_CONTENT_ATTACHMENT ||
              [alMessage.message isEqualToString:@""] || alMessage.fileMeta != NULL)
     {
         return @"Shared an Attachment";
     }
-    
-    else{
+
+    else
+    {
         return alMessage.message;
     }
 }
@@ -95,18 +101,12 @@
 
 -(void)nativeNotification:(id)delegate
 {
-    if(self.groupId)
-    {
+    if(self.groupId){
        [[ ALChannelService new] getChannelInformation:self.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
            [self buildAndShowNotification:delegate];
        }];
-    }
-    else
-    {
-        [[ALUserService new] getUserDetail:self.contactId withCompletion:^(ALContact *contact) {
-            NSLog(@" nativeNotification is called ... ");
-            [self buildAndShowNotification:delegate];
-        }];
+    }else{
+        [self buildAndShowNotification:delegate];
     }
     
 }
@@ -114,7 +114,7 @@
 -(void)buildAndShowNotification:(id)delegate
 {
     
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE)
+    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE )
     {
         return;
     }
@@ -326,6 +326,7 @@
     }
     
 }
+
 -(void)showGroupLeftMessage
 {
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
@@ -343,5 +344,30 @@
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
     [TSMessage showNotificationWithTitle:text type:TSMessageNotificationTypeWarning];
 }
+
++(void)showPromotionalNotifications:(NSString *)text
+{
+    UIImage *appIcon = [UIImage imageNamed: [[[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIcons"] objectForKey:@"CFBundlePrimaryIcon"] objectForKey:@"CFBundleIconFiles"] objectAtIndex:0]];
+    
+    [[TSMessageView appearance] setTitleFont:[UIFont boldSystemFontOfSize:17]];
+    [[TSMessageView appearance] setContentFont:[UIFont systemFontOfSize:13]];
+    [[TSMessageView appearance] setTitleFont:[UIFont fontWithName:@"Helvetica Neue" size:18.0]];
+    [[TSMessageView appearance] setContentFont:[UIFont fontWithName:@"Helvetica Neue" size:14]];
+    [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
+    [[TSMessageView appearance] setContentTextColor:[UIColor whiteColor]];
+    [[TSMessageView appearance] setDuration:10.0];
+    [[TSMessageView appearance] setMessageIcon:appIcon];
+    
+    [TSMessage showNotificationWithTitle:[ALApplozicSettings getNotificationTitle] subtitle:text
+                                    type:TSMessageNotificationTypeMessage];
+
+}
+
++(void)showNotification:(NSString *)message
+{
+    [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
+    [TSMessage showNotificationWithTitle:message type:TSMessageNotificationTypeWarning];
+}
+
 
 @end

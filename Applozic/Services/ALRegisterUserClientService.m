@@ -47,8 +47,13 @@
     [user setDeviceApnsType:[ALUserDefaultsHandler getDeviceApnsType]];
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     
-    if([ALUserDefaultsHandler getAppModuleName] != NULL){
+    if([ALUserDefaultsHandler getAppModuleName] != NULL)
+    {
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
+    }
+    if([ALApplozicSettings isAudioVideoEnabled])
+    {
+        [user setFeatures:[NSMutableArray arrayWithArray:AV_FEATURE_ARRAY]];
     }
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
     
@@ -151,7 +156,10 @@
         [user setApplicationId: [ALUserDefaultsHandler getApplicationKey]];
         [user setUserId:[ALUserDefaultsHandler getUserId]];
         [user setPassword:[ALUserDefaultsHandler getPassword]];
+        [user setDisplayName:[ALUserDefaultsHandler getDisplayName]];
+        [user setEmail:[ALUserDefaultsHandler getEmailId]];
         [self initWithCompletion:user withCompletion: completion];
+        
     }
 }
 
@@ -184,6 +192,7 @@
     
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
     
+    [user setUnreadCountType:[ALUserDefaultsHandler getUnreadCountType]];
     
     NSError * error;
     NSData * postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];

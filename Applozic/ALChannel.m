@@ -33,7 +33,7 @@
     self.channelImageURL = [self getStringFromJsonValue:messageJson[@"imageUrl"]];
     self.adminKey = [self getStringFromJsonValue:messageJson[@"adminId"]];
     self.unreadCount = [self getNSNumberFromJsonValue:messageJson[@"unreadCount"]];
-    //self.userCount = [self getNSNumberFromJsonValue:messageJson[@""]];
+    self.userCount = [self getNSNumberFromJsonValue:messageJson[@"userCount"]];
 //    self.membersName = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersName"]];
     [self setMembersName: [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersName"]]];
     self.membersId = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersId"]];

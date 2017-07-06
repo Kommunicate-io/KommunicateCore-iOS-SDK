@@ -1304,8 +1304,11 @@
         float reload_distance = 10;
         if(y > (h - reload_distance))
         {
-            [[self activityIndicator] startAnimating];
-            [self proccessRegisteredContactsCall:YES];
+            if([ALApplozicSettings getFilterContactsStatus])
+            {
+                [[self activityIndicator] startAnimating];
+                [self proccessRegisteredContactsCall:YES];
+            }
         }
     }
     

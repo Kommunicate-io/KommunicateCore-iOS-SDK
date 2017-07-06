@@ -319,4 +319,12 @@
     }];
 }
 
+-(NSString*)getLocationUrl:(ALMessage*)almessage;
+{
+    NSString *latLongArgument = [self formatLocationJson:almessage];
+    NSString * finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
+                           latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
+
+    return finalURl;
+}
 @end

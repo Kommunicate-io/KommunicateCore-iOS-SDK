@@ -58,12 +58,15 @@
 #import "ALVCFClass.h"
 #import "ALContactMessageCell.h"
 #import "ALCustomCell.h"
+#import "ALVOIPCell.h"
 #import "ALUIConstant.h"
 #import "ALReceiverUserProfileVC.h"
 #import "PSPDFTextView.h"
 #import "ALChannelMsgCell.h"
 #include <tgmath.h>
 @import AddressBookUI;
+#import "ALAudioVideoBaseVC.h"
+#import "ALVOIPNotificationHandler.h"
 
 #define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
@@ -147,6 +150,8 @@
     self.placeHolderTxt = @"Write a Message...";
     self.sendMessageTextView.text = self.placeHolderTxt;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateVOIPMsg)
+                                                 name:@"UPDATE_VOIP_MSG" object:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -203,7 +208,7 @@
         }
         else
         {
-            [super scrollTableViewToBottomWithAnimation:NO];
+            [self scrollTableViewToBottomWithAnimation:NO];
         }
         self.sendMessageTextView.text = @"";
     }
@@ -238,7 +243,7 @@
                                                  name:@"UPDATE_MESSAGE_SEND_STATUS" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appEntersForeground:)
-                                                 name:@"appCameInForeground" object:nil];
+                                                 name:@"APP_ENTER_IN_FOREGROUND" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateChannelName)
                                                  name:@"UPDATE_CHANNEL_NAME" object:nil];
@@ -417,6 +422,14 @@
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAILS_UPDATE_CALL" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UPDATE_VOIP_MSG" object:nil];
+}
+
+-(void)updateVOIPMsg
+{
+    [self.mTableView reloadData];
+    [self setRefreshMainView:YES];
+    [self setRefresh:YES];
 }
 
 //==============================================================================================================================================
@@ -863,8 +876,9 @@
     [self.mTableView registerClass:[ALContactMessageCell class] forCellReuseIdentifier:@"ContactMessageCell"];
     [self.mTableView registerClass:[ALLocationCell class] forCellReuseIdentifier:@"LocationCell"];
     [self.mTableView registerClass:[ALCustomCell class] forCellReuseIdentifier:@"CustomCell"];
+    [self.mTableView registerClass:[ALVOIPCell class] forCellReuseIdentifier:@"VOIPCell"];
     [self.mTableView registerClass:[ALChannelMsgCell class] forCellReuseIdentifier:@"ALChannelMsgCell"];
-    
+
     if([ALApplozicSettings getContextualChatOption])
     {
         self.pickerView.delegate = self;
@@ -1078,6 +1092,7 @@
     message.fileMeta = almessage.fileMeta;
     message.imageFilePath = almessage.imageFilePath;
     message.fileMetaKey = almessage.fileMetaKey;
+    message.contentType = almessage.contentType;
 
     if( message.imageFilePath ){
         [self processAttachment:message.imageFilePath andMessageText:message.message andContentType:almessage.contentType];
@@ -1111,7 +1126,7 @@
             {
                 [self.alMessageWrapper addALMessageToMessageArray:locationMessage];
                 [self.mTableView reloadData];
-                [super scrollTableViewToBottomWithAnimation:YES];
+                [self scrollTableViewToBottomWithAnimation:YES];
                 completion(message,error);
             }
         }];
@@ -1286,7 +1301,7 @@
     [self.mTableView reloadData];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [super scrollTableViewToBottomWithAnimation:YES];
+        [self scrollTableViewToBottomWithAnimation:YES];
     });
     // save message to db
     [self showNoConversationLabel];
@@ -1368,6 +1383,13 @@
         theCell.delegate = self;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
+        return theCell;
+    }
+
+    else if (theMessage.contentType == AV_CALL_CONTENT_THREE)
+    {
+        ALVOIPCell * theCell = (ALVOIPCell *)[tableView dequeueReusableCellWithIdentifier:@"VOIPCell"];
+        [theCell populateCell:theMessage viewSize:self.view.frame.size];
         return theCell;
     }
     else if(theMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
@@ -1898,7 +1920,7 @@
          [self.mTableView setContentOffset:CGPointMake(0, theFrame.origin.y)];
          }*/
         dispatch_async(dispatch_get_main_queue(), ^{
-            [super scrollTableViewToBottomWithAnimation:YES];
+            [self scrollTableViewToBottomWithAnimation:YES];
         });
     }
     
@@ -2404,6 +2426,19 @@
         [self.navigationController pushViewController:launchChat animated:YES];
         
     }]];
+   
+    if(!self.channelKey && !self.conversationId && [ALApplozicSettings isAudioVideoEnabled])
+    {
+        [theController addAction:[UIAlertAction actionWithTitle:@"Video Call" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            
+            [self openCallView:NO];
+        }]];
+        
+        [theController addAction:[UIAlertAction actionWithTitle:@"Audio Call" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            
+            [self openCallView:YES];
+        }]];
+    }
     
     [self presentViewController:theController animated:YES completion:nil];
 }
@@ -2427,7 +2462,7 @@
 }
 
 //==============================================================================================================================================
-#pragma mark - ATTACHMENT HANDLERS FOR IMAGE/CONTACT/AUDIO/VIDEO
+#pragma mark - ATTACHMENT HANDLERS FOR IMAGE/CONTACT/AUDIO/VIDEO && A/V CALL
 //==============================================================================================================================================
 
 -(void)openCamera
@@ -2564,6 +2599,25 @@
     [self presentViewController:self.mImagePicker animated:YES completion:nil];
 }
 
+-(void)openCallView:(BOOL)callForAudio
+{
+    if(![ALDataNetworkConnection checkDataNetworkAvailable])
+    {
+        [self showNoDataNotification];
+        return;
+    }
+    
+    NSString * roomID =  [NSString stringWithFormat:@"%@:%@",[ALUtilityClass getDevieUUID],
+                          [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000]];
+    
+    ALVOIPNotificationHandler *voipHandler = [ALVOIPNotificationHandler sharedManager];
+    [voipHandler launchAVViewController:self.contactIds
+                           andLaunchFor:[NSNumber numberWithInt:AV_CALL_DIALLED]
+                               orRoomId:roomID
+                           andCallAudio:callForAudio
+                      andViewController:self];
+}
+
 //==============================================================================================================================================
 #pragma mark - HANDLE ERROR METHOD
 //==============================================================================================================================================
@@ -2585,24 +2639,35 @@
 
 -(ALMediaBaseCell *)getCell:(NSString *)key
 {
-    int index = (int)[[self.alMessageWrapper getUpdatedMessageArray] indexOfObjectPassingTest:^BOOL(id element,NSUInteger idx,BOOL *stop) {
-                         ALMessage *message = (ALMessage*)element;
-                         if([message.key isEqualToString:key])
-                         {
-                             *stop = YES;
-                             return YES;
-                         }
-                         return NO;
-                     }];
-    
-    NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:0];
+    NSIndexPath * path = [self getIndexPathForMessage:key];
     ALMediaBaseCell *cell = (ALMediaBaseCell *)[self.mTableView cellForRowAtIndexPath:path];
     
     return cell;
 }
 
+-(NSIndexPath*) getIndexPathForMessage:(NSString*)messageKey
+{
+    int index = (int)[[self.alMessageWrapper getUpdatedMessageArray] indexOfObjectPassingTest:^BOOL(id element,NSUInteger idx,BOOL *stop) {
+        ALMessage *message = (ALMessage*)element;
+        if([message.key isEqualToString:messageKey])
+        {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];
+    
+    NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:0];
+    return path;
+}
+
 -(void)sendMessage:(ALMessage *)theMessage
 {
+    //TODO: Add metadata... identify if receiver has black listed sender and set this no lert flag
+    NSMutableDictionary *metaDict = [[NSMutableDictionary alloc] init];
+    [metaDict setObject:@"true" forKey:@"NO_ALERT"];
+    theMessage.metadata =metaDict;
+    
     [ALMessageService sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
         
         if(error)
@@ -2662,7 +2727,7 @@
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [super scrollTableViewToBottomWithAnimation:YES];
+                [self scrollTableViewToBottomWithAnimation:YES];
                 [self setTitle];
             });
             NSLog(@"FETCH AND REFRESH METHOD");
@@ -2975,14 +3040,14 @@
                     {
                         ALMessage *dateCell = [self.alMessageWrapper getDatePrototype:self.alMessageWrapper.dateCellText andAlMessageObject:msg];
                         ALMessage *msg3 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
-                        if(![msg3.type isEqualToString:@"100"])
+                        if(![msg3.type isEqualToString:@"100"] && ![msg3 isVOIPNotificationMessage])
                         {
                             [[self.alMessageWrapper getUpdatedMessageArray] insertObject:dateCell atIndex:0];
                         }
                     }
                 }
                 
-                if(![msg isHiddenMessage])  // Filters Hidden Messages
+                if( ![msg isHiddenMessage] )  // Filters Hidden Messages and VOIP Notifcation messages
                 {
                     //NSLog(@"insterting message at index 0 ::%@", msg.key);
                     [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
@@ -3004,7 +3069,7 @@
             if(isScrollToBottom)
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [super scrollTableViewToBottomWithAnimation:NO];
+                    [self scrollTableViewToBottomWithAnimation:NO];
                 });
             }
             else
@@ -3308,7 +3373,7 @@
             [super setHeightOfTextViewDynamically:NO];
             self.textMessageViewHeightConstaint.constant = 56.0;
         }
-        return;
+        //return;
     }
     
     if([textView.text isEqualToString:@""])
@@ -3534,17 +3599,18 @@
 -(void)addMessageToList:(NSMutableArray  *)messageList
 {
     NSCompoundPredicate *compoundPredicate;
+    NSPredicate * contentPredicate = [NSPredicate predicateWithFormat:@"contentType != %i", AV_CALL_CONTENT_TWO];
     
     if(self.isGroup)
     {
-        NSPredicate * groupP=[NSPredicate predicateWithFormat:@"groupId = %@",self.channelKey];
-        compoundPredicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[groupP]];
+        NSPredicate * groupP = [NSPredicate predicateWithFormat:@"groupId = %@",self.channelKey];
+        compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[groupP,contentPredicate]];
     }
     else
     {  //self.channelKey not Nil
         NSPredicate *groupPredicate=[NSPredicate predicateWithFormat:@"groupId == %d or groupId == nil",0];
         NSPredicate * predicate = [NSPredicate predicateWithFormat:@"contactIds == %@",self.contactIds];
-        compoundPredicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[groupPredicate,predicate]];
+        compoundPredicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[groupPredicate,predicate,contentPredicate]];
     }
     
     NSArray * theFilteredArray = [messageList filteredArrayUsingPredicate:compoundPredicate];
@@ -3565,7 +3631,7 @@
 //    {
         [self.alMessageWrapper addLatestObjectToArray:[NSMutableArray arrayWithArray:sortedArray]];
         [self.mTableView reloadData];
-        [super scrollTableViewToBottomWithAnimation:YES];
+        [self scrollTableViewToBottomWithAnimation:YES];
     
     if (self.comingFromBackground) {
         [self markConversationRead];

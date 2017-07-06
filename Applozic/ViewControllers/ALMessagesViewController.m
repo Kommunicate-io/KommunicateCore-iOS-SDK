@@ -426,7 +426,7 @@
     }
 
     BOOL isreloadRequire = NO;
-    for(ALMessage *msg  in  messagesArray)
+    for(ALMessage *msg in messagesArray)
     {
 
         
@@ -442,8 +442,13 @@
         {
             contactCell = [self getCell:msg.contactIds];
         }
-
-        if(contactCell)
+        
+        if (msg.contentType == AV_CALL_CONTENT_TWO)
+        {
+//            ALVOIPNotificationHandler *voipHandler = [ALVOIPNotificationHandler sharedManager];
+//            [voipHandler handleAVMsg:msg andViewController:self];
+        }
+        else if(contactCell)
         {
             contactCell.mMessageLabel.text = msg.message;
             
@@ -795,8 +800,9 @@
 
 -(void)displayAttachmentMediaType:(ALMessage *)message andContactCell:(ALContactCell *)contactCell
 {
+
  
-    if( message.fileMeta || message.contentType == ALMESSAGE_CONTENT_LOCATION ){
+    if( message.fileMeta || message.contentType == ALMESSAGE_CONTENT_LOCATION || message.contentType == AV_CALL_CONTENT_THREE){
         contactCell.mMessageLabel.hidden = YES;
         contactCell.imageMarker.hidden = NO;
         contactCell.imageNameLabel.hidden = NO;
@@ -812,6 +818,14 @@
             //            contactCell.imageNameLabel.text = NSLocalizedString(@"MEDIA_TYPE_VIDEO", nil);
             contactCell.imageNameLabel.text = NSLocalizedString(@"Video", nil);
             contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"];
+        }
+        else if (message.contentType == AV_CALL_CONTENT_THREE)
+        {
+            contactCell.mMessageLabel.hidden = YES;
+            contactCell.imageNameLabel.hidden = NO;
+            contactCell.imageMarker.hidden = NO;
+            contactCell.imageNameLabel.text = [message getVOIPMessageText];
+            contactCell.imageMarker.image = [ALUtilityClass getVOIPMessageImage:message];
         }
         else if (message.contentType == ALMESSAGE_CONTENT_LOCATION)   // location..
         {
@@ -1385,7 +1399,6 @@
     NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
     [messageArray sortUsingDescriptors:descriptors];
     [self updateMessageList:messageArray];
-
 }
 
 //==============================================================================================================================================

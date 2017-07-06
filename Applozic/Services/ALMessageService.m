@@ -50,6 +50,7 @@ static ALMessageClientService *alMsgClientService;
                    withCompletion:^(NSMutableArray * messages, NSError *error, NSMutableArray *userDetailArray) {
                        
             }];
+            [[NSNotificationCenter defaultCenter] postNotificationName:CONVERSATION_CALL_COMPLETED object:nil userInfo:nil];
         }
         else{
             NSLog(@"Message List Response Nil");
@@ -324,10 +325,12 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                     NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:messageArray];
                     for(ALMessage * message in hiddenMsgFilteredArray)
                     {
-                        
-                        if([message isHiddenMessage]){
+                        if([message isHiddenMessage] && ![message isVOIPNotificationMessage])
+                        {
                             [messageArray removeObject:message];
-                        }else{
+                        }
+                        else
+                        {
                             [ALMessageService incrementContactUnreadCount:message];
                         }
                         if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
@@ -385,8 +388,8 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
         
         NSString * contactId = message.contactIds;
         ALContactService * contactService=[[ALContactService alloc] init];
-        ALContact * contact =[contactService loadContactByKey:@"userId" value:contactId];
-        contact.unreadCount=[NSNumber numberWithInt:[contact.unreadCount intValue]+1];
+        ALContact * contact = [contactService loadContactByKey:@"userId" value:contactId];
+        contact.unreadCount = [NSNumber numberWithInt:[contact.unreadCount intValue] + 1];
         [contactService addContact:contact];
         [contactService updateContact:contact];
     }
@@ -403,7 +406,8 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
     if([message.status isEqualToNumber:[NSNumber numberWithInt:DELIVERED_AND_READ]]
        || (message.groupId && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
        || [message.type isEqualToString:@"5"]
-       || [message isHiddenMessage]){
+       || [message isHiddenMessage]
+       || [message isVOIPNotificationMessage]) {
         
         return NO;
         
@@ -762,9 +766,11 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     return theMessage;
 }
 
-+(ALMessage *)createMessageWithMetaData:(NSMutableDictionary *)metaData andReceiverId:(NSString *)receiverId andMessageText:(NSString *)msgTxt
++(ALMessage *)createMessageWithMetaData:(NSMutableDictionary *)metaData andContentType:(short)contentType
+                          andReceiverId:(NSString *)receiverId andMessageText:(NSString *)msgTxt
 {
-    ALMessage * theMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:receiverId withText:msgTxt];
+    ALMessage * theMessage = [self createMessageEntityOfContentType:contentType toSendTo:receiverId withText:msgTxt];
+
     theMessage.metadata = metaData;
     return theMessage;
 }
@@ -797,6 +803,14 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
 {
     ALMessageDBService *alMsgDBService = [[ALMessageDBService alloc] init];
     return [alMsgDBService getLatestMessageForChannel:channelKey excludeChannelOperations:flag];
+}
+
+-(ALMessage *)getALMessageByKey:(NSString*)messageReplyId
+{
+    //GET Message From Server if not present on Server
+    ALMessageDBService *alMsgDBService = [[ALMessageDBService alloc] init];
+    DB_Message * dbMessage = (DB_Message*) [alMsgDBService getMessageByKey:@"key" value:messageReplyId];
+    return [alMsgDBService createMessageEntity:dbMessage];
 }
 
 @end

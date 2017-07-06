@@ -254,7 +254,7 @@
     alChannel.notificationAfterTime = dbChannel.notificationAfterTime;
     alChannel.deletedAtTime = dbChannel.deletedAtTime;
     alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
-    
+    alChannel.userCount = dbChannel.userCount;
     return alChannel;
 }
 
@@ -492,7 +492,7 @@
         channel.channelImageURL = dbChannel.channelImageURL;
         channel.deletedAtTime = dbChannel.deletedAtTime;
         channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
-        
+        channel.userCount = dbChannel.userCount;
         return channel;
     }
     else
@@ -591,7 +591,7 @@
             channel.channelImageURL = dbChannel.channelImageURL;
             channel.deletedAtTime = dbChannel.deletedAtTime;
             channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
-            
+            channel.userCount = dbChannel.userCount;
             [alChannels addObject:channel];
         }
     }
@@ -899,7 +899,7 @@
     alChannel.channelImageURL = dbChannel.channelImageURL;
     alChannel.deletedAtTime = dbChannel.deletedAtTime;
     alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
-    
+    alChannel.userCount = dbChannel.userCount;
     return alChannel;
 }
 
@@ -939,7 +939,8 @@
         alChannel.channelImageURL = dbChannel.channelImageURL;
         alChannel.deletedAtTime = dbChannel.deletedAtTime;
         alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
-
+        alChannel.userCount = dbChannel.userCount;
+        
         [childArray addObject:alChannel];
     }
     

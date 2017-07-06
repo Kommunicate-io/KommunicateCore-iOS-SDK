@@ -784,6 +784,27 @@ NOTIFICATION_DISABLE = 2
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++(void)setAudioVideoClassName:(NSString *)className
+{
+    [[NSUserDefaults standardUserDefaults] setValue:className forKey:AUDIO_VIDEO_CLASS];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSString *)getAudioVideoClassName
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:AUDIO_VIDEO_CLASS];
+}
+
++(void)setClientStoryBoard:(NSString *)storyboard 
+{
+    [[NSUserDefaults standardUserDefaults] setValue:storyboard forKey:CLIENT_STORYBOARD];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSString *)getClientStoryBoard
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:CLIENT_STORYBOARD];
+}
 +(NSString *)getGroupDeletedTitle
 {
     NSString * title = [[NSUserDefaults standardUserDefaults] stringForKey:GROUP_DELETED_TITLE];
@@ -870,5 +891,28 @@ NOTIFICATION_DISABLE = 2
 {
     return [[NSUserDefaults standardUserDefaults] boolForKey:OPEN_CHAT_ON_USER_PROFILE_TAP];
 }
+
++(void)replyOptionEnabled:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:MESSAGE_REPLY_ENABLED];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isReplyOptionEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:MESSAGE_REPLY_ENABLED];
+}
+
++(void)setAudioVideoEnabled:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:AV_ENABLED];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isAudioVideoEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:AV_ENABLED];
+}
+
 
 @end

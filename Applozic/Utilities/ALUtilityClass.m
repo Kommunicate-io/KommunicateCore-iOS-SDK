@@ -18,7 +18,7 @@
 #import "ALUserDefaultsHandler.h"
 #import "ALContactDBService.h"
 #import "ALContact.h"
-
+#import "UIImageView+WebCache.h"
 
 @implementation ALUtilityClass
 
@@ -221,7 +221,7 @@
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID delegate:(id)delegate
 {
     
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE){
+    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE ){
         return;
     }
     //3rd Party View is Opened.........
@@ -443,6 +443,91 @@
         alertController.popoverPresentationController.sourceRect = frame;
         [alertController.popoverPresentationController setPermittedArrowDirections:0]; // HIDING POPUP ARROW
     }
+}
+
++(void)movementAnimation:(UIButton *)button andHide:(BOOL)flag
+{
+    if(flag)  // FADE IN
+    {
+        [UIView animateWithDuration:0.3 animations:^{
+            button.alpha = 0;
+        } completion: ^(BOOL finished) {
+            button.hidden = finished;
+        }];
+    }
+    else
+    {
+         button.alpha = 0;  // FADE OUT
+         button.hidden = NO;
+         [UIView animateWithDuration:0.3 animations:^{
+         button.alpha = 1;
+         }];
+    }
+}
+
++(NSString *)getDevieUUID
+{
+    NSString * uuid = [[NSUUID UUID] UUIDString];
+    return uuid;
+}
+
++(BOOL)checkDeviceKeyString:(NSString *)string
+{
+    NSArray * array = [string componentsSeparatedByString:@":"];
+    NSString * deviceString = (NSString *)[array firstObject];
+    return [deviceString isEqualToString:[ALUtilityClass getDevieUUID]];
+}
+
++(void)setImageFromURL:(NSString *)urlString andImageView:(UIImageView *)imageView
+{
+    NSURL * imageURL = [NSURL URLWithString:urlString];
+    [imageView sd_setImageWithURL:imageURL];
+}
+
++(NSString *)stringFromTimeInterval:(NSTimeInterval)interval
+{
+    NSInteger ti = (NSInteger)interval;
+    NSInteger seconds = ti % 60;
+    NSInteger minutes = (ti / 60) % 60;
+    NSInteger hours = (ti / 3600);
+    
+    NSString * text = @"";
+    
+    if (hours)
+    {
+        text = [NSString stringWithFormat:@"%ld Hr %02ld Min %02ld Sec", (long)hours, (long)minutes, (long)seconds];
+    }
+    else if (minutes)
+    {
+        text = [NSString stringWithFormat:@"%ld Min %ld Sec", (long)minutes, (long)seconds];
+    }
+    else
+    {
+        text = [NSString stringWithFormat:@"%ld Sec", (long)seconds];
+    }
+    
+    return text;
+}
+
++(UIImage *)getVOIPMessageImage:(ALMessage *)alMessage
+{
+    NSString *msgType = (NSString *)[alMessage.metadata objectForKey:@"MSG_TYPE"];
+    BOOL flag = [[alMessage.metadata objectForKey:@"CALL_AUDIO_ONLY"] boolValue];
+    
+    NSString * imageName = @"";
+    
+    if([msgType isEqualToString:@"CALL_MISSED"] || [msgType isEqualToString:@"CALL_REJECTED"])
+    {
+        imageName = @"missed_call.png";
+    }
+    else if([msgType isEqualToString:@"CALL_END"])
+    {
+        imageName = flag ? @"audio_call.png" : @"ic_action_video.png";
+    }
+    
+    UIImage *image = [ALUtilityClass getImageFromFramworkBundle:imageName];
+    
+    return image;
 }
 
 @end

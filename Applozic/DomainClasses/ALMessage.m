@@ -7,6 +7,7 @@
 
 #import "ALMessage.h"
 #import "ALUtilityClass.h"
+#import "ALAudioVideoBaseVC.h"
 
 
 @implementation ALMessage
@@ -212,7 +213,7 @@
     return formattedDateStr;
     
 }
--(BOOL)isDownloadRequire{
+-(BOOL)isDownloadRequired{
     
     //TODO:check for SD card
     return (self.fileMeta && !self.imageFilePath);
@@ -224,17 +225,23 @@
             || self.isUploadFailed==YES );
 }
 
--(BOOL)isHiddenMessage{
-    return (self.contentType == ALMESSAGE_CONTENT_HIDDEN);
 
+-(BOOL)isHiddenMessage
+{
+    return ((self.contentType == ALMESSAGE_CONTENT_HIDDEN) || [self isVOIPNotificationMessage]
+            || [self isPushNotificationMessage] || [self isMessageCategoryHidden]
+            || self.getReplyType== AL_REPLY_BUT_HIDDEN);
 }
+
+-(BOOL)isVOIPNotificationMessage
+{
+    return (self.contentType == AV_CALL_CONTENT_TWO);
+}
+
 -(NSString*)getNotificationText
 {
-    if(self.message && ![self.message isEqualToString:@""])
-    {
-        return self.message;
-    }
-    else if(self.contentType == ALMESSAGE_CONTENT_LOCATION)
+
+    if(self.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
         return @"Location";
     }
@@ -242,7 +249,11 @@
     {
         return @"Contact";
     }
-    else
+    if(self.message && ![self.message isEqualToString:@""])
+    {
+        return self.message;
+    }
+    else  
     {
         return @"Attachment";
     }
@@ -278,10 +289,95 @@
     return metaDataDictionary;
 }
 
+-(NSString *)getVOIPMessageText
+{
+    NSString *msgType = (NSString *)[self.metadata objectForKey:@"MSG_TYPE"];
+    BOOL flag = [[self.metadata objectForKey:@"CALL_AUDIO_ONLY"] boolValue];
+    
+    NSString * text = self.message;
+    
+    if([msgType isEqualToString:@"CALL_MISSED"])
+    {
+        text = flag ? @"Missed Audio Call" : @"Missed Video Call";
+    }
+    else if([msgType isEqualToString:@"CALL_END"])
+    {
+        text = flag ? @"Audio Call" : @"Video Call";
+    }
+    else if([msgType isEqualToString:@"CALL_REJECTED"])
+    {
+        text = @"Call Busy";
+    }
+    
+    return text;
+}
+
 -(BOOL)isMsgHidden
 {
     BOOL hide = [[self.metadata objectForKey:@"hide"] boolValue];
+    
     return hide;
 }
 
+-(BOOL)isPushNotificationMessage
+{
+  return (self.metadata && [self.metadata valueForKey:@"category"] &&
+   [ [self.metadata valueForKey:@"category"] isEqualToString:CATEGORY_PUSHNNOTIFICATION]);
+}
+
+-(BOOL)isMessageCategoryHidden
+{
+    return (self.metadata && [self.metadata valueForKey:@"category"] &&
+            [ [self.metadata valueForKey:@"category"] isEqualToString:CATEGORY_HIDDEN]);
+}
+
+
+-(BOOL)isAReplyMessage
+{
+    return (self.metadata && [self.metadata valueForKey:AL_MESSAGE_REPLY_KEY] );
+}
+
+-(BOOL)isSentMessage
+{
+    return [self.type isEqualToString:OUT_BOX];
+}
+-(BOOL)isReceivedMessage
+{
+    return [self.type isEqualToString:IN_BOX];
+    
+}
+
+-(BOOL)isLocationMessage
+{
+    return (self.contentType ==ALMESSAGE_CONTENT_LOCATION);
+}
+-(BOOL)isContactMessage
+{
+    return (self.contentType ==ALMESSAGE_CONTENT_VCARD);
+    
+}
+-(BOOL)isDocumentMessage
+{
+    return (self.contentType ==ALMESSAGE_CONTENT_ATTACHMENT) &&
+    !([self.fileMeta.contentType hasPrefix:@"video"]|| [self.fileMeta.contentType hasPrefix:@"audio"] || [self.fileMeta.contentType hasPrefix:@"image"] );
+    
+}
+
+-(ALReplyType)getReplyType
+{
+    switch ([self.messageReplyType intValue])
+    {
+            
+        case 1:
+            return AL_A_REPLY;
+            break;
+            
+        case 2:
+            return AL_REPLY_BUT_HIDDEN;
+            break;
+            
+        default:
+            return AL_NOT_A_REPLY;
+    }
+}
 @end

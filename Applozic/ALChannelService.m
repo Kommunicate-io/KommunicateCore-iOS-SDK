@@ -646,5 +646,47 @@
         
     }];
 }
+
+
+
+-(void)getChannelInfoByIdsOrClientIds:(NSMutableArray*)channelIds
+                               orClinetChannelIds:(NSMutableArray*) clientChannelIds
+                       withCompletion:(void(^)(NSMutableArray* channelInfoList, NSError *error))completion
+{
+   
+
+    ALChannelClientService * clientService = [[ALChannelClientService alloc] init];
     
+    [clientService getChannelInfoByIdsOrClientIds:channelIds orClinetChannelIds:clientChannelIds
+     
+                                   withCompletion:^( NSMutableArray *channelInfoList, NSError *error)
+    {
+        
+        ALChannelDBService * dbService = [ALChannelDBService new];
+        for(ALChannel * channel in channelInfoList )
+        {
+            [dbService createChannel:channel];
+        }
+        completion(channelInfoList,error);
+    }];
+    
+}
+
+-(void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion{
+    
+    
+    ALChannelClientService * clientService = [[ALChannelClientService alloc] init];
+    
+    [clientService getAllChannelsForApplications:endTime withCompletion:^(NSMutableArray *channelInfoList, NSError *error) {
+        
+        ALChannelDBService * dbService = [ALChannelDBService new];
+        for(ALChannel * channel in channelInfoList )
+        {
+            [dbService createChannel:channel];
+        }
+        completion(channelInfoList,error);
+    }];
+}
 @end
+
+

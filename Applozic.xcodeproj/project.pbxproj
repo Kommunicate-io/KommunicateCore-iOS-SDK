@@ -297,6 +297,12 @@
 		6DEAEE8D1D4CDBC700360060 /* ALUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */; };
 		C70984311DF06B18009796A2 /* ALUserDetailListFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = C709842F1DF06B18009796A2 /* ALUserDetailListFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C70984321DF06B18009796A2 /* ALUserDetailListFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C70984301DF06B18009796A2 /* ALUserDetailListFeed.m */; };
+		C73BAC601F0D587300E91FEA /* ALVOIPCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C73BAC5E1F0D587300E91FEA /* ALVOIPCell.h */; };
+		C73BAC611F0D587300E91FEA /* ALVOIPCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C73BAC5F1F0D587300E91FEA /* ALVOIPCell.m */; };
+		C73BAC661F0D595400E91FEA /* ALAudioVideoBaseVC.h in Headers */ = {isa = PBXBuildFile; fileRef = C73BAC621F0D595400E91FEA /* ALAudioVideoBaseVC.h */; };
+		C73BAC671F0D595400E91FEA /* ALAudioVideoBaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C73BAC631F0D595400E91FEA /* ALAudioVideoBaseVC.m */; };
+		C73BAC681F0D595400E91FEA /* ALVOIPNotificationHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = C73BAC641F0D595400E91FEA /* ALVOIPNotificationHandler.h */; };
+		C73BAC691F0D595400E91FEA /* ALVOIPNotificationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C73BAC651F0D595400E91FEA /* ALVOIPNotificationHandler.m */; };
 		C7A07AF31EA6A0A800065E87 /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C7A07AEC1EA6A0A800065E87 /* AppLozic.xcdatamodeld */; };
 		C7A07AF61EA6A13900065E87 /* ALSubViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C7A07AF41EA6A13900065E87 /* ALSubViewController.h */; };
 		C7A07AF71EA6A13900065E87 /* ALSubViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A07AF51EA6A13900065E87 /* ALSubViewController.m */; };
@@ -600,6 +606,12 @@
 		7BABEB56A0F9F0ADBE804E94 /* libPods-Applozic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Applozic.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C709842F1DF06B18009796A2 /* ALUserDetailListFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUserDetailListFeed.h; path = Applozic/ALUserDetailListFeed.h; sourceTree = "<group>"; };
 		C70984301DF06B18009796A2 /* ALUserDetailListFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALUserDetailListFeed.m; path = Applozic/ALUserDetailListFeed.m; sourceTree = "<group>"; };
+		C73BAC5E1F0D587300E91FEA /* ALVOIPCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALVOIPCell.h; path = Applozic/ALVOIPCell.h; sourceTree = "<group>"; };
+		C73BAC5F1F0D587300E91FEA /* ALVOIPCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALVOIPCell.m; path = Applozic/ALVOIPCell.m; sourceTree = "<group>"; };
+		C73BAC621F0D595400E91FEA /* ALAudioVideoBaseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAudioVideoBaseVC.h; sourceTree = "<group>"; };
+		C73BAC631F0D595400E91FEA /* ALAudioVideoBaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALAudioVideoBaseVC.m; sourceTree = "<group>"; };
+		C73BAC641F0D595400E91FEA /* ALVOIPNotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALVOIPNotificationHandler.h; sourceTree = "<group>"; };
+		C73BAC651F0D595400E91FEA /* ALVOIPNotificationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALVOIPNotificationHandler.m; sourceTree = "<group>"; };
 		C7A07AED1EA6A0A800065E87 /* AppLozic 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 2.xcdatamodel"; sourceTree = "<group>"; };
 		C7A07AEE1EA6A0A800065E87 /* AppLozic 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 3.xcdatamodel"; sourceTree = "<group>"; };
 		C7A07AEF1EA6A0A800065E87 /* AppLozic 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 4.xcdatamodel"; sourceTree = "<group>"; };
@@ -811,6 +823,10 @@
 				46AC59BC1E1D4B8600A87291 /* ALNavigationController.m */,
 				6D7757251D5B841B0025560B /* ALMessageInfoViewController.h */,
 				6D7757261D5B841B0025560B /* ALMessageInfoViewController.m */,
+				C73BAC621F0D595400E91FEA /* ALAudioVideoBaseVC.h */,
+				C73BAC631F0D595400E91FEA /* ALAudioVideoBaseVC.m */,
+				C73BAC641F0D595400E91FEA /* ALVOIPNotificationHandler.h */,
+				C73BAC651F0D595400E91FEA /* ALVOIPNotificationHandler.m */,
 				6D6DF0A81BC5364C00EBA00F /* ALBaseViewController.h */,
 				6D6DF0A91BC5364C00EBA00F /* ALBaseViewController.m */,
 				6D6DF0AA1BC5364C00EBA00F /* ALChatViewController.h */,
@@ -890,6 +906,8 @@
 		6D6DF1DB1BC5371200EBA00F /* ApplozicUIWidget */ = {
 			isa = PBXGroup;
 			children = (
+				C73BAC5E1F0D587300E91FEA /* ALVOIPCell.h */,
+				C73BAC5F1F0D587300E91FEA /* ALVOIPCell.m */,
 				6D7757211D5B83AA0025560B /* ALHyperLabel.h */,
 				6D7757221D5B83AA0025560B /* ALHyperLabel.m */,
 				6D9547631BE38DFF00776652 /* ALContactDBService.h */,
@@ -1329,7 +1347,9 @@
 				6D7756E51D5B821F0025560B /* ALSyncCallService.h in Headers */,
 				6D7756D91D5B82000025560B /* ALUserBlocked.h in Headers */,
 				6D7756861D5B7FBE0025560B /* ALConversationClientService.h in Headers */,
+				C73BAC681F0D595400E91FEA /* ALVOIPNotificationHandler.h in Headers */,
 				6D77568F1D5B7FBE0025560B /* ALTopicDetail.h in Headers */,
+				C73BAC601F0D587300E91FEA /* ALVOIPCell.h in Headers */,
 				6D7756E11D5B82000025560B /* ALUserService.h in Headers */,
 				6D6DF1781BC5364C00EBA00F /* ALMessageList.h in Headers */,
 				6D6DF1641BC5364C00EBA00F /* ALNewContactCell.h in Headers */,
@@ -1389,6 +1409,7 @@
 				6D73B2FD1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.h in Headers */,
 				C7A07AF61EA6A13900065E87 /* ALSubViewController.h in Headers */,
 				6D0D107A1D4CD7B6009853FB /* ALImagePickerController.h in Headers */,
+				C73BAC661F0D595400E91FEA /* ALAudioVideoBaseVC.h in Headers */,
 				6DEAEE8C1D4CDBC700360060 /* ALUserProfileVC.h in Headers */,
 				2932B9F31C7C875F0017911D /* ALGroupDetailViewController.h in Headers */,
 				294637B61C6F16050025ED76 /* ALGroupCreationViewController.h in Headers */,
@@ -1494,7 +1515,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		6DAA09DB1BE4AD8800CBF133 /* Run Script */ = {
@@ -1544,6 +1565,7 @@
 				46AC59BA1E1D4AD300A87291 /* ALMessageServiceWrapper.m in Sources */,
 				6D7757131D5B83660025560B /* TSBlurView.m in Sources */,
 				6D6DF17D1BC5364C00EBA00F /* ALSyncMessageFeed.m in Sources */,
+				C73BAC611F0D587300E91FEA /* ALVOIPCell.m in Sources */,
 				6D7756AE1D5B80DF0025560B /* ALChannelCreateResponse.m in Sources */,
 				6D08770A1D01B0FE00DB491A /* UIView+Toast.m in Sources */,
 				46AC59881E1D386E00A87291 /* MQTTCFSocketDecoder.m in Sources */,
@@ -1575,6 +1597,7 @@
 				6D6DF15F1BC5364C00EBA00F /* ALChatCell.m in Sources */,
 				6D6DF1611BC5364C00EBA00F /* ALImageCell.m in Sources */,
 				46AC59951E1D386E00A87291 /* MQTTInMemoryPersistence.m in Sources */,
+				C73BAC671F0D595400E91FEA /* ALAudioVideoBaseVC.m in Sources */,
 				6D7756E61D5B821F0025560B /* ALSyncCallService.m in Sources */,
 				6D7756B61D5B80DF0025560B /* ALChannelService.m in Sources */,
 				6D7757001D5B82ED0025560B /* DB_CHANNEL_USER_X.m in Sources */,
@@ -1632,6 +1655,7 @@
 				6D3A4E061C76ED6C0067A4C8 /* ALAudioAttachmentViewController.m in Sources */,
 				6D77573A1D5B84D60025560B /* ALMediaBaseCell.m in Sources */,
 				6D6DF1D61BC5364C00EBA00F /* TPPropertyAnimation.m in Sources */,
+				C73BAC691F0D595400E91FEA /* ALVOIPNotificationHandler.m in Sources */,
 				6D7757241D5B83AA0025560B /* ALHyperLabel.m in Sources */,
 				6D6DF17F1BC5364C00EBA00F /* ALUser.m in Sources */,
 				46AC598C1E1D386E00A87291 /* MQTTCFSocketTransport.m in Sources */,
@@ -1748,7 +1772,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "63ccf919-27fc-4516-91ff-9d623fb86b06";
+				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1790,7 +1814,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "63ccf919-27fc-4516-91ff-9d623fb86b06";
+				PROVISIONING_PROFILE = "4375e45c-3077-480b-b2d6-b7f7c5f4cd54";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
