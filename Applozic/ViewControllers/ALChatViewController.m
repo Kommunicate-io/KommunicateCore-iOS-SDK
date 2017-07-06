@@ -1749,6 +1749,11 @@
 
 -(void)updateContextInView
 {
+    if (self.pickerConvIdsArray.count == 0) {
+        [self reloadView];
+        return;
+    }
+    
     [self.mTableView setUserInteractionEnabled:YES];
     [self.sendMessageTextView setHidden:NO];
 
@@ -2979,7 +2984,7 @@
         
         [self.mActivityIndicator stopAnimating];
         NSLog(@"LIST_CALL_CALLED");
-        if(self.conversationId && [ALApplozicSettings getContextualChatOption])
+        if(self.conversationId && [ALApplozicSettings getContextualChatOption] && messages.count)
         {
             [self setupPickerView];
             [self.pickerView reloadAllComponents];
