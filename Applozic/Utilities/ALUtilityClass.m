@@ -481,7 +481,7 @@
 +(void)setImageFromURL:(NSString *)urlString andImageView:(UIImageView *)imageView
 {
     NSURL * imageURL = [NSURL URLWithString:urlString];
-    [imageView sd_setImageWithURL:imageURL];
+    [imageView sd_setImageWithURL:imageURL placeholderImage:nil options:SDWebImageRefreshCached];
 }
 
 +(NSString *)stringFromTimeInterval:(NSTimeInterval)interval

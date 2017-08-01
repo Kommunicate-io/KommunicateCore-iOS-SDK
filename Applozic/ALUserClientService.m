@@ -17,6 +17,8 @@
 #import "ALUserDetailListFeed.h"
 #import "AlApplicationInfoFeed.h"
 
+
+
 @implementation ALUserClientService
 
 +(void)userLastSeenDetail:(NSNumber *)lastSeenAt withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark

@@ -246,5 +246,6 @@
 +(NSNumber *)getLastGroupFilterSyncTIme;
 
 
++(void)setContactScrollingIsInProgress:(BOOL)flag;
 
 @end

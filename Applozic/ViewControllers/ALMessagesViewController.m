@@ -716,14 +716,14 @@
             if(grpContact.contactImageUrl.length)
             {
                 NSURL * theUrl1 = [NSURL URLWithString:grpContact.contactImageUrl];
-                [contactCell.mUserImageView sd_setImageWithURL:theUrl1];
+                [contactCell.mUserImageView sd_setImageWithURL:theUrl1 placeholderImage:nil options:SDWebImageRefreshCached];
                 contactCell.imageNameLabel.hidden = YES;
                 nameIcon.hidden=YES;
             }
             else
             {
                 nameIcon.hidden = NO;
-                [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
+                [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
                 contactCell.mUserImageView.backgroundColor = [ALColorUtility getColorForAlphabet:[grpContact getDisplayName]];
                 [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[grpContact getDisplayName]]];
             }
@@ -741,7 +741,7 @@
             NSURL * imageUrl = [NSURL URLWithString:alChannel.channelImageURL];
             if(imageUrl.path.length)
             {
-                [contactCell.mUserImageView sd_setImageWithURL:imageUrl];
+                [contactCell.mUserImageView sd_setImageWithURL:imageUrl placeholderImage:nil options:SDWebImageRefreshCached];
             }
             nameIcon.hidden = YES;
             contactCell.mUserNameLabel.text = [alChannel name];
@@ -756,14 +756,14 @@
         if(contact.contactImageUrl.length)
         {
             NSURL * theUrl1 = [NSURL URLWithString:contact.contactImageUrl];
-            [contactCell.mUserImageView sd_setImageWithURL:theUrl1];
+            [contactCell.mUserImageView sd_setImageWithURL:theUrl1 placeholderImage:nil options:SDWebImageRefreshCached];
             contactCell.imageNameLabel.hidden = YES;
             nameIcon.hidden= YES;
         }
         else
         {
             nameIcon.hidden = NO;
-            [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
+            [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
             contactCell.mUserImageView.backgroundColor = [ALColorUtility getColorForAlphabet:[contact getDisplayName]];
             [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[contact getDisplayName]]];
         }
@@ -1099,13 +1099,13 @@
             NSURL * URL = [NSURL URLWithString:userDetail.imageLink];
             if(URL)
             {
-                [contactCell.mUserImageView sd_setImageWithURL:URL];
+                [contactCell.mUserImageView sd_setImageWithURL:URL placeholderImage:nil options:SDWebImageRefreshCached];
                 nameIcon.hidden = YES;
             }
             else
             {
                 nameIcon.hidden = NO;
-                [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
+                [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
                 contactCell.mUserImageView.backgroundColor = [ALColorUtility getColorForAlphabet:[userDetail getDisplayName]];
             }
             [self.detailChatViewController setRefresh:YES];

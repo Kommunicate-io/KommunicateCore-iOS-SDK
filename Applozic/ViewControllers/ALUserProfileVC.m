@@ -114,7 +114,7 @@
     }
     else if(serverImageURL)
     {
-        [self.profileImage sd_setImageWithURL:serverImageURL];
+        [self.profileImage sd_setImageWithURL:serverImageURL placeholderImage:nil options:SDWebImageRefreshCached];
     }
     
     alContactService = [[ALContactService alloc] init];

@@ -672,6 +672,24 @@
     
 }
 
+-(void)getChannelListForCategory:(NSString*)category
+                  withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
+
+{
+    ALChannelClientService * clientService = [[ALChannelClientService alloc] init];
+
+    [clientService getChannelListForCategory:category                           withCompletion:^( NSMutableArray *channelInfoList, NSError *error)
+     {
+
+         ALChannelDBService * dbService = [ALChannelDBService new];
+         for(ALChannel * channel in channelInfoList )
+         {
+             [dbService createChannel:channel];
+         }
+         completion(channelInfoList,error);
+     }];
+}
+
 -(void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion{
     
     

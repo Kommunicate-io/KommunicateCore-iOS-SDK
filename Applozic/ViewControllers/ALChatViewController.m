@@ -1556,7 +1556,7 @@
     // Image View ....
     UIImageView *imageView = [[UIImageView alloc] init];
     NSURL * url = [NSURL URLWithString:topicDetail.link];
-    [imageView sd_setImageWithURL:url];
+    [imageView sd_setImageWithURL:url placeholderImage:nil options:SDWebImageRefreshCached];
     
     imageView.frame = CGRectMake(5, 27, 50, 50);
     imageView.backgroundColor = [UIColor blackColor];
@@ -2668,10 +2668,6 @@
 
 -(void)sendMessage:(ALMessage *)theMessage
 {
-    //TODO: Add metadata... identify if receiver has black listed sender and set this no lert flag
-    NSMutableDictionary *metaDict = [[NSMutableDictionary alloc] init];
-    [metaDict setObject:@"true" forKey:@"NO_ALERT"];
-    theMessage.metadata =metaDict;
     
     [ALMessageService sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
         

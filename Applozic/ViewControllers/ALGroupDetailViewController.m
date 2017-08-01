@@ -311,6 +311,11 @@
     {
         case 0:
         {
+            if(indexPath.row == 0){
+                
+                [self updateGroupView];
+
+            }
             if(indexPath.row == 1){
                 
                 if([self.alChannel isNotificationMuted])
@@ -720,7 +725,7 @@
     else if(alContact.contactImageUrl)
     {
         NSURL * theUrl = [NSURL URLWithString:alContact.contactImageUrl];
-        [self.memberIconImageView sd_setImageWithURL:theUrl];
+        [self.memberIconImageView sd_setImageWithURL:theUrl placeholderImage:nil options:SDWebImageRefreshCached];
     }
     else
     {
@@ -785,7 +790,7 @@
         NSURL * imageUrl = [NSURL URLWithString:self.alChannel.channelImageURL];
         if(imageUrl.path.length)
         {
-            [imageView sd_setImageWithURL:imageUrl];
+            [imageView sd_setImageWithURL:imageUrl placeholderImage:nil options:SDWebImageRefreshCached];
         }
         
         imageView.frame = CGRectMake((screenWidth/2)-30, 20, 60, 60);

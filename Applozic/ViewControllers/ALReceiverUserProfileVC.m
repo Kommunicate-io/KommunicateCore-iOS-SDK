@@ -57,7 +57,7 @@
     if(self.alContact.contactImageUrl)
     {
         NSURL * theUrl = [NSURL URLWithString:self.alContact.contactImageUrl];
-        [self.profileImageView sd_setImageWithURL:theUrl];
+        [self.profileImageView sd_setImageWithURL:theUrl placeholderImage:nil options:SDWebImageRefreshCached];
     }
     
     [self.callButton setEnabled:NO];

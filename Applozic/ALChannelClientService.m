@@ -615,6 +615,52 @@
     
 }
 
+-(void)getChannelListForCategory:(NSString*)category
+                       withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
+
+{
+
+    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_SYNC_URL];
+    NSString * theParamString=nil ;
+    NSMutableArray * channelinfoList = [[NSMutableArray alloc] init];
+
+    if(category)
+    {
+        theParamString = [NSString stringWithFormat:@"category=%@", category];
+    } else {
+        return;
+    }
+
+
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    [ALResponseHandler processRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
+
+        if(error)
+        {
+            NSLog(@"ERROR IN CHANNEL_LIST SERVER CALL REQUEST %@", error);
+            completion(nil,error);
+
+        }
+        else
+        {
+            NSLog(@"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
+        }
+
+        ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
+        NSMutableArray * array = (NSMutableArray*)response.response;
+
+        for ( NSMutableDictionary *dic  in array)
+        {
+            ALChannel * channel = [[ALChannel alloc] initWithDictonary:dic];
+            [channelinfoList addObject:channel];
+        }
+
+        completion(channelinfoList,error);
+    }];
+    
+}
+
+
 -(void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
 {
  

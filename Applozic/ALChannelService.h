@@ -111,6 +111,9 @@
                    orClinetChannelIds:(NSMutableArray*) clientChannelIds
                        withCompletion:(void(^)(NSMutableArray* channelInfoList, NSError *error))completion;
 
+-(void)getChannelListForCategory:(NSString*)category
+                  withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion;
+
 
 -(void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion;
 

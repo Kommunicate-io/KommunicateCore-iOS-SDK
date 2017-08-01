@@ -254,7 +254,7 @@
     ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:msgInfo.userId];
     
     NSURL * theUrl = [NSURL URLWithString:alContact.contactImageUrl];
-    [self.userImage sd_setImageWithURL:theUrl];
+    [self.userImage sd_setImageWithURL:theUrl placeholderImage:nil options:SDWebImageRefreshCached];
     [self.firstAlphabet setHidden:YES];
     [self.userName setText:[alContact getDisplayName]];
     

@@ -32,8 +32,7 @@
 #define DEFAULT_TOP_LANDSCAPE_CONSTANT -34
 #define DEFAULT_TOP_PORTRAIT_CONSTANT -64
 
-#define SHOW_CONTACTS 101
-#define SHOW_GROUP 102
+
 
 @interface ALNewContactsViewController ()
 
@@ -318,7 +317,7 @@
     ALNewContactCell *newContactCell = [self getCell:userDetail.userId];
     if(newContactCell && self.selectedSegment == 0)
     {
-        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:userDetail.imageLink]];
+        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:userDetail.imageLink] placeholderImage:nil options:SDWebImageRefreshCached];
         newContactCell.contactPersonName.text = [userDetail getDisplayName];
     }
 }
@@ -398,7 +397,7 @@
     UILabel* nameIcon = (UILabel*)[newContactCell viewWithTag:101];
     [nameIcon setTextColor:[UIColor whiteColor]];
     [nameIcon setHidden:YES];
-    [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
+    [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
     newContactCell.contactPersonName.text = @"";
     [newContactCell.contactPersonImageView setHidden:NO];
     
@@ -424,7 +423,7 @@
                 {
                     if (contact.contactImageUrl)
                     {
-                        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl]];
+                        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl] placeholderImage:nil options:SDWebImageRefreshCached];
                     }
                     else
                     {
@@ -476,7 +475,7 @@
                     NSURL * imageUrl = [NSURL URLWithString:channel.channelImageURL];
                     if(imageUrl.path.length)
                     {
-                        [newContactCell.contactPersonImageView sd_setImageWithURL:imageUrl];
+                        [newContactCell.contactPersonImageView sd_setImageWithURL:imageUrl placeholderImage:nil options:SDWebImageRefreshCached];
                     }
                     [nameIcon setHidden:YES];
                 }
