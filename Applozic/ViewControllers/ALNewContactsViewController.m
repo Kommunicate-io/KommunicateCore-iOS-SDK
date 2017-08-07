@@ -808,7 +808,7 @@
 
 -(void)back:(id)sender
 {
-    if(self.directContactVCLaunch)
+    if(self.directContactVCLaunch || self.directContactVCLaunchForForward)
     {
         [self  dismissViewControllerAnimated:YES completion:nil];
     }
@@ -824,7 +824,49 @@
 
 -(void)launchChatForContact:(NSString *)contactId  withChannelKey:(NSNumber*)channelKey
 {
-    if(self.directContactVCLaunch)  // IF DIRECT CONTACT VIEW LAUNCH FROM ALCHATLAUNCHER
+    
+    
+    if(self.directContactVCLaunchForForward)  // IF DIRECT CONTACT VIEW LAUNCH FROM ALCHATLAUNCHER
+    {
+        
+        switch (self.selectedSegment)
+        {
+            case 0:
+            {
+                ALContactService * contactService = [ALContactService new];
+                if(![contactService isUserDeleted:contactId]){
+                    self.alMessage.contactIds = contactId;
+                    self.alMessage.to = contactId;
+                    self.alMessage.groupId = nil;
+                    [self.forwardDelegate proccessReloadAndForwardMessage:self.alMessage];
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }else{
+                    NSLog(@"User is deleted !!");
+                    
+                }
+                
+            }
+                break;
+            case 1:
+            {
+                ALChannelService * channelService = [ALChannelService new];
+                if(![channelService isChannelLeft:channelKey] && ![ALChannelService isChannelDeleted:channelKey]){
+                    self.alMessage.contactIds = nil;
+                    self.alMessage.groupId = channelKey;
+                    [self.forwardDelegate proccessReloadAndForwardMessage:self.alMessage];
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }else{
+                    NSLog(@"Group is deleted or your not in this group !!");
+                }
+                
+            }
+                break;
+            default:
+                break;
+        }
+        
+        return;
+    }else if(self.directContactVCLaunch)  // IF DIRECT CONTACT VIEW LAUNCH FROM ALCHATLAUNCHER
     {
         UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
                                                              bundle:[NSBundle bundleForClass:ALChatViewController.class]];

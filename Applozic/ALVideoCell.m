@@ -352,6 +352,9 @@
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
 
+    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:@"Forward" action:@selector(messageForward:)];
+    [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
+    [[UIMenuController sharedMenuController] update];
 
     return self;
 }
@@ -410,11 +413,13 @@
 {
     if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
     {
-        return (action == @selector(delete:)|| action == @selector(msgInfo:));
+        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) ) );
     }
     
-    return (action == @selector(delete:));
+    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):
+            (action == @selector(delete:)|| action == @selector(messageForward:) ));
 }
+
 
 -(void) delete:(id)sender
 {
@@ -425,6 +430,13 @@
         
         NSLog(@"DELETE MESSAGE ERROR :: %@", error.description);
     }];
+}
+
+-(void) messageForward:(id)sender
+{
+    NSLog(@"Message forward option is pressed");
+    [self.delegate processForwardMessage:self.mMessage];
+    
 }
 
 -(void)openUserChatVC

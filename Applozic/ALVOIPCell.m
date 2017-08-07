@@ -70,4 +70,13 @@
     return self;
 }
 
+-(BOOL) canPerformAction:(SEL)action withSender:(id)sender
+{
+  
+    return (action == @selector(delete:));
+
+}
+
+
+
 @end

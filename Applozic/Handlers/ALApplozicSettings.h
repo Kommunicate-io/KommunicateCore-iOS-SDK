@@ -260,7 +260,7 @@
 +(BOOL)getReceiverUserProfileOption;
 +(void)setReceiverUserProfileOption:(BOOL)flag;
 
-+(float)getCustomMessageFontSize;
++(float)getCustomMessageFontSize; 
 +(void)setCustomMessageFontSize:(float)fontSize;
 
 +(NSString *)getCustomMessageFont;

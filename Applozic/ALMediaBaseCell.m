@@ -96,8 +96,10 @@
         [self.contentView addSubview:self.mChannelMemberName];
         
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:@"Info" action:@selector(msgInfo:)];
-        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo]];
+        UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:@"Forward" action:@selector(processForwardMessage:)];
+        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageForward]];
         [[UIMenuController sharedMenuController] update];
+
 
         if (IS_IPHONE_5)
         {
@@ -153,5 +155,11 @@
 {
     
 }
+
+-(void)processForwardMessage
+{
+    [self.delegate processForwardMessage:self.mMessage];
+}
+
 
 @end

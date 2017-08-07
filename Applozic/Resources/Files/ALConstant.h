@@ -7,7 +7,7 @@
 
 #import "ALUserDefaultsHandler.h"
 
-#define APPLOZIC_SDK_VERSION @"3.9"
+#define APPLOZIC_SDK_VERSION @"3.10"
 
 #define KBASE_URL ([ALUserDefaultsHandler getBASEURL])
 #define MQTT_URL ([ALUserDefaultsHandler getMQTTURL])

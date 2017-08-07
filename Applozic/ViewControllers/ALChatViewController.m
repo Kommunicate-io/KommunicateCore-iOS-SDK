@@ -1110,6 +1110,43 @@
     self.alMessage=nil;
 }
 
+
+-(void)handleMessageForwardForChatView:(ALMessage* )almessage{
+    
+    ALMessage * message = [self getMessageToPost];
+    message.message  = almessage.message;
+    message.metadata = almessage.metadata;
+    message.fileMeta = almessage.fileMeta;
+    message.imageFilePath = almessage.imageFilePath;
+    message.fileMetaKey = almessage.fileMetaKey;
+    message.contentType = almessage.contentType;
+    message.groupId = almessage.groupId;
+    message.contactIds = almessage.contactIds;
+    message.to = almessage.contactIds;
+    message.sentToServer = FALSE;
+    message.status = @1;
+    
+    if( message.imageFilePath ){
+        [self processAttachment:message.imageFilePath andMessageText:message.message andContentType:almessage.contentType];
+        self.alMessage=nil;
+        [self showNoConversationLabel];
+        return;
+    }
+    //SEND MESSAGE
+    [self.alMessageWrapper addALMessageToMessageArray:message];
+    [self showNoConversationLabel];
+    self.mTotalCount = self.mTotalCount+1;
+    self.startIndex = self.startIndex + 1;
+    
+    [self sendMessage:message messageAtIndex: [[self.alMessageWrapper getUpdatedMessageArray] count]];
+    
+    
+    [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
+    [self setRefreshMainView:TRUE];
+    [self scrollTableViewToBottomWithAnimation:YES];
+    self.alMessage=nil;}
+
+
 //==============================================================================================================================================
 #pragma mark - ALMapViewController Delegate Methods
 #pragma mark - ONLINE Location Message Sending
@@ -2666,8 +2703,12 @@
     return path;
 }
 
--(void)sendMessage:(ALMessage *)theMessage
-{
+
+-(void)sendMessage:(ALMessage *)theMessage{
+    [self sendMessage:theMessage messageAtIndex:0];
+}
+
+-(void)sendMessage:(ALMessage *)theMessage messageAtIndex:(NSUInteger) messageIndex{
     
     [ALMessageService sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
         
@@ -2677,11 +2718,20 @@
             [self handleErrorStatus:theMessage];
             return;
         }
+        
         [self addBroadcastMessageToDB:theMessage];
+        
+        if(messageIndex>0){
+            [[self.alMessageWrapper getUpdatedMessageArray]replaceObjectAtIndex: messageIndex-1 withObject:theMessage];
+            
+        }
+        
         [self.mTableView reloadData];
         [self setRefreshMainView:YES];
     }];
 }
+
+
 
 -(ALMessage *)getMessageFromViewList:(NSString *)key withValue:(id)value
 {
@@ -3787,6 +3837,26 @@
     [self openUserChatOnTap:alMessage.to];
 }
 
+
+
+//================================================================================================================================
+#pragma mark - FORWARD MESSAGE CALL
+//================================================================================================================================
+
+-(void) processForwardMessage:(ALMessage *) message
+{
+    
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+    ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
+    contactVC.directContactVCLaunchForForward = YES;
+    contactVC.alMessage = message;
+    contactVC .forwardDelegate = self;
+    UINavigationController *conversationViewNavController = [[UINavigationController alloc] initWithRootViewController:contactVC];
+    [self presentViewController:conversationViewNavController animated:YES completion:nil];
+    
+}
+
+
 //==============================================================================================================================================
 #pragma mark - MEDIA BASE CELL DELEGATE CALLED BY TAP GESTURE
 //==============================================================================================================================================
@@ -3840,5 +3910,14 @@
         [self.sendMessageTextView resignFirstResponder];
     }
 }
+
+-(void)proccessReloadAndForwardMessage:(ALMessage *)alMessage{
+    
+    self.channelKey = alMessage.groupId;
+    self.contactIds = alMessage.contactIds;
+    [self reloadView];
+    [self handleMessageForwardForChatView:alMessage];
+}
+
 
 @end
