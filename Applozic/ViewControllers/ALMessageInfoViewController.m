@@ -33,7 +33,6 @@
     
     self.alTableView.delegate = self;
     self.alTableView.dataSource = self;
-    
     [self.view bringSubviewToFront:self.activityIndicator];
     [self.activityIndicator startAnimating];
 }
@@ -119,11 +118,11 @@
     }
     else if(section == 1)
     {
-        return [self customHeaderView:section withTitle:@"Read" andName:@"ic_action_read.png"];
+        return [self customHeaderView:section withTitle:NSLocalizedStringWithDefaultValue(@"read", nil, [NSBundle mainBundle], @"Read", @"") andName:@"ic_action_read.png"];
     }
     else
     {
-        return [self customHeaderView:section withTitle:@"Delivered" andName:@"ic_action_message_delivered.png"];
+        return [self customHeaderView:section withTitle:NSLocalizedStringWithDefaultValue(@"delivered", nil, [NSBundle mainBundle], @"Delivered", @"")  andName:@"ic_action_message_delivered.png"];
     }
 }
 
@@ -132,7 +131,7 @@
     ALContactCell *contactCell = (ALContactCell *)[tableView dequeueReusableCellWithIdentifier:@"userCell"];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-       
+        
         [self setTableCellView: contactCell];
         ALMessageInfo *msgInfo;
         if(indexPath.section == 1)
@@ -166,7 +165,7 @@
     if(!alMessage.sentToServer)
     {
         [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
-        [TSMessage showNotificationWithTitle:@"Message is in processing" type:TSMessageNotificationTypeWarning];
+        [TSMessage showNotificationWithTitle:NSLocalizedStringWithDefaultValue(@"messageProccessText", nil, [NSBundle mainBundle], @"Message is in processing", @"") type:TSMessageNotificationTypeWarning];
         completion([self customError]);
         return;
     }
@@ -190,7 +189,7 @@
                 {
                     [readList addObject:info];
                 }
-
+                
                 if(info.messageStatus == (short)DELIVERED)
                 {
                     [deliveredList addObject:info];
@@ -209,7 +208,7 @@
     self.userName = (UILabel *)[contactCell viewWithTag:503];
     self.dateLabel = (UILabel *)[contactCell viewWithTag:502];
     [self.dateLabel setTextColor:[UIColor grayColor]];
-//    self.timeLabel = (UILabel *)[contactCell viewWithTag:501];
+    //    self.timeLabel = (UILabel *)[contactCell viewWithTag:501];
     
     [self.firstAlphabet setTextColor:[UIColor whiteColor]];
     self.userImage.layer.cornerRadius = self.userImage.frame.size.width/2;
@@ -254,7 +253,7 @@
     ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:msgInfo.userId];
     
     NSURL * theUrl = [NSURL URLWithString:alContact.contactImageUrl];
-    [self.userImage sd_setImageWithURL:theUrl placeholderImage:nil options:SDWebImageRefreshCached];
+    [self.userImage sd_setImageWithURL:theUrl];
     [self.firstAlphabet setHidden:YES];
     [self.userName setText:[alContact getDisplayName]];
     
@@ -291,7 +290,6 @@
     imageView.layer.cornerRadius = 5;
     imageView.layer.masksToBounds = YES;
     
-    
     CGRect frameImage = CGRectMake(cellSize.width - 265, 10, maxWidth, maxWidth);
     
     if(self.almessage.contentType == ALMESSAGE_CONTENT_LOCATION)
@@ -316,7 +314,6 @@
     
     bubbleView.frame = frameImage;
     imageView.frame = subFrameImage;
-    
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.msgHeaderHeight + 20)];
     
     if([self.almessage.fileMeta.contentType hasPrefix:@"audio"])
@@ -375,7 +372,7 @@
         {
             imageView.frame = CGRectMake(bubbleView.frame.origin.x + 10, bubbleView.frame.origin.y + 5, 50, 50);
             imageView.layer.cornerRadius = imageView.frame.size.width/2;
-
+            
             [imageView setImage: [ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
             if(IS_OS_EARLIER_THAN_10)
             {
@@ -407,7 +404,7 @@
                                         bubbleView.frame.size.width - imageView.frame.size.width - 10,
                                         bubbleView.frame.size.height - 10);
         }
-
+        
         
         [view addSubview:textView];
         [view addSubview:imageView];
@@ -426,6 +423,12 @@
     [view addSubview:bubbleView];
     [view bringSubviewToFront:textView];
     [view bringSubviewToFront:imageView];
+    
+    if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+        textView.textAlignment = NSTextAlignmentRight;
+        imageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        
+    }
     
     return view;
 }

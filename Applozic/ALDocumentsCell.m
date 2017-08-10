@@ -385,7 +385,8 @@
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
     
-    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:@"Forward" action:@selector(messageForward:)];
+    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+    
     [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
     [[UIMenuController sharedMenuController] update];
 

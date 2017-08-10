@@ -78,6 +78,11 @@
         [self.videoPlayFrontView setContentMode:UIViewContentModeScaleAspectFit];
         [self.videoPlayFrontView setImage: [ALUtilityClass getImageFromFramworkBundle:@"playImage.png"]];
         [self.contentView addSubview:self.videoPlayFrontView];
+        if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+            self.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.videoPlayFrontView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mImageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        }
     }
     
     return self;
@@ -352,7 +357,9 @@
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
 
-    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:@"Forward" action:@selector(messageForward:)];
+    
+    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+   
     [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
     [[UIMenuController sharedMenuController] update];
 

@@ -133,6 +133,15 @@
         [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
         
         self.hyperLinkArray = [NSMutableArray new];
+        
+        if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+            self.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mNameLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mChannelMemberName.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mMessageLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mDateLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mMessageStatusImageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        }
     }
     
     
@@ -386,7 +395,8 @@
     }
     
     
-    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:@"Forward" action:@selector(messageForward:)];
+    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+    
     [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
     [[UIMenuController sharedMenuController] update];
 

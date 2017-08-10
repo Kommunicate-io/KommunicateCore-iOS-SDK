@@ -165,11 +165,11 @@
 -(NSString *)getCreatedAtTime:(BOOL)today {
     
     NSString *formattedStr = today?@"hh:mm a":@"dd MMM";
-
+    
     NSString *formattedDateStr;
-   
+    
     NSDate *currentTime = [[NSDate alloc] init];
-
+    
     NSDate *msgDate = [[NSDate alloc] init];
     msgDate = [NSDate dateWithTimeIntervalSince1970:self.createdAtTime.doubleValue/1000];
     NSTimeInterval difference = [currentTime timeIntervalSinceDate:msgDate];
@@ -179,7 +179,8 @@
     {
         if(difference <= 60)
         {
-            formattedDateStr = @"Just Now";
+            formattedDateStr = NSLocalizedStringWithDefaultValue(@"justNow", nil,[NSBundle mainBundle], @"Just Now", @"");
+            
         }
         else
         {
@@ -198,7 +199,7 @@
     }
     else
     {
-       formattedDateStr = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedStr];
+        formattedDateStr = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedStr];
     }
     
     return formattedDateStr;
@@ -240,24 +241,26 @@
 
 -(NSString*)getNotificationText
 {
-
+    
     if(self.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
-        return @"Location";
+        return NSLocalizedStringWithDefaultValue(@"location", nil,[NSBundle mainBundle], @"Location", @"");
+        
     }
     else if(self.contentType == ALMESSAGE_CONTENT_VCARD)
     {
-        return @"Contact";
+        return NSLocalizedStringWithDefaultValue(@"contact", nil,[NSBundle mainBundle], @"Contact", @"");
     }
     if(self.message && ![self.message isEqualToString:@""])
     {
         return self.message;
     }
-    else  
+    else
     {
-        return @"Attachment";
+        return NSLocalizedStringWithDefaultValue(@"attachment", nil,[NSBundle mainBundle], @"Attachment", @"");
     }
 }
+
 
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string
 {

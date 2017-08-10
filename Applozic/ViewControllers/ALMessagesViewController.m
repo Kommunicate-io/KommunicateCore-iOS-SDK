@@ -133,7 +133,9 @@
     [self.view addSubview:self.emptyConversationText];
     self.emptyConversationText.hidden = YES;
     
-    self.barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton:[ALApplozicSettings getTitleForBackButtonMsgVC]]];
+    self.barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton: NSLocalizedStringWithDefaultValue(@"back", nil, [NSBundle mainBundle], [ALApplozicSettings getTitleForBackButtonMsgVC], @"")]];
+
+    
     
     if((self.channelKey || self.userIdToLaunch)){
         [self createAndLaunchChatView ];
@@ -227,7 +229,8 @@
                                                                                                             size:NAVIGATION_TEXT_SIZE]
                                                                        }];
     
-    self.navigationItem.title = [ALApplozicSettings getTitleForConversationScreen];
+    self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"chatTitle", nil, [NSBundle mainBundle], [ALApplozicSettings getTitleForConversationScreen], @"");
+    
     
     if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
     {
@@ -615,9 +618,20 @@
             [newBtn addTarget:self action:@selector(createGroup:) forControlEvents:UIControlEventTouchUpInside];
             newBtn.userInteractionEnabled = YES;
             
+            
+            [newBtn setTitle:NSLocalizedStringWithDefaultValue(@"createGroupOptionTitle", nil, [NSBundle mainBundle], @"Create Group", @"")
+                    forState:UIControlStateNormal];
+            [newBtn sizeToFit];
+            
            // Add group button.....
             UIButton *newBroadCast = (UIButton*)[contactCell viewWithTag:102];
             [newBroadCast addTarget:self action:@selector(createBroadcastGroup:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [newBroadCast sizeToFit];
+            
+            [newBroadCast setTitle:NSLocalizedStringWithDefaultValue(@"broadcastGroupOptionTitle", nil, [NSBundle mainBundle], @"New Broadcast", @"")
+                          forState:UIControlStateNormal];
+            
             newBroadCast.userInteractionEnabled = ![ALApplozicSettings isBroadcastGroupEnable];
             [newBroadCast setHidden:![ALApplozicSettings isBroadcastGroupEnable]];
             
@@ -801,8 +815,8 @@
 -(void)displayAttachmentMediaType:(ALMessage *)message andContactCell:(ALContactCell *)contactCell
 {
 
- 
-    if( message.fileMeta || message.contentType == ALMESSAGE_CONTENT_LOCATION || message.contentType == AV_CALL_CONTENT_THREE){
+    
+    if( message.fileMeta || message.contentType == ALMESSAGE_CONTENT_LOCATION ){
         contactCell.mMessageLabel.hidden = YES;
         contactCell.imageMarker.hidden = NO;
         contactCell.imageNameLabel.hidden = NO;
@@ -810,33 +824,26 @@
         if([message.fileMeta.contentType hasPrefix:@"image"])
         {
             //        contactCell.imageNameLabel.text = NSLocalizedString(@"MEDIA_TYPE_IMAGE", nil);
-            contactCell.imageNameLabel.text = NSLocalizedString(@"Image", nil);
+            contactCell.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"image", nil, [NSBundle mainBundle], @"Image", @"");
+            
             contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"];
         }
         else if([message.fileMeta.contentType hasPrefix:@"video"])
         {
             //            contactCell.imageNameLabel.text = NSLocalizedString(@"MEDIA_TYPE_VIDEO", nil);
-            contactCell.imageNameLabel.text = NSLocalizedString(@"Video", nil);
+            contactCell.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"video", nil, [NSBundle mainBundle], @"Video", @"");
             contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"];
-        }
-        else if (message.contentType == AV_CALL_CONTENT_THREE)
-        {
-            contactCell.mMessageLabel.hidden = YES;
-            contactCell.imageNameLabel.hidden = NO;
-            contactCell.imageMarker.hidden = NO;
-            contactCell.imageNameLabel.text = [message getVOIPMessageText];
-            contactCell.imageMarker.image = [ALUtilityClass getVOIPMessageImage:message];
         }
         else if (message.contentType == ALMESSAGE_CONTENT_LOCATION)   // location..
         {
             contactCell.mMessageLabel.hidden = YES;
-            contactCell.imageNameLabel.text = NSLocalizedString(@"Location", nil);
+            contactCell.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"location", nil, [NSBundle mainBundle], @"Location", @"");
             contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"location_filled.png"];
         }
         else if (message.fileMeta.contentType)           //other than video and image
         {
             //        contactCell.imageNameLabel.text = NSLocalizedString(@"MEDIA_TYPE_ATTACHMENT", nil);
-            contactCell.imageNameLabel.text = NSLocalizedString(@"Attachment", nil);
+            contactCell.imageNameLabel.text =  NSLocalizedStringWithDefaultValue(@"attachment", nil, [NSBundle mainBundle], @"Attachment", @"");
             contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_attachment.png"];
         }
         else
@@ -845,7 +852,7 @@
             contactCell.imageMarker.hidden = YES;
             contactCell.mMessageLabel.hidden = NO;
         }
-
+        
     }
     else
     {
@@ -1361,6 +1368,10 @@
                                                             imageView.frame.size.width + label.frame.size.width, imageView.frame.size.height)];
     
     view.bounds = CGRectMake(view.bounds.origin.x + 8, view.bounds.origin.y - 1, view.bounds.size.width, view.bounds.size.height);
+    if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+        view.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        label.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+    }
     [view addSubview:imageView];
     [view addSubview:label];
     
@@ -1526,7 +1537,8 @@
         if([ALApplozicSettings getVisibilityForNoMoreConversationMsgVC])
         {
             [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
-            [TSMessage showNotificationWithTitle:@"No more conversations" type:TSMessageNotificationTypeWarning];
+            [TSMessage showNotificationWithTitle:NSLocalizedStringWithDefaultValue(@"noMoreConversations", nil, [NSBundle mainBundle], @"No more conversations", @"")
+                                            type:TSMessageNotificationTypeWarning];
         }
         [self.mActivityIndicator stopAnimating];
         [self.mTableView setUserInteractionEnabled:YES];

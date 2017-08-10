@@ -95,8 +95,11 @@
         self.mChannelMemberName.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.mChannelMemberName];
         
-        UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:@"Info" action:@selector(msgInfo:)];
-        UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:@"Forward" action:@selector(processForwardMessage:)];
+        
+        UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", nil,[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
+        
+        UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(processForwardMessage:)];
+    
         [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageForward]];
         [[UIMenuController sharedMenuController] update];
 
@@ -118,6 +121,17 @@
         tapForUserChatView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openUserChatVC)];
         tapForUserChatView.numberOfTapsRequired = 1;
         [self.mUserProfileImageView addGestureRecognizer:tapForUserChatView];
+        
+        if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+            self.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mNameLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mDateLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mMessageStatusImageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mDowloadRetryButton.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.imageWithText.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mChannelMemberName.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        }
+
         
     }
     

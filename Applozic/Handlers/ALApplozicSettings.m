@@ -415,7 +415,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getEmptyConversationText
 {
     NSString * text = [[NSUserDefaults standardUserDefaults] valueForKey:EMPTY_CONVERSATION_TEXT];
-    return text ? text : @"You have no conversations yet";
+    return text ? text : NSLocalizedStringWithDefaultValue(@"noConversationTitle", nil,[NSBundle mainBundle], @"You have no conversations yet", @"");
 }
 
 +(void)setVisibilityNoConversationLabelChatVC:(BOOL)flag
@@ -601,7 +601,8 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getAbuseWarningText
 {
     NSString * msg = [[NSUserDefaults standardUserDefaults] valueForKey:ABUSE_WORDS_WARNING_TEXT];
-    return msg ? msg : @"AVOID USE OF ABUSE WORDS";
+    return msg ? msg :  NSLocalizedStringWithDefaultValue(@"restrictionWorldInfo", nil, [NSBundle mainBundle], @"AVOID USE OF ABUSE WORDS", @"");
+;
 }
 
 +(void)setAbuseWarningText:(NSString *)warningText
@@ -808,7 +809,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getGroupDeletedTitle
 {
     NSString * title = [[NSUserDefaults standardUserDefaults] stringForKey:GROUP_DELETED_TITLE];
-    return title ? title : @"This Group has been Deleted";
+    return title ? title : NSLocalizedStringWithDefaultValue(@"groupDeletedInfo", nil, [NSBundle mainBundle], @"This Group has been Deleted", @"");;
 }
 
 +(void)setGroupDeletedTitle:(NSString *)title;
@@ -820,7 +821,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getUserDeletedText
 {
     NSString *text = [[NSUserDefaults standardUserDefaults] valueForKey:USER_DELETED_TEXT];
-    return text ? text : @"User has been deleted";
+    return text ? text :NSLocalizedStringWithDefaultValue(@"userDeletedInfo", nil, [NSBundle mainBundle], @"User has been deleted", @"");
 }
 
 +(void)setUserDeletedText:(NSString *)text
@@ -846,7 +847,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getChatListTabTitle
 {
     NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:CHAT_LIST_TAB_TITLE];
-    return (stringtext && stringtext.length) ? stringtext : @"Chats";
+    return (stringtext && stringtext.length) ? stringtext :NSLocalizedStringWithDefaultValue(@"tabbarChatsTitle", nil, [NSBundle mainBundle], @"Chats", @"");
 }
 
 +(void)setChatListTabTitle:(NSString *)title
@@ -872,7 +873,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getProfileTabTitle
 {
     NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:USER_PROFILE_TAB_TITLE];
-    return (stringtext && stringtext.length) ? stringtext : @"Profile";
+    return (stringtext && stringtext.length) ? stringtext : NSLocalizedStringWithDefaultValue(@"tabbarProfileTitle", nil, [NSBundle mainBundle], @"Profile", @"");
 }
 
 +(void)setProfileTabTitle:(NSString *)title

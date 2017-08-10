@@ -56,37 +56,32 @@
 
 -(NSString*)getNotificationText:(ALMessage *)alMessage
 {
+    
     if(alMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
-        return @"Shared a Location";
+        return NSLocalizedStringWithDefaultValue(@"shareadLocationText", nil,[NSBundle mainBundle], @"Shared a Location", @"") ;
     }
     else if(alMessage.contentType == ALMESSAGE_CONTENT_VCARD)
     {
-        return @"Shared a Contact";
+        return NSLocalizedStringWithDefaultValue(@"shareadContactText", nil,[NSBundle mainBundle], @"Shared a Contact", @"");
     }
     else if (alMessage.contentType == ALMESSAGE_CONTENT_CAMERA_RECORDING)
     {
-        return @"Shared a Video";
+        return NSLocalizedStringWithDefaultValue(@"shareadVideoText", nil,[NSBundle mainBundle], @"Shared a Video", @"");
     }
     else if (alMessage.contentType == ALMESSAGE_CONTENT_AUDIO)
     {
-        return @"Shared an Audio";
-    }
-    else if (alMessage.contentType ==AV_CALL_CONTENT_THREE)
-    {
-        return [alMessage getVOIPMessageText];
-
+        return NSLocalizedStringWithDefaultValue(@"shareadAudioText", nil,[NSBundle mainBundle], @"Shared an Audio", @"");
     }
     else if (alMessage.contentType == ALMESSAGE_CONTENT_ATTACHMENT ||
              [alMessage.message isEqualToString:@""] || alMessage.fileMeta != NULL)
     {
-        return @"Shared an Attachment";
+        return NSLocalizedStringWithDefaultValue(@"shareadAttachmentText", nil,[NSBundle mainBundle], @"Shared an Attachment", @"");
     }
-
-    else
-    {
+    else{
         return alMessage.message;
     }
+
 }
 
 - (void)customizeMessageView:(TSMessageView *)messageView
@@ -176,7 +171,8 @@
     // ** Attachment ** //
     if(self.alMessageObject.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
-        subtitle = [NSString stringWithFormat:@"Shared location"];
+        subtitle = NSLocalizedStringWithDefaultValue(@"shareadLocation", nil,[NSBundle mainBundle], @"Shared Location", @"");
+        
     }
     
     subtitle = (subtitle.length > 20) ? [NSString stringWithFormat:@"%@...",[subtitle substringToIndex:17]] : subtitle;
@@ -330,13 +326,14 @@
 -(void)showGroupLeftMessage
 {
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
-    [TSMessage showNotificationWithTitle:@"You have left this group" type:TSMessageNotificationTypeWarning];
+    [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"youHaveLeftGroupMesasge", nil, [NSBundle mainBundle], @"You have left this group", @"") type:TSMessageNotificationTypeWarning];
 }
 
 -(void)noDataConnectionNotificationView
 {
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
-    [TSMessage showNotificationWithTitle:@"No Internet Connectivity" type:TSMessageNotificationTypeWarning];
+    [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"noInternetMessage", nil, [NSBundle mainBundle], @"No Internet Connectivity", @"")
+                                    type:TSMessageNotificationTypeWarning];
 }
 
 +(void)showLocalNotification:(NSString *)text

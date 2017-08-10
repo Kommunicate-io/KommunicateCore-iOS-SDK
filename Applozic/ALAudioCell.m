@@ -104,6 +104,16 @@
         
         [self.mDowloadRetryButton addTarget:self action:@selector(dowloadRetryAction) forControlEvents:UIControlEventTouchUpInside];
         
+        if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+            self.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mediaName.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.playPauseStop.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mediaTrackProgress.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.mediaTrackLength.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.playPauseStop.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            
+        }
+        
     }
     
     return self;
@@ -364,8 +374,8 @@
         }
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
-
-    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:@"Forward" action:@selector(messageForward:)];
+    
+    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     
     [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
     [[UIMenuController sharedMenuController] update];

@@ -78,6 +78,11 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     // Set Beak's Color : Dependant of SendMessage-TextView
     self.beakImageView.image = [_beakImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     [self.beakImageView setTintColor:self.sendMessageTextView.backgroundColor];
+    if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+        self.sendButton.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        self.beakImageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        self.sendMessageTextView.textAlignment = NSTextAlignmentRight;
+    }
     
     [self parseRestrictedWordFile];
 }
@@ -515,6 +520,10 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageView.frame.size.width + label.frame.size.width, imageView.frame.size.height)];
     view.bounds = CGRectMake(view.bounds.origin.x + 8, view.bounds.origin.y - 1, view.bounds.size.width, view.bounds.size.height);
+    if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+        view.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        label.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+    }
     [view addSubview:imageView];
     [view addSubview:label];
     

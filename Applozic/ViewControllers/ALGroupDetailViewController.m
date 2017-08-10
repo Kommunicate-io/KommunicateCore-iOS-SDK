@@ -189,7 +189,7 @@
     
     [self.tabBarController.tabBar setHidden:YES];
     [self setNavigationColor];
-    [self setTitle:@"Group Details"];
+    [self setTitle: NSLocalizedStringWithDefaultValue(@"groupDetailsTitle", nil, [NSBundle mainBundle], @"Group Details", @"")];
     
     ALChannelService * channnelService = [[ALChannelService alloc] init];
     self.alChannel = [channnelService getChannelByKey:self.channelKeyID];
@@ -222,7 +222,7 @@
     {
         ALContact * contact = [contactDb loadContactByKey:@"userId" value:userID];
         if([contact.userId isEqualToString:[ALUserDefaultsHandler getUserId]]){
-            contact.displayName = @"You";
+            contact.displayName = NSLocalizedStringWithDefaultValue(@"youText", nil, [NSBundle mainBundle], @"You", @"");
         }
         [self.lastSeenMembersArray addObject:[self getLastSeenForMember:userID]];
         [memberNames addObject:[contact getDisplayName]];
@@ -347,7 +347,10 @@
         }break;
         case 2:{
             //Exit group
-            [self checkAndconfirm:@"Confirm" withMessage:@"Are you sure?" otherButtonTitle:@"Yes"];
+            [self checkAndconfirm: NSLocalizedStringWithDefaultValue(@"confirmText", nil, [NSBundle mainBundle], @"Confirm", @"")
+                      withMessage:NSLocalizedStringWithDefaultValue(@"areYouSureText", nil, [NSBundle mainBundle], @"Are you sure?", @"")
+                 otherButtonTitle: NSLocalizedStringWithDefaultValue(@"yes", nil, [NSBundle mainBundle], @"Yes", @"")
+             ];
             
         }break;
             
@@ -428,11 +431,10 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
                                                     message:message
                                                    delegate:self
-                                          cancelButtonTitle:@"Cancel"
+                                          cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"cancelText", nil, [NSBundle mainBundle], @"Cancel", @"")
                                           otherButtonTitles:buttonTitle, nil];
     [alert show];
 }
-
 #pragma mark - AlertView Delegate Method (Exit Group)
 //====================================================
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -467,7 +469,7 @@
                 if(error)
                 {
                     NSLog(@"DELETE FAILED: Unable to delete contact conversation : %@", error.description);
-                    [ALUtilityClass displayToastWithMessage:@"Delete failed!"];
+                    [ALUtilityClass displayToastWithMessage:NSLocalizedStringWithDefaultValue(@"deleteFailed", nil, [NSBundle mainBundle], @"Delete failed!", @"")];
                     return;
                 }
                 //DELETE CHANNEL FROM LOCAL AND BACK TO MAIN VIEW
@@ -523,11 +525,11 @@
         
         [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
         
-        [theController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelFailed", nil, [NSBundle mainBundle], @"Cancel failed!", @"") style:UIAlertActionStyleCancel handler:nil]];
         
         if ([ALApplozicSettings isChatOnTapUserProfile])
         {
-            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Message %@", memberNames[row]]
+            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"messageText", nil, [NSBundle mainBundle], @"Message", @"") stringByAppendingString: @" %@"], memberNames[row]]
                                                               style:UIAlertActionStyleDefault
                                                             handler:^(UIAlertAction *action) {
                                                                 
@@ -543,6 +545,7 @@
                                                                 [viewsArray removeObject:groupDetailVC];
                                                                 msgVC.navigationController.viewControllers = viewsArray;
                                                             }]];
+
         }
         
         
@@ -554,7 +557,7 @@
         
         if(alChannelUserXLoggedInUser.role.intValue !=MEMBER && alChannelUserXLoggedInUser.role.intValue != USER){
             
-            UIAlertAction *removeAction = [UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove %@", memberNames[row]]
+            UIAlertAction *removeAction = [UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"removeText", nil, [NSBundle mainBundle], @"Remove", @"") stringByAppendingString: @" %@"], memberNames[row]]
                                                                    style:UIAlertActionStyleDefault
                                                                  handler:^(UIAlertAction *action) {
                                                                      
@@ -574,6 +577,7 @@
                                                                                             }];
                                                                      
                                                                  }];
+
             
             [removeAction setValue:[UIColor redColor] forKey:@"titleTextColor"];
             [theController addAction:removeAction];
@@ -581,7 +585,9 @@
         }
         
         if(alChannelUserX.role.intValue != ADMIN){
-            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Make admin %@", memberNames[row]]
+            
+            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"makeAdminText", nil, [NSBundle mainBundle], @"Make admin", @"") stringByAppendingString: @" %@"]
+                                                                     , memberNames[row]]
                                                               style:UIAlertActionStyleDefault
                                                             handler:^(UIAlertAction *action) {
                                                                 
@@ -597,13 +603,15 @@
                                                                                       
                                                                                       if(!error)
                                                                                       {
-                                                                                          [ALUtilityClass showAlertMessage:@"Group information successfully updated" andTitle:@"Response"];
+                                                                                          
+                                                                                          [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"groupSuccessFullyUpdateInfo", nil, [NSBundle mainBundle], @"Group information successfully updated", @"") andTitle:NSLocalizedStringWithDefaultValue(@"responseText", nil, [NSBundle mainBundle], @"Reponse", @"")];
                                                                                           [self setupView];
                                                                                           [self.tableView reloadData];
                                                                                       }
                                                                                   }];
                                                             }]];
         }
+        
         
         
         [self presentViewController:theController animated:YES completion:nil];
@@ -659,12 +667,15 @@
                 else if(indexPath.row==1)
                 {
                     self.memberNameLabel.text = [self.alChannel isNotificationMuted]
-                    ? [NSString stringWithFormat:@"Unmute Group"] : [NSString stringWithFormat:@"Mute Group"];
+                    ? [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"unMuteGroup", nil, [NSBundle mainBundle], @"Unmute Group", @"")]
+                    : [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"muteGroup", nil, [NSBundle mainBundle], @"Mute Group", @"") ];
                 }
                 else
                 {
+                    
                     self.memberNameLabel.textColor = self.view.tintColor;
-                    self.memberNameLabel.text = @"Add New Member";
+                    self.memberNameLabel.text = NSLocalizedStringWithDefaultValue(@"addNewMember", nil, [NSBundle mainBundle], @"Add New Member", @"");
+                    
                 }
             }break;
             case 1:
@@ -674,7 +685,8 @@
             case 2:
             {
                 [self.memberNameLabel setTextColor:[UIColor redColor]];
-                NSString * labelTitle = (![self isThisChannelLeft:self.channelKeyID]) ? @"Exit Group" : @"Delete Group";
+                NSString * labelTitle = (![self isThisChannelLeft:self.channelKeyID]) ?
+                NSLocalizedStringWithDefaultValue(@"exitGroup", nil, [NSBundle mainBundle], @"Exit Group", @""):                NSLocalizedStringWithDefaultValue(@"deleteGroup", nil, [NSBundle mainBundle], @"Delete Group", @"") ;
                 self.memberNameLabel.text = labelTitle;
             }break;
             default:break;
@@ -691,18 +703,14 @@
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
     ALChannelUserX *alChannelUserX = [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
     
-    NSLog(@"@@@@@alChannelUserX GRP_ID %@",alChannelUserX.key);
-    NSLog(@"@@@@@alChannelUserX id %@",alChannelUserX.userKey);
-    NSLog(@"@@@@@alChannelUserX row %@",memberIds[row]);
-    NSLog(@"@@@@@alChannelUserX %@",alChannelUserX.role);
-    
     if(alChannelUserX.role.intValue == ADMIN)
     {
         [self.adminLabel setHidden:NO];
     }
     
     //    Member Name Label
-    [self.memberNameLabel setTextAlignment:NSTextAlignmentLeft];
+    [self.lastSeenLabel setTextAlignment:NSTextAlignmentNatural];
+    [self.memberNameLabel setTextAlignment:NSTextAlignmentNatural];
     self.memberNameLabel.text = [NSString stringWithFormat:@"%@", memberNames[row]];
     
     [self.firstLetterLabel setHidden:YES];
@@ -746,6 +754,7 @@
     self.firstLetterLabel = (UILabel*)[memberCell viewWithTag:103];
     self.firstLetterLabel.textColor = [UIColor whiteColor];
     self.adminLabel = (UILabel*)[memberCell viewWithTag:104];
+    [self.adminLabel setText:NSLocalizedStringWithDefaultValue(@"adminText", nil, [NSBundle mainBundle], @"Admin", @"")];
     self.adminLabel.textColor = self.view.tintColor;
     
     self.lastSeenLabel = (UILabel *)[memberCell viewWithTag:105];
@@ -812,7 +821,8 @@
     else if(section == 1)
     {
         UILabel * memberSectionHeaderTitle = [[UILabel alloc] init];
-        memberSectionHeaderTitle.text=@"Group Members";
+        memberSectionHeaderTitle.text = NSLocalizedStringWithDefaultValue(@"groupDetailsTitle", nil, [NSBundle mainBundle], @"Group Details", @"");
+
         CGSize textSize = [memberSectionHeaderTitle.text sizeWithAttributes:@{NSFontAttributeName:memberSectionHeaderTitle.font}];
         
         memberSectionHeaderTitle.frame=CGRectMake([UIScreen mainScreen].bounds.origin.x + 5,
@@ -825,6 +835,14 @@
                                                                 memberSectionHeaderTitle.frame.origin.y,
                                                                 memberSectionHeaderTitle.frame.size.width,
                                                                 memberSectionHeaderTitle.frame.size.height)];
+        
+        if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
+            [memberSectionHeaderTitle setTextAlignment:NSTextAlignmentRight];
+            view.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            memberSectionHeaderTitle.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        }else{
+            [memberSectionHeaderTitle setTextAlignment:NSTextAlignmentLeft];
+        }
         [view addSubview:memberSectionHeaderTitle];
 //        view.backgroundColor=[UIColor colorWithWhite:0.7 alpha:1];
         view.backgroundColor = [UIColor colorWithRed:245.0/255 green:245.0/255 blue:245.0/255 alpha:1];
@@ -902,7 +920,11 @@
 
 -(void) showActionSheet
 {
-    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"cancel" destructiveButtonTitle:nil otherButtonTitles:@"8 Hrs ",@"1 Week",@"1 Year", nil];
+    NSString *hrsString = [@"8 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"hrs", nil, [NSBundle mainBundle], @"Hrs", @"")];
+    NSString *weekString = [@"1 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"week", nil, [NSBundle mainBundle], @"Week", @"")];
+    NSString *yearString = [@"1 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"year", nil, [NSBundle mainBundle], @"Year", @"")];
+    
+    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"cancelText", nil, [NSBundle mainBundle], @"cancel", @"") destructiveButtonTitle:nil otherButtonTitles:hrsString,weekString,yearString, nil];
     [actionSheet showInView:self.view];
 }
 

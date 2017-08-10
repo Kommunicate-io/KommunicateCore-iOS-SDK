@@ -304,7 +304,7 @@
 
 -(void)getExactDate:(NSNumber *)dateValue
 {
-
+    
     NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970: [dateValue doubleValue]/1000];
     
     NSDate *current = [[NSDate alloc] init];
@@ -321,12 +321,12 @@
     
     if([serverdate isEqualToString:todaydate])
     {
-        self.msgdate = @"today";
+        self.msgdate = NSLocalizedStringWithDefaultValue(@"todayMsgViewText", nil, [NSBundle mainBundle], @"today" , @"");
         
     }
     else if ([serverdate isEqualToString:yesterdaydate])
     {
-        self.msgdate = @"yesterday";
+        self.msgdate = NSLocalizedStringWithDefaultValue(@"yesterdayMsgViewText", nil, [NSBundle mainBundle], @"yesterday" , @"");
     }
     
     [format setDateFormat:@"hh:mm a"];
@@ -334,7 +334,7 @@
     [format setPMSymbol:@"pm"];
     
     self.msgtime = [format stringFromDate:date];
-
+    
 }
 
 +(UIImage *)setVideoThumbnail:(NSString *)videoFilePATH
@@ -363,7 +363,7 @@
                                                          message:text
                                                         delegate:self
                                                cancelButtonTitle:nil
-                                               otherButtonTitles:@"OK", nil];
+                                               otherButtonTitles:NSLocalizedStringWithDefaultValue(@"okText", nil, [NSBundle mainBundle], @"OK" , @""), nil];
     
     [alertView show];
     
@@ -414,17 +414,17 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
+
 +(void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController
 {
-    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"Application Settings"
-                                                                              message:msgText
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"applicationSettings", nil, [NSBundle mainBundle], @"Application Settings" , @"")    message:msgText
                                                                        preferredStyle:UIAlertControllerStyleAlert];
     
     [ALUtilityClass setAlertControllerFrame:alertController andViewController:viewController];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"Cancel" , @"")  style:UIAlertActionStyleCancel handler:nil]];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"settings", nil, [NSBundle mainBundle], @"Settings" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         
         [ALUtilityClass openApplicationSettings];
     }]];
