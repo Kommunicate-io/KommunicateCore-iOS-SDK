@@ -17,6 +17,7 @@
     self.message = [registrationResponse valueForKey:@"message"];
     self.deviceKey = [registrationResponse valueForKey:@"deviceKey"];
     self.userKey = [registrationResponse valueForKey:@"userKey"];
+    self.displayName = [registrationResponse valueForKey:@"displayName"];
     self.contactNumber = [registrationResponse valueForKey:@"contactNumber"];
     self.lastSyncTime = [registrationResponse valueForKey:@"lastSyncTime"];
     self.currentTimeStamp = [registrationResponse valueForKey:@"currentTimeStamp"];

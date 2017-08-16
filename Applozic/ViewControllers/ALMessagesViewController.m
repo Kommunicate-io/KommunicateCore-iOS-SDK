@@ -134,12 +134,11 @@
     self.emptyConversationText.hidden = YES;
     
     self.barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton: NSLocalizedStringWithDefaultValue(@"back", nil, [NSBundle mainBundle], [ALApplozicSettings getTitleForBackButtonMsgVC], @"")]];
-
-    
     
     if((self.channelKey || self.userIdToLaunch)){
         [self createAndLaunchChatView ];
     }
+    
 }
 
 -(void)loadMessages:(NSNotification *)notification
@@ -332,6 +331,10 @@
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.forGroup = [NSNumber numberWithInt:REGULAR_CONTACTS];
+    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
+    {
+        [ALApplozicSettings setContactsGroupId:_contactsGroupId];
+    }
     
     if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
     {
@@ -889,6 +892,10 @@
     {
         self.detailChatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     }
+    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
+    {
+        [ALApplozicSettings setContactsGroupId:_contactsGroupId];
+    }
     self.detailChatViewController.contactIds = contactIds;
     self.detailChatViewController.chatViewDelegate = self;
     self.detailChatViewController.channelKey = self.channelKey;
@@ -905,6 +912,11 @@
     if(message.conversationId)
     {
         self.detailChatViewController.conversationId = message.conversationId;
+    }
+    
+    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
+    {
+        [ALApplozicSettings setContactsGroupId:_contactsGroupId];
     }
     
     if(message.groupId)
@@ -1430,6 +1442,11 @@
     
     groupCreation.isViewForUpdatingGroup = NO;
     
+    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
+    {
+        [ALApplozicSettings setContactsGroupId:_contactsGroupId];
+    }
+    
     if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
     {
         groupCreation.parentChannelKey = self.parentGroupKey;
@@ -1477,6 +1494,10 @@
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
 
+    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
+    {
+        [ALApplozicSettings setContactsGroupId:_contactsGroupId];
+    }
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard
                                                                              instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.forGroup = [NSNumber numberWithInt:BROADCAST_GROUP_CREATION];

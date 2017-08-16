@@ -212,7 +212,7 @@
     //Works in 3rd Party borders..
     NSString * deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
 //   CHECK HERE FOR THAT FLAG FOR SYNC CALL
-    if([ALUserDefaultsHandler isLoggedIn] && [ALUserDefaultsHandler isMsgSyncRequired])
+    if([ALUserDefaultsHandler isLoggedIn])
     {
         [ALMessageService getLatestMessageForUser:deviceKeyString withCompletion:^(NSMutableArray *messageArray, NSError *error) {
             

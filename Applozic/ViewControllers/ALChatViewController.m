@@ -1034,6 +1034,10 @@
         groupDetailViewController.channelKeyID = self.channelKey;
         groupDetailViewController.alChatViewController = self;
         
+        if([ALApplozicSettings isContactsGroupEnabled] && _contactsGroupId){
+            [ALApplozicSettings setContactsGroupId:_contactsGroupId];
+        }
+        
         [self.navigationController pushViewController:groupDetailViewController animated:YES];
     }
 }

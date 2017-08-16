@@ -64,7 +64,6 @@
         chatView.text = text;
         chatView.individualLaunch = YES;
         chatView.chatViewDelegate = self;
-        
         NSLog(@"CALLED_VIA_NOTIFICATION");
         
         UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:chatView];
@@ -146,7 +145,6 @@
     UINavigationController * navBAR = (UINavigationController *)[[tabBAR viewControllers] objectAtIndex:0];
     ALMessagesViewController * msgVC = (ALMessagesViewController *)[[navBAR viewControllers] objectAtIndex:0];
     msgVC.messagesViewDelegate = self;
-    
     [viewController presentViewController:theTabBar animated:YES completion:nil];
     
 }

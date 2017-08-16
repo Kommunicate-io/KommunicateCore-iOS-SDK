@@ -915,5 +915,26 @@ NOTIFICATION_DISABLE = 2
     return [[NSUserDefaults standardUserDefaults] boolForKey:AV_ENABLED];
 }
 
++(void)enableOrDisableContactsGroup:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:CONTACTS_GROUP];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isContactsGroupEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:CONTACTS_GROUP];
+}
+
++(void)setContactsGroupId:(NSString *)contactsGroupId
+{
+    [[NSUserDefaults standardUserDefaults] setValue:contactsGroupId forKey:CONTACTS_GROUP_ID];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSString *)getContactsGroupId
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:CONTACTS_GROUP_ID];
+}
 
 @end

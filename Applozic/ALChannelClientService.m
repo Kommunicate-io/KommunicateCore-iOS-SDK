@@ -105,7 +105,7 @@
 
 +(void)createChannel:(NSString *)channelName andParentChannelKey:(NSNumber *)parentChannelKey
   orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray
-        andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData
+        andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData adminUser :(NSString *)adminUserId
       withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion
 {
     
@@ -134,6 +134,9 @@
     {
         [channelDictionary setObject:parentChannelKey forKey:@"parentKey"];
     }
+    if(adminUserId){
+        [channelDictionary setObject:adminUserId forKey:@"admin"];
+    }
     
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:channelDictionary options:0 error:&error];
@@ -158,6 +161,7 @@
         
     }];
 }
+
 
 +(void)addMemberToChannel:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey andChannelKey:(NSNumber *)channelKey
            withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
@@ -702,6 +706,177 @@
         }
         
         completion(channelinfoList,error);
+    }];
+    
+}
+
++(void) addMemberToContactGroupOfType:(NSString*) contactsGroupId withMembers: (NSMutableArray *)membersArray withGroupType :(short) groupType withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion
+{
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/group/%@/add/members", KBASE_URL,contactsGroupId];
+    NSError * error;
+    
+    NSMutableDictionary *addContactsGroupDictionary = [NSMutableDictionary new];
+    [addContactsGroupDictionary setObject:membersArray forKey:@"groupMemberList"];
+    
+    [addContactsGroupDictionary setObject:[NSString stringWithFormat:@"%i", groupType] forKey:@"type"];
+    
+    
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:addContactsGroupDictionary options:0 error:&error];
+    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    [ALResponseHandler processRequest:theRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER_BY_TYPE" WithCompletionHandler:^(id theJson, NSError *theError) {
+        
+        if (theError)
+        {
+            NSLog(@" Contcats group :: %@", theError);
+            completion(nil, theError);
+            return;
+        }
+        ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        completion(response, nil);
+        
+    }];
+    
+}
+
+
++(void) addMemberToContactGroup:(NSString*) contactsGroupId withMembers:(NSMutableArray *)membersArray  withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion
+{
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/group/%@/add", KBASE_URL,contactsGroupId];
+    NSError * error;
+    
+    NSMutableDictionary *addContactsGroupDictionary = [NSMutableDictionary new];
+    [addContactsGroupDictionary setObject:membersArray forKey:@"groupMemberList"];
+    
+    
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:addContactsGroupDictionary options:0 error:&error];
+    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    [ALResponseHandler processRequest:theRequest andTag:@"ADD_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id theJson, NSError *theError) {
+        
+        if (theError)
+        {
+            NSLog(@" Contcats group :: %@", theError);
+            completion(nil, theError);
+            return;
+        }
+        ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        completion(response, nil);
+        
+    }];
+    
+}
+
++(void) getMembersFromContactGroup:(NSString *)contactGroupId  withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion
+{
+    [ALChannelClientService getMembersFromContactGroupOfType:contactGroupId withGroupType:0 withCompletion:^(NSError *error, ALChannel *channel) {
+        
+        completion(error, channel);
+        
+    }];
+}
+
++(void) getMembersFromContactGroupOfType:(NSString *)contactGroupId  withGroupType :(short) groupType withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion
+{
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/group/%@/get", KBASE_URL,contactGroupId];
+    NSString * theParamString = nil;
+    
+    if(groupType != 0){
+        theParamString =   [NSString stringWithFormat:@"groupType=%i", groupType];
+    }
+    
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"GET_CONTACTS_GROUP_MEMBERS" WithCompletionHandler:^(id theJson, NSError *error) {
+        
+        if(error)
+        {
+            NSLog(@"ERROR IN GET_CONTACTS_GROUP_MEMBERS server call %@", error);
+            completion(error, nil);
+            
+        }
+        else
+        {
+            NSLog(@"GET CONTACTS GROUP_MEMBERS  :: %@", theJson);
+            ALChannelCreateResponse *response = [[ALChannelCreateResponse alloc] initWithJSONString:theJson];
+            NSMutableArray * membersUserId = response.alChannel.membersId;
+            ALContactService * contactService = [ALContactService new];
+            
+            NSMutableArray* userNotPresentIds = [NSMutableArray new];
+            for(NSString * userId in membersUserId)
+            {
+                if(![contactService isContactExist:userId])
+                {
+                    [userNotPresentIds addObject:userId];
+                }
+            }
+            if(userNotPresentIds.count>0)
+            {
+                NSLog(@"CALLING user deatils for the users..");
+                
+                ALUserService *alUserService = [ALUserService new];
+                [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                    NSLog(@"User detail response sucessfull.");
+                    completion(error, response.alChannel);
+                    
+                }];
+            }
+            else
+            {
+                NSLog(@"NO USER deatils ");
+                completion(error, response.alChannel);
+            }
+        }
+        
+    }];
+    
+}
+
++(void) removeMemberFromContactGroup:(NSString*) contactsGroupId withUserId :(NSString*) userId  withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion
+{
+    [ALChannelClientService removeMemberFromContactGroupOfType:contactsGroupId
+                                                 withGroupType:0 withUserId:userId withCompletion:^(ALAPIResponse *response, NSError *error) {
+                                                     
+                                                     completion(response, error);
+                                                     
+                                                 }];
+    
+}
+
+
++(void) removeMemberFromContactGroupOfType:(NSString*) contactsGroupId  withGroupType:(short) groupType withUserId :(NSString*) userId  withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion
+{
+    
+    if(userId == nil){
+        completion(nil, nil);
+    }
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/group/%@/remove", KBASE_URL,contactsGroupId];
+    
+    NSString * theParamString = nil;
+    
+    if(groupType != 0 ){
+        theParamString =   [NSString stringWithFormat:@"userId=%@&groupType=%i",userId, groupType];
+    }
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"REMOVE_CONTACTS_GROUP_MEMBER" WithCompletionHandler:^(id theJson, NSError *error) {
+        
+        if (error)
+        {
+            NSLog(@" Remove contacts group :: %@", error);
+            completion(nil, error);
+            return;
+        }
+        
+        ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        completion(response, nil);
+        
     }];
     
 }

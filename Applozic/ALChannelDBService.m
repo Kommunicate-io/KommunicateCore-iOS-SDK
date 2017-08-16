@@ -29,6 +29,10 @@
     
     NSMutableArray * memberArray = [NSMutableArray new];
     
+    if(channel.membersName == nil){
+        channel.membersName = channel.membersId;
+    }
+    
     for(NSString *member in channel.membersName)
     {
         ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
@@ -190,7 +194,7 @@
     {
         theChannelUserXEntity.channelKey = channelUserX.key;
         theChannelUserXEntity.userId = channelUserX.userKey;
-        theChannelUserXEntity.parentGroupKey = channelUserX.parentKey;        
+        theChannelUserXEntity.parentGroupKey = channelUserX.parentKey;
         //        theChannelUserXEntity.status = channelUserX.status;
     }
     
@@ -281,6 +285,41 @@
         return nil;
     }
 }
+
+
+//------------------------------------------
+#pragma mark CONTACTS GROUP TYPE and NAME GET CHANNEL
+//------------------------------------------
+
+
+-(DB_CHANNEL *)getContactsGroupChannelByName:(NSString *)channelName
+{
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL" inManagedObjectContext:dbHandler.managedObjectContext];
+    
+    
+    NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"channelDisplayName = %@",channelName];
+    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"type = %i", CONTACT_GROUP];
+    NSPredicate* combinePredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate: combinePredicate];
+    
+    NSError *fetchError = nil;
+    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+    
+    if (result.count)
+    {
+        DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+        return dbChannel;
+    }
+    else
+    {
+        return nil;
+    }
+}
+
 
 
 
@@ -438,6 +477,29 @@
     
 }
 
+
+//------------------------------------------
+#pragma mark GET ALL USERS OF CONTACT GROUP BY CHANNEL NAME
+//------------------------------------------
+
+
+-(NSMutableArray *)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName
+{
+    
+    if(channelName == nil){
+        return nil;
+    }
+    
+    DB_CHANNEL *dbChannel = [self getContactsGroupChannelByName:channelName];
+    
+    if(dbChannel != nil){
+        return [self getListOfAllUsersInChannel:dbChannel.channelKey];
+        
+    }
+    return nil;
+    
+}
+
 -(NSString *)stringFromChannelUserList:(NSNumber *)key
 {
     NSString *listString = @"";
@@ -571,6 +633,10 @@
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL"
                                               inManagedObjectContext:theDBHandler.managedObjectContext];
     [fetchRequest setEntity:entity];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"type != %i",CONTACT_GROUP];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
     
     NSError *error = nil;
     NSArray *array = [theDBHandler.managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -902,9 +968,6 @@
     alChannel.userCount = dbChannel.userCount;
     return alChannel;
 }
-
-
-
 
 
 -(NSMutableArray *)fetchChildChannels:(NSNumber *)parentGroupKey

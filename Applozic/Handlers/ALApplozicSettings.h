@@ -78,6 +78,8 @@
 #define OPEN_CHAT_ON_USER_PROFILE_TAP @"com.applozic.userdefault.OPEN_CHAT_ON_USER_PROFILE_TAP"
 #define MESSAGE_REPLY_ENABLED @"com.applozic.userdefault.MESSAGE_REPLY_MESSAGE"
 #define AV_ENABLED @"com.applozic.userfefault.AV_ENABLED"
+#define CONTACTS_GROUP @"com.applozic.userdefault.CONTACTS_GROUP"
+#define CONTACTS_GROUP_ID @"com.applozic.userdefault.CONTACTS_GROUP_ID"
 
 
 
@@ -324,6 +326,14 @@
 
 +(BOOL)isAudioVideoEnabled;
 +(void)setAudioVideoEnabled:(BOOL)flag;
+
++(void)enableOrDisableContactsGroup :(BOOL)flag;
+
++(BOOL)isContactsGroupEnabled;
+
++(void)setContactsGroupId:(NSString *)contactsGroupId;
+
++(NSString *)getContactsGroupId;
 
 
 @end

@@ -22,6 +22,7 @@
 #import "ALMessageService.h"
 #import "ALConstant.h"
 #import "ALUserService.h"
+#import "ALContactDBService.h"
 
 @implementation ALRegisterUserClientService
 
@@ -115,6 +116,15 @@
             {
                 [ALUserDefaultsHandler setEncryptionKey:response.encryptionKey];
             }
+            
+            ALContactDBService  * alContactDBService = [[ALContactDBService alloc] init];
+            ALContact *contact = [[ALContact alloc] init];
+            contact.userId = user.userId;
+            contact.displayName = response.displayName;
+            contact.contactImageUrl = response.imageLink;
+            contact.contactNumber  = response.contactNumber;
+            [alContactDBService addContact:contact];
+
             //[ALUserDefaultsHandler setLastSyncTime:(NSNumber *)response.lastSyncTime];
         }
         
