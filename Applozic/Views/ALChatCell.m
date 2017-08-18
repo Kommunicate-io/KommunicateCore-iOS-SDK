@@ -397,6 +397,8 @@
     
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     
+    
+    
     [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
     [[UIMenuController sharedMenuController] update];
 
@@ -432,10 +434,10 @@
 {
     if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
     {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:)) || (action == @selector(copy:)));
+        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isForwardMenuEnabled:action] ) || (action == @selector(copy:)));
     }
     
-    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:) ||action == @selector(messageForward:))|| (action == @selector(copy:)));
+    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:) ||[self isForwardMenuEnabled:action])|| (action == @selector(copy:)));
 }
 
 
@@ -569,6 +571,9 @@
     [self.mMessageLabel setLinksForSubstrings:nsArrayLink withLinkHandler: handler];
 }
 
-
+-(BOOL)isForwardMenuEnabled:(SEL) action;
+{
+    return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
+}
 
 @end

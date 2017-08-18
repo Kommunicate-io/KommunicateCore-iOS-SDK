@@ -144,10 +144,14 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+
 +(NSString *)getTitleForBackButtonChatVC
 {
-    return [[NSUserDefaults standardUserDefaults] valueForKey:BACK_BUTTON_TITLE_CHATVC];
+    NSString * text = [[NSUserDefaults standardUserDefaults] valueForKey:BACK_BUTTON_TITLE_CHATVC];
+    return text ? text : NSLocalizedStringWithDefaultValue(@"chatViewBack", nil,[NSBundle mainBundle], @"Back", @"");
+    
 }
+
 
 +(void)setNotificationTitle:(NSString *)notificationTitle
 {
@@ -935,6 +939,16 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getContactsGroupId
 {
     return [[NSUserDefaults standardUserDefaults] valueForKey:CONTACTS_GROUP_ID];
+}
++(void)forwardOptionEnableOrDisable:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:FORWARD_OPTION];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isForwardOptionEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:FORWARD_OPTION];
 }
 
 @end

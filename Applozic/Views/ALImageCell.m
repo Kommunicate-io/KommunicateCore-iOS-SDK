@@ -504,7 +504,7 @@ UIViewController * modalCon;
         return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:)  ));
     }
     
-    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)|| action == @selector(messageForward:)));
+    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)|| [self isForwardMenuEnabled:action]));
 }
 
 
@@ -554,5 +554,11 @@ UIViewController * modalCon;
         }
     }];
 }
+
+-(BOOL)isForwardMenuEnabled:(SEL) action;
+{
+    return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
+}
+
 
 @end

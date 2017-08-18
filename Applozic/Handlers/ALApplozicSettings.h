@@ -80,7 +80,7 @@
 #define AV_ENABLED @"com.applozic.userfefault.AV_ENABLED"
 #define CONTACTS_GROUP @"com.applozic.userdefault.CONTACTS_GROUP"
 #define CONTACTS_GROUP_ID @"com.applozic.userdefault.CONTACTS_GROUP_ID"
-
+#define FORWARD_OPTION @"com.applozic.userdefault.FORWARD_OPTION"
 
 
 #import <Foundation/Foundation.h>
@@ -334,6 +334,10 @@
 +(void)setContactsGroupId:(NSString *)contactsGroupId;
 
 +(NSString *)getContactsGroupId;
+
++(void)forwardOptionEnableOrDisable:(BOOL)flag;
+
++(BOOL)isForwardOptionEnabled;
 
 
 @end

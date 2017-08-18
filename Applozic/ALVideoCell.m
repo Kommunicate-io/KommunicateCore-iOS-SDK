@@ -420,11 +420,11 @@
 {
     if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
     {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) ) );
+        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isForwardMenuEnabled:action] ));
     }
     
     return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):
-            (action == @selector(delete:)|| action == @selector(messageForward:) ));
+            (action == @selector(delete:)|| [self isForwardMenuEnabled:action] ));
 }
 
 
@@ -471,5 +471,11 @@
         }
     }];
 }
+
+-(BOOL)isForwardMenuEnabled:(SEL) action;
+{
+    return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
+}
+
 
 @end
