@@ -951,4 +951,15 @@ NOTIFICATION_DISABLE = 2
     return [[NSUserDefaults standardUserDefaults] boolForKey:FORWARD_OPTION];
 }
 
++(void)setSwiftFramework:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:SWIFT_FRAMEWORK];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isSwiftFramework
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:SWIFT_FRAMEWORK];
+}
+
 @end

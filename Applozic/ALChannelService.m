@@ -581,6 +581,23 @@
 //===========================================================================================================================
 #pragma mark UPDATE CHANNEL (FROM DEVICE SIDE)
 //===========================================================================================================================
+
+-(void)addMultipleUsersToChannel:(NSMutableArray* )channelKeys channelUsers:(NSMutableArray *)channelUsers andCompletion:(void(^)(NSError * error))completion
+{
+    if(channelKeys != nil && channelUsers != nil) {
+        [ALChannelClientService addMultipleUsersToChannel:channelKeys channelUsers:channelUsers andCompletion:^(NSError *error, ALAPIResponse *response) {
+            if([response.status isEqualToString:@"success"])
+            {
+                ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+                for(int i=0;i<[channelUsers count];i++) {
+                    [channelDBService addMemberToChannel:channelUsers[i] andChannelKey:channelKeys.firstObject];
+                }
+            }
+            completion(error);
+        }];
+    }
+}
+
 -(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
   isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData orChildKeys:(NSMutableArray *)childKeysList orChannelUsers:(NSMutableArray *)channelUsers withCompletion:(void(^)(NSError *error))completion
 {

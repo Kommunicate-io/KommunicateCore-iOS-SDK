@@ -267,6 +267,56 @@
     
 }
 
++(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID completionHandler:(void (^)(BOOL))handler
+{
+
+    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE){
+        return;
+    }
+    //3rd Party View is Opened.........
+    ALContact* dpName=[[ALContact alloc] init];
+    ALContactDBService * contactDb=[[ALContactDBService alloc] init];
+    dpName=[contactDb loadContactByKey:@"userId" value:contactId];
+
+
+    ALChannel *channel=[[ALChannel alloc] init];
+    ALChannelDBService *groupDb= [[ALChannelDBService alloc] init];
+
+    NSString* title;
+    if(groupID){
+        channel = [groupDb loadChannelByKey:groupID];
+        title=channel.name;
+        contactId=[NSString stringWithFormat:@"%@",groupID];
+    }
+    else {
+        title=dpName.getDisplayName;
+    }
+
+    ALPushAssist* top=[[ALPushAssist alloc] init];
+    UIImage *appIcon = [UIImage imageNamed: [[[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIcons"] objectForKey:@"CFBundlePrimaryIcon"] objectForKey:@"CFBundleIconFiles"] objectAtIndex:0]];
+
+    [[TSMessageView appearance] setTitleFont:[UIFont fontWithName:@"Helvetica Neue" size:18.0]];
+    [[TSMessageView appearance] setContentFont:[UIFont fontWithName:@"Helvetica Neue" size:14]];
+    [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
+    [[TSMessageView appearance] setContentTextColor:[UIColor whiteColor]];
+
+    [TSMessage showNotificationInViewController:top.topViewController
+                                          title:toastMessage
+                                       subtitle:nil
+                                          image:appIcon
+                                           type:TSMessageNotificationTypeMessage
+                                       duration:1.75
+                                       callback:^(void){
+
+                                           handler(YES);
+                                           //                                           [delegate thirdPartyNotificationTap1:contactId withGroupId:groupID];
+
+
+                                       }
+                                    buttonTitle:nil buttonCallback:nil atPosition:TSMessageNotificationPositionTop canBeDismissedByUser:YES];
+    
+}
+
 +(NSString *)getFileNameWithCurrentTimeStamp
 {
     NSString *resultString = [@"IMG-" stringByAppendingString: @([[NSDate date] timeIntervalSince1970]).stringValue];

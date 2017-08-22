@@ -16,6 +16,7 @@
 #define REMOVE_MEMBER_FROM_CHANNEL_URL @"/rest/ws/group/remove/member"
 #define UPDATE_CHANNEL_URL @"/rest/ws/group/update"
 #define UPDATE_GROUP_USER @"/rest/ws/group/user/update"
+#define Add_USERS_TO_MANY_GROUPS @"/rest/ws/group/add/users"
 #define CHANNEL_INFO_ON_IDS @"/rest/ws/group/details"
 #define CHANNEL_FILTER_API @"/rest/ws/group/filter"
 
@@ -270,6 +271,44 @@
         NSLog(@"RESPONSE_LEAVE_FROM_CHANNEL :: %@", (NSString *)theJson);
         completion(error, response);
     }];
+}
+
++(void)addMultipleUsersToChannel:(NSMutableArray* )channelKeys
+                    channelUsers:(NSMutableArray *)channelUsers
+                   andCompletion:(void(^)(NSError * error, ALAPIResponse *response))completion
+{
+    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, Add_USERS_TO_MANY_GROUPS];
+
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+
+    if(channelUsers && channelKeys)  {
+        [dictionary setObject:channelUsers forKey:@"userIds"];
+        [dictionary setObject:channelKeys forKey:@"clientGroupIds"];
+    }
+
+    NSError *error;
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+    NSString * theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+
+    NSLog(@"PARAM_STRING_CHANNEL_ADD_MANY_USERS :: %@", theParamString);
+
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+
+    [ALResponseHandler processRequest:theRequest andTag:@"ADD_MANY_USERS" WithCompletionHandler:^(id theJson, NSError *error) {
+
+        ALAPIResponse *response = nil;
+        if(error)
+        {
+            NSLog(@"ERROR IN ADD_MANY_USERS :: %@", error);
+        }
+        else
+        {
+            response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        }
+        NSLog(@"RESPONSE_ADD_MANY_USERS :: %@", (NSString *)theJson);
+        completion(error, response);
+    }];
+    
 }
 
 +(void)updateChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey

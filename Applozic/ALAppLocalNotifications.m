@@ -227,6 +227,10 @@
 // To DISPLAY THE NOTIFICATION ONLY ...from 3rd Party View.
 -(void)thirdPartyNotificationHandler:(NSNotification *)notification
 {
+    if([ALApplozicSettings isSwiftFramework]) {
+        return;
+    }
+
     NSNumber *groupId = nil;
     NSArray *notificationComponents = [notification.object componentsSeparatedByString:@":"];
 

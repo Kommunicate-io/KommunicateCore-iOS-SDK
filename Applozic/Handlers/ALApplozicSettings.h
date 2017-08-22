@@ -81,6 +81,7 @@
 #define CONTACTS_GROUP @"com.applozic.userdefault.CONTACTS_GROUP"
 #define CONTACTS_GROUP_ID @"com.applozic.userdefault.CONTACTS_GROUP_ID"
 #define FORWARD_OPTION @"com.applozic.userdefault.FORWARD_OPTION"
+#define SWIFT_FRAMEWORK @"com.applozic.userfefault.SWIFT_FRAMEWORK"
 
 
 #import <Foundation/Foundation.h>
@@ -339,5 +340,6 @@
 
 +(BOOL)isForwardOptionEnabled;
 
-
++(BOOL)isSwiftFramework;
++(void)setSwiftFramework:(BOOL)flag;
 @end
