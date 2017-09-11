@@ -7,6 +7,8 @@
 //
 
 #import "ALFileMetaInfo.h"
+#import "ALConstant.h"
+#import "ALApplozicSettings.h"
 
 @implementation ALFileMetaInfo
 
@@ -34,10 +36,20 @@
     self.name=[dict objectForKey:@"name"];
     self.size=[dict objectForKey:@"size"];
     self.userKey=[dict objectForKey:@"suUserKeyString"];
-    self.thumbnailUrl=[dict objectForKey:@"thumbnailUrl"];
+    NSString *thumbnail = [self getFullThumbnailUrl:[dict objectForKey:@"thumbnailUrl"]];
+    self.thumbnailUrl= thumbnail;
     self.url= [dict objectForKey:@"url"];
     return self;
 
+}
+
+-(NSString *) getFullThumbnailUrl:(NSString*)url
+{
+    if (ALApplozicSettings.isStorageServiceEnabled) {
+        NSString *fullUrl = [[NSString alloc] initWithFormat:@"%@%@%@",KBASE_FILE_URL,IMAGE_THUMBNAIL_ENDPOIT,url];
+        return fullUrl;
+    }
+    return url;
 }
 
 @end

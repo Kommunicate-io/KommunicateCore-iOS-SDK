@@ -11,7 +11,6 @@
 #define MT_OUTBOX_CONSTANT "5"
 
 #define DATE_LABEL_SIZE 12
-#define MESSAGE_TEXT_SIZE 14
 
 #import "ALContactMessageCell.h"
 #import "ALUtilityClass.h"

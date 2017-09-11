@@ -7,7 +7,6 @@
 //
 
 #define DATE_LABEL_SIZE 12
-#define MESSAGE_TEXT_SIZE 14
 
 #import "ALImageCell.h"
 #import "UIImageView+WebCache.h"

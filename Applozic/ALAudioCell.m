@@ -133,7 +133,7 @@
     NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
     [self.mediaName setText:alMessage.fileMeta.name];
-    [self.mediaTrackLength setText: @"0:00 / 0:00"];
+    self.mediaTrackLength.text = [self getAudioLength:alMessage.imageFilePath];
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
     
     self.mMessage = alMessage;
@@ -487,6 +487,16 @@
     }
 }
 
+-(NSString*) getAudioLength:(NSString*)path
+{
+
+    NSString * duration = [ALMediaPlayer getTotalDuration:path];
+
+    NSString *audioLength = [NSString stringWithFormat:@"0:00 / %@", duration];
+
+    return audioLength;
+}
+
 -(void) getProgressOfTrack
 {
     ALMediaPlayer * mediaPlayer =  [ALMediaPlayer sharedInstance];
@@ -507,7 +517,7 @@
 -(void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
     [self.playPauseStop setImage:[ALUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
-    [self.mediaTrackLength setText: @"0:00 / 0:00"];
+    self.mediaTrackLength.text = [self getAudioLength:self.mMessage.imageFilePath];
     [self.mediaTrackProgress setProgress: 0.0];
     ALMediaPlayer * mediaPlayer =  [ALMediaPlayer sharedInstance];
     [mediaPlayer.audioPlayer stop];

@@ -245,7 +245,4 @@
 +(void) setLastGroupFilterSyncTime: (NSNumber *) lastSyncTime;
 +(NSNumber *)getLastGroupFilterSyncTIme;
 
-
-+(void)setContactScrollingIsInProgress:(BOOL)flag;
-
 @end

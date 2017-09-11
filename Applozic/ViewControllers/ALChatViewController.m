@@ -103,6 +103,7 @@
 @property (weak, nonatomic) IBOutlet UIPickerView *pickerView;
 @property (nonatomic) BOOL isUserBlocked;
 @property (nonatomic) BOOL isUserBlockedBy;
+@property (weak, nonatomic) IBOutlet UIButton *attachmentButton;
 
 -(void)processAttachment:(NSString *)filePath andMessageText:(NSString *)textwithimage andContentType:(short)contentype;
 
@@ -163,7 +164,6 @@
     [self markConversationRead];
     [self.loadEarlierAction setTitle:NSLocalizedStringWithDefaultValue(@"loadEarlierMessagesText", nil,[NSBundle mainBundle], @"Load Earlier Messages", @"") forState:UIControlStateNormal];
     [[[self navigationController] interactivePopGestureRecognizer] setEnabled:NO];
-    
     [UIView animateWithDuration:0.3 animations:^{
         [self subProcessTextViewDidChange:self.sendMessageTextView];
         [self.sendMessageTextView setScrollEnabled:YES];
@@ -195,7 +195,10 @@
     self.comingFromBackground = YES;
     
     typingStat = NO;
-    
+
+    if (ALApplozicSettings.isAttachmentButtonHidden) {
+        _attachmentButton.hidden = YES;
+    }
     if([self isReloadRequired])
     {
         [self reloadView];
@@ -2436,27 +2439,32 @@
     [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
     
     [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
-    
-    [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"takePhotoText", nil, [NSBundle mainBundle], @"Take photo", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        
-        [self openCamera];
-    }]];
-    
-    [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"currentLocationOption", nil, [NSBundle mainBundle], @"Current location", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        
-        [self openLocationView];
-    }]];
-    
-    
-    [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"sendAudioOption", nil, [NSBundle mainBundle], @"Send Audio", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        
-        [self openAudioMic];
-    }]];
-    
-    [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"sendVideoOption", nil, [NSBundle mainBundle],  @"Send Video", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        
-        [self openVideoCamera];
-    }]];
+    if(![ALApplozicSettings isCameraOptionHidden]){
+        [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"takePhotoText", nil, [NSBundle mainBundle], @"Take photo", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+
+            [self openCamera];
+        }]];
+    }
+    if(![ALApplozicSettings isLocationOptionHidden]){
+        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"currentLocationOption", nil, [NSBundle mainBundle], @"Current location", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+
+            [self openLocationView];
+        }]];
+    }
+
+    if(![ALApplozicSettings isSendAudioOptionHidden]){
+        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"sendAudioOption", nil, [NSBundle mainBundle], @"Send Audio", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+
+            [self openAudioMic];
+        }]];
+    }
+
+    if(![ALApplozicSettings isSendVideoOptionHidden]){
+        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"sendVideoOption", nil, [NSBundle mainBundle],  @"Send Video", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+
+            [self openVideoCamera];
+        }]];
+    }
     
     if((!self.channelKey && !self.conversationId) || (self.alChannel.type == GROUP_OF_TWO))
     {
@@ -2482,20 +2490,22 @@
             }];
         }]];
     }
-    
-    [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"shareContact", nil, [NSBundle mainBundle], @"Share Contact", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        
-        [self openContactsView];
-    }]];
-    
-    [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photosOrVideoOption", nil, [NSBundle mainBundle], @"Photos/Videos" , @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        
-        UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
-        ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
-        launchChat.multipleAttachmentDelegate = self;
-        [self.navigationController pushViewController:launchChat animated:YES];
-        
-    }]];
+    if(![ALApplozicSettings isShareContactOptionHidden]){
+        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"shareContact", nil, [NSBundle mainBundle], @"Share Contact", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+
+            [self openContactsView];
+        }]];
+    }
+
+    if(![ALApplozicSettings isPhotoGalleryOptionHidden]){
+        [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photosOrVideoOption", nil, [NSBundle mainBundle], @"Photos/Videos" , @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+
+            UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+            ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
+            launchChat.multipleAttachmentDelegate = self;
+            [self.navigationController pushViewController:launchChat animated:YES];
+        }]];
+    }
    
     if(!self.channelKey && !self.conversationId && [ALApplozicSettings isAudioVideoEnabled])
     {

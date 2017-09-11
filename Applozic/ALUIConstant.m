@@ -27,7 +27,7 @@
     CGSize theTextSize = [ALUtilityClass getSizeForText:theMessage.message
                                                maxWidth:cellFrame.size.width - 115
                                                    font:[ALApplozicSettings getFontFace]
-                                               fontSize:15];
+                                               fontSize:MESSAGE_TEXT_SIZE];
     
     return theTextSize;
 }

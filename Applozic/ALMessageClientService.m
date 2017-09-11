@@ -22,6 +22,7 @@
 #import "ALUserBlockResponse.h"
 #import "ALUserService.h"
 #import "NSString+Encode.h"
+#import "ALApplozicSettings.h"
 
 
 @implementation ALMessageClientService
@@ -221,24 +222,29 @@
 
 
 -(void) sendPhotoForUserInfo:(NSDictionary *)userInfo withCompletion:(void(^)(NSString * message, NSError *error)) completion {
-    
-    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/url",KBASE_FILE_URL];
-    
-    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:nil];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"CREATE FILE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
-        if (theError)
-        {
-            completion(nil,theError);
-            return;
-        }
-        
-        NSString *imagePostingURL = (NSString *)theJson;
-        NSLog(@"RESPONSE_IMG_URL :: %@",imagePostingURL);
-        completion(imagePostingURL, nil);
-        
-    }];
+
+    if(ALApplozicSettings.isStorageServiceEnabled) {
+        NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, IMAGE_UPLOAD_ENDPOINT];
+        completion(theUrlString, nil);
+    } else {
+        NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/url",KBASE_FILE_URL];
+
+        NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:nil];
+
+        [ALResponseHandler processRequest:theRequest andTag:@"CREATE FILE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+            if (theError)
+            {
+                completion(nil,theError);
+                return;
+            }
+
+            NSString *imagePostingURL = (NSString *)theJson;
+            NSLog(@"RESPONSE_IMG_URL :: %@",imagePostingURL);
+            completion(imagePostingURL, nil);
+            
+        }];
+    }
 }
 
 -(void) getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void (^)( ALSyncMessageFeed *, NSError *))completion

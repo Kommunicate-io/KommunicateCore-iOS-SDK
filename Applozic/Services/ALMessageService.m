@@ -26,6 +26,7 @@
 #import "ALMessage.h"
 #include <tgmath.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "ALApplozicSettings.h"
 
 @implementation ALMessageService 
 
@@ -170,6 +171,49 @@ static ALMessageClientService *alMsgClientService;
                            completion(messages, error,userDetailArray);
                        }
     }];
+}
+
++(void) getMessageListForContactId:(NSString *)contactIds isGroup:(BOOL )isGroup channelKey:(NSNumber *)channelKey conversationId:(NSNumber *)conversationId startIndex:(NSInteger)startIndex withCompletion:(void (^)(NSMutableArray *))completion {
+    int rp = 200;
+
+    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    [theRequest setFetchLimit:rp];
+    NSPredicate* predicate1;
+    if(conversationId && [ALApplozicSettings getContextualChatOption])
+    {
+        predicate1 = [NSPredicate predicateWithFormat:@"conversationId = %d", [conversationId intValue]];
+    }
+    else if(isGroup)
+    {
+        predicate1 = [NSPredicate predicateWithFormat:@"groupId = %d", [channelKey intValue]];
+    }
+    else
+    {
+        predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil", contactIds];
+    }
+
+    //    NSUInteger* mTotalCount = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:nil];
+
+    NSPredicate* predicate2 = [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
+    NSPredicate* predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
+    NSPredicate* compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2,predicate3]];
+    [theRequest setPredicate:compoundPredicate];
+    [theRequest setFetchOffset:startIndex];
+    [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+
+    NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
+    ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
+
+    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+
+    for (DB_Message * theEntity in theArray)
+    {
+        ALMessage * theMessage = [messageDBService createMessageEntity:theEntity];
+        [tempArray insertObject:theMessage atIndex:0];
+        //[self.mMessageListArrayKeyStrings insertObject:theMessage.key atIndex:0];
+    }
+    completion(tempArray);
 }
 
 
@@ -560,7 +604,13 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 
 +(void) processImageDownloadforMessage:(ALMessage *) message withdelegate:(id)delegate
 {
-    NSString * urlString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/%@",KBASE_FILE_URL,message.fileMeta.blobKey];
+    NSString *urlString;
+    if(ALApplozicSettings.isStorageServiceEnabled) {
+        urlString = [NSString stringWithFormat:@"%@%@%@",KBASE_FILE_URL,IMAGE_DOWNLOAD_ENDPOINT, message.fileMeta.blobKey];
+    } else {
+        urlString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/%@",KBASE_FILE_URL,message.fileMeta.blobKey];
+    }
+
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:urlString paramString:nil];
     ALConnection * connection = [[ALConnection alloc] initWithRequest:theRequest delegate:delegate startImmediately:YES];
     connection.keystring = message.key;
