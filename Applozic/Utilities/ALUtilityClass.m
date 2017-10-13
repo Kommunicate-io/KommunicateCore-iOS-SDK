@@ -252,8 +252,8 @@
     [[TSMessageView appearance] setContentTextColor:[UIColor whiteColor]];
    
     [TSMessage showNotificationInViewController:top.topViewController
-                                          title:toastMessage
-                                       subtitle:nil
+                                          title:title
+                                       subtitle:toastMessage
                                           image:appIcon
                                            type:TSMessageNotificationTypeMessage
                                        duration:1.75

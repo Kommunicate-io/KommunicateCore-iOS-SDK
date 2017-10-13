@@ -6,10 +6,6 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#define INVALID_APPLICATIONID @"INVALID_APPLICATIONID"
-#define VERSION_CODE @"109"
-#define LOGOUT_URL @"/rest/ws/device/logout"
-
 #import "ALRegisterUserClientService.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"

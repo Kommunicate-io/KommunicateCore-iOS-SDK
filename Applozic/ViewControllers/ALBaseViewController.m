@@ -328,7 +328,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 -(void)viewWillDisappear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"APP_ENTER_IN_FOREGROUND" object:nil];
-    self.navigationController.navigationBar.barTintColor = self.navColor;
+    //self.navigationController.navigationBar.barTintColor = self.navColor;
     
     [self removeRegisteredKeyboardNotifications];
 }

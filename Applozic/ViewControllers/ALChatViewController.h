@@ -47,6 +47,7 @@
 @property (strong, nonatomic) NSString * displayName;
 
 @property (strong, nonatomic) NSString * text;
+@property (nonatomic) double defaultMessageViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewBottomToAttachment;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewTop2Constraint;
 
@@ -60,10 +61,12 @@
 -(void)individualNotificationhandler:(NSNotification *) notification;
 
 -(void)updateDeliveryStatus:(NSNotification *) notification;
+-(void) setTitle;
 
 //-(void) syncCall:(NSString *) contactId updateUI:(NSNumber *) updateUI alertValue: (NSString *) alertValue;
 -(void) syncCall:(ALMessage *) alMessage andMessageList:(NSMutableArray*)messageArray;
 -(void)showTypingLabel:(BOOL)flag userId:(NSString *)userId;
+-(void)subProcessTextViewDidChange:(UITextView *)textView;
 
 -(void) updateLastSeenAtStatus: (ALUserDetail *) alUserDetail;
 -(void) reloadViewfor3rdParty;

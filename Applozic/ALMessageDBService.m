@@ -374,6 +374,29 @@
    // [contactservice insertInitialContacts];
 }
 
+-(NSArray*)getMessageList:(int)messageCount
+                messageTypeOnlyReceived:(BOOL)received
+{
+
+    // Get the latest record
+    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    [theRequest setResultType:NSDictionaryResultType];
+    [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+    if(received) {
+        // Load messages with type received
+        [theRequest setPredicate:[NSPredicate predicateWithFormat:@"type == %@ AND deletedFlag == %@ AND contentType != %i AND msgHidden == %@",@"4",@(NO),ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
+    } else {
+        // No type restriction
+        [theRequest setPredicate:[NSPredicate predicateWithFormat:@"deletedFlag == %@ AND contentType != %i AND msgHidden == %@",@(NO), ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
+    }
+    NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
+    // Trim the message list
+    NSArray *updatedList = [theArray subarrayWithRange:NSMakeRange(0, MIN(messageCount, theArray.count))];
+    return updatedList;
+
+}
+
 -(void)fetchConversationsGroupByContactId
 {
     ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];

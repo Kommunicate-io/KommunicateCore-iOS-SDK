@@ -150,6 +150,7 @@
     [self loadChatView];
     self.placeHolderTxt = NSLocalizedStringWithDefaultValue(@"placeHolderText", nil, [NSBundle mainBundle], @"Write a Message...", @"");
     self.sendMessageTextView.text = self.placeHolderTxt;
+    self.defaultMessageViewHeight = 56.0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateVOIPMsg)
                                                  name:@"UPDATE_VOIP_MSG" object:nil];
@@ -183,6 +184,9 @@
      addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION  object:nil];
     
     [self.tabBarController.tabBar setHidden: YES];
+
+    // In iOS 11, TableView by default starts estimating the row height. This setting will disable that.
+    self.mTableView.estimatedRowHeight = 0;
     
     [self.label setHidden:NO];
     self.label.alpha = 1;
@@ -3473,7 +3477,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         if([textView.text isEqualToString:@""]|| [textView.text isEqualToString:self.placeHolderTxt])
         {
             [super setHeightOfTextViewDynamically:NO];
-            self.textMessageViewHeightConstaint.constant = 56.0;
+            self.textMessageViewHeightConstaint.constant = self.defaultMessageViewHeight;
         }
         //return;
     }
