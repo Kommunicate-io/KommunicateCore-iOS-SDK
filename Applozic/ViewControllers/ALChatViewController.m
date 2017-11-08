@@ -2144,8 +2144,13 @@
         }
         NSError * theJsonError = nil;
         NSDictionary *theJson = [NSJSONSerialization JSONObjectWithData:connection.mData options:NSJSONReadingMutableLeaves error:&theJsonError];
-        NSDictionary *fileInfo = [theJson objectForKey:@"fileMeta"];
-        [message.fileMeta populate:fileInfo ];
+        
+        if(ALApplozicSettings.isCustomStorageServiceEnabled){
+            [message.fileMeta populate:theJson];
+        }else{
+            NSDictionary *fileInfo = [theJson objectForKey:@"fileMeta"];
+            [message.fileMeta populate:fileInfo];
+        }
         ALMessage * almessage =  [ALMessageService processFileUploadSucess:message];
         [self sendMessage:almessage ];
     }
@@ -2246,15 +2251,17 @@
     if(isMovie)
     {
         NSURL *videoURL = info[UIImagePickerControllerMediaURL];
-        NSString *videoFilePath = [ALImagePickerHandler saveVideoToDocDirectory:videoURL];
-        short contentType = ALMESSAGE_CONTENT_ATTACHMENT;
-        if(picker.sourceType == UIImagePickerControllerSourceTypeCamera)
-        {
-            contentType = ALMESSAGE_CONTENT_CAMERA_RECORDING;
-        }
-        [self processAttachment:videoFilePath andMessageText:@"" andContentType:contentType];
+        [ALImagePickerHandler saveVideoToDocDirectory:videoURL handler:^(NSString * videoFilePath){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                short contentType = ALMESSAGE_CONTENT_ATTACHMENT;
+                if(picker.sourceType == UIImagePickerControllerSourceTypeCamera)
+                {
+                    contentType = ALMESSAGE_CONTENT_CAMERA_RECORDING;
+                }
+                [self processAttachment:videoFilePath andMessageText:@"" andContentType:contentType];
+            });
+        }];
     }
-
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -2373,14 +2380,17 @@
         if(attachment.classImage)
         {
             filePath = [ALImagePickerHandler saveImageToDocDirectory:attachment.classImage];
+            [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
         }
         else
         {
             NSURL * videoURL = [NSURL fileURLWithPath:attachment.classVideoPath];
-            filePath = [ALImagePickerHandler saveVideoToDocDirectory:videoURL];
+            [ALImagePickerHandler saveVideoToDocDirectory:videoURL handler:^(NSString * filePath){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+                });
+             }];
         }
-        
-        [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
     }
 }
 

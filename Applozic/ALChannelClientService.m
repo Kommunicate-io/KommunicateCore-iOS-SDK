@@ -19,6 +19,7 @@
 #define Add_USERS_TO_MANY_GROUPS @"/rest/ws/group/add/users"
 #define CHANNEL_INFO_ON_IDS @"/rest/ws/group/details"
 #define CHANNEL_FILTER_API @"/rest/ws/group/filter"
+#define CONTACT_FAVOURITE_LIST @"/rest/ws/group/favourite/list/get"
 
 
 /************************************************
@@ -915,6 +916,77 @@
         
         ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         completion(response, nil);
+        
+    }];
+    
+}
+
+-(void) getMultipleContactGroup:(NSArray *)contactGroupIds  withCompletion:(void(^)(NSError *error, NSArray *channel)) completion
+{
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,CONTACT_FAVOURITE_LIST ];
+    
+    NSString * theParamString =   [NSString stringWithFormat:@"groupType=%i",9];
+    
+    for(NSString* contactGroupId in  contactGroupIds )
+    {
+        theParamString =  [theParamString stringByAppendingString:[NSString stringWithFormat:@"&groupName=%@", contactGroupId]];
+    }
+    
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"GET_CONTACTS_GROUP_MEMBERS" WithCompletionHandler:^(id theJson, NSError *error) {
+        
+        if(error)
+        {
+            NSLog(@"ERROR IN GET_CONTACTS_GROUP_MEMBERS server call %@", error);
+            completion(error, nil);
+            
+        }
+        else
+        {
+            NSLog(@"GET CONTACTS GROUP_MEMBERS  :: %@", theJson);
+            
+            ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
+            
+            NSMutableArray * theChannelFeedArray = [NSMutableArray new];
+            
+            NSArray * channelResponse = apiResponse.response;
+            NSMutableArray* userNotPresentIds = [NSMutableArray new];
+            ALContactService * contactService = [ALContactService new];
+            
+            for (NSDictionary * theDictionary in channelResponse)
+            {
+                ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:theDictionary];
+                [theChannelFeedArray addObject:alChannel];
+                
+                for(NSString * userId in alChannel.membersId)
+                {
+                    if(![contactService isContactExist:userId])
+                    {
+                        [userNotPresentIds addObject:userId];
+                    }
+                }
+            }
+            
+            if(userNotPresentIds.count>0)
+            {
+                NSLog(@"CALLING user deatils for the users..");
+                
+                ALUserService *alUserService = [ALUserService new];
+                [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                    NSLog(@"User detail response sucessfull.");
+                    completion(error, theChannelFeedArray);
+                    
+                }];
+            }
+            else
+            {
+                NSLog(@"NO USER deatils ");
+                completion(error,theChannelFeedArray);
+            }
+        }
         
     }];
     

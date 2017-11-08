@@ -226,6 +226,9 @@
     if(ALApplozicSettings.isStorageServiceEnabled) {
         NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, IMAGE_UPLOAD_ENDPOINT];
         completion(theUrlString, nil);
+    }else if(ALApplozicSettings.isCustomStorageServiceEnabled) {
+        NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT];
+        completion(theUrlString, nil);
     } else {
         NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/url",KBASE_FILE_URL];
 

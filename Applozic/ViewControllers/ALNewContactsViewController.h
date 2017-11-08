@@ -52,6 +52,7 @@
 @property (nonatomic) BOOL directContactVCLaunchForForward;
 @property(nonatomic,strong) ALMessage *alMessage;
 @property (nonatomic, weak)id<ALForwardMessageDelegate>forwardDelegate;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewTopSegmentConstraint;
 
 - (IBAction)segmentControlAction:(id)sender;
 -(UIView *)setCustomBackButton:(NSString *)text;
@@ -64,5 +65,6 @@ LAUNCH FOR SUB GROUP
 @property (nonatomic, strong) NSMutableArray * childChannels;
 
 -(void)launchProcessForSubgroups;
+-(void)proccessContactsGroupList;
 
 @end

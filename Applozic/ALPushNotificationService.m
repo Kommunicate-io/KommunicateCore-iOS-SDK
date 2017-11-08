@@ -77,6 +77,13 @@
             if(isInactive && ([type isEqualToString:MT_SYNC] || [type isEqualToString:MT_MESSAGE_SENT]))
             {
                 NSLog(@"ALAPNs : APP_IS_INACTIVE");
+                if([type isEqualToString:MT_MESSAGE_SENT] ){
+                    if(([[notificationMsg componentsSeparatedByString:@":"][1] isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]))
+                    {
+                        NSLog(@"APNS: Sent by self-device ignore");
+                        return YES;
+                    }
+                }
                 [self assitingNotificationMessage:notificationMsg andDictionary:dict];
             }
             else

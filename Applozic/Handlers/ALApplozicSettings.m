@@ -941,6 +941,19 @@ NOTIFICATION_DISABLE = 2
 {
     return [[NSUserDefaults standardUserDefaults] valueForKey:CONTACTS_GROUP_ID];
 }
+
++(void)setContactGroupIdList:(NSArray *)contactsGroupIdList
+{
+    [[NSUserDefaults standardUserDefaults] setObject:contactsGroupIdList forKey:CONTACTS_GROUP_ID_LIST];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSArray*)getContactGroupIdList
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:CONTACTS_GROUP_ID_LIST];
+}
+
+
 +(void)forwardOptionEnableOrDisable:(BOOL)flag
 {
     [[NSUserDefaults standardUserDefaults] setBool:flag forKey:FORWARD_OPTION];
@@ -1020,6 +1033,27 @@ NOTIFICATION_DISABLE = 2
 
 +(BOOL) isAttachmentButtonHidden{
     return ([[self getHideAttachmentsOption] containsObject:@":attachmentbutton"]);
+}
+
++(BOOL)isCustomStorageServiceEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:CUSTOM_STORAGE];
+}
+
++(void)enableCustomStorageService:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:CUSTOM_STORAGE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+// This will set the default group type (to be used when "Create Group" button is pressed).
++(void) setDefaultGroupType:(NSInteger)type {
+    [[NSUserDefaults standardUserDefaults] setInteger:type forKey:DEFAULT_GROUP_TYPE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSInteger) getDefaultGroupType {
+    return([[NSUserDefaults standardUserDefaults] integerForKey:DEFAULT_GROUP_TYPE ]);
 }
 
 @end

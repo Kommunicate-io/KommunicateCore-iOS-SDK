@@ -120,7 +120,7 @@
             contact.contactImageUrl = response.imageLink;
             contact.contactNumber  = response.contactNumber;
             [alContactDBService addContact:contact];
-
+            
             //[ALUserDefaultsHandler setLastSyncTime:(NSNumber *)response.lastSyncTime];
         }
         
@@ -183,7 +183,7 @@
     [user setNotificationMode:notificationMode];
     [user setPassword:[ALUserDefaultsHandler getPassword]];
     [user setRegistrationId: [ALUserDefaultsHandler getApnDeviceToken]];
-    
+    [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     [user setPrefContactAPI:2];
     [user setEmailVerified:true];
     [user setDeviceType:4];
@@ -319,3 +319,4 @@
 }
 
 @end
+

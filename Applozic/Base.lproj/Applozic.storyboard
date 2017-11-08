@@ -261,7 +261,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="82" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="201-eK-m3i">
-                                <rect key="frame" x="0.0" y="72" width="375" height="595"/>
+                                <rect key="frame" x="0.0" y="71" width="375" height="596"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NewContactCell" rowHeight="82" id="NOy-HJ-2YL" customClass="ALNewContactCell">
                                         <rect key="frame" x="0.0" y="22" width="375" height="82"/>
@@ -319,7 +319,7 @@
                                 <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </activityIndicatorView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="2zp-0K-ndH">
-                                <rect key="frame" x="-4" y="104" width="383" height="30"/>
+                                <rect key="frame" x="-4" y="104" width="383" height="29"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <segments>
                                     <segment title="Contacts"/>
@@ -341,7 +341,6 @@
                             <constraint firstItem="201-eK-m3i" firstAttribute="bottom" secondItem="nYW-vk-iGf" secondAttribute="top" id="Xw2-ue-Vah"/>
                             <constraint firstAttribute="trailing" secondItem="201-eK-m3i" secondAttribute="trailing" id="bCx-zO-hz0"/>
                             <constraint firstItem="201-eK-m3i" firstAttribute="top" secondItem="2zp-0K-ndH" secondAttribute="bottom" constant="-61" id="ckw-Gk-oh6"/>
-                            <constraint firstItem="201-eK-m3i" firstAttribute="top" secondItem="kFS-Fg-cyZ" secondAttribute="bottom" constant="8" id="iAR-f8-fI2"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="d3b-NW-KSO">
@@ -351,11 +350,12 @@
                         <outlet property="activityIndicator" destination="Q6U-8n-Zjt" id="t1T-FF-snj"/>
                         <outlet property="contactsTableView" destination="201-eK-m3i" id="sY6-BF-oPu"/>
                         <outlet property="segmentControl" destination="2zp-0K-ndH" id="UjM-Gp-7DH"/>
+                        <outlet property="tableViewTopSegmentConstraint" destination="ckw-Gk-oh6" id="Ei4-E4-tf9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nhF-Eu-64D" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2966" y="945"/>
+            <point key="canvasLocation" x="2965.5999999999999" y="944.97751124437787"/>
         </scene>
         <!--Send Location-->
         <scene sceneID="soh-3d-q0E">
