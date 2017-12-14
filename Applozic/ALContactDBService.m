@@ -162,6 +162,8 @@
         }
         userContact.localImageResourceName = contact.localImageResourceName;
         userContact.deletedAtTime = contact.deletedAtTime;
+        userContact.roleType = contact.roleType;
+        userContact.metadata = contact.metadata.description;
     }
     
     NSError *error = nil;
@@ -248,6 +250,8 @@
     contact.blockBy = dbContact.blockBy;
     contact.userStatus = dbContact.userStatus;
     contact.deletedAtTime = dbContact.deletedAtTime;
+    contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
+    contact.roleType = dbContact.roleType;
     
     return contact;
 }
@@ -307,6 +311,9 @@
     contact.contactType = userContact.contactType;
     contact.userTypeId = userContact.userTypeId;
     contact.deletedAtTime = userContact.deletedAtTime;
+    contact.metadata = userContact.metadata.description;
+    contact.roleType = userContact.roleType;
+
     
     NSError *error = nil;
     
@@ -373,6 +380,8 @@
         dbContact.contactNumber = userDetail.contactNumber;
         dbContact.userStatus = userDetail.userStatus;
         dbContact.deletedAtTime = userDetail.deletedAtTime;
+        dbContact.metadata = userDetail.metadata.description;
+        dbContact.roleType = userDetail.roleType;
 
     }
     else
@@ -388,7 +397,8 @@
         contact.connected = userDetail.connected;
         contact.userStatus = userDetail.userStatus;
         contact.deletedAtTime = userDetail.deletedAtTime;
-        
+        contact.roleType = userDetail.roleType;
+        contact.metadata = userDetail.metadata;
         [self addContact:contact];
     }
     
@@ -618,6 +628,8 @@
         contact.userStatus = dbContact.userStatus;
         contact.connected = dbContact.connected;
         contact.deletedAtTime = dbContact.deletedAtTime;
+        contact.roleType = dbContact.roleType;
+        contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
         
         [contactList addObject:contact];
     }

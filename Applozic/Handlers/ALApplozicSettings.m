@@ -1077,4 +1077,17 @@ NOTIFICATION_DISABLE = 2
     return [[NSUserDefaults standardUserDefaults] boolForKey:ENABLE_QUICK_AUDIO_RECORDING];
 }
 
++(void)setUserRoleName:(NSString*)roleName{
+    [[NSUserDefaults standardUserDefaults] setValue:roleName forKey:AL_USER_ROLE_NAME];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+}
+
++(NSString*)getUserRoleName{
+    
+    NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:AL_USER_ROLE_NAME];
+    return stringtext ? stringtext : @"USER";
+}
+
+
 @end

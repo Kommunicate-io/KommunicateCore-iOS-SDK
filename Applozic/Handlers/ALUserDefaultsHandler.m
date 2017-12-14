@@ -710,4 +710,17 @@
 
 }
 
++(void)setUserRoleType:(short)type{
+    [[NSUserDefaults standardUserDefaults] setInteger:type forKey:AL_USER_ROLE_TYPE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(short)getUserRoleType{
+    
+    short roleType = [[NSUserDefaults standardUserDefaults] integerForKey:AL_USER_ROLE_TYPE];
+    return roleType ? roleType : 3;
+    
+}
+
+
 @end

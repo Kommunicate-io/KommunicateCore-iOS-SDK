@@ -297,6 +297,8 @@
         if(contact.contactType){
             userContact.contactType = contact.contactType;
         }
+        userContact.roleType = contact.roleType;
+        userContact.metadata =contact.metadata.description;
     }
     
     NSError *error = nil;
@@ -348,6 +350,8 @@
      contact.connected = dbContact.connected;
      contact.lastSeenAt = dbContact.lastSeenAt;
      contact.contactType = dbContact.contactType;
+     contact.roleType = dbContact.roleType;
+     contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
 
      return contact;
 }
@@ -406,6 +410,8 @@
     
     contact.localImageResourceName = userContact.localImageResourceName;
     contact.contactType = userContact.contactType;
+    contact.roleType = userContact.roleType;
+    contact.metadata = userContact.metadata.description;
     
     NSError *error = nil;
     

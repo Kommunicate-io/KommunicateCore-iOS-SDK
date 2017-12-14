@@ -141,6 +141,8 @@
     contact.unreadCount= dbContact.unreadCount;
     contact.userStatus = dbContact.userStatus;
     contact.deletedAtTime = dbContact.deletedAtTime;
+    contact.roleType = dbContact.roleType;
+    contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
     
     return contact;
 }

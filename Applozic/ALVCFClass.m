@@ -73,6 +73,11 @@
 
 - (void)addVCardToContacts:(NSData *)vcard
 {
+    
+    if(vcard == nil || vcard.length == 0 ){
+        return;
+    }
+    
     CFDataRef vCardData = CFDataCreate(NULL, [vcard bytes], [vcard length]);
     book = ABAddressBookCreate();
     ABRecordRef personInfo = ABAddressBookCopyDefaultSource(book);

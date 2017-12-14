@@ -43,6 +43,7 @@
     [user setUnreadCountType:[ALUserDefaultsHandler getUnreadCountType]];
     [user setDeviceApnsType:[ALUserDefaultsHandler getDeviceApnsType]];
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
+    [user setRoleName:[ALApplozicSettings getUserRoleName]];
     
     if([ALUserDefaultsHandler getAppModuleName] != NULL)
     {
@@ -89,6 +90,10 @@
             [ALUserDefaultsHandler setUserKeyString:response.userKey];
             [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
             
+            if(response.roleType){
+                [ALUserDefaultsHandler setUserRoleType:response.roleType];
+            }
+            
             if( response.notificationSoundFileName )
             {
                 [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
@@ -119,6 +124,8 @@
             contact.displayName = response.displayName;
             contact.contactImageUrl = response.imageLink;
             contact.contactNumber  = response.contactNumber;
+            contact.roleType  =  [NSNumber numberWithShort:response.roleType];
+            contact.metadata  =  response.metadata;
             [alContactDBService addContact:contact];
             
             //[ALUserDefaultsHandler setLastSyncTime:(NSNumber *)response.lastSyncTime];
@@ -190,6 +197,7 @@
     [user setDeviceApnsType:[ALUserDefaultsHandler getDeviceApnsType]];
     [user setAppVersionCode: VERSION_CODE];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
+    [user setRoleName:[ALApplozicSettings getUserRoleName]];
     
     if([ALUserDefaultsHandler getAppModuleName] != NULL){
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];

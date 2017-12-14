@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13771" systemVersion="16G29" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="16G29" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
     <entity name="DB_CHANNEL" representedClassName="DB_CHANNEL" syncable="YES">
         <attribute name="adminId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="channelDisplayName" optional="YES" attributeType="String" syncable="YES"/>
@@ -37,6 +37,8 @@
         <attribute name="fullName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastSeenAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="localImageResourceName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="metadata" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="unreadCount" optional="YES" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userStatus" optional="YES" attributeType="String" syncable="YES"/>
@@ -95,7 +97,7 @@
     <elements>
         <element name="DB_CHANNEL" positionX="27" positionY="171" width="128" height="255"/>
         <element name="DB_CHANNEL_USER_X" positionX="-144" positionY="318" width="128" height="135"/>
-        <element name="DB_CONTACT" positionX="-144" positionY="-171" width="128" height="285"/>
+        <element name="DB_CONTACT" positionX="-144" positionY="-171" width="128" height="315"/>
         <element name="DB_ConversationProxy" positionX="-171" positionY="90" width="128" height="165"/>
         <element name="DB_FileMetaInfo" positionX="-270" positionY="-144" width="128" height="165"/>
         <element name="DB_Message" positionX="-441" positionY="-153" width="128" height="465"/>

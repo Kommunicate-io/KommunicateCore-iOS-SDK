@@ -62,6 +62,20 @@ typedef enum {
     READ = 1
 } MessageStatus;
 
+// USER TYPE FOR INTERNAL USE
+
+typedef enum {
+    BOT  = 1,
+    APPLICATION_ADMIN =   2,
+    USER_ROLE  =  3,
+    ADMIN_ROLE  = 4,
+    BUSINESS =  5,
+    APPLICATION_BROADCASTER =  6,
+    SUPPORT  = 7,
+    APPLICATION_WEB_ADMIN =8
+} USER_ROLE_TYPE;
+
+
 typedef enum {
     APP_STATE_BACKGROUND = -1,
     APP_STATE_INACTIVE   = 0,

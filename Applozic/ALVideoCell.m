@@ -61,7 +61,7 @@
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-
+    
     if(self)
     {
         self.mDowloadRetryButton.frame = CGRectMake(self.mBubleImageView.frame.origin.x + self.mBubleImageView.frame.size.width/2.0 - 50 , self.mBubleImageView.frame.origin.y + self.mBubleImageView.frame.size.height/2.0 - 20 , 100, 40);
@@ -103,7 +103,7 @@
     
     NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
-//    [self.mDowloadRetryButton setHidden:NO];
+    //    [self.mDowloadRetryButton setHidden:NO];
     self.mDowloadRetryButton.alpha = 1;
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
     
@@ -127,7 +127,7 @@
     
     if([alMessage.type isEqualToString:@MT_INBOX_CONSTANT])
     {
-
+        
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getReceiveMsgColor];
         
         [self.mUserProfileImageView setFrame:CGRectMake(USER_PROFILE_PADDING_X, 0,
@@ -135,19 +135,19 @@
         
         if([ALApplozicSettings isUserProfileHidden])
         {
-             [self.mUserProfileImageView setFrame:CGRectMake(USER_PROFILE_PADDING_X, 0, 0, USER_PROFILE_HEIGHT)];
+            [self.mUserProfileImageView setFrame:CGRectMake(USER_PROFILE_PADDING_X, 0, 0, USER_PROFILE_HEIGHT)];
         }
         
         self.mUserProfileImageView.layer.cornerRadius = self.mUserProfileImageView.frame.size.width/2;
         self.mUserProfileImageView.layer.masksToBounds = YES;
         
-   
+        
         CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
         CGFloat imageViewHeight = requiredHeight -IMAGE_VIEW_HEIGHT;
         
         CGFloat imageViewY = self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y;
         
-       //initial buble reference
+        //initial buble reference
         [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
                                                   self.mUserProfileImageView.frame.origin.y,
                                                   viewSize.width - BUBBLE_PADDING_WIDTH,
@@ -157,16 +157,16 @@
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setText:receiverName];
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
-        self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
+            self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width + CHANNEL_PADDING_WIDTH, CHANNEL_PADDING_HEIGHT);
             
             requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;
-            imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;            
+            imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;
             
         }
-
-      if(alMessage.isAReplyMessage)
+        
+        if(alMessage.isAReplyMessage)
         {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
             
@@ -175,7 +175,7 @@
             
         }
         
-  //resize according to view
+        //resize according to view
         [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
                                                   self.mUserProfileImageView.frame.origin.y,
                                                   viewSize.width - BUBBLE_PADDING_WIDTH,
@@ -185,18 +185,20 @@
                                              imageViewY,
                                              self.mBubleImageView.frame.size.width - IMAGE_VIEW_WIDTH,
                                              imageViewHeight)];        if(alMessage.message.length > 0)
-        {
-           [self.imageWithText setHidden:NO];
-            self.imageWithText.textColor = [ALApplozicSettings getReceiveMsgTextColor];
-            self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
-                                                    0, viewSize.width - BUBBLE_PADDING_WIDTH,
-                                                    (viewSize.width - BUBBLE_PADDING_HEIGHT) +
-                                                    theTextSize.height + 20);
-            
-            self.imageWithText.frame = CGRectMake(self.mImageView.frame.origin.x,
-                                                  self.mBubleImageView.frame.origin.y + self.mImageView.frame.size.height + 10,
-                                                  self.mImageView.frame.size.width, theTextSize.height);
-        }
+                                                 
+                                                 if(alMessage.message.length > 0)
+                                                 {
+                                                     [self.imageWithText setHidden:NO];
+                                                     self.imageWithText.textColor = [ALApplozicSettings getReceiveMsgTextColor];
+                                                     self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+                                                                                             0, viewSize.width - BUBBLE_PADDING_WIDTH,
+                                                                                             (viewSize.width - BUBBLE_PADDING_HEIGHT) +
+                                                                                             theTextSize.height + 20);
+                                                     
+                                                     self.imageWithText.frame = CGRectMake(self.mImageView.frame.origin.x,
+                                                                                           self.mBubleImageView.frame.origin.y + self.mImageView.frame.size.height + 10,
+                                                                                           self.mImageView.frame.size.width, theTextSize.height);
+                                                 }
         
         [self.mDateLabel setFrame:CGRectMake(self.mBubleImageView.frame.origin.x,
                                              self.mBubleImageView.frame.origin.y + self.mBubleImageView.frame.size.height,
@@ -249,12 +251,12 @@
     else
     {
         [self.mUserProfileImageView setFrame:CGRectMake(viewSize.width - USER_PROFILE_PADDING_X_OUTBOX, 5, 0, USER_PROFILE_WIDTH)];
-
+        
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getSendMsgColor];
         
         [self.mMessageStatusImageView setHidden:NO];
         
-      CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
+        CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
         CGFloat imageViewHeight = requiredHeight -IMAGE_VIEW_HEIGHT;
         
         CGFloat imageViewY = self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y;
@@ -274,7 +276,7 @@
         [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + 60),
                                                   0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
         
-        [self.contentView sendSubviewToBack:self.mBubleImageView];        
+        [self.contentView sendSubviewToBack:self.mBubleImageView];
         [self.mImageView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + IMAGE_VIEW_PADDING_X,
                                              imageViewY,
                                              self.mBubleImageView.frame.size.width - IMAGE_VIEW_WIDTH,
@@ -330,7 +332,7 @@
         }
         else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)
         {
-
+            
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
             [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
@@ -357,7 +359,7 @@
         [self.mImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
         [self.videoPlayFrontView setHidden:YES];
         [self.mImageView removeGestureRecognizer:self.tapper];
-
+        
     }
     
     [self.mImageView setContentMode:UIViewContentModeScaleAspectFit];
@@ -389,15 +391,15 @@
         }
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
-
-   [self.contentView bringSubviewToFront:self.replyParentView];
+    
+    [self.contentView bringSubviewToFront:self.replyParentView];
     
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", nil,[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
     
     [[UIMenuController sharedMenuController] setMenuItems: @[messageReply,messageForward]];
     [[UIMenuController sharedMenuController] update];
-
+    
     return self;
 }
 
@@ -434,7 +436,7 @@
     MPMoviePlayerViewController * videoViewController = [[MPMoviePlayerViewController alloc] initWithContentURL:self.videoFileURL];
     [videoViewController.moviePlayer setFullscreen:YES];
     [videoViewController.moviePlayer setScalingMode: MPMovieScalingModeAspectFit];
-   
+    
     [self.delegate showVideoFullScreen:videoViewController];
 }
 
