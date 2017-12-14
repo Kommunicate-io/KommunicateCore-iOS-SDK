@@ -329,6 +329,7 @@
 		6DDB074A1CB9162A00B99F33 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DDB07491CB9162A00B99F33 /* AddressBook.framework */; };
 		6DEAEE8C1D4CDBC700360060 /* ALUserProfileVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DEAEE8A1D4CDBC700360060 /* ALUserProfileVC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6DEAEE8D1D4CDBC700360060 /* ALUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */; };
+		8B78641E1FE22685004B9E64 /* SoundRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B78641D1FE22685004B9E64 /* SoundRecordingView.swift */; };
 		C70273CB1DED445E00BA2C8A /* ALUserDetailListFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C70273CC1DED445E00BA2C8A /* ALUserDetailListFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C70273CA1DED445E00BA2C8A /* ALUserDetailListFeed.m */; };
 		C70983071E0177E900FC93A1 /* ALMessageServiceWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = C70983051E0177E900FC93A1 /* ALMessageServiceWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -671,6 +672,7 @@
 		6DDB07491CB9162A00B99F33 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		6DEAEE8A1D4CDBC700360060 /* ALUserProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALUserProfileVC.h; sourceTree = "<group>"; };
 		6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALUserProfileVC.m; sourceTree = "<group>"; };
+		8B78641D1FE22685004B9E64 /* SoundRecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundRecordingView.swift; sourceTree = "<group>"; };
 		C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUserDetailListFeed.h; path = Applozic/ALUserDetailListFeed.h; sourceTree = "<group>"; };
 		C70273CA1DED445E00BA2C8A /* ALUserDetailListFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALUserDetailListFeed.m; path = Applozic/ALUserDetailListFeed.m; sourceTree = "<group>"; };
 		C706DC0E1EA6194600E28BFB /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
@@ -867,6 +869,7 @@
 		6D6DF0A21BC5364C00EBA00F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8B78641D1FE22685004B9E64 /* SoundRecordingView.swift */,
 				6D4FE48D1D7411F70044A7E6 /* NSData+AES.h */,
 				6D4FE48E1D7411F70044A7E6 /* NSData+AES.m */,
 				29CBF2001C0303A700BE6A20 /* ALColorUtility.h */,
@@ -1583,6 +1586,7 @@
 					6D6DF07C1BC535C800EBA00F = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = C25JNDCBM4;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -1739,6 +1743,7 @@
 				6D6DF1D91BC5364C00EBA00F /* AppLozic.xcdatamodeld in Sources */,
 				6D6DF1B71BC5364C00EBA00F /* SDImageCache.m in Sources */,
 				6D6DF1771BC5364C00EBA00F /* ALMessage.m in Sources */,
+				8B78641E1FE22685004B9E64 /* SoundRecordingView.swift in Sources */,
 				6D6DF1C41BC5364C00EBA00F /* SDWebImagePrefetcher.m in Sources */,
 				6D7757481D5B85100025560B /* ALLocationCell.m in Sources */,
 				6D7756B01D5B80DF0025560B /* ALChannelDBService.m in Sources */,
@@ -1917,6 +1922,7 @@
 		6D6DF0861BC535C800EBA00F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
@@ -1940,12 +1946,15 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		6D6DF0871BC535C800EBA00F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
@@ -1969,6 +1978,7 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

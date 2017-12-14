@@ -67,6 +67,7 @@
 @import AddressBookUI;
 #import "ALAudioVideoBaseVC.h"
 #import "ALVOIPNotificationHandler.h"
+#import <Applozic/Applozic-Swift.h>
 
 #define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
@@ -145,6 +146,16 @@
 -(void)viewDidLoad
 {
     [super viewDidLoad];
+
+    ALSoundRecorderButton * soundRecording;
+    soundRecording = [[ALSoundRecorderButton alloc] initWithFrame:CGRectZero];
+    [soundRecording setSoundRecDelegateWithRecorderDelegate:self];
+    [self.view addSubview:soundRecording];
+    [soundRecording setHidden:YES];
+    soundRecording.translatesAutoresizingMaskIntoConstraints = false;
+    [soundRecording.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:7].active = true;
+    [soundRecording.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-7].active = true;
+    [self.view addSubview:soundRecording];
     [self initialSetUp];
     [self fetchMessageFromDB];
     [self loadChatView];
