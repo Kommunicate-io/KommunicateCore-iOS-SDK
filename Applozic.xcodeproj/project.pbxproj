@@ -330,6 +330,8 @@
 		6DEAEE8C1D4CDBC700360060 /* ALUserProfileVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DEAEE8A1D4CDBC700360060 /* ALUserProfileVC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6DEAEE8D1D4CDBC700360060 /* ALUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */; };
 		8B78641E1FE22685004B9E64 /* SoundRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B78641D1FE22685004B9E64 /* SoundRecordingView.swift */; };
+		8B7864221FE2329F004B9E64 /* MessageReplyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7864201FE2329E004B9E64 /* MessageReplyView.m */; };
+		8B7864231FE2329F004B9E64 /* MessageReplyView.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B7864211FE2329E004B9E64 /* MessageReplyView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C70273CB1DED445E00BA2C8A /* ALUserDetailListFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C70273CC1DED445E00BA2C8A /* ALUserDetailListFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C70273CA1DED445E00BA2C8A /* ALUserDetailListFeed.m */; };
 		C70983071E0177E900FC93A1 /* ALMessageServiceWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = C70983051E0177E900FC93A1 /* ALMessageServiceWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -673,6 +675,8 @@
 		6DEAEE8A1D4CDBC700360060 /* ALUserProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALUserProfileVC.h; sourceTree = "<group>"; };
 		6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALUserProfileVC.m; sourceTree = "<group>"; };
 		8B78641D1FE22685004B9E64 /* SoundRecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundRecordingView.swift; sourceTree = "<group>"; };
+		8B7864201FE2329E004B9E64 /* MessageReplyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageReplyView.m; path = Applozic/MessageReplyView.m; sourceTree = "<group>"; };
+		8B7864211FE2329E004B9E64 /* MessageReplyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageReplyView.h; path = Applozic/MessageReplyView.h; sourceTree = "<group>"; };
 		C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUserDetailListFeed.h; path = Applozic/ALUserDetailListFeed.h; sourceTree = "<group>"; };
 		C70273CA1DED445E00BA2C8A /* ALUserDetailListFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALUserDetailListFeed.m; path = Applozic/ALUserDetailListFeed.m; sourceTree = "<group>"; };
 		C706DC0E1EA6194600E28BFB /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
@@ -827,6 +831,8 @@
 		6D6DF0731BC535C800EBA00F = {
 			isa = PBXGroup;
 			children = (
+				8B7864211FE2329E004B9E64 /* MessageReplyView.h */,
+				8B7864201FE2329E004B9E64 /* MessageReplyView.m */,
 				C76D31431F0AAFB30087291F /* ALVOIPCell.h */,
 				C76D31441F0AAFB30087291F /* ALVOIPCell.m */,
 				6D7757291D5B845C0025560B /* Applozic_Prefix.pch */,
@@ -1526,6 +1532,7 @@
 				C76D314C1F0AAFCF0087291F /* ALVOIPNotificationHandler.h in Headers */,
 				C76D314B1F0AAFCE0087291F /* ALAudioVideoBaseVC.h in Headers */,
 				C76D31451F0AAFB30087291F /* ALVOIPCell.h in Headers */,
+				8B7864231FE2329F004B9E64 /* MessageReplyView.h in Headers */,
 				C70983071E0177E900FC93A1 /* ALMessageServiceWrapper.h in Headers */,
 				6D95476B1BE38DFF00776652 /* ALContactService.h in Headers */,
 				6D46B6C51BD025060014A5D3 /* ALMapViewController.h in Headers */,
@@ -1769,6 +1776,7 @@
 				4612E90E1E13882D0022DB23 /* MQTTSessionSynchron.m in Sources */,
 				6D6DF17F1BC5364C00EBA00F /* ALUser.m in Sources */,
 				4612E9161E13882D0022DB23 /* MQTTSSLSecurityPolicyTransport.m in Sources */,
+				8B7864221FE2329F004B9E64 /* MessageReplyView.m in Sources */,
 				6D6DF1731BC5364C00EBA00F /* ALFileMetaInfo.m in Sources */,
 				6D7757151D5B83660025560B /* TSMessage.m in Sources */,
 				6D6DF1C61BC5364C00EBA00F /* UIButton+WebCache.m in Sources */,
