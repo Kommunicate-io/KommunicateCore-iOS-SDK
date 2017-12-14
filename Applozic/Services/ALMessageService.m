@@ -377,6 +377,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                         {
                             [ALMessageService incrementContactUnreadCount:message];
                         }
+                
                         if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                             ALChannelService *channelService = [[ALChannelService alloc] init];
                             [channelService syncCallForChannel];
@@ -483,6 +484,15 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
     ALMessageDBService * dbService = [[ALMessageDBService alloc]init];
     DB_Message* dbMessage=(DB_Message*)[dbService getMessageByKey:@"key" value:keyString];
     [dbMessage setDeletedFlag:[NSNumber numberWithBool:YES]];
+    ALMessage * message =  [dbService createMessageEntity:dbMessage];
+    bool isUsedForReply = (message.getReplyType == AL_A_REPLY);
+    
+    if(isUsedForReply)
+    {
+        dbMessage.replyMessageType = [NSNumber numberWithInt:AL_REPLY_BUT_HIDDEN];
+        
+    }
+    
     NSError *error;
     if (![[dbMessage managedObjectContext] save:&error])
     {
@@ -504,7 +514,10 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                                withCompletion:^(NSString * response, NSError *error) {
                                    if(!error){
                                        //none error then delete from DB.
-                                       [dbService deleteMessageByKey:keyString];
+                                       if(!isUsedForReply)
+                                       {
+                                           [dbService deleteMessageByKey:keyString];
+                                       }
                                    }
                                    completion(response,error);
                                }];
@@ -878,5 +891,6 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     DB_Message * dbMessage = (DB_Message*) [alMsgDBService getMessageByKey:@"key" value:messageReplyId];
     return [alMsgDBService createMessageEntity:dbMessage];
 }
+
 
 @end

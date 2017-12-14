@@ -63,7 +63,14 @@
     if([message.status isEqualToNumber:[NSNumber numberWithInt:SENT]]){
         dbMessag.status = [NSNumber numberWithInt:READ];
     }
-    return dbMessag;
+  if(message.isAReplyMessage)
+    {
+        NSString * messageReplyId = [message.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
+        DB_Message * replyMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageReplyId];
+        replyMessage.replyMessageType = [NSNumber numberWithInt:AL_A_REPLY];
+        [theDBHandler.managedObjectContext save:nil];
+
+    }    return dbMessag;
 }
 
 -(NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID
@@ -504,7 +511,8 @@
     theMessageEntity.pairedMessageKey = theMessage.pairedMessageKey;
     theMessageEntity.metadata = theMessage.metadata.description;
     theMessageEntity.msgHidden = [NSNumber numberWithBool:[theMessage isHiddenMessage]];
-    
+    theMessageEntity.replyMessageType = theMessage.messageReplyType;
+
     if(theMessage.getGroupId)
     {
         theMessageEntity.groupId = theMessage.groupId;
@@ -883,6 +891,25 @@ FETCH LATEST MESSSAGE FOR SUB GROUPS
     
     if ([self.delegate respondsToSelector:@selector(getMessagesArray:)]) {
         [self.delegate getMessagesArray:sortedArray];
+    }
+}
+
+
+-(void) updateMessageReplyType:(NSString*)messageKeyString replyType : (NSNumber *) type {
+    
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    
+    DB_Message * replyMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKeyString];
+    
+    replyMessage.replyMessageType = type;
+    
+    NSError *Error = nil;
+    
+    BOOL success = [dbHandler.managedObjectContext save:&Error];
+    
+    if (!success) {
+        NSLog(@"Unable to save replytype .");
+        NSLog(@"%@, %@", Error, Error.localizedDescription);
     }
 }
 

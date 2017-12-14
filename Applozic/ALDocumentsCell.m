@@ -122,7 +122,7 @@
     NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
-    
+    [self.replyUIView removeFromSuperview];
     self.progresLabel.alpha = 0;
     [self.mNameLabel setHidden:YES];
     [self setMMessage:alMessage];
@@ -130,12 +130,15 @@
     [self.mImageView setHidden:YES];
     [self.mMessageStatusImageView setHidden:YES];
     [self.mChannelMemberName setHidden:YES];
+    [self.replyParentView setHidden:YES];
     
     ALContactDBService *theContactDBService = [[ALContactDBService alloc] init];
     ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
     NSString *receiverName = [alContact getDisplayName];
     
     CGSize theDateSize = [ALUtilityClass getSizeForText:theDate maxWidth:150 font:self.mDateLabel.font.fontName fontSize:self.mDateLabel.font.pointSize];
+    
+    [self.replyUIView removeFromSuperview];
     
     if([alMessage.type isEqualToString:@MT_INBOX_CONSTANT])
     {
@@ -153,42 +156,50 @@
         
         [self.documentName setTextColor:[UIColor grayColor]];
         
-        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+  
+        CGFloat requiredHeight  = BUBBLE_HEIGHT;
+        CGFloat imageViewY = self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y ;
+                [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
                                                   self.mUserProfileImageView.frame.origin.y,
-                                                  viewSize.width - BUBBLE_PADDING_WIDTH, BUBBLE_HEIGHT)];
-        
-        [self.mImageView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x,
-                                             self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y,
-                                             IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT)];
-        
-        [self.downloadRetryView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + DOWNLOAD_RETRY_PADDING_X,
-                                                    self.mBubleImageView.frame.origin.y + DOWNLOAD_RETRY_PADDING_Y,
-                                                    DOWNLOAD_RETRY_PADDING_WIDTH, DOWNLOAD_RETRY_PADDING_HEIGHT)];
-        
-        if(alMessage.groupId)
+                                                  viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
+          if(alMessage.groupId)
         {
             [self.mChannelMemberName setText:receiverName];
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
             
-            [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
-                                                      self.mUserProfileImageView.frame.origin.y,
-                                                      viewSize.width - BUBBLE_PADDING_WIDTH, BUBBLE_HEIGHT_GRP)];
             
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width +
                                                        CHANNEL_PADDING_WIDTH, CHANNEL_PADDING_HEIGHT);
-
-            [self.mImageView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x,
-                                                 self.mChannelMemberName.frame.origin.y + 5 +
-                                                 self.mChannelMemberName.frame.size.height,
-                                                 IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT)];
+            requiredHeight =  requiredHeight + self.mChannelMemberName.frame.size.height;
+            imageViewY = imageViewY + self.mChannelMemberName.frame.size.height;
             
-            [self.downloadRetryView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + 5,
-                                                        self.mImageView.frame.origin.y + 5,
-                                                        DOWNLOAD_RETRY_PADDING_WIDTH, DOWNLOAD_RETRY_PADDING_HEIGHT)];
         }
+        
+        if(alMessage.isAReplyMessage)
+        {
+            
+            [self processReplyOfChat:alMessage andViewSize:viewSize];
+            
+            requiredHeight =  requiredHeight + self.replyParentView.frame.size.height;
+            imageViewY = imageViewY + self.replyParentView.frame.size.height;
+            
+        }
+        
+        
+        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+                                                  self.mUserProfileImageView.frame.origin.y,
+                                                  viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
+        
+        [self.mImageView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x,
+                                             imageViewY,
+                                             IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT)];
+        
+        [self.downloadRetryView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + DOWNLOAD_RETRY_PADDING_X,
+                                                    self.mImageView.frame.origin.y + DOWNLOAD_RETRY_PADDING_Y,
+                                                    DOWNLOAD_RETRY_PADDING_WIDTH, DOWNLOAD_RETRY_PADDING_HEIGHT)];
         
         [self.mDateLabel setFrame:CGRectMake(self.mBubleImageView.frame.origin.x,
                                              self.mBubleImageView.frame.size.height,
@@ -264,18 +275,30 @@
         [self.mMessageStatusImageView setHidden:NO];
         
         [self.documentName setTextColor:[UIColor whiteColor]];
-        
+ 
         [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX),
                                                   self.mUserProfileImageView.frame.origin.y,
-                                                  viewSize.width - BUBBLE_PADDING_WIDTH, 80)];
-        
-        
+                                                  viewSize.width - BUBBLE_PADDING_WIDTH, BUBBLE_HEIGHT)];
         [self.mImageView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x,
-                                             self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y,
+                                             self.mBubleImageView.frame.origin.y ,
                                              IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT)];
+        if( alMessage.isAReplyMessage)
+        {
+            
+            [self processReplyOfChat:alMessage andViewSize:viewSize];
+            
+            [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX),
+                                                      self.mUserProfileImageView.frame.origin.y,
+                                                      viewSize.width - BUBBLE_PADDING_WIDTH, BUBBLE_HEIGHT + self.replyParentView.frame.size.height)];
+            
+            [self.mImageView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x,
+                                                 self.mBubleImageView.frame.origin.y + self.replyUIView.frame.size.height,
+                                                 IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT)];
+            
+        }
         
-        [self.downloadRetryView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + DOWNLOAD_RETRY_PADDING_X,
-                                                    self.mBubleImageView.frame.origin.y + DOWNLOAD_RETRY_PADDING_Y,
+        [self.downloadRetryView setFrame:CGRectMake(self.mImageView.frame.origin.x + DOWNLOAD_RETRY_PADDING_X,
+                                                    self.mImageView.frame.origin.y + DOWNLOAD_RETRY_PADDING_Y,
                                                     DOWNLOAD_RETRY_PADDING_WIDTH, DOWNLOAD_RETRY_PADDING_HEIGHT)];
         
         [self.mDowloadRetryButton setFrame:CGRectMake(self.downloadRetryView.frame.origin.x + DOWNLOAD_RETRY_BUTTON_PADDING_X,
@@ -287,7 +310,7 @@
                                             self.downloadRetryView.frame.size.width, SIZE_HEIGHT)];
         
         [self.documentName setFrame:CGRectMake(self.downloadRetryView.frame.origin.x + self.downloadRetryView.frame.size.width + 5,
-                                               self.mBubleImageView.frame.origin.y + 5,
+                                               self.mImageView.frame.origin.y + 5,
                                                self.mBubleImageView.frame.size.width - self.mImageView.frame.size.width - DOC_NAME_PADDING_WIDTH,
                                                DOC_NAME_HEIGHT)];
 
@@ -386,8 +409,10 @@
     }
     
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+    UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", nil,[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
     
-    [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
+    
+    [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
     [[UIMenuController sharedMenuController] update];
 
     
@@ -493,12 +518,12 @@
 {
     if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
     {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:) || [self isForwardMenuEnabled:action] ));
+        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isMessageReplyMenuEnabled:action] ||  [self isForwardMenuEnabled:action] ));
     }
     
     return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)
-                                                                              || [self isForwardMenuEnabled:action]
-                                                                              ));
+                                                                              ||  [self isForwardMenuEnabled:action]
+                                                                              || [self isMessageReplyMenuEnabled:action]));
 }
 
 
@@ -518,7 +543,12 @@
             
             
 
--(void)openUserChatVC
+-(void) messageReply:(id)sender
+{
+    NSLog(@"Message forward option is pressed");
+    [self.delegate processMessageReply:self.mMessage];
+    
+}-(void)openUserChatVC
 {
     [self.delegate processUserChatView:self.mMessage];
 }
@@ -556,6 +586,10 @@
 -(BOOL)isForwardMenuEnabled:(SEL) action;
 {
     return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
+}
+-(BOOL)isMessageReplyMenuEnabled:(SEL) action
+{
+    return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
 }
 
 

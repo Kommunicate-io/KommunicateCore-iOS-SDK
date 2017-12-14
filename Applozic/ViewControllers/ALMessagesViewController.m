@@ -405,8 +405,16 @@
     }
     
     self.mContactsMessageListArray = messagesArray;
+    for (int i=0; i<messagesArray.count; i++) {
+        ALMessage * message = messagesArray[i];
+        if(message.groupId != nil) {
+            // It's a group message
+        } else if (message.contactIds != nil)  {
+            // It's a normal one to one message
+        }
+    }
     [self.mTableView reloadData];
-    NSLog(@"GETTING MESSAGE ARRAY");   
+    NSLog(@"GETTING MESSAGE ARRAY");
 }
 
 -(void)didUpdateBroadCastMessages {
@@ -635,7 +643,7 @@
             [newBroadCast setTitle:NSLocalizedStringWithDefaultValue(@"broadcastGroupOptionTitle", nil, [NSBundle mainBundle], @"New Broadcast", @"")
                           forState:UIControlStateNormal];
             
-            newBroadCast.userInteractionEnabled = ![ALApplozicSettings isBroadcastGroupEnable];
+            newBroadCast.userInteractionEnabled = [ALApplozicSettings isBroadcastGroupEnable];
             [newBroadCast setHidden:![ALApplozicSettings isBroadcastGroupEnable]];
             
         }break;

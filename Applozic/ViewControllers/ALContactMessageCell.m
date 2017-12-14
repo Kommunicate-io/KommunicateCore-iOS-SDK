@@ -58,6 +58,14 @@
 #define BUTTON_WIDTH 20
 #define BUTTON_HEIGHT 40
 
+#define CHANNEL_PADDING_X 5
+#define CHANNEL_PADDING_Y 2
+#define CHANNEL_PADDING_WIDTH 5
+#define CHANNEL_HEIGHT 20
+#define CHANNEL_PADDING_HEIGHT 20
+
+
+
 @interface ALContactMessageCell ()
 
 @end
@@ -141,12 +149,13 @@
     [self.mChannelMemberName setHidden:YES];
     [self.mNameLabel setHidden:YES];
     [self.mMessageStatusImageView setHidden:YES];
+    [self.replyParentView setHidden:YES];
     
     [self.contactProfileImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
     [self.userContact setText:@"PHONE NO"];
     [self.emailId setText:@"EMAIL ID"];
     [self.contactPerson setText:@"CONTACT NAME"];
-    
+     [self.replyUIView removeFromSuperview];
     if ([alMessage.type isEqualToString:@MT_INBOX_CONSTANT])
     {
         if([ALApplozicSettings isUserProfileHidden])
@@ -164,9 +173,55 @@
         self.mNameLabel.frame = self.mUserProfileImageView.frame;
         
         [self.mNameLabel setText:[ALColorUtility getAlphabetForProfileImage:alMessage.to]];
+        ALContactDBService *theContactDBService = [[ALContactDBService alloc] init];
+        ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
+        NSString * receiverName = [alContact getDisplayName];
+        if(alContact.contactImageUrl)
+        {
+            NSURL * theUrl1 = [NSURL URLWithString:alContact.contactImageUrl];
+            [self.mUserProfileImageView sd_setImageWithURL:theUrl1];
+        }
+        else
+        {
+            [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
+            [self.mNameLabel setHidden:NO];
+            self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to];
+        }
+        
+        //Shift for message reply and channel name..
+        
+        CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
+        
+        CGFloat imageViewY =  self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y;
         
         [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,
-                                                  viewSize.width - BUBBLE_PADDING_WIDTH, viewSize.width - BUBBLE_PADDING_HEIGHT)];
+                                                  viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
+        if(alMessage.groupId)
+        {
+            [self.mChannelMemberName setHidden:NO];
+            [self.mChannelMemberName setText:receiverName];
+            [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
+            self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
+                                                       self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
+                                                       self.mBubleImageView.frame.size.width + CHANNEL_PADDING_WIDTH, CHANNEL_PADDING_HEIGHT);
+            
+            requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;
+            imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;
+        }
+        
+        
+        if(alMessage.isAReplyMessage)
+        {
+            [self processReplyOfChat:alMessage andViewSize:viewSize];
+            
+            requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
+            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
+            
+        }
+        
+        
+        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,
+                                                  viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
         
         [self.contactProfileImage setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + CNT_PROFILE_X,
                                                       self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y,
@@ -200,21 +255,8 @@
         
         [self.addContactButton setBackgroundColor:[UIColor grayColor]];
         
-        ALContactDBService *theContactDBService = [[ALContactDBService alloc] init];
-        ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
-        
-        if(alContact.contactImageUrl)
-        {
-            NSURL * theUrl1 = [NSURL URLWithString:alContact.contactImageUrl];
-            [self.mUserProfileImageView sd_setImageWithURL:theUrl1 placeholderImage:nil options:SDWebImageRefreshCached];
-        }
-        else
-        {
-            [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
-            [self.mNameLabel setHidden:NO];
-            self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to];
-        }
-        
+     
+    
     }
     else
     {
@@ -222,8 +264,28 @@
         
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getSendMsgColor];
         
+        
+        //Shift for message reply and channel name..
+        
+        CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT_OUTBOX;
+        
+        CGFloat imageViewY =  self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y;
+        
         self.mBubleImageView.frame = CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX), 0,
                                                 viewSize.width - BUBBLE_PADDING_WIDTH, viewSize.width - BUBBLE_PADDING_HEIGHT_OUTBOX);
+        
+        if(alMessage.isAReplyMessage)
+        {
+            [self processReplyOfChat:alMessage andViewSize:viewSize];
+            
+            requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
+            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
+            
+        }
+        
+        
+        self.mBubleImageView.frame = CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX), 0,
+                                                viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight);
         
         [self.contactProfileImage setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + CNT_PROFILE_X,
                                                       self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y,
@@ -343,9 +405,11 @@
     self.mBubleImageView.layer.masksToBounds = NO;
     
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
-   
+    UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", nil,[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
+  
     
-    [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
+     UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", nil,[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
+    [[UIMenuController sharedMenuController] setMenuItems: @[messageReply,messageForward]];
     [[UIMenuController sharedMenuController] update];
     
     return self;
@@ -412,11 +476,11 @@
 {
     if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
     {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isForwardMenuEnabled:action]));
+        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)||  [self isForwardMenuEnabled:action]  ||  [self isMessageReplyMenuEnabled:action]));
     }
     
     return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):
-            (action == @selector(delete:) || [self isForwardMenuEnabled:action]));
+            (action == @selector(delete:) ||  [self isForwardMenuEnabled:action]  || [self isMessageReplyMenuEnabled:action]));
 }
 
 
@@ -441,7 +505,12 @@
     
 }
 
-
+-(void) messageReply:(id)sender
+{
+    NSLog(@"Message forward option is pressed");
+    [self.delegate processMessageReply:self.mMessage];
+    
+}
 - (void)msgInfo:(id)sender
 {
     [self.delegate showAnimationForMsgInfo:YES];
@@ -471,5 +540,10 @@
     return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
 }
 
+-(BOOL)isMessageReplyMenuEnabled:(SEL) action
+{
+    return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
+    
+}
 
 @end

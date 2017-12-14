@@ -200,7 +200,6 @@
     UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:contextChatView];
     conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
-    
 }
 
 -(void)launchChatListWithUserOrGroup:(NSString *)userId withChannel:(NSNumber*)channelKey andViewControllerObject:(UIViewController *)viewController

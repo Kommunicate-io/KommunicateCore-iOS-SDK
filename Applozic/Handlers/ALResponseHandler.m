@@ -21,20 +21,26 @@
                                
                                NSHTTPURLResponse * theHttpResponse = (NSHTTPURLResponse *) response;
                                
-                               NSLog(@"ERROR_RESPONSE : %@ && ERROR:CODE : %ld ", connectionError.description, (long)connectionError.code);
-                               
+
+
                                if(connectionError.code == kCFURLErrorUserCancelledAuthentication)
                                {
-                                   NSLog(@"HTTP:401 : ERROR CODE : %ld",  (long)connectionError.code);
+                                   NSString * failingURL = connectionError.userInfo[@"NSErrorFailingURLStringKey"] != nil ? connectionError.userInfo[@"NSErrorFailingURLStringKey"]:@"Empty";
+                                   NSLog(@"Authentication error: HTTP 401 : ERROR CODE : %ld, FAILING URL: %@",  (long)connectionError.code,  failingURL);
+                                   reponseCompletion(nil,[self errorWithDescription:@"Authentication error: 401"]);
+                                   return;
                                }
-                               if(connectionError.code == kCFURLErrorNotConnectedToInternet)
+                               else if(connectionError.code == kCFURLErrorNotConnectedToInternet)
                                {
-                                   NSLog(@"NO INTERNET CONNECTIVITY ERROR CODE : %ld",  (long)connectionError.code);
+                                   NSString * failingURL = connectionError.userInfo[@"NSErrorFailingURLStringKey"] != nil ? connectionError.userInfo[@"NSErrorFailingURLStringKey"]:@"Empty";
+                                   NSLog(@"NO INTERNET CONNECTIVITY, ERROR CODE : %ld, FAILING URL: %@",  (long)connectionError.code, failingURL);
+                                   reponseCompletion(nil,[self errorWithDescription:@"No Internet connectivity"]);
+                                   return;
                                }
-                               
                                //connection error
-                               if (connectionError)
+                               else if (connectionError)
                                {
+                                   NSLog(@"ERROR_RESPONSE : %@ && ERROR:CODE : %ld ", connectionError.description, (long)connectionError.code);
                                    reponseCompletion(nil,[self errorWithDescription:@"Unable to connect with the server. Check your internet connection and try again"]);
                                    return;
                                }
@@ -56,7 +62,6 @@
                                
                                id theJson = nil;
                                
-                               // DECRYPTING DATA WITH KEY
                                // DECRYPTING DATA WITH KEY
                                if([ALUserDefaultsHandler getEncryptionKey] && ![tag isEqualToString:@"CREATE ACCOUNT"] && ![tag isEqualToString:@"CREATE FILE URL"] && ![tag isEqualToString:@"UPDATE NOTIFICATION MODE"])
                                {

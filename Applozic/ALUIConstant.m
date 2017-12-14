@@ -136,7 +136,7 @@
 + (CGFloat) getCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
 {
     
-    CGFloat replyViewHeight = 80;
+    CGFloat replyViewHeight = 70;
     CGFloat heightOfCell;
     
     if(alMessage.contentType == ALMESSAGE_CONTENT_LOCATION)

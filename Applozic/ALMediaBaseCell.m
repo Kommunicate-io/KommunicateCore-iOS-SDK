@@ -47,6 +47,18 @@
         self.mBubleImageView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:self.mBubleImageView];
         
+        self.replyParentView = [[UIView alloc] init];
+        self.replyParentView.contentMode = UIViewContentModeScaleToFill;
+        self.replyParentView.layer.cornerRadius = 5;
+        self.replyParentView.backgroundColor = [UIColor greenColor];
+        [self.replyParentView setUserInteractionEnabled:YES];
+        
+        UITapGestureRecognizer * replyViewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureForReplyView:)];
+        replyViewTapGesture.numberOfTapsRequired=1;
+        [self.replyParentView addGestureRecognizer:replyViewTapGesture];
+        
+        [self.contentView addSubview:self.replyParentView];
+        
         self.mImageView = [[UIImageView alloc] init];
         
         self.mImageView.frame = CGRectMake(self.mBubleImageView.frame.origin.x + 5 , self.mBubleImageView.frame.origin.y + 15 , self.mBubleImageView.frame.size.width - 10 , self.mBubleImageView.frame.size.height - 40 );self.
@@ -99,8 +111,11 @@
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", nil,[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
         
         UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(processForwardMessage:)];
+        
+        UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", nil,[NSBundle mainBundle], @"Reply", @"") action:@selector(processMessageReply:)];
+        
     
-        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageForward]];
+        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
         [[UIMenuController sharedMenuController] update];
 
 
@@ -125,6 +140,7 @@
         if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
             self.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mNameLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            self.replyParentView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mDateLabel.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mMessageStatusImageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mDowloadRetryButton.transform = CGAffineTransformMakeScale(-1.0, 1.0);
@@ -175,5 +191,97 @@
     [self.delegate processForwardMessage:self.mMessage];
 }
 
+
+-(void)processMessageReply
+{
+    [self.delegate processMessageReply:self.mMessage];
+    
+}
+
+-(void)processReplyOfChat:(ALMessage*)almessage andViewSize:(CGSize)viewSize
+{
+    
+    if(!almessage.isAReplyMessage)
+    {
+        return;
+    }
+    
+    NSString * messageReplyId = [almessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
+    ALMessage * replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
+    
+    if(replyMessage == nil){
+        return;
+    }
+    
+    self.replyParentView.hidden=NO;
+    
+    NSLog(@"processReplyOfChat called");
+    self.replyUIView = [[MessageReplyView alloc] init];
+    
+    [self.replyUIView setBackgroundColor:[UIColor clearColor]];
+    
+    CGFloat replyWidthRequired = [self.replyUIView getWidthRequired:replyMessage andViewSize:viewSize];
+    
+    
+    if( (self.mBubleImageView.frame.size.width) > replyWidthRequired )
+    {
+        replyWidthRequired = (self.mBubleImageView.frame.size.width);
+        NSLog(@" replyWidthRequired is less from parent one : %d", replyWidthRequired);
+    }
+    else
+    {
+        replyWidthRequired = replyWidthRequired;
+        NSLog(@" replyWidthRequired is grater from parent one : %d", replyWidthRequired);
+        
+    }
+    
+    CGFloat bubbleXposition = self.mBubleImageView.frame.origin.x +5;
+    
+    
+    if(almessage.groupId && almessage.isReceivedMessage)
+    {
+        self.replyParentView.frame =
+        CGRectMake( bubbleXposition+2 ,
+                   self.mChannelMemberName.frame.origin.y + self.mChannelMemberName.frame.size.height,
+                   replyWidthRequired+5,
+                   60);
+        
+    }else if(!almessage.groupId & !almessage.isSentMessage  ){
+        self.replyParentView.frame =
+        CGRectMake( bubbleXposition -1 ,
+                   self.mBubleImageView.frame.origin.y+3 ,
+                   replyWidthRequired+5,
+                   60);
+        
+    }else{
+        self.replyParentView.frame =
+        CGRectMake( bubbleXposition -5 ,
+                   self.mBubleImageView.frame.origin.y+3 ,
+                   replyWidthRequired+5,
+                   60);
+        
+    }
+    
+    
+    NSArray *viewsToRemove = [self.replyParentView subviews];
+    for (UIView *v in viewsToRemove) {
+        [v removeFromSuperview];
+    }
+    
+    [self.replyParentView setBackgroundColor:[UIColor redColor]];
+    [self.replyUIView populateUI:almessage withSuperView:self.replyParentView];
+    [self.replyParentView addSubview:self.replyUIView];
+}
+
+-(void)tapGestureForReplyView:(id)sender{
+    
+    [self.delegate scrollToReplyMessage:self.mMessage];
+    
+}
+
+-(BOOL)isMessageReplyMenuEnabled:(SEL) action;
+{
+    return ([ALApplozicSettings isReplyOptionEnabled] && action ==@selector(processMessageReply:));
+}
 
 @end

@@ -76,7 +76,7 @@
 @interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALLocationDelegate,
                                     ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
                                     UIAlertViewDelegate, ALMUltipleAttachmentDelegate, UIDocumentInteractionControllerDelegate,
-                                    ABPeoplePickerNavigationControllerDelegate>
+                                    ABPeoplePickerNavigationControllerDelegate, ALSoundRecorderProtocol>
 
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, assign) int rp;
@@ -93,6 +93,18 @@
 @property (nonatomic, strong) NSMutableArray * conversationTitleList;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *tableViewSendMsgTextViewConstraint;
 @property (nonatomic, assign) BOOL comingFromBackground;
+
+//============Message Reply outlets====================================//
+@property (weak, nonatomic) IBOutlet UIImageView *replyAttachmentPreview;
+@property (weak, nonatomic) IBOutlet UIView *messageReplyView;
+- (IBAction)cancelMessageReply:(id)sender;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *viewHeightConstraints;
+@property (weak, nonatomic) IBOutlet UILabel *replyMessageText;
+@property (nonatomic,assign) NSString* messageReplyId;
+@property (nonatomic, weak) IBOutlet UIImageView *replyIcon;
+@property (weak, nonatomic) IBOutlet UILabel *replyUserName;
+//============Message Reply outlets END====================================//
+
 
 - (IBAction)loadEarlierButtonAction:(id)sender;
 -(void)processLoadEarlierMessages:(BOOL)flag;
@@ -117,6 +129,9 @@
     CGRect defaultTableRect;
     UIView * maskView;
     BOOL isPickerOpen;
+    ALSoundRecorderButton * soundRecording;
+    BOOL isMicButtonVisible;
+
     
     UIDocumentInteractionController * interaction;
     
@@ -147,15 +162,12 @@
 {
     [super viewDidLoad];
 
-    ALSoundRecorderButton * soundRecording;
-    soundRecording = [[ALSoundRecorderButton alloc] initWithFrame:CGRectZero];
-    [soundRecording setSoundRecDelegateWithRecorderDelegate:self];
-    [self.view addSubview:soundRecording];
-    [soundRecording setHidden:YES];
-    soundRecording.translatesAutoresizingMaskIntoConstraints = false;
-    [soundRecording.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:7].active = true;
-    [soundRecording.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-7].active = true;
-    [self.view addSubview:soundRecording];
+    // Setup quick recording if it's enabled in the settings
+    if([ALApplozicSettings isQuickAudioRecordingEnabled]) {
+        [self setUpSoundRecordingView];
+        [self showMicButton];
+    }
+
     [self initialSetUp];
     [self fetchMessageFromDB];
     [self loadChatView];
@@ -208,6 +220,7 @@
         self.typingLabel.textAlignment = NSTextAlignmentRight;
     }
     self.comingFromBackground = YES;
+    [self.messageReplyView setHidden:YES];
     
     typingStat = NO;
 
@@ -398,7 +411,7 @@
     [super viewWillDisappear:animated];
     
     [self.tabBarController.tabBar setHidden:YES];
-    
+    [self resetMessageReplyView];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notificationIndividualChat" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"report_DELIVERED" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"report_DELIVERED_READ" object:nil];
@@ -1160,6 +1173,10 @@
     message.sentToServer = FALSE;
     message.status = @1;
     
+    if(message.isAReplyMessage){
+        message.metadata = nil;
+    }
+    
     if( message.imageFilePath ){
         [self processAttachment:message.imageFilePath andMessageText:message.message andContentType:almessage.contentType];
         self.alMessage=nil;
@@ -1349,29 +1366,34 @@
 
 -(void)postMessage
 {
+
+    if(isMicButtonVisible) {
+        return;
+    }
+
     if(self.isUserBlocked)
     {
         [self showBlockedAlert];
         return;
     }
-    
+
     if (!self.sendMessageTextView.text.length || [self.sendMessageTextView.text isEqualToString:self.placeHolderTxt])
     {
         [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"forgetToTypeMessageInfo", nil, [NSBundle mainBundle], @"Did you forget to type the message", @"")  andTitle:NSLocalizedStringWithDefaultValue(@"emptyText", nil, [NSBundle mainBundle], @"Empty", @"")];
         return;
     }
-    
+
     if([ALApplozicSettings getMessageAbuseMode] && [self checkRestrictWords:self.sendMessageTextView.text])
     {
         [ALUtilityClass showAlertMessage:[ALApplozicSettings getAbuseWarningText] andTitle:NSLocalizedStringWithDefaultValue(@"warningText", nil, [NSBundle mainBundle], @"WARNING", @"")];
         return;
     }
-    
-    
+
+
     ALMessage * theMessage = [self getMessageToPost];
     [self.alMessageWrapper addALMessageToMessageArray:theMessage];
     [self.mTableView reloadData];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self scrollTableViewToBottomWithAnimation:YES];
     });
@@ -1381,13 +1403,52 @@
     self.mTotalCount = self.mTotalCount + 1;
     self.startIndex = self.startIndex + 1;
     [self sendMessage:theMessage];
-    
+
+    if(soundRecording) {
+        [self showMicButton];
+    }
+
     if(typingStat == YES)
     {
         typingStat = NO;
         [self.mqttObject sendTypingStatus:self.alContact.applicationId userID:self.contactIds
                             andChannelKey:self.channelKey typing:typingStat];
     }
+}
+
+- (IBAction)sendAction:(id)sender
+{
+    if(isMicButtonVisible) {
+        [soundRecording show];
+    }
+    [super sendAction:sender];
+}
+
+-(void)setUpSoundRecordingView
+{
+    soundRecording = [[ALSoundRecorderButton alloc] initWithFrame:CGRectZero];
+    [soundRecording setSoundRecDelegateWithRecorderDelegate:self];
+    [self.view addSubview:soundRecording];
+    [soundRecording setHidden:YES];
+    soundRecording.translatesAutoresizingMaskIntoConstraints = false;
+    [soundRecording.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:7].active = true;
+    [soundRecording.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-7].active = true;
+    [soundRecording.topAnchor constraintEqualToAnchor:self.sendMessageTextView.topAnchor constant:-5].active = true;
+    [soundRecording.bottomAnchor constraintEqualToAnchor:self.sendMessageTextView.bottomAnchor constant:5].active = true;
+}
+
+-(void)showMicButton
+{
+    UIImage* micImage = [ALUtilityClass getImageFromFramworkBundle:@"mic_icon.png"];
+    [self.sendButton setImage:micImage forState:UIControlStateNormal];
+    isMicButtonVisible = YES;
+}
+
+-(void)showSendButton
+{
+    UIImage* sendImage = [ALUtilityClass getImageFromFramworkBundle:@"SendButton20.png"];
+    [self.sendButton setImage:sendImage forState:UIControlStateNormal];
+    isMicButtonVisible = NO;
 }
 
 //==============================================================================================================================================
@@ -1893,6 +1954,11 @@
     theMessage.source = SOURCE_IOS;
 //    theMessage.metadata = [self getNewMetaDataDictionary]; // EXAMPLE FOR META DATA
     
+    if(self.messageReplyId){
+        NSMutableDictionary * metaData = [NSMutableDictionary new];
+        [metaData  setValue:self.messageReplyId forKey:AL_MESSAGE_REPLY_KEY];
+        theMessage.metadata = metaData;
+    }
     return theMessage;
 }
 
@@ -2174,6 +2240,11 @@
         NSString *fileExtension = [componentsArray lastObject];
         NSString * filePath = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_local.%@",connection.keystring,fileExtension]];
         [connection.mData writeToFile:filePath atomically:YES];
+
+        // If 'save video to gallery' is enabled then save to gallery
+        if([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
+            [self saveVideoToGallery:filePath];
+        }
         // UPDATE DB
         messageEntity.inProgress = [NSNumber numberWithBool:NO];
         messageEntity.isUploadFailed=[NSNumber numberWithBool:NO];
@@ -2329,7 +2400,7 @@
     if (theMessage.fileMeta && [theMessage.type isEqualToString:@"5"])
     {
         NSDictionary * userInfo = [theMessage dictionary];
-        [self.sendMessageTextView setText:nil];
+//        [self.sendMessageTextView setText:nil];
         self.mTotalCount = self.mTotalCount+1;
         self.startIndex = self.startIndex + 1;
         
@@ -2781,7 +2852,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 }
 
 -(void)sendMessage:(ALMessage *)theMessage messageAtIndex:(NSUInteger) messageIndex{
-    
+    [self resetMessageReplyView];
     [ALMessageService sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
         
         if(error)
@@ -3484,6 +3555,13 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         typingStat = YES;
         [self.mqttObject sendTypingStatus:self.alContact.applicationId userID:self.contactIds andChannelKey:self.channelKey typing:typingStat];
     }
+
+    if ([[textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length] == 0 && soundRecording) {
+        [self showMicButton];
+    } else if(soundRecording) {
+        [self showSendButton];
+        [soundRecording hide];
+    }
     
     [self subProcessTextViewDidChange:textView];
 }
@@ -3933,6 +4011,169 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 }
 
 
+
+//================================================================================================================================
+#pragma mark - REPLY MESSAGE CALL
+//================================================================================================================================
+
+
+-(void) processMessageReply:(ALMessage *) message
+{
+    self.viewHeightConstraints.constant=50;
+    self.messageReplyView.hidden =0;
+    
+    if(message.groupId != 0){
+        if([[ALUserDefaultsHandler getUserId] isEqualToString:message.to] || message.to == nil){
+            self.replyUserName.text = @"You";
+            
+        }else{
+            ALContactDBService  *aLContactDBService = [ALContactDBService new];
+            ALContact * contact = [aLContactDBService loadContactByKey:@"userId" value:message.to];
+            self.replyUserName.text = contact.getDisplayName;
+        }
+        
+    }else{
+        
+        if([message.type isEqualToString:OUT_BOX]){
+            self.replyUserName.text = @"You";
+        }else{
+            ALContactDBService  *aLContactDBService = [ALContactDBService new];
+            ALContact * contact = [aLContactDBService loadContactByKey:@"userId" value:message.to];
+            self.replyUserName.text = contact.getDisplayName;
+        }
+    }
+    self.messageReplyId = message.key;
+    
+    if(message.fileMeta){
+        [self.replyAttachmentPreview setHidden:NO];
+        [self.replyIcon setHidden:NO];
+        
+        if([message.fileMeta.contentType hasPrefix:@"audio"])
+        {
+            if([message.message length] != 0){
+                self.replyMessageText.text = message.message;
+                
+            }else{
+                self.replyMessageText.text = @"Audio";
+            }
+            
+            [self.replyAttachmentPreview setHidden:YES];
+            [self.replyIcon setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
+            
+        }else if([message.fileMeta.contentType hasPrefix:@"image"]){
+            if([message.message length] != 0){
+                self.replyMessageText.text = message.message;
+            }else{
+                self.replyMessageText.text = @"Image";
+            }
+            
+            NSURL *theUrl = nil;
+            if (message.imageFilePath != NULL)
+            {
+                NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+                NSString * filePath = [docDir stringByAppendingPathComponent:message.imageFilePath];
+                theUrl = [NSURL fileURLWithPath:filePath];
+            }
+            else
+            {
+                theUrl = [NSURL URLWithString:message.fileMeta.thumbnailUrl];
+            }
+            
+            [self.replyAttachmentPreview sd_setImageWithURL:theUrl];
+            [self.replyIcon setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
+            
+        }else if([message.fileMeta.contentType hasPrefix:@"video"]){
+            UIImage * globalThumbnail = [UIImage new];
+            
+            NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * filePath = [docDir stringByAppendingPathComponent:message.imageFilePath];
+            NSURL *theUrl = [NSURL fileURLWithPath:filePath];
+            
+            globalThumbnail = [ALUtilityClass subProcessThumbnail:theUrl];
+            
+            if([message.message length] != 0){
+                self.replyMessageText.text = message.message;
+                
+            }else{
+                self.replyMessageText.text = @"Video";
+            }
+            
+            [self.replyAttachmentPreview setImage:globalThumbnail];
+            [self.replyIcon setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"]];
+            
+            
+        }
+        else if(message.contentType == ALMESSAGE_CONTENT_VCARD)
+        {
+            
+            if([message.message length] != 0){
+                self.replyMessageText.text = message.message;
+            }else{
+                self.replyMessageText.text = @"Contact";
+            }
+            [self.replyAttachmentPreview setHidden:YES];
+            [self.replyIcon setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_person.png"]];
+            
+        }else{
+            [self.replyAttachmentPreview setHidden:YES];
+            if([message.message length] != 0){
+                self.replyMessageText.text = message.message;
+            }else{
+                self.replyMessageText.text = @"Attachment";
+            }
+            [self.replyIcon setImage:[ALUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
+        }
+    }else  if(message.contentType == ALMESSAGE_CONTENT_LOCATION){
+        
+        [self.replyAttachmentPreview setHidden:NO];
+        self.replyMessageText.text = @"Location";
+        [self.replyIcon setHidden:NO];
+        
+        NSURL *theUrl = nil;
+        if([ALDataNetworkConnection checkDataNetworkAvailable])
+        {
+            NSString * finalURl = [ALUtilityClass getLocationUrl:message];
+            theUrl = [NSURL URLWithString:finalURl];
+            [self.replyAttachmentPreview sd_setImageWithURL:theUrl];
+        }
+        else
+        {
+            [self.replyAttachmentPreview setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
+        }
+        
+        [self.replyIcon setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_location_on.png"]];
+        
+    }else{
+        [self.replyAttachmentPreview setHidden:YES];
+        [self.replyIcon setHidden:YES];
+        self.replyMessageText.text = message.message;
+    }
+    
+    ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
+    [messageDBService updateMessageReplyType:message.key replyType:[NSNumber numberWithInt:AL_A_REPLY]];
+    
+}
+
+-(void) scrollToReplyMessage:(ALMessage *)alMessage
+{
+    //get reply type Id::
+    NSString * messageReplyKey = [alMessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
+    NSIndexPath * indexPath=  [self getIndexPathForMessage:messageReplyKey];
+    if(indexPath.row < self.alMessageWrapper.messageArray.count)
+    {
+        [self.mTableView scrollToRowAtIndexPath:indexPath
+                               atScrollPosition:UITableViewScrollPositionTop
+                                       animated:YES];
+    }
+    else
+    {
+        NSLog(@"Reply cell not found..");
+    }
+    
+}
+
+
+
 //==============================================================================================================================================
 #pragma mark - MEDIA BASE CELL DELEGATE CALLED BY TAP GESTURE
 //==============================================================================================================================================
@@ -3995,5 +4236,40 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     [self handleMessageForwardForChatView:alMessage];
 }
 
+-(void)saveVideoToGallery:(NSString *)filePath; {
+    UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, nil, nil);
+}
 
+#pragma mark - ALSoundRecorderProtocol
+
+-(void) finishRecordingAudioWithFileUrl:(NSString *)fileURL {
+    [self processAttachment:fileURL andMessageText:@"" andContentType:ALMESSAGE_CONTENT_AUDIO];
+    [soundRecording hide];
+}
+
+-(void) startRecordingAudio {
+    [soundRecording show];
+}
+
+-(void) cancelRecordingAudio {
+    [soundRecording hide];
+}
+
+-(void) permissionNotGrant {
+    [soundRecording hide];
+}
+
+
+- (IBAction)cancelMessageReply:(id)sender
+{
+    [self resetMessageReplyView];
+    
+}
+
+-(void)resetMessageReplyView
+{
+    self.viewHeightConstraints.constant=0;
+    self.messageReplyView.hidden =1;
+    self.messageReplyId=nil;
+}
 @end

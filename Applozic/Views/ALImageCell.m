@@ -105,7 +105,8 @@ UIViewController * modalCon;
     
     self.mUserProfileImageView.alpha = 1;
     self.progresLabel.alpha = 0;
-
+    [self.replyParentView setHidden:YES];
+    
     [self.mDowloadRetryButton setHidden:NO];
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
     
@@ -154,40 +155,54 @@ UIViewController * modalCon;
         
         [self.mNameLabel setText:[ALColorUtility getAlphabetForProfileImage:receiverName]];
         
+        //Shift for message reply and channel name..
+        
+        CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
+        CGFloat imageViewHeight = requiredHeight -IMAGE_VIEW_PADDING_HEIGHT;
+        
+        CGFloat imageViewY = self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y;
+        
         self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
-                                                0, viewSize.width - BUBBLE_PADDING_WIDTH, viewSize.width - BUBBLE_PADDING_HEIGHT);
+                                                0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight);
         
         self.mBubleImageView.layer.shadowOpacity = 0.3;
         self.mBubleImageView.layer.shadowOffset = CGSizeMake(0, 2);
         self.mBubleImageView.layer.shadowRadius = 1;
         self.mBubleImageView.layer.masksToBounds = NO;
         
-        self.mImageView.frame = CGRectMake(self.mBubleImageView.frame.origin.x + IMAGE_VIEW_PADDING_X,
-                                           self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y,
-                                           self.mBubleImageView.frame.size.width - IMAGE_VIEW_PADDING_WIDTH ,
-                                           self.mBubleImageView.frame.size.height - IMAGE_VIEW_PADDING_HEIGHT);
-        
+      
         if(alMessage.getGroupId)
         {
-            [self.mChannelMemberName setText:receiverName];
             [self.mChannelMemberName setHidden:NO];
+            [self.mChannelMemberName setText:receiverName];
+           
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
             
-            self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
-                                                    0, viewSize.width - BUBBLE_PADDING_Y,
-                                                    viewSize.width - BUBBLE_PADDING_HEIGHT_GRP);
-            
+              
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width + CHANNEL_PADDING_WIDTH, CHANNEL_PADDING_HEIGHT);
             
-            self.mImageView.frame = CGRectMake(self.mBubleImageView.frame.origin.x + IMAGE_VIEW_PADDING_X,
-                                               self.mChannelMemberName.frame.origin.y +
-                                               self.mChannelMemberName.frame.size.height + CHANNEL_PADDING_GRP,
-                                               self.mBubleImageView.frame.size.width - IMAGE_VIEW_PADDING_WIDTH ,
-                                               self.mBubleImageView.frame.size.height - self.mChannelMemberName.frame.size.height - IMAGE_VIEW_PADDING_HEIGHT_GRP);
+            requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;
+            imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;
+        }
+        
+        
+        if(alMessage.isAReplyMessage)
+        {
+            [self processReplyOfChat:alMessage andViewSize:viewSize];
+            
+            requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
+            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
             
         }
+        self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+                                                0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight);
+        self.mImageView.frame = CGRectMake(self.mBubleImageView.frame.origin.x + IMAGE_VIEW_PADDING_X,
+                                           imageViewY,
+                                           self.mBubleImageView.frame.size.width - IMAGE_VIEW_PADDING_WIDTH ,
+                                           imageViewHeight);
+        
         
         [self setupProgress];
         
@@ -279,10 +294,32 @@ UIViewController * modalCon;
         self.mBubleImageView.layer.shadowRadius = 1;
         self.mBubleImageView.layer.masksToBounds = NO;
         
+        CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
+        CGFloat imageViewHeight = requiredHeight -IMAGE_VIEW_PADDING_HEIGHT;
+        
+        CGFloat imageViewY = self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y;
+        
+        [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + 60),
+                                                  0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
+        
+        if(alMessage.isAReplyMessage)
+        {
+            [self processReplyOfChat:alMessage andViewSize:viewSize ];
+            
+            requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
+            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
+            
+        }
+        
+        [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + 60),
+                                                  0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
+        
+        
+        
         self.mImageView.frame = CGRectMake(self.mBubleImageView.frame.origin.x + IMAGE_VIEW_PADDING_X,
-                                           self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y,
+                                           imageViewY,
                                            self.mBubleImageView.frame.size.width - IMAGE_VIEW_PADDING_WIDTH,
-                                           self.mBubleImageView.frame.size.height - IMAGE_VIEW_PADDING_HEIGHT);
+                                           imageViewHeight);
         
         [self.mMessageStatusImageView setHidden:NO];
         
@@ -393,9 +430,13 @@ UIViewController * modalCon;
     
     [self.mImageView sd_setImageWithURL:theUrl];
     
-  UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+   UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", nil,[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
     
-    [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
+    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+    UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", nil,[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
+    
+    [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
+   
     [[UIMenuController sharedMenuController] update];
    
     
@@ -500,10 +541,10 @@ UIViewController * modalCon;
     
     if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
     {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:)  ));
+        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) || [self isMessageReplyMenuEnabled:action]));
     }
     
-    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)|| [self isForwardMenuEnabled:action]));
+    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)|| [self isForwardMenuEnabled:action]|| [self isMessageReplyMenuEnabled:action]));
 }
 
 
@@ -524,6 +565,14 @@ UIViewController * modalCon;
 {
     NSLog(@"Message forward option is pressed");
     [self.delegate processForwardMessage:self.mMessage];
+    
+}
+
+
+-(void) messageReply:(id)sender
+{
+    NSLog(@"Message forward option is pressed");
+    [self.delegate processMessageReply:self.mMessage];
     
 }
 
@@ -559,5 +608,10 @@ UIViewController * modalCon;
     return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
 }
 
+-(BOOL)isMessageReplyMenuEnabled:(SEL) action
+{
+    return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
+    
+}
 
 @end

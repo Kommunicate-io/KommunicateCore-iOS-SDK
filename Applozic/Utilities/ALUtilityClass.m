@@ -407,6 +407,28 @@
     return thumbnail;
 }
 
+
++(void)subVideoImage:(NSURL *)url  withCompletion:(void (^)(UIImage *image)) completion{
+    
+    AVAsset *asset = [AVAsset assetWithURL:url];
+    AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    generator.appliesPreferredTrackTransform=TRUE;
+    CMTime thumbTime = CMTimeMakeWithSeconds(0,30);
+    
+    AVAssetImageGeneratorCompletionHandler handler = ^(CMTime requestedTime, CGImageRef im, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error){
+        
+        if (result != AVAssetImageGeneratorSucceeded) {
+            NSLog(@"couldn't generate thumbnail, error:%@", error);
+        }
+        
+        completion([UIImage imageWithCGImage:im]);
+    };
+    
+    CGSize maxSize = CGSizeMake(128, 128);
+    generator.maximumSize = maxSize;
+    [generator generateCGImagesAsynchronouslyForTimes:[NSArray arrayWithObject:[NSValue valueWithCMTime:thumbTime]] completionHandler:handler];
+}
+
 +(void)showAlertMessage:(NSString *)text andTitle:(NSString *)title
 {
     UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:title
@@ -579,5 +601,55 @@
     
     return image;
 }
+
+
++(NSString*)getLocationUrl:(ALMessage*)almessage;
+{
+    NSString *latLongArgument = [self formatLocationJson:almessage];
+    NSString * finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
+                           latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
+    return finalURl;
+}
+
++(NSString*)getLocationUrl:(ALMessage*)almessage size: (CGRect) withSize
+{
+    
+    
+    NSString *latLongArgument = [self formatLocationJson:almessage];
+    
+    
+    NSString *staticMapUrl = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?format=png&markers=%@&key=%@&zoom=13&size=%dx%d&scale=1",latLongArgument,
+                              [ALUserDefaultsHandler getGoogleMapAPIKey], 2*(int)withSize.size.width, 2*(int)withSize.size.height];
+    
+    return staticMapUrl;
+}
+
++(NSString*)formatLocationJson:(ALMessage *)locationAlMessage
+{
+    NSError *error;
+    NSData *objectData = [locationAlMessage.message dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *jsonStringDic = [NSJSONSerialization JSONObjectWithData:objectData
+                                                                  options:NSJSONReadingMutableContainers
+                                                                    error:&error];
+    
+    NSArray* latLog = [[NSArray alloc] initWithObjects:[jsonStringDic valueForKey:@"lat"],[jsonStringDic valueForKey:@"lon"], nil];
+    
+    if(!latLog.count)
+    {
+        return [self processMapUrl:locationAlMessage];
+    }
+    
+    NSString *latLongArgument = [NSString stringWithFormat:@"%@,%@", latLog[0], latLog[1]];
+    return latLongArgument;
+}
+
++(NSString *)processMapUrl:(ALMessage *)message
+{
+    NSArray * URL_ARRAY = [message.message componentsSeparatedByString:@"="];
+    NSString * coordinate = (NSString *)[URL_ARRAY lastObject];
+    return coordinate;
+}
+
+
 
 @end

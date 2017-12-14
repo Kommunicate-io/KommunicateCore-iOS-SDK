@@ -11,6 +11,7 @@
 #import <AVFoundation/AVAsset.h>
 #import <AVFoundation/AVAssetExportSession.h>
 #import <AVFoundation/AVMediaFormat.h>
+#import "ALApplozicSettings.h"
 
 @implementation ALImagePickerHandler
 
@@ -56,7 +57,10 @@
                 default:
                     break;
             }
-            UISaveVideoAtPathToSavedPhotosAlbum(tempPath, self, nil, nil);
+            // If 'save video to gallery' is enabled then save to gallery
+            if([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
+                UISaveVideoAtPathToSavedPhotosAlbum(tempPath, self, nil, nil);
+            }
             handler(tempPath);
         }];
     }

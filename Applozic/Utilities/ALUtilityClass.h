@@ -28,6 +28,10 @@
 
 +(void)displayToastWithMessage:(NSString *)toastMessage;
 
++(NSString*)getLocationUrl:(ALMessage*)almessage;
+
++(NSString*)getLocationUrl:(ALMessage*)almessage size: (CGRect) withSize;
+
 
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID delegate:(id)delegate;
 
@@ -45,6 +49,7 @@
 -(void)getExactDate:(NSNumber *)dateValue;
 +(UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
 +(UIImage *)subProcessThumbnail:(NSURL *)url;
++(void)subVideoImage:(NSURL *)url  withCompletion:(void (^)(UIImage *image)) completion;
 +(void)showAlertMessage:(NSString *)text andTitle:(NSString *)title;
 +(UIImage *)getNormalizedImage:(UIImage *)rawImage;
 +(BOOL)isThisDebugBuild;

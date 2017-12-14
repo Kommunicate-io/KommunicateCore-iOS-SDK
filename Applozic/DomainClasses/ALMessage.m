@@ -264,6 +264,11 @@
 
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string
 {
+
+    if(string == nil){
+        return nil;
+    }
+    
     NSData * data = [string dataUsingEncoding:NSUTF8StringEncoding];
 //    NSString * error;
     NSPropertyListFormat format;

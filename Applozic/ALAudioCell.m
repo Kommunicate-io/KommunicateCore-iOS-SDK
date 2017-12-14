@@ -141,6 +141,7 @@
     
     [self.playPauseStop setHidden:YES];
     [self.mNameLabel setHidden:YES];
+    [self.replyParentView setHidden:YES];
     [self.mChannelMemberName setHidden:YES];
     self.mBubleImageView.backgroundColor = [UIColor whiteColor];
     
@@ -151,6 +152,8 @@
     ALContactDBService *theContactDBService = [[ALContactDBService alloc] init];
     ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
     NSString *receiverName = [alContact getDisplayName];
+    [self.replyUIView removeFromSuperview];
+
     
     if([alMessage.type isEqualToString:@MT_INBOX_CONSTANT])
     {
@@ -166,10 +169,7 @@
         self.mUserProfileImageView.layer.cornerRadius = self.mUserProfileImageView.frame.size.width/2;
         self.mUserProfileImageView.layer.masksToBounds = YES;
         
-        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
-                                                  self.mUserProfileImageView.frame.origin.y,
-                                                  viewSize.width/2 + BUBBLE_PADDING_WIDTH, BUBBLE_PADDING_HEIGHT)];
-        
+         
         self.mNameLabel.frame = self.mUserProfileImageView.frame;
         [self.mNameLabel setText:[ALColorUtility getAlphabetForProfileImage:alMessage.to]];
         
@@ -184,32 +184,45 @@
             [self.mNameLabel setHidden:NO];
             self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to];
         }
+         CGFloat requiredHeight  = BUBBLE_PADDING_HEIGHT;
+        CGFloat paypauseBUttonY = self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y ;
+            
+  [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+                                                  self.mUserProfileImageView.frame.origin.y,
+                                                  viewSize.width/2 + BUBBLE_PADDING_WIDTH, requiredHeight)];
         
-        [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
-                                                self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y,
-                                                BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
         
         if(alMessage.groupId)
         {
-            [self.mChannelMemberName setHidden:YES];
+         
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
             [self.mChannelMemberName setText:receiverName];
-            
-            [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
-                                                      self.mUserProfileImageView.frame.origin.y,
-                                                      viewSize.width/2 + BUBBLE_PADDING_WIDTH, 95)];
-            
+   
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width - CHANNEL_PADDING_WIDTH, CHANNEL_HEIGHT);
             
-            [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
-                                                    self.mChannelMemberName.frame.origin.y
-                                                    + self.mChannelMemberName.frame.size.height + BUTTON_PADDING_Y,
-                                                    BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
+            requiredHeight =  requiredHeight + self.mChannelMemberName.frame.size.height;
+            paypauseBUttonY = paypauseBUttonY + self.mChannelMemberName.frame.size.height;
+            
+        }    
+        if(alMessage.isAReplyMessage)
+        {
+            [self processReplyOfChat:alMessage andViewSize:viewSize];
+            
+            requiredHeight =  requiredHeight + self.replyParentView.frame.size.height;
+            paypauseBUttonY = paypauseBUttonY + self.replyParentView.frame.size.height;
             
         }
+                    
+            [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+                                                      self.mUserProfileImageView.frame.origin.y,
+                                                      viewSize.width/2 + BUBBLE_PADDING_WIDTH, requiredHeight)];
+             [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
+                                                paypauseBUttonY,
+                                                BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
+        
         
         CGFloat nameWidth = self.mBubleImageView.frame.size.width - self.playPauseStop.frame.size.width - 20;
         CGFloat nameX = self.playPauseStop.frame.origin.x + self.playPauseStop.frame.size.width + 10;
@@ -255,9 +268,7 @@
             self.progresLabel.alpha = 0;
         }
         
-    }
-    
-    else
+    }else
     {
 
         [self.mUserProfileImageView setFrame:CGRectMake(viewSize.width - USER_PROFILE_PADDING_X_OUTBOX, 0, 0, USER_PROFILE_HEIGHT)];
@@ -270,17 +281,34 @@
         
         [self.mMessageStatusImageView setHidden:NO];
         
-        [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
-                                                self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y,
-                                                BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
-        
-        [self.mDowloadRetryButton setFrame:CGRectMake(self.playPauseStop.frame.origin.x ,
+  
+        if(alMessage.isAReplyMessage)
+        {
+            [self processReplyOfChat:alMessage andViewSize:viewSize ];
+            
+            [self.mBubleImageView setFrame:CGRectMake(viewSize.width - (viewSize.width/2 + 50) - 10,
+                                                      self.mUserProfileImageView.frame.origin.y,
+                                                      viewSize.width/2 + BUBBLE_PADDING_WIDTH, BUBBLE_PADDING_HEIGHT+ self.replyParentView.frame.size.height)];
+            [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
+                                                    self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y + self.replyParentView.frame.size.height,
+                                                    BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
+            
+        }
+        else
+        {
+            
+            [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
+                                                    self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y,
+                                                    BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
+            
+        }
+                [self.mDowloadRetryButton setFrame:CGRectMake(self.playPauseStop.frame.origin.x ,
                                                       self.playPauseStop.frame.origin.y,
                                                       DOWNLOAD_RETRY_WIDTH, DOWNLOAD_RETRY_WIDTH)];
         
         [self setupProgressValueX: (self.playPauseStop.frame.origin.x) andY: (self.playPauseStop.frame.origin.y)];
         
-        msgFrameHeight = viewSize.width - 120;
+        msgFrameHeight = self.mBubleImageView.frame.size.height;
         
         CGFloat progressBarWidth = self.mBubleImageView.frame.size.width - self.playPauseStop.frame.size.width - 30;
         
@@ -377,8 +405,12 @@
     
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     
-    [[UIMenuController sharedMenuController] setMenuItems: @[messageForward]];
+    UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", nil,[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
+    
+    [[UIMenuController sharedMenuController] setMenuItems: @[messageReply,messageForward]];
+    
     [[UIMenuController sharedMenuController] update];
+    [self.contentView bringSubviewToFront:self.replyUIView];
     
     return self;
     
@@ -389,9 +421,9 @@
 {
     if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId){
         
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isForwardMenuEnabled:action]));
+        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isForwardMenuEnabled:action] || [self isMessageReplyMenuEnabled:action] ));
     }
-    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)||[self isForwardMenuEnabled:action]));
+    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)||[self isForwardMenuEnabled:action] || [self isMessageReplyMenuEnabled:action]));
 }
 
 
@@ -571,6 +603,23 @@
 -(BOOL)isForwardMenuEnabled:(SEL) action;
 {
     return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
+}
+
+
+
+-(void) messageReply:(id)sender
+{
+    NSLog(@"Message forward option is pressed");
+    [self.delegate processMessageReply:self.mMessage];
+    
+}
+
+
+
+-(BOOL)isMessageReplyMenuEnabled:(SEL) action
+{
+    return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
+    
 }
 
 
