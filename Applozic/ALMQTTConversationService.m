@@ -453,4 +453,48 @@
     });
 }
 
+-(void)subscribeToOpenChannel:(NSNumber *)channelKey
+{
+    NSLog(@"MQTT_CHANNEL/OPEN_GROUP_SUBSCRIBING");
+    dispatch_async(dispatch_get_main_queue (),^{
+        @try
+        {
+            if (!self.session && self.session.status == MQTTSessionStatusConnected) {
+                NSLog(@"MQTT_SESSION_NULL");
+                return;
+            }
+            NSString * openGroupString = @"";
+            if(channelKey)
+            {
+                openGroupString = [NSString stringWithFormat:@"group-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
+            }
+
+            [self.session subscribeToTopic:openGroupString atLevel:MQTTQosLevelAtMostOnce];
+            NSLog(@"MQTT_CHANNEL/OPEN_GROUP_SUBSCRIBTION_COMPLETE");
+        }
+        @catch (NSException * exp) {
+            NSLog(@"Exception in subscribing channel :: %@", exp.description);
+        }
+    });
+}
+
+-(void)unSubscribeToOpenChannel:(NSNumber *)channelKey
+{
+    NSLog(@"MQTT_/OPEN_GROUP_UNSUBSCRIBING");
+    dispatch_async(dispatch_get_main_queue (), ^{
+
+        if (!self.session) {
+            NSLog(@"MQTT_SESSION_NULL");
+            return;
+        }
+        NSString * topicString = @"";
+        if(channelKey)
+        {
+            topicString = [NSString stringWithFormat:@"group-%@-%@", [ALUserDefaultsHandler getApplicationKey], channelKey];
+        }
+        [self.session unsubscribeTopic:topicString];
+        NSLog(@"MQTT_CHANNEL/OPEN_GROUP_UNSUBSCRIBTION_COMPLETE");
+    });
+}
+
 @end
