@@ -74,7 +74,7 @@
         {
             NSLog(@"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
             ALChannelCreateResponse *response = [[ALChannelCreateResponse alloc] initWithJSONString:theJson];
-            NSMutableArray * members = response.alChannel.removeMembers;
+            NSMutableArray * members = response.alChannel.membersId;
             ALContactService * contactService = [ALContactService new];
             NSMutableArray* userNotPresentIds =[NSMutableArray new];
             for(NSString * userId in members)

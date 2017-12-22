@@ -81,7 +81,9 @@
     if(_notificationAfterTime){
         return ([_notificationAfterTime longValue]> secsUtc1970);
     }
-    return NO;
+    else {
+        return ([self isGroupMutedByDefault]);
+    }
 }
 
 -(void)setMembersName:(NSMutableArray *)membersName {
@@ -132,6 +134,15 @@
     }
     
     return dictionary;
+}
+
+-(BOOL)isGroupMutedByDefault{
+
+    if( _metadata && [_metadata  valueForKey:CHANNEL_DEFAULT_MUTE] ){
+
+        return ([ [_metadata  valueForKey:CHANNEL_DEFAULT_MUTE] isEqualToString:@"true"]);
+    }
+    return NO;
 }
 
 @end

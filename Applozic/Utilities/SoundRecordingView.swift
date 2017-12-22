@@ -1,13 +1,12 @@
 //
 //  SoundRecordingView.swift
-//  CocoaPodsTest
+//  ApplozicSwift
 //
-//  Created by Mukesh Thawani on 13/12/17.
-//  Copyright © 2017 mukesh. All rights reserved.
+//  Created by Mukesh Thawani on 04/05/17.
+//  Copyright © 2017 Applozic. All rights reserved.
 //
 
 import Foundation
-import AVFoundation
 
 @objc public protocol ALSoundRecorderProtocol {
     func finishRecordingAudio(fileUrl: NSString)
@@ -192,7 +191,7 @@ import AVFoundation
 
         timer = Timer.scheduledTimer(timeInterval: 1, target:self, selector: #selector(ALSoundRecorderButton.updateCounter), userInfo: nil, repeats: true)
 
-        //        audioFilename = URL(fileURLWithPath: NSTemporaryDirectory().appending("tempRecording.m4a"))
+//        audioFilename = URL(fileURLWithPath: NSTemporaryDirectory().appending("tempRecording.m4a"))
         let fileName = String(format: "AUD-%f.m4a", Date().timeIntervalSince1970*1000)
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         audioFilename = documentsURL.appendingPathComponent(fileName)
@@ -303,3 +302,4 @@ extension ALSoundRecorderButton: AVAudioRecorderDelegate
         }
     }
 }
+

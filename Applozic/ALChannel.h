@@ -12,6 +12,8 @@
 #import "ALConversationProxy.h"
 
 #define CHANNEL_SPECIAL_CASE 7
+#define CHANNEL_DEFAULT_MUTE @"MUTE"
+
 /*********************
  type = 7 SPECIAL CASE
 *********************/

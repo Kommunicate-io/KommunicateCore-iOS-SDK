@@ -339,7 +339,9 @@
     [self setCallButtonInNavigationBar];
     [self checkIfChannelLeft];
     [self checkUserBlockStatus];
-    [self checkUserDeleted];
+    if(self.contactIds ){
+      [self checkUserDeleted];
+    }
     [self showNoConversationLabel];
     [self hideKeyBoardOnEmptyList];
     
