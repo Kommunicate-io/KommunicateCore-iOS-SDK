@@ -94,6 +94,8 @@
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *tableViewSendMsgTextViewConstraint;
 @property (nonatomic, assign) BOOL comingFromBackground;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *nsLayoutconstraintAttachmentWidth;
+
 //============Message Reply outlets====================================//
 @property (weak, nonatomic) IBOutlet UIImageView *replyAttachmentPreview;
 @property (weak, nonatomic) IBOutlet UIView *messageReplyView;
@@ -312,7 +314,20 @@
     
     if(![self isGroup])
     {
+        self.nsLayoutconstraintAttachmentWidth.constant = 40;
+        self.attachmentOutlet.hidden = NO;
         [self serverCallForLastSeen];
+    }else{
+        ALChannelService * alChannelService  = [[ALChannelService alloc] init];
+        ALChannel *alChannel = [alChannelService getChannelByKey:self.channelKey];
+        if(alChannel && alChannel.type == OPEN){
+            self.attachmentOutlet.hidden = YES;
+            self.nsLayoutconstraintAttachmentWidth.constant = 0;
+        }else{
+            self.attachmentOutlet.hidden = NO;
+            self.nsLayoutconstraintAttachmentWidth.constant = 40;
+
+        }
     }
     
     [self setTitle];
@@ -652,7 +667,7 @@
         double doubleTime = ceil(lastMsg.createdAtTime.doubleValue);
         NSNumber *lastMsgTime = [NSNumber numberWithDouble:doubleTime];
         messageListRequest.startTimeStamp = lastMsgTime;
-        
+    
         [ALMessageService getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
             
             if(messages.count)
@@ -692,15 +707,24 @@
 -(void)subscrbingChannel
 {
     ALChannelService * alChannelService  = [[ALChannelService alloc] init];
+    
+    ALChannel *alChannel = [alChannelService getChannelByKey:self.channelKey];
+    if(alChannel && alChannel.type == OPEN){
+        [self.mqttObject subscribeToOpenChannel:self.channelKey];
+    }
+
     if(![alChannelService isChannelLeft:self.channelKey] && ![ALChannelService isChannelDeleted:self.channelKey])
     {
         [self.mqttObject subscribeToChannelConversation:self.channelKey];
     }
+    
     if([self isGroup] && [ALUserDefaultsHandler isUserLoggedInUserSubscribedMQTT])
     {
         [self.mqttObject unSubscribeToChannelConversation:nil];
     }
 }
+
+
 
 -(void)unSubscrbingChannel
 {
@@ -710,6 +734,8 @@
                                typing:NO];
     
     [self.mqttObject unSubscribeToChannelConversation:self.channelKey];
+    [self.mqttObject unSubscribeToOpenChannel:self.channelKey];
+
 }
 
 -(void)didEnterBackGround
@@ -1390,8 +1416,24 @@
         [ALUtilityClass showAlertMessage:[ALApplozicSettings getAbuseWarningText] andTitle:NSLocalizedStringWithDefaultValue(@"warningText", nil, [NSBundle mainBundle], @"WARNING", @"")];
         return;
     }
-
-
+    
+    
+    if(self.channelKey){
+        ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
+        
+        ALChannel *channel = [channelDBService loadChannelByKey:self.channelKey];
+        if(channel && channel.type == OPEN){
+            
+            if (![ALDataNetworkConnection checkDataNetworkAvailable])
+            {
+                [ALUtilityClass showAlertMessage:nil andTitle:NSLocalizedStringWithDefaultValue(@"noInternetMessage", nil, [NSBundle mainBundle], @"No Internet Connectivity", @"")];
+                
+                return;
+            }
+        }
+        
+    }
+    
     ALMessage * theMessage = [self getMessageToPost];
     [self.alMessageWrapper addALMessageToMessageArray:theMessage];
     [self.mTableView reloadData];
@@ -2811,6 +2853,9 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(void)handleErrorStatus:(ALMessage *)message
 {
+    if(!message.msgDBObjectId){
+        return;
+    }
     message.inProgress = NO;
     message.isUploadFailed = YES;
     NSError *error = nil;
@@ -3850,6 +3895,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 {
     NSLog(@" newMessageHandler called ::#### ");
     NSMutableArray * messageArray = notification.object;
+
     [self addMessageToList:messageArray];
 //    for (ALMessage * almessage in messageArray)
 //    {

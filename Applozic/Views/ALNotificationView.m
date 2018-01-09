@@ -73,7 +73,11 @@
     {
         return NSLocalizedStringWithDefaultValue(@"shareadAudioText", nil,[NSBundle mainBundle], @"Shared an Audio", @"");
     }
-    else if (alMessage.contentType == ALMESSAGE_CONTENT_ATTACHMENT ||
+    else if (alMessage.contentType == AV_CALL_CONTENT_THREE)
+    {
+        return [alMessage getVOIPMessageText];
+        
+    }else if (alMessage.contentType == ALMESSAGE_CONTENT_ATTACHMENT ||
              [alMessage.message isEqualToString:@""] || alMessage.fileMeta != NULL)
     {
         return NSLocalizedStringWithDefaultValue(@"shareadAttachmentText", nil,[NSBundle mainBundle], @"Shared an Attachment", @"");

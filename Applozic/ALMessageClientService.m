@@ -173,11 +173,11 @@
     
 }
 
--(void)getMessageListForUser:(MessageListRequest *)messageListRequest withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
+-(void)getMessageListForUser:(MessageListRequest *)messageListRequest withOpenGroup:(BOOL )isOpenGroup withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
 {
-   NSLog(@"CHATVC_OPENS_1st TIME_CALL");
-   NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
-   NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:messageListRequest.getParamString];
+    NSLog(@"CHATVC_OPENS_1st TIME_CALL");
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:messageListRequest.getParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"GET MESSAGES LIST FOR USERID" WithCompletionHandler:^(id theJson, NSError *theError) {
         
@@ -201,12 +201,13 @@
         }
         
         ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson
-                                                                          andWithUserId:messageListRequest.userId
-                                                                           andWithGroup:messageListRequest.channelKey];
+                                                                         andWithUserId:messageListRequest.userId
+                                                                          andWithGroup:messageListRequest.channelKey];
         
-        ALMessageDBService *almessageDBService = [[ALMessageDBService alloc] init];
-        [almessageDBService addMessageList:messageListResponse.messageList];
-        
+        if(!isOpenGroup){
+            ALMessageDBService *almessageDBService = [[ALMessageDBService alloc] init];
+            [almessageDBService addMessageList:messageListResponse.messageList];
+        }
         ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
         
@@ -217,7 +218,15 @@
         NSLog(@"MSG_LIST RESPONSE :: %@",(NSString *)theJson);
         
     }];
-    
+}
+
+-(void)getMessageListForUser:(MessageListRequest *)messageListRequest withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
+{
+    [self getMessageListForUser:messageListRequest withOpenGroup:NO withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+
+        completion(messages, error, userDetailArray);
+
+    }];
 }
 
 

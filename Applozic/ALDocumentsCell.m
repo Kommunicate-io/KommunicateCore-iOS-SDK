@@ -516,6 +516,18 @@
 
 -(BOOL) canPerformAction:(SEL)action withSender:(id)sender
 {
+    
+    if(self.mMessage.groupId){
+        
+        ALChannelService *channelService = [[ALChannelService alloc] init];
+        ALChannel *channel =  [channelService getChannelByKey:self.mMessage.groupId];
+        if(channel && channel.type == OPEN){
+            return NO;
+        }
+    }
+    
+    
+    
     if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
     {
         return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isMessageReplyMenuEnabled:action] ||  [self isForwardMenuEnabled:action] ));
@@ -589,6 +601,8 @@
 }
 -(BOOL)isMessageReplyMenuEnabled:(SEL) action
 {
+    
+    
     return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
 }
 

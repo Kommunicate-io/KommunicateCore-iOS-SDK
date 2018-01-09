@@ -16,6 +16,8 @@
 #import "ALPushAssist.h"
 #import "ALUserService.h"
 #import "ALNotificationView.h"
+#import "ALRegisterUserClientService.h"
+#import "ALAppLocalNotifications.h"
 
 
 
@@ -344,4 +346,23 @@
     [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
 }
 
+-(BOOL) checkForLaunchNotification:(NSDictionary *)dictionary
+{
+    [ALRegisterUserClientService isAppUpdated];
+    
+    ALAppLocalNotifications *localNotification = [ALAppLocalNotifications appLocalNotificationHandler];
+    [localNotification dataConnectionNotificationHandler];
+    
+    if(dictionary != nil){
+        
+        NSDictionary *notification = [dictionary objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        
+        if(notification ){
+            [self processPushNotification:notification updateUI:[NSNumber numberWithInt:APP_STATE_INACTIVE]];
+            
+        }
+        
+    }
+    return false;
+}
 @end

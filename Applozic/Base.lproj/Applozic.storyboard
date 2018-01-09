@@ -493,6 +493,7 @@
                     <size key="freeformSize" width="600" height="600"/>
                     <connections>
                         <outlet property="activityIndicator" destination="d2y-hV-AkV" id="YHD-ei-sSW"/>
+                        <outlet property="descriptionTextView" destination="10y-gF-sJ8" id="r8e-tF-Gvt"/>
                         <outlet property="groupIconView" destination="L1b-27-OrZ" id="5DU-OM-1Lf"/>
                         <outlet property="groupNameInput" destination="NDG-3p-bsz" id="pRQ-Q9-v05"/>
                         <outlet property="loadingIndicator" destination="Bgh-OY-zQc" id="ZXr-Ba-OJ3"/>
@@ -1537,8 +1538,11 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                     <connections>
                         <outlet property="activityIndicator" destination="SLW-CD-9bn" id="ZXA-12-Bk0"/>
                         <outlet property="editButton" destination="f40-bQ-ijb" id="Qzf-dh-ldH"/>
+                        <outlet property="mobileNotification" destination="rd6-bl-npA" id="RQS-eM-JV8"/>
+                        <outlet property="notificationTitle" destination="1ch-V6-7WF" id="2cZ-DU-bdN"/>
                         <outlet property="notificationToggle" destination="ssR-vs-NN9" id="O2Q-uB-zDa"/>
                         <outlet property="profileImage" destination="fEQ-TE-P0v" id="SpR-ah-6UK"/>
+                        <outlet property="profileStatus" destination="uPH-8k-6t7" id="cqF-cb-mUT"/>
                         <outlet property="uploadImageButton" destination="nY9-bD-W8V" id="I1R-Xc-UBx"/>
                         <outlet property="userDesignationLabel" destination="d2x-8G-9aN" id="wUS-5t-Hbs"/>
                         <outlet property="userNameLabel" destination="rO1-dd-oCu" id="2eP-Nj-Yr7"/>
@@ -1877,6 +1881,7 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                         <outlet property="mTableView" destination="3bd-KT-wrK" id="3Dl-dt-9Iy"/>
                         <outlet property="messageReplyView" destination="2ki-he-soP" id="Q9O-Ta-cVT"/>
                         <outlet property="noConLabel" destination="sTD-T1-vIc" id="DE5-Yy-V9K"/>
+                        <outlet property="nsLayoutconstraintAttachmentWidth" destination="oOD-ac-EA7" id="NiE-mW-NQS"/>
                         <outlet property="pickerView" destination="IKJ-fO-atY" id="bDp-y9-YDt"/>
                         <outlet property="replyAttachmentPreview" destination="3sa-6d-hOq" id="Isd-x0-cZ9"/>
                         <outlet property="replyIcon" destination="6v4-kw-zfP" id="JFq-KE-srm"/>

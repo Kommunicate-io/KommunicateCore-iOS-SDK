@@ -103,3 +103,7 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALMessageServiceWrapper.h>
 #import <Applozic/ALSubViewController.h>
 #import <Applozic/MessageReplyView.h>
+#import <Applozic/AlChannelInfoModel.h>
+#import <Applozic/AlChannelResponse.h>
+#import <Applozic/AlChannelFeedResponse.h>
+

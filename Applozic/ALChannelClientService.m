@@ -921,6 +921,67 @@
     
 }
 
+
++(void)getChannelInformationResponse:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion
+{
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/group/info", KBASE_URL];
+    NSString * theParamString = [NSString stringWithFormat:@"groupId=%@", channelKey];
+    if(clientChannelKey)
+    {
+        theParamString = [NSString stringWithFormat:@"clientGroupId=%@", clientChannelKey];
+    }
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
+        
+        if(error)
+        {
+            NSLog(@"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
+            completion(error, nil);
+        }
+        else
+        {
+            NSLog(@"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
+            AlChannelFeedResponse *response = [[AlChannelFeedResponse alloc] initWithJSONString:theJson];
+            
+            if([response.status isEqualToString: RESPONSE_SUCCESS] ){
+                NSMutableArray * members = response.alChannel.membersId;
+                ALContactService * contactService = [ALContactService new];
+                NSMutableArray* userNotPresentIds = [NSMutableArray new];
+                for(NSString * userId in members)
+                {
+                    if(![contactService isContactExist:userId])
+                    {
+                        [userNotPresentIds addObject:userId];
+                    }
+                }
+                if(userNotPresentIds.count>0)
+                {
+                    NSLog(@"Call userDetails...");
+                    
+                    ALUserService *alUserService = [ALUserService new];
+                    [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                        NSLog(@"User detail response sucessfull.");
+                        completion(error, response);
+                        
+                    }];
+                }
+                else
+                {
+                    
+                    NSLog(@"No user for userDetails");
+                    completion(error, response);
+                }
+            }else{
+                completion(error, response);
+            }
+            
+        }
+    }];
+}
+
+
+
 -(void) getMultipleContactGroup:(NSArray *)contactGroupIds  withCompletion:(void(^)(NSError *error, NSArray *channel)) completion
 {
     

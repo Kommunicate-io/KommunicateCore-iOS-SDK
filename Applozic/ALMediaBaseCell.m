@@ -281,6 +281,7 @@
 
 -(BOOL)isMessageReplyMenuEnabled:(SEL) action;
 {
+
     return ([ALApplozicSettings isReplyOptionEnabled] && action ==@selector(processMessageReply:));
 }
 

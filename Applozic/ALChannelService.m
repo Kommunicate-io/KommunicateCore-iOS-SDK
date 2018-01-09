@@ -865,6 +865,38 @@
     
 }
 
+-(void)getChannelInformationByResponse:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void (^)(NSError *error,ALChannel *alChannel3,AlChannelFeedResponse *channelResponse)) completion
+{
+    ALChannel *alChannel1;
+    if (clientChannelKey) {
+        alChannel1 = [self fetchChannelWithClientChannelKey:clientChannelKey];
+    }else{
+        alChannel1 = [self getChannelByKey:channelKey];
+    }
+    
+    if(alChannel1)
+    {
+        completion (nil,alChannel1,nil);
+    }
+    else
+    {
+        
+        [ALChannelClientService getChannelInformationResponse:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, AlChannelFeedResponse *response) {
+            
+            if(!error && [response.status isEqualToString: RESPONSE_SUCCESS] )
+            {
+                ALChannelDBService *dbService = [[ALChannelDBService alloc] init];
+                [dbService createChannel:response.alChannel];
+                completion (nil,response.alChannel,nil);
+            }else{
+                completion (error,nil,response);
+            }
+        }];
+        
+    }
+}
+
+
 @end
 
 

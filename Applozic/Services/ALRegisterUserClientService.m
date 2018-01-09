@@ -41,7 +41,7 @@
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
     [user setPassword:[ALUserDefaultsHandler getPassword]];
     [user setUnreadCountType:[ALUserDefaultsHandler getUnreadCountType]];
-    [user setDeviceApnsType:[ALUserDefaultsHandler getDeviceApnsType]];
+    [user setDeviceApnsType:!isDevelopmentBuild()];
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
     
@@ -194,7 +194,7 @@
     [user setPrefContactAPI:2];
     [user setEmailVerified:true];
     [user setDeviceType:4];
-    [user setDeviceApnsType:[ALUserDefaultsHandler getDeviceApnsType]];
+    [user setDeviceApnsType:!isDevelopmentBuild()];
     [user setAppVersionCode: VERSION_CODE];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
@@ -251,7 +251,7 @@
     NSMutableURLRequest * request = [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil];
     
     [ALResponseHandler processRequest:request andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
-        
+
         NSLog(@"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         if(!error && [response.status isEqualToString:@"success"])
@@ -263,6 +263,11 @@
             [messageDBService deleteAllObjectsInCoreData];
             
             [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
+        } else {
+            [ALUserDefaultsHandler clearAll];
+            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+            [messageDBService deleteAllObjectsInCoreData];
+            [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         }
         
         completion(response,error);
@@ -324,6 +329,30 @@
         }
         NSLog(@"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
     }];
+}
+
+static BOOL isDevelopmentBuild(void) {
+#if TARGET_IPHONE_SIMULATOR
+    return YES;
+#else
+    static BOOL isDevelopment = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // There is no provisioning profile in AppStore Apps.
+        NSData *data = [NSData dataWithContentsOfFile:[NSBundle.mainBundle pathForResource:@"embedded" ofType:@"mobileprovision"]];
+        if (data) {
+            const char *bytes = [data bytes];
+            NSMutableString *profile = [[NSMutableString alloc] initWithCapacity:data.length];
+            for (NSUInteger i = 0; i < data.length; i++) {
+                [profile appendFormat:@"%c", bytes[i]];
+            }
+            // Look for debug value, if detected we're a development build.
+            NSString *cleared = [[profile componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet] componentsJoinedByString:@""];
+            isDevelopment = [cleared rangeOfString:@"<key>get-task-allow</key><true/>"].length > 0;
+        }
+    });
+    return isDevelopment;
+#endif
 }
 
 @end

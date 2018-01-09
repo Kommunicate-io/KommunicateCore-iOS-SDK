@@ -912,6 +912,23 @@ FETCH LATEST MESSSAGE FOR SUB GROUPS
         NSLog(@"%@, %@", Error, Error.localizedDescription);
     }
 }
+-(void) updateMessageSentDetails:(NSString*)messageKeyString withCreatedAtTime : (NSNumber *) createdAtTime withDbMessage:(DB_Message *) dbMessage {
+    
+    if(!dbMessage){
+        return;
+    }
+   
+          ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
 
+            dbMessage.key = messageKeyString;
+            dbMessage.inProgress = [NSNumber numberWithBool:NO];
+            dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
+            dbMessage.createdAt =createdAtTime;
+    
+            dbMessage.sentToServer=[NSNumber numberWithBool:YES];
+            dbMessage.status = [NSNumber numberWithInt:SENT];
+            [theDBHandler.managedObjectContext save:nil];
+
+}
 
 @end

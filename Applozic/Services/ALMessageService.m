@@ -127,16 +127,22 @@ static ALMessageClientService *alMsgClientService;
     
     
     ALChannelService *channelService = [[ALChannelService alloc] init];
-    if(messageListRequest.channelKey && ![channelService isLoginUserInChannel:messageListRequest.channelKey])
+    if(messageListRequest.channelKey)
     {
-        ALChannel *alChannel = [channelService getChannelByKey:messageListRequest.channelKey];
-        messageListRequest.channelType = alChannel.type;
+        
+       [channelService getChannelInformation:messageListRequest.channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
+            if(alChannel){
+                messageListRequest.channelType = alChannel.type;
+            }
+    
+       }];
+        
     }
     
     ALMessageClientService *alMessageClientService = [[ALMessageClientService alloc] init];
     ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
     
-    [alMessageClientService getMessageListForUser:messageListRequest
+    [alMessageClientService getMessageListForUser:messageListRequest withOpenGroup:messageListRequest.channelType == OPEN
                    withCompletion:^(NSMutableArray *messages,
                                     NSError *error,
                                     NSMutableArray *userDetailArray) {
@@ -172,6 +178,8 @@ static ALMessageClientService *alMsgClientService;
                        }
     }];
 }
+
+
 
 +(void) getMessageListForContactId:(NSString *)contactIds isGroup:(BOOL )isGroup channelKey:(NSNumber *)channelKey conversationId:(NSNumber *)conversationId startIndex:(NSInteger)startIndex withCompletion:(void (^)(NSMutableArray *))completion {
     int rp = 200;
@@ -225,10 +233,23 @@ static ALMessageClientService *alMsgClientService;
     NSError *theError=nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversationTableNotification" object:alMessage userInfo:nil];
     
+    ALChannel *channel;
+    if(alMessage.groupId){
+        ALChannelService *channelService = [[ALChannelService alloc]init];
+        channel  = [channelService getChannelByKey:alMessage.groupId];
+        
+    }
+    
     if (alMessage.msgDBObjectId == nil)
     {
         NSLog(@"message not in DB new insertion.");
-        dbMessage = [dbService addMessage:alMessage];
+        if(channel ){
+            if(channel.type != OPEN){
+                dbMessage = [dbService addMessage:alMessage];
+            }
+        }else{
+            dbMessage = [dbService addMessage:alMessage];
+        }
     }
     else
     {
@@ -254,24 +275,25 @@ static ALMessageClientService *alMsgClientService;
                                                      forKey:NSLocalizedDescriptionKey]];
                 
             }else{
-                
-                ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-                
-                dbMessage.key = response.messageKey;
-                dbMessage.inProgress = [NSNumber numberWithBool:NO];
-                dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
-                dbMessage.createdAt =response.createdAt;
-                
-                dbMessage.sentToServer=[NSNumber numberWithBool:YES];
-                dbMessage.status = [NSNumber numberWithInt:SENT];
-                [theDBHandler.managedObjectContext save:nil];
 
-                alMessage.key = dbMessage.key;
-                alMessage.sentToServer= dbMessage.sentToServer.boolValue;
-                alMessage.inProgress = dbMessage.inProgress.boolValue;
-                alMessage.isUploadFailed=dbMessage.isUploadFailed.boolValue;
-                alMessage.status = dbMessage.status;
-                alMessage.msgDBObjectId = dbMessage.objectID;
+
+                if(channel){
+                    if(channel.type != OPEN){
+                        alMessage.msgDBObjectId = dbMessage.objectID;
+                        [dbService updateMessageSentDetails:response.messageKey withCreatedAtTime:response.createdAt withDbMessage:dbMessage];
+
+                    }
+                }else{
+                    alMessage.msgDBObjectId = dbMessage.objectID;
+                    [dbService updateMessageSentDetails:response.messageKey withCreatedAtTime:response.createdAt withDbMessage:dbMessage];
+                }
+                
+                
+                alMessage.key = response.messageKey;
+                alMessage.sentToServer = YES;
+                alMessage.inProgress = NO;
+                alMessage.isUploadFailed= NO;
+                alMessage.status = [NSNumber numberWithInt:SENT];
                 
             }
             
@@ -890,6 +912,37 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     ALMessageDBService *alMsgDBService = [[ALMessageDBService alloc] init];
     DB_Message * dbMessage = (DB_Message*) [alMsgDBService getMessageByKey:@"key" value:messageReplyId];
     return [alMsgDBService createMessageEntity:dbMessage];
+}
+
++(void)addOpenGroupMessage:(ALMessage*)alMessage{
+    {
+        
+        if(!alMessage){
+            return;
+        }
+        
+        NSMutableArray * singlemessageArray = [[NSMutableArray alloc] init];
+        [singlemessageArray addObject:alMessage];
+        NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:singlemessageArray];
+        for(ALMessage * message in hiddenMsgFilteredArray)
+        {
+            
+            if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
+                ALChannelService *channelService = [[ALChannelService alloc] init];
+                [channelService syncCallForChannel];
+                if([message isMsgHidden]) {
+                    [singlemessageArray removeObject:message];
+                }
+            }
+            
+        }
+        
+        [ALUserService processContactFromMessages:singlemessageArray withCompletion:^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:NEW_MESSAGE_NOTIFICATION object:singlemessageArray userInfo:nil];
+            
+        }];
+        
+    }
 }
 
 

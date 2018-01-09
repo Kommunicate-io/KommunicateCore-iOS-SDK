@@ -18,6 +18,7 @@
 #import "ALChannelSyncResponse.h"
 #import "ALMuteRequest.h"
 #import "ALAPIResponse.h"
+#import "AlChannelFeedResponse.h"
 
 #define GROUP_FETCH_BATCH_SIZE @"100"
 
@@ -41,6 +42,8 @@
 +(void)addMultipleUsersToChannel:(NSMutableArray* )channelKeys channelUsers:(NSMutableArray *)channelUsers andCompletion:(void(^)(NSError * error, ALAPIResponse *response))completion;
 
 +(void)updateChannel:channelKey orClientChannelKey:clientChannelKey andNewName:newName andImageURL:imageURL metadata:metaData orChildKeys:childKeysList orChannelUsers:(NSMutableArray *)channelUsers andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+
++(void)getChannelInformationResponse:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion;
 
 
 +(void)syncCallForChannel:(NSNumber *)channelKey andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
