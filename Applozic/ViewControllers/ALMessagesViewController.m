@@ -1029,7 +1029,7 @@
             else
             {
                 theFilteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
-                                    [NSPredicate predicateWithFormat:@"contactIds = %@",alMessageobj.contactIds]];
+                                    [NSPredicate predicateWithFormat:@"contactIds = %@ AND groupId = %@",alMessageobj.contactIds,nil]];
             }
             
             [self subProcessDeleteMessageThread:theFilteredArray];

@@ -38,6 +38,7 @@
     for(NSDictionary *JSONDictionaryObject in userDetailJsonArray)
     {
         ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:JSONDictionaryObject];
+        userDetail.unreadCount = 0;
         ALContactDBService * contactDB = [ALContactDBService new];
         [contactDB updateUserDetail: userDetail];
     }

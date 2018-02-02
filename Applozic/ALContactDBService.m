@@ -335,6 +335,15 @@
     }
 }
 
+-(void)addUserDetailsWithoutUnreadCount:(NSMutableArray *)userDetails
+{
+    for(ALUserDetail *theUserDetail in userDetails)
+    {
+        theUserDetail.unreadCount = 0;
+        [self updateUserDetail:theUserDetail];
+    }
+}
+
 -(void) updateConnectedStatus: (NSString *) userId lastSeenAt:(NSNumber *) lastSeenAt  connected: (BOOL) connected
 {
     ALUserDetail *ob = [[ALUserDetail alloc] init];
@@ -368,10 +377,10 @@
         DB_CONTACT * dbContact = [result objectAtIndex:0];
         dbContact.lastSeenAt = userDetail.lastSeenAtTime;
         dbContact.connected = userDetail.connected;
-        if(![userDetail.unreadCount isEqualToNumber:[NSNumber numberWithInt:0]])
-        {
+        if(userDetail.unreadCount != nil && [userDetail.unreadCount  compare:[NSNumber numberWithInt:0]] != NSOrderedSame){
             dbContact.unreadCount = userDetail.unreadCount;
-        }        
+        }
+        
         if(userDetail.displayName)
         {
             dbContact.displayName = userDetail.displayName;
@@ -598,6 +607,7 @@
     NSMutableArray * contactArray = [NSMutableArray new];
     for(ALUserDetail * userDetail in contactsResponse.userDetailList)
     {
+        userDetail.unreadCount = 0;
         [self updateUserDetail:userDetail];
         ALContact * contact = [self loadContactByKey:@"userId" value: userDetail.userId];
         [contactArray addObject:contact];

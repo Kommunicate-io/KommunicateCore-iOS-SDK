@@ -331,6 +331,7 @@
             for (NSDictionary * theDictionary in JSONDictionary)
             {
                 ALUserDetail * userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+                userDetail.unreadCount = 0;
                 [ALLUserDetailArray addObject:userDetail];
             }
             completionMark(ALLUserDetailArray, theError);

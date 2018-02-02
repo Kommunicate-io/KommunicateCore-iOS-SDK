@@ -494,7 +494,7 @@
 +(NSInteger)getFetchConversationPageSize
 {
     NSInteger maxLimit = [[NSUserDefaults standardUserDefaults] integerForKey:CONVERSATION_FETCH_PAGE_SIZE];
-    return maxLimit ? maxLimit : 20;
+    return maxLimit ? maxLimit : 60;
 }
 
 +(void)setNotificationMode:(short)mode

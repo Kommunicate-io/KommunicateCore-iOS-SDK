@@ -90,6 +90,7 @@
          NSMutableArray* lastSeenUpdateArray=   messageFeed.lastSeenArray;
         ALContactDBService *contactDBService =  [[ALContactDBService alloc]init];
         for (ALUserDetail * userDetail in lastSeenUpdateArray){
+            userDetail.unreadCount = 0;
             [contactDBService updateUserDetail:userDetail];
         }
         completionMark(lastSeenUpdateArray);
@@ -114,6 +115,7 @@
        
         if(userDetail)
         {
+            userDetail.unreadCount = 0;
             ALContactDBService *contactDB = [ALContactDBService new];
             [contactDB updateUserDetail:userDetail];
         }
@@ -404,7 +406,7 @@
         
         if(userDetailArray && userDetailArray.count)
         {
-            [dbService addUserDetails:userDetailArray];
+            [dbService addUserDetailsWithoutUnreadCount:userDetailArray];
         }
         completion(userDetailArray,theError);
     }];

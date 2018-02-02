@@ -198,9 +198,8 @@
     }
     else
     {
-        predicate = [NSPredicate predicateWithFormat:@"contactId = %@",contactId];
+        predicate = [NSPredicate predicateWithFormat:@"contactId = %@ AND groupId = %@",contactId,nil];
     }
-    
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predicate];
     
