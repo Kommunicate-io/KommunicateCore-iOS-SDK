@@ -239,6 +239,13 @@
     return (self.contentType == AV_CALL_CONTENT_TWO);
 }
 
+
+-(BOOL)isToIgnoreUnreadCountIncrement
+{
+    return (self.contentType == AV_CALL_CONTENT_THREE);
+}
+
+
 -(NSString*)getNotificationText
 {
     

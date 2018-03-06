@@ -865,6 +865,14 @@
         }
         
     }
+    else if (message.contentType == AV_CALL_CONTENT_THREE)
+    {
+        contactCell.mMessageLabel.hidden = YES;
+        contactCell.imageNameLabel.hidden = NO;
+        contactCell.imageMarker.hidden = NO;
+        contactCell.imageNameLabel.text = [message getVOIPMessageText];
+        contactCell.imageMarker.image = [ALUtilityClass getVOIPMessageImage:message];
+    }
     else
     {
         contactCell.imageNameLabel.hidden = YES;

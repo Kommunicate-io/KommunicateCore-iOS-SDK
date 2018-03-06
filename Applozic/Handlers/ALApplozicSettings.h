@@ -90,6 +90,7 @@
 #define SAVE_VIDEOS_TO_GALLERY @"com.applozic.userdefault.SAVE_VIDEOS_TO_GALLERY"
 #define ENABLE_QUICK_AUDIO_RECORDING @"com.applozic.userdefault.ENABLE_QUICK_AUDIO_RECORDING"
 #define AL_USER_ROLE_NAME @"com.applozic.userdefault.AL_USER_ROLE_NAME"
+#define AL_GROUP_CONVEERSATION_CLOSE @"com.applozic.userdefault.AL_GROUP_CONVEERSATION_CLOSE"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -356,6 +357,11 @@
 
 +(BOOL)isStorageServiceEnabled;
 +(void)enableStorageService:(BOOL)flag;
+
+
++(BOOL)isConversationCloseButtonEnabled;
++(void)setConversationCloseButton:(BOOL)flag;
+
 
 +(void) setHideAttachmentsOption:(NSArray*)array;
 

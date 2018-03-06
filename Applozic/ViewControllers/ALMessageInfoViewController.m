@@ -231,7 +231,7 @@
     self.tickImageView = [[UIImageView alloc] init];
     [self.tickImageView setBackgroundColor:[UIColor clearColor]];
     
-    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
+    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
     [headerView setBackgroundColor:[UIColor colorWithRed:238.0/255 green:238.0/255 blue:238.0/255 alpha:1.0]];
     
     [self.tickImageView setFrame:CGRectMake(headerView.frame.origin.x + 10, headerView.frame.origin.y + 10, 30, 30)];
@@ -278,7 +278,7 @@
 
 -(UIView *)populateCellForMessage:(CGSize)cellSize
 {
-    CGFloat maxWidth = cellSize.width - 120;
+    CGFloat maxWidth = cellSize.width - 150;
     
     UIImageView *bubbleView = [[UIImageView alloc] init];
     [bubbleView setBackgroundColor:[ALApplozicSettings getSendMsgColor]];
@@ -297,7 +297,7 @@
         frameImage = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
     }
     
-    CGRect subFrameImage = CGRectMake(frameImage.origin.x + 5, frameImage.origin.y + 5, frameImage.size.width - 10,  frameImage.size.height - 10);
+    CGRect subFrameImage = CGRectMake(frameImage.origin.x + 5, frameImage.origin.y + 5, frameImage.size.width - 10,  frameImage.size.height-10);
     
     UITextView *textView = [[UITextView alloc] init];
     [textView setFont:[UIFont fontWithName:@"Helvetica" size:14]];
@@ -318,14 +318,29 @@
     
     if([self.almessage.fileMeta.contentType hasPrefix:@"audio"])
     {
-        [imageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"itmusic1.png"]];
-        [imageView setContentMode:UIViewContentModeScaleAspectFit];
+        
+        
+        
+        textSize  =  [ALUtilityClass getSizeForText:self.almessage.fileMeta.name maxWidth:maxWidth + 5 font:textView.font.fontName fontSize:textView.font.pointSize];
+        [textView setFont:[UIFont fontWithName:@"Helvetica" size:12]];
+        
+        
+        
+        [imageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
+        
+        bubbleView.frame = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
+        imageView.frame = CGRectMake(bubbleView.frame.origin.x + 5, bubbleView.frame.origin.y + 5, self.msgHeaderHeight - 10, self.msgHeaderHeight - 10);
+        textView.frame = CGRectMake(imageView.frame.origin.x+  25, bubbleView.frame.origin.y +25, textSize.width, textSize.height);
+        textView.hidden = NO;
+        
+        [textView setText:self.almessage.fileMeta.name];
+        
+        [view addSubview:textView];
         [view addSubview:imageView];
+        
     }
     else if ([self.almessage.fileMeta.contentType hasPrefix:@"video"])
     {
-        [imageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
-        [view addSubview:imageView];
         if(self.almessage.message.length)
         {
             CGSize textSize = [ALUtilityClass getSizeForText:self.almessage.message
@@ -336,10 +351,33 @@
             bubbleView.frame = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
             imageView.frame = CGRectMake(bubbleView.frame.origin.x + 5, bubbleView.frame.origin.y + 5, bubbleView.frame.size.width - 10, maxWidth - 40);
             textView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + imageView.frame.size.height + 5,
-                                        imageView.frame.size.width, textSize.height + 20);
+                                        imageView.frame.size.width, textSize.height );
             [view addSubview:textView];
             [textView setText:self.almessage.message];
         }
+        
+        
+        
+        if(self.almessage.imageFilePath != nil && self.almessage.fileMeta.blobKey)
+        {
+            NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * filePath = [docDir stringByAppendingPathComponent:self.almessage.imageFilePath];
+            [imageView setImage: [ALUtilityClass setVideoThumbnail:filePath]];
+            
+            
+        }
+        else
+        {
+            [imageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
+            
+        }
+        
+        [imageView setContentMode:UIViewContentModeScaleAspectFill];
+        
+        
+        [view addSubview:imageView];
+        
+        
     }
     else if ([self.almessage.fileMeta.contentType hasPrefix:@"image"] || self.almessage.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
@@ -432,6 +470,8 @@
     
     return view;
 }
+
+
 
 -(NSError *)customError
 {

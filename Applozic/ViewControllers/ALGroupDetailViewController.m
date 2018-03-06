@@ -533,18 +533,8 @@
                                                               style:UIAlertActionStyleDefault
                                                             handler:^(UIAlertAction *action) {
                                                                 
-                                                                ALGroupDetailViewController * groupDetailVC = self;
-                                                                ALMessagesViewController *msgVC = (ALMessagesViewController *)[self.navigationController.viewControllers objectAtIndex:0];
-                                                                msgVC.channelKey = nil;
-                                                                ALChatViewController * chatVC = (ALChatViewController *)self.alChatViewController;
-                                                                NSMutableArray * viewsArray = [NSMutableArray arrayWithArray:msgVC.navigationController.viewControllers];
-                                                                [viewsArray removeObject:chatVC];
-                                                                msgVC.navigationController.viewControllers = viewsArray;
-                                                                [msgVC createDetailChatViewController:removeMemberID];
-                                                                viewsArray = [NSMutableArray arrayWithArray:msgVC.navigationController.viewControllers];
-                                                                [viewsArray removeObject:groupDetailVC];
-                                                                msgVC.navigationController.viewControllers = viewsArray;
-                                                            }]];
+                                                                [self openChatThreadFor:removeMemberID];
+            }]];
             
         }
         
@@ -635,6 +625,20 @@
 
 -(void)updateTableView{
     [self.tableView reloadData];
+}
+
+-(void)openChatThreadFor:(NSString*) contactId {
+    int index = 0;
+    if([self.navigationController.viewControllers.firstObject
+        isKindOfClass: [ALMessagesViewController class]]) {
+        index = 1;
+    }
+    ALChatViewController *chatVC = (ALChatViewController *)[self.navigationController.viewControllers objectAtIndex:index];
+    chatVC.contactIds = contactId;
+
+    chatVC.channelKey = nil;
+    [self.navigationController popViewControllerAnimated:true];
+    chatVC.refresh = true;
 }
 
 #pragma mark - Table View Data Source
@@ -863,7 +867,7 @@
 -(void)updateGroupView
 {
     
-    if([ALApplozicSettings isGroupInfoEditDisabled]){
+    if([ALApplozicSettings isGroupInfoEditDisabled] || [ALChannelService isConversationClosed: alchannel.key] ){
         NSLog(@"group edit is disabled");
         return;
     }

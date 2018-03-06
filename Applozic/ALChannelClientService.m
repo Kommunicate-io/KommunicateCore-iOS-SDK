@@ -24,7 +24,7 @@
 
 /************************************************
  SUB GROUP URL : ADD A SINGLE CHILD
-*************************************************/
+ *************************************************/
 
 #define ADD_SUB_GROUP @"/rest/ws/group/add/subgroup"
 #define REMOVE_SUB_GROUP @"/rest/ws/group/remove/subgroup"
@@ -105,9 +105,27 @@
     }];
 }
 
+
 +(void)createChannel:(NSString *)channelName andParentChannelKey:(NSNumber *)parentChannelKey
   orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray
         andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData adminUser :(NSString *)adminUserId
+      withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion
+{
+    
+    [self createChannel:channelName andParentChannelKey:parentChannelKey orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:adminUserId withGroupUsers:nil withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
+        
+        completion(error, response);
+        
+        
+    }];
+    
+    
+    
+}
+
++(void)createChannel:(NSString *)channelName andParentChannelKey:(NSNumber *)parentChannelKey
+  orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray
+        andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData adminUser :(NSString *)adminUserId withGroupUsers :(NSMutableArray *) groupRoleUsers
       withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion
 {
     
@@ -138,6 +156,10 @@
     }
     if(adminUserId){
         [channelDictionary setObject:adminUserId forKey:@"admin"];
+    }
+    
+    if(groupRoleUsers.count){
+        [channelDictionary setObject:groupRoleUsers forKey:@"users"];
     }
     
     NSError *error;
@@ -279,24 +301,24 @@
                    andCompletion:(void(^)(NSError * error, ALAPIResponse *response))completion
 {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, Add_USERS_TO_MANY_GROUPS];
-
+    
     NSMutableDictionary *dictionary = [NSMutableDictionary new];
-
+    
     if(channelUsers && channelKeys)  {
         [dictionary setObject:channelUsers forKey:@"userIds"];
         [dictionary setObject:channelKeys forKey:@"clientGroupIds"];
     }
-
+    
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
     NSString * theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
-
+    
     NSLog(@"PARAM_STRING_CHANNEL_ADD_MANY_USERS :: %@", theParamString);
-
+    
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-
+    
     [ALResponseHandler processRequest:theRequest andTag:@"ADD_MANY_USERS" WithCompletionHandler:^(id theJson, NSError *error) {
-
+        
         ALAPIResponse *response = nil;
         if(error)
         {
@@ -423,7 +445,7 @@
             }
             else
             {
-            
+                
                 completion(error, response);
             }
         }
@@ -445,7 +467,7 @@
     NSString * theParamString = [NSString stringWithFormat:@"groupId=%@&%@",parentKey,tempString];
     NSLog(@"PARAM_STRING_CHANNEL_UPDATE :: %@", theParamString);
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-
+    
     [ALResponseHandler processRequest:theRequest andTag:@"ADDING_CHILD_TO_PARENT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         NSLog(@"RESPONSE_ADDING_CHILD_TO_PARENT :: %@", (NSString *)theJson);
@@ -521,7 +543,7 @@
 }
 
 +(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList andClientParentKey:(NSString *)clientParentKey
-                withCompletion:(void (^)(id json, NSError * error))completion
+                 withCompletion:(void (^)(id json, NSError * error))completion
 {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,REMOVE_MULTIPLE_SUB_GROUP];
     
@@ -575,20 +597,20 @@
     }];
 }
 
-    
+
 -(void) muteChannel:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion
 {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,UPDATE_GROUP_USER];
     NSError * error;
-   
+    
     NSData * postdata = [NSJSONSerialization dataWithJSONObject:alMuteRequest.dictionary options:0 error:&error];
     NSString *paramString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
     
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"MUTE_GROUP" WithCompletionHandler:^(id theJson, NSError *theError) {
-       
+        
         if (theError)
         {
             NSLog(@" muteChannel :: %@", theError);
@@ -599,12 +621,12 @@
         completion(response, nil);
         
     }];
-
+    
 }
 
 -(void)getChannelInfoByIdsOrClientIds:(NSMutableArray*)channelIds
-                          orClinetChannelIds:(NSMutableArray*) clientChannelIds
-                              withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
+                   orClinetChannelIds:(NSMutableArray*) clientChannelIds
+                       withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
 
 {
     
@@ -620,17 +642,17 @@
             if(theParamString)
             {
                 theParamString = [theParamString stringByAppendingString: [NSString stringWithFormat:@"&clientGroupIds=%@",clientId ]];
-
+                
             }
             else
             {
                 theParamString = [NSString stringWithFormat:@"clientGroupIds=%@",clientId ];
-
+                
             }
         }
     }
     
-   
+    
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     [ALResponseHandler processRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
         
@@ -638,7 +660,7 @@
         {
             NSLog(@"ERROR IN CHANNEL_INFORMATION SERVER CALL REQUEST %@", error);
             completion(nil,error);
-
+            
         }
         else
         {
@@ -660,45 +682,45 @@
 }
 
 -(void)getChannelListForCategory:(NSString*)category
-                       withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
+                  withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
 
 {
-
+    
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_SYNC_URL];
     NSString * theParamString=nil ;
     NSMutableArray * channelinfoList = [[NSMutableArray alloc] init];
-
+    
     if(category)
     {
         theParamString = [NSString stringWithFormat:@"category=%@", category];
     } else {
         return;
     }
-
-
+    
+    
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     [ALResponseHandler processRequest:theRequest andTag:@"CHANNEL_INFORMATION" WithCompletionHandler:^(id theJson, NSError *error) {
-
+        
         if(error)
         {
             NSLog(@"ERROR IN CHANNEL_LIST SERVER CALL REQUEST %@", error);
             completion(nil,error);
-
+            
         }
         else
         {
             NSLog(@"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
         }
-
+        
         ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
         NSMutableArray * array = (NSMutableArray*)response.response;
-
+        
         for ( NSMutableDictionary *dic  in array)
         {
             ALChannel * channel = [[ALChannel alloc] initWithDictonary:dic];
             [channelinfoList addObject:channel];
         }
-
+        
         completion(channelinfoList,error);
     }];
     
@@ -707,7 +729,7 @@
 
 -(void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion
 {
- 
+    
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL,CHANNEL_FILTER_API];
     NSMutableArray * channelinfoList = [[NSMutableArray alloc] init];
     NSString * theParamString = @"";
@@ -715,7 +737,7 @@
     theParamString = [NSString stringWithFormat:@"pageSize=%@", GROUP_FETCH_BATCH_SIZE];
     
     
-   if(endTime)
+    if(endTime)
     {
         theParamString = [NSString stringWithFormat:@"pageSize=%@&endTime=%@", GROUP_FETCH_BATCH_SIZE , endTime];
     }
@@ -732,13 +754,13 @@
         }
         
         NSLog(@" Channel response : %@", theJson);
-
+        
         ALAPIResponse *response = [[ALAPIResponse alloc ] initWithJSONString:theJson];
         NSNumber * lastFetchTime = [NSNumber numberWithLong:[[response.response valueForKey:@"lastFetchTime"] longValue]];
         [ALUserDefaultsHandler setLastGroupFilterSyncTime:lastFetchTime];
         
         NSDictionary * theChannelFeedDict = [response.response valueForKey:@"groups"];
-      
+        
         for ( NSMutableDictionary *dic  in theChannelFeedDict)
         {
             ALChannel * channel = [[ALChannel alloc] initWithDictonary:dic];

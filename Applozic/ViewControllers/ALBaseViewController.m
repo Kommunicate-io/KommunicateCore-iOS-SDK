@@ -128,6 +128,8 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
                                                                                     target:self action:@selector(refreshTable:)];
     
     self.callButton = [[UIBarButtonItem alloc] initWithCustomView:[self customCallButtonView]];
+    self.closeButton = [[UIBarButtonItem alloc] initWithCustomView:[self customCloseButtonView]];
+
     
     if(self.individualLaunch)
     {
@@ -135,6 +137,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     }
     
     self.navRightBarButtonItems = [NSMutableArray new];
+    
 
     if(![ALApplozicSettings isRefreshButtonHidden])
     {
@@ -500,8 +503,31 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     return view;
 }
 
+-(UIView *)customCloseButtonView
+{
+    UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUtilityClass getImageFromFramworkBundle:@"ic_clear_white.png"]];
+    [imageView setFrame:CGRectMake(0, 0, 20, 20)];
+    [imageView setTintColor:[UIColor whiteColor]];
+    
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageView.frame.size.width, imageView.frame.size.height)];
+    view.bounds = CGRectMake(view.bounds.origin.x, view.bounds.origin.y, view.bounds.size.width, view.bounds.size.height);
+    [view addSubview:imageView];
+    [view setBackgroundColor:[UIColor clearColor]];
+    
+    UITapGestureRecognizer * iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeConversation)];
+    iconTap.numberOfTapsRequired = 1;
+    [view addGestureRecognizer:iconTap];
+    
+    return view;
+}
+
+
 -(void)phoneCallMethod {
 
+}
+
+-(void)closeConversation {
+    
 }
 
 -(UIView *)setCustomBackButton
@@ -536,7 +562,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [view addGestureRecognizer:backTap];
 
     return view;
-}
+}   
 
 
 @end

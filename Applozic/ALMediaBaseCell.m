@@ -107,16 +107,7 @@
         self.mChannelMemberName.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.mChannelMemberName];
         
-        
-        UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", nil,[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
-        
-        UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(processForwardMessage:)];
-        
-        UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", nil,[NSBundle mainBundle], @"Reply", @"") action:@selector(processMessageReply:)];
-        
-    
-        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
-        [[UIMenuController sharedMenuController] update];
+
 
 
         if (IS_IPHONE_5)
@@ -147,7 +138,6 @@
             self.imageWithText.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mChannelMemberName.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         }
-
         
     }
     

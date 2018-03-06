@@ -1090,4 +1090,15 @@ NOTIFICATION_DISABLE = 2
 }
 
 
++(void)setConversationCloseButton:(BOOL)option
+{
+    [[NSUserDefaults standardUserDefaults] setBool:option forKey:AL_GROUP_CONVEERSATION_CLOSE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isConversationCloseButtonEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:AL_GROUP_CONVEERSATION_CLOSE];
+}
+
 @end

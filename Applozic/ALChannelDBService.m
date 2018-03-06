@@ -828,6 +828,19 @@
     return (dbChannel.deletedAtTime != nil);
 }
 
+-(BOOL)isConversaionClosed:(NSNumber *)groupId
+{
+    DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
+    ALChannel *channel = [ALChannel new];
+    NSMutableDictionary *metadata =   [channel getMetaDataDictionary:dbChannel.metadata];
+    
+    if( metadata && [metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] ){
+        return ([[metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
+    }
+    return NO;
+}
+
+
 -(void)processArrayAfterSyncCall:(NSMutableArray *)channelArray
 {
     for(ALChannel *channelObject in channelArray)

@@ -67,6 +67,7 @@
 @import AddressBookUI;
 #import "ALAudioVideoBaseVC.h"
 #import "ALVOIPNotificationHandler.h"
+#import "ALChannelService.h"
 #import <Applozic/Applozic-Swift.h>
 
 #define MQTT_MAX_RETRY 3
@@ -351,8 +352,8 @@
         [self.pickerView reloadAllComponents];
     }
     
+     [self checkIfChannelLeft];
     [self setCallButtonInNavigationBar];
-    [self checkIfChannelLeft];
     [self checkUserBlockStatus];
     if(self.contactIds ){
       [self checkUserDeleted];
@@ -628,6 +629,8 @@
         {
             [self.navRightBarButtonItems addObject:self.callButton];
         }
+        
+     
     }
     
     self.navigationItem.rightBarButtonItems = [self.navRightBarButtonItems mutableCopy];
@@ -890,6 +893,8 @@
 
 -(void)checkIfChannelLeft
 {
+    [self.navRightBarButtonItems removeObject:self.closeButton];
+    
     ALChannelService * alChannelService = [[ALChannelService alloc] init];
     if([alChannelService isChannelLeft:self.channelKey])
     {
@@ -901,11 +906,18 @@
     {
         [self freezeView:YES];
         [ALNotificationView showLocalNotification:[ALApplozicSettings getGroupDeletedTitle]];
+    }else if([ALChannelService isConversationClosed:self.channelKey]){
+        [self freezeView:YES];
     }
     else
     {
+        if(!self.contactIds && self.channelKey && [ALApplozicSettings isConversationCloseButtonEnabled]){
+            [self.navRightBarButtonItems addObject:self.closeButton];
+        }
+
         [self freezeView:NO];
     }
+
 }
 
 //==============================================================================================================================================
@@ -924,6 +936,24 @@
 {
     ALNotificationView * notification = [ALNotificationView new];
     [notification noDataConnectionNotificationView];
+}
+
+-(void)closeConversation {
+    
+    if(self.channelKey && !self.contactIds){
+        
+        [ALChannelService closeGroupConverstion : self.channelKey withCompletion:^(NSError *error){
+            
+            if(!error){
+                
+                [self.navRightBarButtonItems removeObject:self.closeButton];
+                self.navigationItem.rightBarButtonItems = [self.navRightBarButtonItems mutableCopy];
+                [self freezeView:YES];
+            }
+        }];
+        
+    }
+    
 }
 
 //==============================================================================================================================================
@@ -1070,6 +1100,9 @@
     ALChannelService *channelService = [[ALChannelService alloc] init];
     self.alChannel = [channelService getChannelByKey:self.channelKey];
     [titleLabelButton setTitle:self.alChannel.name forState:UIControlStateNormal];
+    if([self.alChannel isConversationClosed]){
+      [self freezeView:YES];
+    }
     if(self.alChannel.type == GROUP_OF_TWO)
     {
         NSLog(@"CURENT clientChannelKey :: %@",self.alChannel.clientChannelKey);
@@ -1086,7 +1119,7 @@
     {
         [self getUserInformation];
     }
-    else if (![ALApplozicSettings isGroupInfoDisabled] && (self.alChannel.type != GROUP_OF_TWO) && ![ALChannelService isChannelDeleted:self.channelKey])
+    else if (![ALApplozicSettings isGroupInfoDisabled] && (self.alChannel.type != GROUP_OF_TWO) && ![ALChannelService isChannelDeleted:self.channelKey] && ![ALChannelService isConversationClosed:self.channelKey])
     {
         UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
         ALGroupDetailViewController * groupDetailViewController = (ALGroupDetailViewController*)[storyboard instantiateViewControllerWithIdentifier:@"ALGroupDetailViewController"];
@@ -2815,7 +2848,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(void)openLocationView
 {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALMapViewController *mapView = (ALMapViewController *)[storyboard instantiateViewControllerWithIdentifier:@"shareLoactionViewTag"];
     mapView.controllerDelegate = self;
     [self.navigationController pushViewController:mapView animated:YES];

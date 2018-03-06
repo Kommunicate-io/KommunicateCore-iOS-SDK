@@ -45,7 +45,7 @@
                                    return;
                                }
                                
-                               if (theHttpResponse.statusCode != 200)
+                               if (theHttpResponse.statusCode != 200 && theHttpResponse.statusCode != 201)
                                {
                                    NSMutableString * errorString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                    NSLog(@"api error : %@ - %@",tag,errorString);

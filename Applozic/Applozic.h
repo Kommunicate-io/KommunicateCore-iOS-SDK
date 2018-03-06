@@ -16,7 +16,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <Applozic/PublicHeader.h>
 
-
 #import <Applozic/ALRegisterUserClientService.h>
 #import <Applozic/ALContact.h>
 #import <Applozic/ALAudioVideoBaseVC.h>
@@ -106,4 +105,4 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/AlChannelInfoModel.h>
 #import <Applozic/AlChannelResponse.h>
 #import <Applozic/AlChannelFeedResponse.h>
-
+#import <Applozic/ALGroupUser.h>

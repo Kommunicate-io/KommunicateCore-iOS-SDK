@@ -137,10 +137,20 @@
 }
 
 -(BOOL)isGroupMutedByDefault{
-
+    
     if( _metadata && [_metadata  valueForKey:CHANNEL_DEFAULT_MUTE] ){
-
+        
         return ([ [_metadata  valueForKey:CHANNEL_DEFAULT_MUTE] isEqualToString:@"true"]);
+    }
+    return NO;
+}
+
+
+-(BOOL)isConversationClosed{
+
+    if( _metadata && [_metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] ){
+
+        return ([ [_metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
     }
     return NO;
 }

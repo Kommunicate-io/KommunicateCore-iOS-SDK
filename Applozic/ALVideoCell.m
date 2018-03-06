@@ -83,6 +83,10 @@
             self.videoPlayFrontView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mImageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         }
+        
+        UITapGestureRecognizer * menuTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
+        [self.contentView addGestureRecognizer:menuTapGesture];
+
     }
     
     return self;
@@ -246,6 +250,8 @@
         {
             self.progresLabel.alpha = 0;
         }
+    
+        
         
     }
     else
@@ -337,8 +343,7 @@
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
             [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
         }
-        
-        msgFrameHeight = self.mBubleImageView.frame.size.height;
+      msgFrameHeight = self.mBubleImageView.frame.size.height;
     }
     
     [self.contentView bringSubviewToFront:self.videoPlayFrontView];
@@ -393,15 +398,31 @@
     }
     
     [self.contentView bringSubviewToFront:self.replyParentView];
+
+    return self;
+}
+
+
+-(void) proccessTapForMenu:(id)tap{
     
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", nil,[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", nil,[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
     
-    [[UIMenuController sharedMenuController] setMenuItems: @[messageReply,messageForward]];
+    if ([self.mMessage.type isEqualToString:@MT_INBOX_CONSTANT]){
+        
+        [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
+        
+    }else if ([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT]){
+
+        
+        UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", nil,[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
+        
+        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
+    }
     [[UIMenuController sharedMenuController] update];
     
-    return self;
 }
+
 
 -(void)setVideoThumbnail:(NSString *)videoFilePATH
 {

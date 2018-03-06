@@ -395,7 +395,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                         {
                             [messageArray removeObject:message];
                         }
-                        else
+                        else if(![message isToIgnoreUnreadCountIncrement])
                         {
                             [ALMessageService incrementContactUnreadCount:message];
                         }
