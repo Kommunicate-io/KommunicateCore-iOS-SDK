@@ -82,7 +82,7 @@
     book = ABAddressBookCreate();
     ABRecordRef personInfo = ABAddressBookCopyDefaultSource(book);
         
-    ABRecordRef person;
+    ABRecordRef person = nil;
     CFArrayRef vCardPeople = ABPersonCreatePeopleInSourceWithVCardRepresentation(personInfo, vCardData);
 
     self.fullName = @"";

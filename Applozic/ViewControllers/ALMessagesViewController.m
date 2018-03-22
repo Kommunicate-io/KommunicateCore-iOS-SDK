@@ -667,6 +667,7 @@
                  
                  contactCell.mUserImageView.layer.cornerRadius = contactCell.mUserImageView.frame.size.width/2;
                  contactCell.mUserImageView.layer.masksToBounds = YES;
+                 contactCell.mUserImageView.contentMode = UIViewContentModeScaleAspectFit;
              });
 
             [contactCell.onlineImageMarker setBackgroundColor:[UIColor clearColor]];

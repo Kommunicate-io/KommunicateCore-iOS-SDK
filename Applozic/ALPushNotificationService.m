@@ -86,7 +86,9 @@
                         return YES;
                     }
                 }
-                [self assitingNotificationMessage:notificationMsg andDictionary:dict];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self assitingNotificationMessage:notificationMsg andDictionary:dict];
+                });
             }
             else
             {

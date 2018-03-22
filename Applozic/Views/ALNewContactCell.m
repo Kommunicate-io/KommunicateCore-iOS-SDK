@@ -13,6 +13,7 @@
 - (void)awakeFromNib {
     // Initialization code
     [[self contactPersonName] setTextAlignment:NSTextAlignmentNatural];
+    [super awakeFromNib];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

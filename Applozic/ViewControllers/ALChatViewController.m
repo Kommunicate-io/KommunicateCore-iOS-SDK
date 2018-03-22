@@ -1114,7 +1114,6 @@
 
 -(void)didTapTitleView:(id)sender
 {
-    ALChannelService * alChannelService  = [[ALChannelService alloc] init];
     if(self.contactIds && !self.channelKey)
     {
         [self getUserInformation];
@@ -1821,10 +1820,10 @@
     view.layer.shadowOffset = CGSizeMake(1.0f, 1.0f);
     view.layer.shadowRadius = 3.0f;
     view.layer.shadowOpacity = 1.0f;
-    
+
     for (UILabel * label in labelArray)
     {
-        label.textColor = [UIColor whiteColor];
+        label.textColor = [ALApplozicSettings getColorForNavigationItem];
         label.font = [UIFont fontWithName:@"Helvetica" size:11.0];
         [self resizeLabels:label];
         [view addSubview:label];
@@ -2639,7 +2638,7 @@
         }]];
     }
     
-    if((!self.channelKey && !self.conversationId) || (self.alChannel.type == GROUP_OF_TWO))
+    if(((!self.channelKey && !self.conversationId) || (self.alChannel.type == GROUP_OF_TWO)) && ![ALApplozicSettings isBlockUserOptionHidden])
     {
         [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"blockUserOption", nil, [NSBundle mainBundle], @"BLOCK USER", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             

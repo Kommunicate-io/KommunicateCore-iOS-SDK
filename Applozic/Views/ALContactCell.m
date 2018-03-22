@@ -13,6 +13,7 @@
     [[self mUserNameLabel] setTextAlignment:NSTextAlignmentNatural];
     [[self mMessageLabel] setTextAlignment:NSTextAlignmentNatural];
     [[self imageNameLabel] setTextAlignment:NSTextAlignmentNatural];
+    [super awakeFromNib];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -286,7 +286,7 @@
 
 -(void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
-        withCompletionHandler:(void (^)())completionHandler {
+        withCompletionHandler:(void (^)(void))completionHandler {
 
     UNNotificationContent * notifyContent = response.notification.request.content;
     [self didReceiveLocalNotification:notifyContent.userInfo];
