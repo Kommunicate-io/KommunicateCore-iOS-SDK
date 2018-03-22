@@ -336,10 +336,10 @@
 		6DEAEE8D1D4CDBC700360060 /* ALUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */; };
 		8B24FFD1204EB1000097A46A /* ALGroupUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B24FFCF204EB0FF0097A46A /* ALGroupUser.m */; };
 		8B24FFD2204EB1000097A46A /* ALGroupUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B24FFD0204EB1000097A46A /* ALGroupUser.h */; };
-		8B78641E1FE22685004B9E64 /* SoundRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B78641D1FE22685004B9E64 /* SoundRecordingView.swift */; };
 		8B7864221FE2329F004B9E64 /* MessageReplyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7864201FE2329E004B9E64 /* MessageReplyView.m */; };
 		8B7864231FE2329F004B9E64 /* MessageReplyView.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B7864211FE2329E004B9E64 /* MessageReplyView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8B7864301FE23613004B9E64 /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8B7864281FE23613004B9E64 /* AppLozic.xcdatamodeld */; };
+		8BE0F6F32063D57E00361DD9 /* SoundRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE0F6F22063D57E00361DD9 /* SoundRecordingView.swift */; };
 		C70273CB1DED445E00BA2C8A /* ALUserDetailListFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C70273CC1DED445E00BA2C8A /* ALUserDetailListFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = C70273CA1DED445E00BA2C8A /* ALUserDetailListFeed.m */; };
 		C70983071E0177E900FC93A1 /* ALMessageServiceWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = C70983051E0177E900FC93A1 /* ALMessageServiceWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -687,7 +687,6 @@
 		6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALUserProfileVC.m; sourceTree = "<group>"; };
 		8B24FFCF204EB0FF0097A46A /* ALGroupUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALGroupUser.m; path = Applozic/ALGroupUser.m; sourceTree = "<group>"; };
 		8B24FFD0204EB1000097A46A /* ALGroupUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALGroupUser.h; path = Applozic/ALGroupUser.h; sourceTree = "<group>"; };
-		8B78641D1FE22685004B9E64 /* SoundRecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundRecordingView.swift; sourceTree = "<group>"; };
 		8B7864201FE2329E004B9E64 /* MessageReplyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageReplyView.m; path = Applozic/MessageReplyView.m; sourceTree = "<group>"; };
 		8B7864211FE2329E004B9E64 /* MessageReplyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageReplyView.h; path = Applozic/MessageReplyView.h; sourceTree = "<group>"; };
 		8B7864291FE23613004B9E64 /* AppLozic 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -697,6 +696,7 @@
 		8B78642D1FE23613004B9E64 /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
 		8B78642E1FE23613004B9E64 /* AppLozic 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 7.xcdatamodel"; sourceTree = "<group>"; };
 		8B78642F1FE23613004B9E64 /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
+		8BE0F6F22063D57E00361DD9 /* SoundRecordingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SoundRecordingView.swift; path = Applozic/SoundRecordingView.swift; sourceTree = "<group>"; };
 		C70273C91DED445E00BA2C8A /* ALUserDetailListFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUserDetailListFeed.h; path = Applozic/ALUserDetailListFeed.h; sourceTree = "<group>"; };
 		C70273CA1DED445E00BA2C8A /* ALUserDetailListFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALUserDetailListFeed.m; path = Applozic/ALUserDetailListFeed.m; sourceTree = "<group>"; };
 		C70983051E0177E900FC93A1 /* ALMessageServiceWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALMessageServiceWrapper.h; path = Applozic/ALMessageServiceWrapper.h; sourceTree = "<group>"; };
@@ -848,6 +848,7 @@
 		6D6DF0731BC535C800EBA00F = {
 			isa = PBXGroup;
 			children = (
+				8BE0F6F22063D57E00361DD9 /* SoundRecordingView.swift */,
 				8B7864211FE2329E004B9E64 /* MessageReplyView.h */,
 				8B7864201FE2329E004B9E64 /* MessageReplyView.m */,
 				C76D31431F0AAFB30087291F /* ALVOIPCell.h */,
@@ -892,7 +893,6 @@
 		6D6DF0A21BC5364C00EBA00F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				8B78641D1FE22685004B9E64 /* SoundRecordingView.swift */,
 				6D4FE48D1D7411F70044A7E6 /* NSData+AES.h */,
 				6D4FE48E1D7411F70044A7E6 /* NSData+AES.m */,
 				29CBF2001C0303A700BE6A20 /* ALColorUtility.h */,
@@ -1622,7 +1622,7 @@
 					6D6DF07C1BC535C800EBA00F = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = C25JNDCBM4;
-						LastSwiftMigration = 0920;
+						LastSwiftMigration = 0930;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -1780,7 +1780,6 @@
 				463E49211DB7B45D00CDFFE6 /* ALVCardClass.m in Sources */,
 				6D6DF1B71BC5364C00EBA00F /* SDImageCache.m in Sources */,
 				6D6DF1771BC5364C00EBA00F /* ALMessage.m in Sources */,
-				8B78641E1FE22685004B9E64 /* SoundRecordingView.swift in Sources */,
 				6D6DF1C41BC5364C00EBA00F /* SDWebImagePrefetcher.m in Sources */,
 				103CC2C02032EDF200600D16 /* AlChannelFeedResponse.m in Sources */,
 				6D7757481D5B85100025560B /* ALLocationCell.m in Sources */,
@@ -1789,6 +1788,7 @@
 				2932B9F41C7C875F0017911D /* ALGroupDetailViewController.m in Sources */,
 				4612E8F91E13882D0022DB23 /* MQTTCFSocketTransport.m in Sources */,
 				6D6DF14B1BC5364C00EBA00F /* ALResponseHandler.m in Sources */,
+				8BE0F6F32063D57E00361DD9 /* SoundRecordingView.swift in Sources */,
 				6D6DF1B31BC5364C00EBA00F /* MKAnnotationView+WebCache.m in Sources */,
 				6D6DF1431BC5364C00EBA00F /* ALDBHandler.m in Sources */,
 				6D6DF1571BC5364C00EBA00F /* ALBaseViewController.m in Sources */,

@@ -37,7 +37,7 @@ import Foundation
         delegate = recorderDelegate
     }
 
-    public func show() {
+    @objc public func show() {
         if recordingSession == nil {
             setupRecordingSession()
             self.isHidden = false
@@ -46,7 +46,7 @@ import Foundation
         }
     }
 
-    public func hide() {
+    @objc public func hide() {
         if recordingSession == nil {
             setupRecordingSession()
             self.isHidden = true
@@ -56,7 +56,7 @@ import Foundation
     }
 
 
-    public func setSoundRecDelegate(recorderDelegate:ALSoundRecorderProtocol) {
+    @objc public func setSoundRecDelegate(recorderDelegate:ALSoundRecorderProtocol) {
         delegate = recorderDelegate
     }
 
@@ -149,7 +149,7 @@ import Foundation
         return isAllow
     }
 
-    func startAudioRecordGesture(sender : UIGestureRecognizer){
+    @objc func startAudioRecordGesture(sender : UIGestureRecognizer){
         let point = sender.location(in: self)
         let width = self.frame.size.width
         let height = self.frame.size.height
