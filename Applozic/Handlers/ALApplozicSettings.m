@@ -91,7 +91,7 @@
     NSData *barColorData = [NSKeyedArchiver archivedDataWithRootObject:barColor];
     [[NSUserDefaults standardUserDefaults] setObject:barColorData forKey:NAVIGATION_BAR_COLOUR];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
 }
 
 +(UIColor *)getColorForNavigation
@@ -106,7 +106,7 @@
     NSData *barItemColorData = [NSKeyedArchiver archivedDataWithRootObject:barItemColor];
     [[NSUserDefaults standardUserDefaults] setObject:barItemColorData forKey:NAVIGATION_BAR_ITEM_COLOUR];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
 }
 
 +(UIColor *)getColorForNavigationItem
@@ -148,15 +148,15 @@
 +(NSString *)getTitleForBackButtonChatVC
 {
     NSString * text = [[NSUserDefaults standardUserDefaults] valueForKey:BACK_BUTTON_TITLE_CHATVC];
-    return text ? text : NSLocalizedStringWithDefaultValue(@"chatViewBack", nil,[NSBundle mainBundle], @"Back", @"");
-    
+    return text ? text : NSLocalizedStringWithDefaultValue(@"chatViewBack", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Back", @"");
+
 }
 
 
 +(void)setNotificationTitle:(NSString *)notificationTitle
 {
     [[NSUserDefaults standardUserDefaults] setValue:notificationTitle forKey:NOTIFICATION_TITLE];
-    
+
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -242,7 +242,7 @@
 }
 
 +(void)setCustomMessageBackgroundColor:(UIColor *)color{
-    
+
     NSData * recievedCustomBackgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:color];
     [[NSUserDefaults standardUserDefaults] setValue:recievedCustomBackgroundColorData
                                              forKey:CUSTOM_MSG_BACKGROUND_COLOR];
@@ -326,14 +326,14 @@
 
 +(BOOL)getCallOption
 {
-     return [[NSUserDefaults standardUserDefaults] boolForKey:USER_CALL_OPTION];
+    return [[NSUserDefaults standardUserDefaults] boolForKey:USER_CALL_OPTION];
 }
 
 /*
-NOTIFICATION_ENABLE_SOUND = 0,
-NOTIFICATION_DISABLE_SOUND = 1,
-NOTIFICATION_DISABLE = 2
-*/
+ NOTIFICATION_ENABLE_SOUND = 0,
+ NOTIFICATION_DISABLE_SOUND = 1,
+ NOTIFICATION_DISABLE = 2
+ */
 +(void)enableNotificationSound
 {
     [ALUserDefaultsHandler setNotificationMode:NOTIFICATION_ENABLE_SOUND];
@@ -419,7 +419,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getEmptyConversationText
 {
     NSString * text = [[NSUserDefaults standardUserDefaults] valueForKey:EMPTY_CONVERSATION_TEXT];
-    return text ? text : NSLocalizedStringWithDefaultValue(@"noConversationTitle", nil,[NSBundle mainBundle], @"You have no conversations yet", @"");
+    return text ? text : NSLocalizedStringWithDefaultValue(@"noConversationTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"You have no conversations yet", @"");
 }
 
 +(void)setVisibilityNoConversationLabelChatVC:(BOOL)flag
@@ -463,7 +463,7 @@ NOTIFICATION_DISABLE = 2
 
 +(BOOL)getCustomNavRightButtonMsgVC
 {
-   return [[NSUserDefaults standardUserDefaults] boolForKey:CUSTOM_NAV_RIGHT_BUTTON_MSGVC];
+    return [[NSUserDefaults standardUserDefaults] boolForKey:CUSTOM_NAV_RIGHT_BUTTON_MSGVC];
 }
 
 +(void)setColorForToastBackground:(UIColor *)toastBGColor
@@ -605,8 +605,8 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getAbuseWarningText
 {
     NSString * msg = [[NSUserDefaults standardUserDefaults] valueForKey:ABUSE_WORDS_WARNING_TEXT];
-    return msg ? msg :  NSLocalizedStringWithDefaultValue(@"restrictionWorldInfo", nil, [NSBundle mainBundle], @"AVOID USE OF ABUSE WORDS", @"");
-;
+    return msg ? msg :  NSLocalizedStringWithDefaultValue(@"restrictionWorldInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"AVOID USE OF ABUSE WORDS", @"");
+    ;
 }
 
 +(void)setAbuseWarningText:(NSString *)warningText
@@ -654,7 +654,7 @@ NOTIFICATION_DISABLE = 2
     return color ? color : [UIColor blackColor];
 }
 
-+(void)setReceiverUserProfileOption:(BOOL)flag  
++(void)setReceiverUserProfileOption:(BOOL)flag
 {
     [[NSUserDefaults standardUserDefaults] setBool:flag forKey:ENABLE_RECEIVER_USER_PROFILE];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -677,12 +677,12 @@ NOTIFICATION_DISABLE = 2
     return size ? size : 14;
 }
 
-+(void)setCustomMessageFont:(NSString *)font 
++(void)setCustomMessageFont:(NSString *)font
 {
     [[NSUserDefaults standardUserDefaults] setValue:font forKey:CUSTOM_MSG_FONT];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
- 
+
 +(NSString *)getCustomMessageFont
 {
     NSString * font = [[NSUserDefaults standardUserDefaults] valueForKey:CUSTOM_MSG_FONT];
@@ -735,7 +735,7 @@ NOTIFICATION_DISABLE = 2
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(void)setSubGroupLaunchFlag:(BOOL)flag 
++(void)setSubGroupLaunchFlag:(BOOL)flag
 {
     [[NSUserDefaults standardUserDefaults] setBool:flag forKey:SUB_GROUP_LAUNCH];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -801,7 +801,7 @@ NOTIFICATION_DISABLE = 2
     return [[NSUserDefaults standardUserDefaults] valueForKey:AUDIO_VIDEO_CLASS];
 }
 
-+(void)setClientStoryBoard:(NSString *)storyboard 
++(void)setClientStoryBoard:(NSString *)storyboard
 {
     [[NSUserDefaults standardUserDefaults] setValue:storyboard forKey:CLIENT_STORYBOARD];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -814,7 +814,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getGroupDeletedTitle
 {
     NSString * title = [[NSUserDefaults standardUserDefaults] stringForKey:GROUP_DELETED_TITLE];
-    return title ? title : NSLocalizedStringWithDefaultValue(@"groupDeletedInfo", nil, [NSBundle mainBundle], @"This Group has been Deleted", @"");;
+    return title ? title : NSLocalizedStringWithDefaultValue(@"groupDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"This Group has been Deleted", @"");;
 }
 
 +(void)setGroupDeletedTitle:(NSString *)title;
@@ -826,7 +826,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getUserDeletedText
 {
     NSString *text = [[NSUserDefaults standardUserDefaults] valueForKey:USER_DELETED_TEXT];
-    return text ? text :NSLocalizedStringWithDefaultValue(@"userDeletedInfo", nil, [NSBundle mainBundle], @"User has been deleted", @"");
+    return text ? text :NSLocalizedStringWithDefaultValue(@"userDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has been deleted", @"");
 }
 
 +(void)setUserDeletedText:(NSString *)text
@@ -852,7 +852,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getChatListTabTitle
 {
     NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:CHAT_LIST_TAB_TITLE];
-    return (stringtext && stringtext.length) ? stringtext :NSLocalizedStringWithDefaultValue(@"tabbarChatsTitle", nil, [NSBundle mainBundle], @"Chats", @"");
+    return (stringtext && stringtext.length) ? stringtext :NSLocalizedStringWithDefaultValue(@"tabbarChatsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Chats", @"");
 }
 
 +(void)setChatListTabTitle:(NSString *)title
@@ -878,7 +878,7 @@ NOTIFICATION_DISABLE = 2
 +(NSString *)getProfileTabTitle
 {
     NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:USER_PROFILE_TAB_TITLE];
-    return (stringtext && stringtext.length) ? stringtext : NSLocalizedStringWithDefaultValue(@"tabbarProfileTitle", nil, [NSBundle mainBundle], @"Profile", @"");
+    return (stringtext && stringtext.length) ? stringtext : NSLocalizedStringWithDefaultValue(@"tabbarProfileTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile", @"");
 }
 
 +(void)setProfileTabTitle:(NSString *)title
@@ -1080,11 +1080,11 @@ NOTIFICATION_DISABLE = 2
 +(void)setUserRoleName:(NSString*)roleName{
     [[NSUserDefaults standardUserDefaults] setValue:roleName forKey:AL_USER_ROLE_NAME];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
 }
 
 +(NSString*)getUserRoleName{
-    
+
     NSString *stringtext = [[NSUserDefaults standardUserDefaults] valueForKey:AL_USER_ROLE_NAME];
     return stringtext ? stringtext : @"USER";
 }
@@ -1101,4 +1101,26 @@ NOTIFICATION_DISABLE = 2
     return [[NSUserDefaults standardUserDefaults] boolForKey:AL_GROUP_CONVEERSATION_CLOSE];
 }
 
++(void)setDropShadowInNavigationBar:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:DROP_IN_SHADOW_IN_NAVIGATION_BAR];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL)isDropShadowInNavigationBarEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:DROP_IN_SHADOW_IN_NAVIGATION_BAR];
+}
+
++(void)setLocalizableName:(NSString *)localizableName
+{
+    [[NSUserDefaults standardUserDefaults] setValue:localizableName forKey:APPLOZIC_LOCALIZABLE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSString *)getLocalizableName
+{
+   return [[NSUserDefaults standardUserDefaults] valueForKey:APPLOZIC_LOCALIZABLE];
+
+}
 @end

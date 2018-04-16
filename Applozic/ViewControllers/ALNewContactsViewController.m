@@ -71,9 +71,9 @@
     self.selectedSegment = 0;
     [ALUserDefaultsHandler setContactServerCallIsDone:NO];
     
-    [self.segmentControl setTitle:  NSLocalizedStringWithDefaultValue(@"contactsTitle", nil, [NSBundle mainBundle], @"Contacts" , @"") forSegmentAtIndex:0];
+    [self.segmentControl setTitle:  NSLocalizedStringWithDefaultValue(@"contactsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Contacts" , @"") forSegmentAtIndex:0];
     
-    [self.segmentControl setTitle:  NSLocalizedStringWithDefaultValue(@"groupsTitle", nil, [NSBundle mainBundle], @"Groups" , @"") forSegmentAtIndex:1];
+    [self.segmentControl setTitle:  NSLocalizedStringWithDefaultValue(@"groupsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Groups" , @"") forSegmentAtIndex:1];
     
     self.contactList = [NSMutableArray new];
     [self handleFrameForOrientation];
@@ -87,7 +87,7 @@
     float y = self.navigationController.navigationBar.frame.origin.y+self.navigationController.navigationBar.frame.size.height;
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,y, self.view.frame.size.width, 40)];
     self.searchBar.delegate = self;
-    self.searchBar.placeholder =  NSLocalizedStringWithDefaultValue(@"searchInfo", nil, [NSBundle mainBundle], @"Email, userid, number" , @"") ;
+    self.searchBar.placeholder =  NSLocalizedStringWithDefaultValue(@"searchInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Email, userid, number" , @"") ;
     if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
         UITextField *searchTextField = [((UITextField *)[self.searchBar.subviews objectAtIndex:0]).subviews lastObject];
         searchTextField.layer.cornerRadius = 15.0f;
@@ -125,7 +125,7 @@
     }
 
     
-    barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton: NSLocalizedStringWithDefaultValue(@"back", nil, [NSBundle mainBundle], @"Back" , @"")]];
+    barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton: NSLocalizedStringWithDefaultValue(@"back", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Back" , @"")]];
     
     self.colors = [[NSArray alloc] initWithObjects:@"#617D8A",@"#628B70",@"#8C8863",@"8B627D",@"8B6F62", nil];
     
@@ -173,7 +173,7 @@
     }
     self.groupOrContacts = [NSNumber numberWithInt:SHOW_CONTACTS]; //default
     self.navigationItem.leftBarButtonItem = nil;
-    self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"contactsTitle", nil, [NSBundle mainBundle], @"Contacts" , @"");
+    self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"contactsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Contacts" , @"");
     [self.tabBarController.tabBar setHidden: [ALUserDefaultsHandler isBottomTabBarHidden]];
     
     if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
@@ -212,7 +212,7 @@
     }
     
     if(![ALApplozicSettings getGroupOption]){
-        [self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"contactsTitile", nil, [NSBundle mainBundle], @"Contacts" , @"")];
+        [self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"contactsTitile", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Contacts" , @"")];
         [self.segmentControl setSelectedSegmentIndex:0];
         [self.segmentControl setHidden:YES];
     }
@@ -322,7 +322,7 @@
         self.contactsTableView.editing=YES;
         self.contactsTableView.allowsMultipleSelectionDuringEditing = YES;
         self.done = [[UIBarButtonItem alloc]
-                     initWithTitle:NSLocalizedStringWithDefaultValue(@"doneText", nil, [NSBundle mainBundle], @"Done" , @"")
+                     initWithTitle:NSLocalizedStringWithDefaultValue(@"doneText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Done" , @"")
                      style:UIBarButtonItemStylePlain
                      target:self
                      action:@selector(createNewGroup:)];
@@ -390,10 +390,10 @@
 -(void)setTextForEmpty
 {
     
-    NSString *msgText = NSLocalizedStringWithDefaultValue(@"noContactFoundText", nil, [NSBundle mainBundle], @"No contact found" , @"");
+    NSString *msgText = NSLocalizedStringWithDefaultValue(@"noContactFoundText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No contact found" , @"");
     if(self.selectedSegment == 1)
     {
-        msgText = NSLocalizedStringWithDefaultValue(@"noContactFoundText", nil, [NSBundle mainBundle], @"No group found" , @"");
+        msgText = NSLocalizedStringWithDefaultValue(@"noContactFoundText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No group found" , @"");
     }
     [self.emptyConversationText setText:msgText];
 }
@@ -454,7 +454,8 @@
                 {
                     if (contact.contactImageUrl)
                     {
-                        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl] placeholderImage:nil options:SDWebImageRefreshCached];
+                        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl] placeholderImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"] options:SDWebImageRefreshCached];
+                        
                     }
                     else
                     {
@@ -574,7 +575,7 @@
                 
                 if(error)
                 {
-                    [TSMessage showNotificationWithTitle:NSLocalizedStringWithDefaultValue(@"unableToAddMemberText", nil, [NSBundle mainBundle], @"Unable to add new member" , @"") type:TSMessageNotificationTypeError];
+                    [TSMessage showNotificationWithTitle:NSLocalizedStringWithDefaultValue(@"unableToAddMemberText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to add new member" , @"") type:TSMessageNotificationTypeError];
 
                     [self setUserInteraction:YES];
                 }
@@ -1045,14 +1046,14 @@
         
         [self turnUserInteractivityForNavigationAndTableView:YES];
         UIAlertController *alertController = [UIAlertController
-                                              alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"groupMembersTitle", nil, [NSBundle mainBundle], @"Group Members" , @"")
-                                              message:NSLocalizedStringWithDefaultValue(@"selectMembersText", nil, [NSBundle mainBundle], @"Please select minimum two members" , @"")
+                                              alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"groupMembersTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group Members" , @"")
+                                              message:NSLocalizedStringWithDefaultValue(@"selectMembersText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Please select minimum two members" , @"")
                                               preferredStyle:UIAlertControllerStyleAlert];
         
         [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
         
         UIAlertAction *okAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", nil, [NSBundle mainBundle], @"OK", @"")
+                                   actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK", @"")
                                    style:UIAlertActionStyleDefault
                                    handler:^(UIAlertAction *action)
                                    {
@@ -1091,7 +1092,7 @@
                                     else
                                     {
                                         
-                                        [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"unableToCreateGroupText", nil, [NSBundle mainBundle], @"Unable to create group. Please try again", @"") type:TSMessageNotificationTypeError];
+                                        [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"unableToCreateGroupText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to create group. Please try again", @"") type:TSMessageNotificationTypeError];
                                         [self turnUserInteractivityForNavigationAndTableView:YES];
                                     }
                                     
@@ -1125,7 +1126,7 @@
                                                          }
                                                          else
                                                          {
-                                                             [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"unableToCreateGroupText", nil, [NSBundle mainBundle], @"Unable to create group. Please try again", @"")  type:TSMessageNotificationTypeError];
+                                                             [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"unableToCreateGroupText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to create group. Please try again", @"")  type:TSMessageNotificationTypeError];
                                                              [self turnUserInteractivityForNavigationAndTableView:YES];
                                                          }
                                                          
@@ -1163,7 +1164,7 @@
                                  }
                                  else
                                  {
-                                     [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"unableToCreateGroupText", nil, [NSBundle mainBundle], @"Unable to create group. Please try again", @"") type:TSMessageNotificationTypeError];
+                                     [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"unableToCreateGroupText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to create group. Please try again", @"") type:TSMessageNotificationTypeError];
                                      [self turnUserInteractivityForNavigationAndTableView:YES];
                                  }
                                  
@@ -1248,7 +1249,7 @@
         {
             [self.activityIndicator stopAnimating];
             [self.emptyConversationText setHidden:NO];
-            [self.emptyConversationText setText: NSLocalizedStringWithDefaultValue(@"unableToFetachContacts", nil, [NSBundle mainBundle], @"Unable to fetch contacts", @"") ];
+            [self.emptyConversationText setText: NSLocalizedStringWithDefaultValue(@"unableToFetachContacts", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to fetch contacts", @"") ];
             return;
         }
         
@@ -1408,7 +1409,7 @@
         {
             [self.activityIndicator stopAnimating];
             [self.emptyConversationText setHidden:NO];
-            [self.emptyConversationText setText: NSLocalizedStringWithDefaultValue(@"unableToFetachContacts", nil, [NSBundle mainBundle], @"Unable to fetch contacts" , @"")];
+            [self.emptyConversationText setText: NSLocalizedStringWithDefaultValue(@"unableToFetachContacts", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to fetch contacts" , @"")];
             [self onlyGroupFetch];
             return;
         }

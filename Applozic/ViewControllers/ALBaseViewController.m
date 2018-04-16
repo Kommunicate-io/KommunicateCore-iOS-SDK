@@ -189,7 +189,10 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     
 //    [self.view insertSubview:self.noConversationLabel belowSubview:self.typingMessageView];
     
-    [self dropShadowInNavigationBar];
+    if([ALApplozicSettings isDropShadowInNavigationBarEnabled])
+    {
+        [self dropShadowInNavigationBar];
+    }
     
 }
 

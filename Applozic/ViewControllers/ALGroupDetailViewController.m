@@ -189,7 +189,7 @@
     
     [self.tabBarController.tabBar setHidden:YES];
     [self setNavigationColor];
-    [self setTitle: NSLocalizedStringWithDefaultValue(@"groupDetailsTitle", nil, [NSBundle mainBundle], @"Group Details", @"")];
+    [self setTitle: NSLocalizedStringWithDefaultValue(@"groupDetailsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group Details", @"")];
     
     ALChannelService * channnelService = [[ALChannelService alloc] init];
     self.alChannel = [channnelService getChannelByKey:self.channelKeyID];
@@ -222,7 +222,7 @@
     {
         ALContact * contact = [contactDb loadContactByKey:@"userId" value:userID];
         if([contact.userId isEqualToString:[ALUserDefaultsHandler getUserId]]){
-            contact.displayName = NSLocalizedStringWithDefaultValue(@"youText", nil, [NSBundle mainBundle], @"You", @"");
+            contact.displayName = NSLocalizedStringWithDefaultValue(@"youText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You", @"");
         }
         [self.lastSeenMembersArray addObject:[self getLastSeenForMember:userID]];
         [memberNames addObject:[contact getDisplayName]];
@@ -347,9 +347,9 @@
         }break;
         case 2:{
             //Exit group
-            [self checkAndconfirm: NSLocalizedStringWithDefaultValue(@"confirmText", nil, [NSBundle mainBundle], @"Confirm", @"")
-                      withMessage:NSLocalizedStringWithDefaultValue(@"areYouSureText", nil, [NSBundle mainBundle], @"Are you sure?", @"")
-                 otherButtonTitle: NSLocalizedStringWithDefaultValue(@"yes", nil, [NSBundle mainBundle], @"Yes", @"")
+            [self checkAndconfirm: NSLocalizedStringWithDefaultValue(@"confirmText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirm", @"")
+                      withMessage:NSLocalizedStringWithDefaultValue(@"areYouSureText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure?", @"")
+                 otherButtonTitle: NSLocalizedStringWithDefaultValue(@"yes", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Yes", @"")
              ];
             
         }break;
@@ -431,7 +431,7 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
                                                     message:message
                                                    delegate:self
-                                          cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"cancelText", nil, [NSBundle mainBundle], @"Cancel", @"")
+                                          cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"cancelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"")
                                           otherButtonTitles:buttonTitle, nil];
     [alert show];
 }
@@ -469,7 +469,7 @@
                 if(error)
                 {
                     NSLog(@"DELETE FAILED: Unable to delete contact conversation : %@", error.description);
-                    [ALUtilityClass displayToastWithMessage:NSLocalizedStringWithDefaultValue(@"deleteFailed", nil, [NSBundle mainBundle], @"Delete failed!", @"")];
+                    [ALUtilityClass displayToastWithMessage:NSLocalizedStringWithDefaultValue(@"deleteFailed", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delete failed!", @"")];
                     return;
                 }
                 //DELETE CHANNEL FROM LOCAL AND BACK TO MAIN VIEW
@@ -525,11 +525,11 @@
         
         [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
         
-        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
+        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
         
         if ([ALApplozicSettings isChatOnTapUserProfile])
         {
-            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"messageText", nil, [NSBundle mainBundle], @"Message", @"") stringByAppendingString: @" %@"], memberNames[row]]
+            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"messageText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Message", @"") stringByAppendingString: @" %@"], memberNames[row]]
                                                               style:UIAlertActionStyleDefault
                                                             handler:^(UIAlertAction *action) {
                                                                 
@@ -547,7 +547,7 @@
         
         if(alChannelUserXLoggedInUser.role.intValue !=MEMBER && alChannelUserXLoggedInUser.role.intValue != USER){
             
-            UIAlertAction *removeAction = [UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"removeText", nil, [NSBundle mainBundle], @"Remove", @"") stringByAppendingString: @" %@"], memberNames[row]]
+            UIAlertAction *removeAction = [UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"removeText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Remove", @"") stringByAppendingString: @" %@"], memberNames[row]]
                                                                    style:UIAlertActionStyleDefault
                                                                  handler:^(UIAlertAction *action) {
                                                                      
@@ -576,7 +576,7 @@
         
         if(alChannelUserX.role.intValue != ADMIN){
             
-            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"makeAdminText", nil, [NSBundle mainBundle], @"Make admin", @"") stringByAppendingString: @" %@"]
+            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"makeAdminText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Make admin", @"") stringByAppendingString: @" %@"]
                                                                      , memberNames[row]]
                                                               style:UIAlertActionStyleDefault
                                                             handler:^(UIAlertAction *action) {
@@ -594,7 +594,7 @@
                                                                                       if(!error)
                                                                                       {
                                                                                           
-                                                                                          [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"groupSuccessFullyUpdateInfo", nil, [NSBundle mainBundle], @"Group information successfully updated", @"") andTitle:NSLocalizedStringWithDefaultValue(@"responseText", nil, [NSBundle mainBundle], @"Reponse", @"")];
+                                                                                          [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"groupSuccessFullyUpdateInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group information successfully updated", @"") andTitle:NSLocalizedStringWithDefaultValue(@"responseText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Reponse", @"")];
                                                                                           [self setupView];
                                                                                           [self.tableView reloadData];
                                                                                       }
@@ -671,14 +671,14 @@
                 else if(indexPath.row==1)
                 {
                     self.memberNameLabel.text = [self.alChannel isNotificationMuted]
-                    ? [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"unMuteGroup", nil, [NSBundle mainBundle], @"Unmute Group", @"")]
-                    : [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"muteGroup", nil, [NSBundle mainBundle], @"Mute Group", @"") ];
+                    ? [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"unMuteGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unmute Group", @"")]
+                    : [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"muteGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Mute Group", @"") ];
                 }
                 else
                 {
                     
                     self.memberNameLabel.textColor = self.view.tintColor;
-                    self.memberNameLabel.text = NSLocalizedStringWithDefaultValue(@"addNewMember", nil, [NSBundle mainBundle], @"Add New Member", @"");
+                    self.memberNameLabel.text = NSLocalizedStringWithDefaultValue(@"addNewMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Add New Member", @"");
                     
                 }
             }break;
@@ -690,7 +690,7 @@
             {
                 [self.memberNameLabel setTextColor:[UIColor redColor]];
                 NSString * labelTitle = (![self isThisChannelLeft:self.channelKeyID]) ?
-                NSLocalizedStringWithDefaultValue(@"exitGroup", nil, [NSBundle mainBundle], @"Exit Group", @""):                NSLocalizedStringWithDefaultValue(@"deleteGroup", nil, [NSBundle mainBundle], @"Delete Group", @"") ;
+                NSLocalizedStringWithDefaultValue(@"exitGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Exit Group", @""):                NSLocalizedStringWithDefaultValue(@"deleteGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delete Group", @"") ;
                 self.memberNameLabel.text = labelTitle;
             }break;
             default:break;
@@ -737,7 +737,8 @@
     else if(alContact.contactImageUrl)
     {
         NSURL * theUrl = [NSURL URLWithString:alContact.contactImageUrl];
-        [self.memberIconImageView sd_setImageWithURL:theUrl placeholderImage:nil options:SDWebImageRefreshCached];
+          [self.memberIconImageView sd_setImageWithURL:theUrl placeholderImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"] options:SDWebImageRefreshCached];
+        
     }
     else
     {
@@ -758,7 +759,7 @@
     self.firstLetterLabel = (UILabel*)[memberCell viewWithTag:103];
     self.firstLetterLabel.textColor = [UIColor whiteColor];
     self.adminLabel = (UILabel*)[memberCell viewWithTag:104];
-    [self.adminLabel setText:NSLocalizedStringWithDefaultValue(@"adminText", nil, [NSBundle mainBundle], @"Admin", @"")];
+    [self.adminLabel setText:NSLocalizedStringWithDefaultValue(@"adminText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Admin", @"")];
     self.adminLabel.textColor = self.view.tintColor;
     
     self.lastSeenLabel = (UILabel *)[memberCell viewWithTag:105];
@@ -825,7 +826,7 @@
     else if(section == 1)
     {
         UILabel * memberSectionHeaderTitle = [[UILabel alloc] init];
-        memberSectionHeaderTitle.text = NSLocalizedStringWithDefaultValue(@"groupDetailsTitle", nil, [NSBundle mainBundle], @"Group Details", @"");
+        memberSectionHeaderTitle.text = NSLocalizedStringWithDefaultValue(@"groupDetailsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group Details", @"");
         
         CGSize textSize = [memberSectionHeaderTitle.text sizeWithAttributes:@{NSFontAttributeName:memberSectionHeaderTitle.font}];
         
@@ -869,6 +870,13 @@
     
     if([ALApplozicSettings isGroupInfoEditDisabled] || [ALChannelService isConversationClosed: alchannel.key] ){
         NSLog(@"group edit is disabled");
+        return;
+    }
+    
+    ALChannelService *channelService = [ALChannelService new];
+    if([channelService isChannelLeft:self.channelKeyID] || [ALChannelService isChannelDeleted:self.channelKeyID])
+    {
+        [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"yourNotAparticipantOfGroup", nil, [NSBundle mainBundle], @"You are not a participant of this group", @"")   andTitle:NSLocalizedStringWithDefaultValue(@"unableToProcess", nil, [NSBundle mainBundle], @"Unable process !!!", @"")];
         return;
     }
     
@@ -924,11 +932,11 @@
 
 -(void) showActionSheet
 {
-    NSString *hrsString = [@"8 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"hrs", nil, [NSBundle mainBundle], @"Hrs", @"")];
-    NSString *weekString = [@"1 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"week", nil, [NSBundle mainBundle], @"Week", @"")];
-    NSString *yearString = [@"1 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"year", nil, [NSBundle mainBundle], @"Year", @"")];
+    NSString *hrsString = [@"8 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"hrs", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Hrs", @"")];
+    NSString *weekString = [@"1 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"week", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Week", @"")];
+    NSString *yearString = [@"1 " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"year", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Year", @"")];
     
-    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"cancelText", nil, [NSBundle mainBundle], @"cancel", @"") destructiveButtonTitle:nil otherButtonTitles:hrsString,weekString,yearString, nil];
+    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle: NSLocalizedStringWithDefaultValue(@"cancelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"cancel", @"") destructiveButtonTitle:nil otherButtonTitles:hrsString,weekString,yearString, nil];
     [actionSheet showInView:self.view];
 }
 

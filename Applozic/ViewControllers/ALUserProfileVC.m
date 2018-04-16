@@ -109,7 +109,7 @@
         self.uploadImageButton.layer.masksToBounds = YES;
     });
     
-    self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"profileTitle", nil, [NSBundle mainBundle], @"Profile", @"");
+    self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"profileTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile", @"");
     
     [self.profileImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
     NSData *imageData = [NSData dataWithContentsOfFile:[ALUserDefaultsHandler getProfileImageLink]];
@@ -128,7 +128,7 @@
     myContact = [alContactService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
     self.userNameLabel.text = [myContact getDisplayName];
     self.userDesignationLabel.text = @"";
-    [self.userStatusLabel setText:[ALUserDefaultsHandler getLoggedInUserStatus] ? [ALUserDefaultsHandler getLoggedInUserStatus] :     NSLocalizedStringWithDefaultValue(@"emptyLabelProfileText", nil, [NSBundle mainBundle], @"Profile Status", @"")];
+    [self.userStatusLabel setText:[ALUserDefaultsHandler getLoggedInUserStatus] ? [ALUserDefaultsHandler getLoggedInUserStatus] :     NSLocalizedStringWithDefaultValue(@"emptyLabelProfileText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile Status", @"")];
     
     
     if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
@@ -141,10 +141,10 @@
         self.mobileNotification.textAlignment = NSTextAlignmentRight;
     }
     
-    [self.profileStatus setText: NSLocalizedStringWithDefaultValue(@"profileStatusTitle", nil, [NSBundle mainBundle], @"Profile Status", @"")];
-    [self.notificationTitle setText:NSLocalizedStringWithDefaultValue(@"notificationsTitle", nil, [NSBundle mainBundle], @"Notifications", @"")];
+    [self.profileStatus setText: NSLocalizedStringWithDefaultValue(@"profileStatusTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Profile Status", @"")];
+    [self.notificationTitle setText:NSLocalizedStringWithDefaultValue(@"notificationsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Notifications", @"")];
     
-    [self.mobileNotification setText:NSLocalizedStringWithDefaultValue(@"mobileNotificationsTitle", nil, [NSBundle mainBundle], @"Mobile Notifications", @"")];
+    [self.mobileNotification setText:NSLocalizedStringWithDefaultValue(@"mobileNotificationsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Mobile Notifications", @"")];
     
     
     BOOL checkMode = ([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE);
@@ -353,13 +353,13 @@
         if(!error)
         {
             
-            [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"notificationStatusUpdateText", nil, [NSBundle mainBundle], @"Notification setting updated!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", nil, [NSBundle mainBundle], @"Alert", @"")];
+            [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"notificationStatusUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Notification setting updated!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert", @"")];
             [ALUserDefaultsHandler setNotificationMode:modeValue];
             [self.notificationToggle setOn:flag animated:YES];
         }
         else
         {
-            [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"unableToUpdateText", nil, [NSBundle mainBundle], @"Unable to update!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", nil, [NSBundle mainBundle], @"Alert", @"")];
+            [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"unableToUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to update!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert", @"")];
             [self.notificationToggle setOn:(!flag) animated:YES];
         }
         [self.activityIndicator stopAnimating];
@@ -373,13 +373,13 @@
     
     [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photoLibraryText", nil, [NSBundle mainBundle], @"Photo Library", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photoLibraryText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Photo Library", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self uploadByPhotos];
     }]];
     
-    [alertController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"takePhotoText", nil, [NSBundle mainBundle], @"Take Photo", @"")
+    [alertController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"takePhotoText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Take Photo", @"")
                                                         style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                                                             
                                                             [self uploadByCamera];
@@ -412,7 +412,7 @@
                 else
                 {
                     [ALUtilityClass permissionPopUpWithMessage:
-                     NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", nil, [NSBundle mainBundle], @"Enable Camera Permission", @"")
+                     NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"")
                                              andViewController:self];
                 }
             });
@@ -421,7 +421,7 @@
     else
     {
         
-        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", nil, [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:@"OOPS !!!"];
+        [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:@"OOPS !!!"];
     }
 }
 
@@ -476,7 +476,7 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
                 NSLog(@"IMAGE_UPDATED_SUCCESSFULLY");
                 
                 
-                [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"imageUpdateText", nil, [NSBundle mainBundle], @"Image Updated Successfully!!!" , @"")  andTitle:NSLocalizedStringWithDefaultValue(@"alertText", nil, [NSBundle mainBundle], @"Alert" , @"") ];
+                [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"imageUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image Updated Successfully!!!" , @"")  andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert" , @"") ];
                 [ALUserDefaultsHandler setProfileImageLinkFromServer:imageLinkFromServer];
                 
             }
@@ -495,16 +495,16 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     
     image = [image getCompressedImageLessThanSize:1];
     
-    UIAlertController * alert = [UIAlertController alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"confirmationText", nil, [NSBundle mainBundle], @"Confirmation" , @"") message:NSLocalizedStringWithDefaultValue(@"areYouSureText", nil, [NSBundle mainBundle], @"Are you sure?" , @"")
+    UIAlertController * alert = [UIAlertController alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"confirmationText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirmation" , @"") message:NSLocalizedStringWithDefaultValue(@"areYouSureText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure?" , @"")
                                                              preferredStyle:UIAlertControllerStyleAlert];
     
     [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
     
-    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"CANCEL" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"CANCEL" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     
-    UIAlertAction* upload = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"uploadOption", nil, [NSBundle mainBundle], @"Upload" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+    UIAlertAction* upload = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"uploadOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Upload" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
         
         if(![ALDataNetworkConnection checkDataNetworkAvailable])
         {
@@ -590,28 +590,28 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
 -(void)alertViewForStatus
 {
     
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"yorStatusAlertTitle", nil, [NSBundle mainBundle], @"Your Status" , @"")
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"yorStatusAlertTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your Status" , @"")
                                                                              message:
-                                          NSLocalizedStringWithDefaultValue(@"maxCharForStatus", nil, [NSBundle mainBundle], @"(Max 256 characters)" , @"")
+                                          NSLocalizedStringWithDefaultValue(@"maxCharForStatus", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"(Max 256 characters)" , @"")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     
     [ALUtilityClass setAlertControllerFrame:alertController andViewController:self];
     
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         
-        textField.placeholder = NSLocalizedStringWithDefaultValue(@"alertProfileStatusMessage", nil, [NSBundle mainBundle], @"Write status here..." , @"");
+        textField.placeholder = NSLocalizedStringWithDefaultValue(@"alertProfileStatusMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Write status here..." , @"");
         
         
         
     }];
     
     
-    [alertController addAction:[UIAlertAction actionWithTitle:  NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"CANCEL" , @"")
+    [alertController addAction:[UIAlertAction actionWithTitle:  NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"CANCEL" , @"")
                                 
                                                         style:UIAlertActionStyleCancel
                                                       handler:nil]];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", nil, [NSBundle mainBundle], @"OK" , @"")
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK" , @"")
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
                                                           

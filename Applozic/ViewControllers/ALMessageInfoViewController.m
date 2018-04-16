@@ -118,11 +118,11 @@
     }
     else if(section == 1)
     {
-        return [self customHeaderView:section withTitle:NSLocalizedStringWithDefaultValue(@"read", nil, [NSBundle mainBundle], @"Read", @"") andName:@"ic_action_read.png"];
+        return [self customHeaderView:section withTitle:NSLocalizedStringWithDefaultValue(@"read", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Read", @"") andName:@"ic_action_read.png"];
     }
     else
     {
-        return [self customHeaderView:section withTitle:NSLocalizedStringWithDefaultValue(@"delivered", nil, [NSBundle mainBundle], @"Delivered", @"")  andName:@"ic_action_message_delivered.png"];
+        return [self customHeaderView:section withTitle:NSLocalizedStringWithDefaultValue(@"delivered", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delivered", @"")  andName:@"ic_action_message_delivered.png"];
     }
 }
 
@@ -165,7 +165,7 @@
     if(!alMessage.sentToServer)
     {
         [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
-        [TSMessage showNotificationWithTitle:NSLocalizedStringWithDefaultValue(@"messageProccessText", nil, [NSBundle mainBundle], @"Message is in processing", @"") type:TSMessageNotificationTypeWarning];
+        [TSMessage showNotificationWithTitle:NSLocalizedStringWithDefaultValue(@"messageProccessText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Message is in processing", @"") type:TSMessageNotificationTypeWarning];
         completion([self customError]);
         return;
     }

@@ -35,8 +35,8 @@
     [self.navigationBar setTintColor:[ALApplozicSettings getColorForNavigation]];
     [self.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
     
-    [self.backBarButton setTitle:NSLocalizedStringWithDefaultValue(@"back", nil, [NSBundle mainBundle], @"Back", @"")];
-    self.navigationBar.topItem.title = NSLocalizedStringWithDefaultValue(@"imagePreview", nil, [NSBundle mainBundle], @"Image Preview", @"");
+    [self.backBarButton setTitle:NSLocalizedStringWithDefaultValue(@"back", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Back", @"")];
+    self.navigationBar.topItem.title = NSLocalizedStringWithDefaultValue(@"imagePreview", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image Preview", @"");
     self.navigationBar.titleTextAttributes = @{
                                                NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem]
                                                };
@@ -107,7 +107,7 @@
     
     
     
-    UIBarButtonItem * leftBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"Cancel", @"") style:UIBarButtonItemStylePlain target:self action:@selector(dismissContactViewControllerWithCompletion:)];
+    UIBarButtonItem * leftBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIBarButtonItemStylePlain target:self action:@selector(dismissContactViewControllerWithCompletion:)];
     
     UINavigationItem * navigationItem = [[UINavigationItem alloc] init];
     navigationItem.leftBarButtonItem = leftBarButton;

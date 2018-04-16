@@ -14,6 +14,7 @@
 #import "ALChannelUserX.h"
 #import "ALConversationProxy.h"
 #import "DB_ConversationProxy.h"
+#import "ALApplozicSettings.h"
 
 @interface ALChannelDBService : NSObject
 

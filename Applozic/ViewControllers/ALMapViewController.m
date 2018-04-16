@@ -54,9 +54,9 @@
     [self.mapKitView setDelegate:self];
     self.geocoder = [[CLGeocoder alloc] init];
     
-    [self setTitle:NSLocalizedStringWithDefaultValue(@"sendLocationViewTitle", nil, [NSBundle mainBundle], @"Send Location", @"")] ;
+    [self setTitle:NSLocalizedStringWithDefaultValue(@"sendLocationViewTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Send Location", @"")] ;
     
-    [_sendLocationButton setTitle:NSLocalizedStringWithDefaultValue(@"sendLocationButtonText", nil, [NSBundle mainBundle], @"Send Location", @"") forState:UIControlStateNormal]; // To set the title
+    [_sendLocationButton setTitle:NSLocalizedStringWithDefaultValue(@"sendLocationButtonText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Send Location", @"") forState:UIControlStateNormal]; // To set the title
     
 }
 
@@ -74,7 +74,7 @@
     
     if (![ALDataNetworkConnection checkDataNetworkAvailable])
     {
-        [TSMessage showNotificationInViewController:self title:@"" subtitle:        NSLocalizedStringWithDefaultValue(@"noInternetMessage", nil, [NSBundle mainBundle], @"No Internet", @"")
+        [TSMessage showNotificationInViewController:self title:@"" subtitle:        NSLocalizedStringWithDefaultValue(@"noInternetMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No Internet", @"")
                                                type:TSMessageNotificationTypeError duration:1.0 canBeDismissedByUser:NO];
     }
 }
@@ -149,9 +149,9 @@
                                                             message:message
                                                            delegate:self
                                                   cancelButtonTitle:
-                                  NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"Cancel", @"")
+                                  NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"")
                                                   otherButtonTitles:
-                                  NSLocalizedStringWithDefaultValue(@"settings", nil, [NSBundle mainBundle], @"Settings", @"")
+                                  NSLocalizedStringWithDefaultValue(@"settings", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Settings", @"")
                                   , nil];
         [alertView show];
     }

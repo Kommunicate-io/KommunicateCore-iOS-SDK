@@ -9,6 +9,7 @@
 #import <CoreData/NSManagedObject.h>
 #import "ALJson.h"
 #import "ALFileMetaInfo.h"
+#import "ALApplozicSettings.h"
 
 #define ALMESSAGE_CONTENT_DEFAULT 0
 #define ALMESSAGE_CONTENT_ATTACHMENT 1

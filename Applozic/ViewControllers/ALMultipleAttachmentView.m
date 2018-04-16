@@ -44,9 +44,9 @@ static NSString * const reuseIdentifier = @"collectionCell";
     
     //    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
-    [self setTitle: NSLocalizedStringWithDefaultValue(@"attachmentViewTitle", nil, [NSBundle mainBundle], @"Attachment", @"")];
+    [self setTitle: NSLocalizedStringWithDefaultValue(@"attachmentViewTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Attachment", @"")];
     
-    self.sendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"sendText", nil, [NSBundle mainBundle], @"Send" , @"")
+    self.sendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"sendText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Send" , @"")
                                                        style:UIBarButtonItemStylePlain
                                                       target:self
                                                       action:@selector(sendButtonAction)];
@@ -173,7 +173,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
     int max = MAX_VALUE + 1;
     if(self.imageArray.count >= max)
     {
-        [ALUtilityClass showAlertMessage:   NSLocalizedStringWithDefaultValue(@"attachmentLimitReachedText", nil, [NSBundle mainBundle], @"Maximum attachment limit reached" , @"")  andTitle:   NSLocalizedStringWithDefaultValue(@"oppsText", nil, [NSBundle mainBundle], @"OOPS!!!", @"")];
+        [ALUtilityClass showAlertMessage:   NSLocalizedStringWithDefaultValue(@"attachmentLimitReachedText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Maximum attachment limit reached" , @"")  andTitle:   NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OOPS!!!", @"")];
         return;
     }
     
@@ -186,7 +186,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
     if(!self.mediaFileArray.count)
     {
         
-        [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"selectAtleastAttachment", nil, [NSBundle mainBundle], @"Select at least one attachment" , @"")andTitle: NSLocalizedStringWithDefaultValue(@"attachment", nil, [NSBundle mainBundle], @"Attachment" , @"")];
+        [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"selectAtleastAttachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Select at least one attachment" , @"")andTitle: NSLocalizedStringWithDefaultValue(@"attachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Attachment" , @"")];
         return;
     }
     [self.multipleAttachmentDelegate multipleAttachmentProcess:self.mediaFileArray andText:headerView.msgTextField.text];
@@ -248,7 +248,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
         headerView.msgTextField.layer.masksToBounds = YES;
         headerView.msgTextField.layer.borderColor = [[UIColor brownColor] CGColor];
         headerView.msgTextField.layer.borderWidth = 1.0f;
-        headerView.msgTextField.placeholder =  NSLocalizedStringWithDefaultValue(@"writeSomeTextHere", nil, [NSBundle mainBundle], @"Write Some Text..." , @"");
+        headerView.msgTextField.placeholder =  NSLocalizedStringWithDefaultValue(@"writeSomeTextHere", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Write Some Text..." , @"");
         
         [headerView setBackgroundColor:[UIColor whiteColor]];
     }

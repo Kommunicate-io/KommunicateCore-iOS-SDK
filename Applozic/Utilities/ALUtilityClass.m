@@ -371,12 +371,12 @@
     
     if([serverdate isEqualToString:todaydate])
     {
-        self.msgdate = NSLocalizedStringWithDefaultValue(@"todayMsgViewText", nil, [NSBundle mainBundle], @"today" , @"");
+        self.msgdate = NSLocalizedStringWithDefaultValue(@"todayMsgViewText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"today" , @"");
         
     }
     else if ([serverdate isEqualToString:yesterdaydate])
     {
-        self.msgdate = NSLocalizedStringWithDefaultValue(@"yesterdayMsgViewText", nil, [NSBundle mainBundle], @"yesterday" , @"");
+        self.msgdate = NSLocalizedStringWithDefaultValue(@"yesterdayMsgViewText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"yesterday" , @"");
     }
     
     [format setDateFormat:@"hh:mm a"];
@@ -435,7 +435,7 @@
                                                          message:text
                                                         delegate:self
                                                cancelButtonTitle:nil
-                                               otherButtonTitles:NSLocalizedStringWithDefaultValue(@"okText", nil, [NSBundle mainBundle], @"OK" , @""), nil];
+                                               otherButtonTitles:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK" , @""), nil];
     
     [alertView show];
     
@@ -489,14 +489,14 @@
 
 +(void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController
 {
-    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"applicationSettings", nil, [NSBundle mainBundle], @"Application Settings" , @"")    message:msgText
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"applicationSettings", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Application Settings" , @"")    message:msgText
                                                                        preferredStyle:UIAlertControllerStyleAlert];
     
     [ALUtilityClass setAlertControllerFrame:alertController andViewController:viewController];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", nil, [NSBundle mainBundle], @"Cancel" , @"")  style:UIAlertActionStyleCancel handler:nil]];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel" , @"")  style:UIAlertActionStyleCancel handler:nil]];
     
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"settings", nil, [NSBundle mainBundle], @"Settings" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"settings", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Settings" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         
         [ALUtilityClass openApplicationSettings];
     }]];

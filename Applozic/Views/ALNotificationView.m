@@ -59,19 +59,19 @@
     
     if(alMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
-        return NSLocalizedStringWithDefaultValue(@"shareadLocationText", nil,[NSBundle mainBundle], @"Shared a Location", @"") ;
+        return NSLocalizedStringWithDefaultValue(@"shareadLocationText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared a Location", @"") ;
     }
     else if(alMessage.contentType == ALMESSAGE_CONTENT_VCARD)
     {
-        return NSLocalizedStringWithDefaultValue(@"shareadContactText", nil,[NSBundle mainBundle], @"Shared a Contact", @"");
+        return NSLocalizedStringWithDefaultValue(@"shareadContactText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared a Contact", @"");
     }
     else if (alMessage.contentType == ALMESSAGE_CONTENT_CAMERA_RECORDING)
     {
-        return NSLocalizedStringWithDefaultValue(@"shareadVideoText", nil,[NSBundle mainBundle], @"Shared a Video", @"");
+        return NSLocalizedStringWithDefaultValue(@"shareadVideoText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared a Video", @"");
     }
     else if (alMessage.contentType == ALMESSAGE_CONTENT_AUDIO)
     {
-        return NSLocalizedStringWithDefaultValue(@"shareadAudioText", nil,[NSBundle mainBundle], @"Shared an Audio", @"");
+        return NSLocalizedStringWithDefaultValue(@"shareadAudioText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared an Audio", @"");
     }
     else if (alMessage.contentType == AV_CALL_CONTENT_THREE)
     {
@@ -80,7 +80,7 @@
     }else if (alMessage.contentType == ALMESSAGE_CONTENT_ATTACHMENT ||
              [alMessage.message isEqualToString:@""] || alMessage.fileMeta != NULL)
     {
-        return NSLocalizedStringWithDefaultValue(@"shareadAttachmentText", nil,[NSBundle mainBundle], @"Shared an Attachment", @"");
+        return NSLocalizedStringWithDefaultValue(@"shareadAttachmentText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared an Attachment", @"");
     }
     else{
         return alMessage.message;
@@ -288,7 +288,7 @@
     // ** Attachment ** //
     if(self.alMessageObject.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
-        subtitle = NSLocalizedStringWithDefaultValue(@"shareadLocation", nil,[NSBundle mainBundle], @"Shared Location", @"");
+        subtitle = NSLocalizedStringWithDefaultValue(@"shareadLocation", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Shared Location", @"");
         
     }
     
@@ -443,13 +443,13 @@
 -(void)showGroupLeftMessage
 {
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
-    [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"youHaveLeftGroupMesasge", nil, [NSBundle mainBundle], @"You have left this group", @"") type:TSMessageNotificationTypeWarning];
+    [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"youHaveLeftGroupMesasge", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You have left this group", @"") type:TSMessageNotificationTypeWarning];
 }
 
 -(void)noDataConnectionNotificationView
 {
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
-    [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"noInternetMessage", nil, [NSBundle mainBundle], @"No Internet Connectivity", @"")
+    [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"noInternetMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No Internet Connectivity", @"")
                                     type:TSMessageNotificationTypeWarning];
 }
 
