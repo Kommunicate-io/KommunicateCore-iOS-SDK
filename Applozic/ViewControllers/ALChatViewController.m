@@ -1734,12 +1734,13 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if(self.conversationId && [ALApplozicSettings getContextualChatOption])
-    {
+    ALChannelService * alChannelService = [ALChannelService new];
+    ALChannel * alChannel = [alChannelService getChannelByKey:self.channelKey];
+    if(self.conversationId && [ALApplozicSettings getContextualChatOption]){
         return self.getHeaderView.frame.size.height;
-    }
-    else
-    {
+    }else if(alChannel.metadata!=nil && [alChannel.metadata objectForKey:@"title"]){
+        return self.getContextGroupOfTwoView.frame.size.height;
+    } else {
         return 0;
     }
 }
@@ -1750,7 +1751,43 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    return self.getHeaderView;
+    return self.getContextGroupOfTwoView;
+}
+
+-(UIView *)getContextGroupOfTwoView
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 84)];
+    
+    ALChannelService * alChannelService = [ALChannelService new];
+    
+    ALChannel * alChannel = [alChannelService getChannelByKey:self.channelKey];
+    
+    // Image View ....
+    UIImageView *imageView = [[UIImageView alloc] init];
+    NSURL * url = [NSURL URLWithString: [alChannel.metadata valueForKey:@"link"]];
+    [imageView sd_setImageWithURL:url placeholderImage:nil options:SDWebImageRefreshCached];
+    
+    imageView.frame = CGRectMake(5, 5, 70, 70);
+    imageView.backgroundColor = [UIColor blackColor];
+    [view addSubview:imageView];
+    
+    
+    UILabel * priceUILabel = [[UILabel alloc] init];
+    priceUILabel.text = [alChannel.metadata valueForKey:@"price"];
+    
+    priceUILabel.frame = CGRectMake( imageView.frame.size.width+ 10, imageView.frame.origin.y,
+                                    (view.frame.size.width-imageView.frame.size.width)/2, 50);
+    
+    UILabel * titleUILabel = [[UILabel alloc] init];
+    titleUILabel.text = [alChannel.metadata valueForKey:@"title"];
+    
+    
+    titleUILabel.frame = CGRectMake(imageView.frame.size.width + 10, 58,
+                                    (view.frame.size.width-imageView.frame.size.width)-20, 50);
+    titleUILabel.numberOfLines = 1;
+    [self setLabelViews:@[titleUILabel,priceUILabel] onView:view];
+    
+    return view;
 }
 
 -(UIView *)getHeaderView

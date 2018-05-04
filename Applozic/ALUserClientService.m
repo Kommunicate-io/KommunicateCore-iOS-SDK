@@ -335,6 +335,8 @@
                 [ALLUserDetailArray addObject:userDetail];
             }
             completionMark(ALLUserDetailArray, theError);
+        }else{
+            completionMark(nil, theError);
         }
     }];
 }

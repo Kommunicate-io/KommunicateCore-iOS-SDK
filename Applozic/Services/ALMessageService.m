@@ -152,7 +152,15 @@ static ALMessageClientService *alMsgClientService;
                        ALContactService *contactService = [ALContactService new];
                        NSMutableArray * userNotPresentIds = [NSMutableArray new];
                       
-                       for(ALMessage* msg  in messages){
+                       NSMutableArray  *messageArray = messages;
+                       NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:messageArray];
+                       
+                       for(ALMessage* msg  in hiddenMsgFilteredArray){
+                           
+                           if([msg isHiddenMessage] && ![msg isVOIPNotificationMessage])
+                           {
+                               [messageArray removeObject:msg];
+                           }
                            
                            NSString* contactId = msg.to;
                            

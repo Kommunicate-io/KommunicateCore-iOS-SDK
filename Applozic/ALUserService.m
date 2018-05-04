@@ -65,7 +65,7 @@
     ALUserClientService * client = [ALUserClientService new];
     [client subProcessUserDetailServerCall:repString withCompletion:^(NSMutableArray * userDetailArray, NSError * error) {
         
-        if(error)
+        if(error || !userDetailArray)
         {
             completionMark();
             return;
