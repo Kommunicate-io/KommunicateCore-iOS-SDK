@@ -146,10 +146,18 @@
     for (DB_CONTACT * userContact in result) {
         
         userContact.userId = contact.userId;
-        userContact.email = contact.email;
-        userContact.fullName = contact.fullName;
-        userContact.contactNumber = contact.contactNumber;
-        userContact.contactImageUrl = contact.contactImageUrl;
+        if(contact.email){
+            userContact.email = contact.email;
+        }
+        if(contact.fullName){
+            userContact.fullName = contact.fullName;
+        }
+        if(contact.contactNumber){
+            userContact.contactNumber = contact.contactNumber;
+        }
+        if(contact.contactImageUrl){
+            userContact.contactImageUrl = contact.contactImageUrl;
+        }
         userContact.unreadCount = contact.unreadCount ? contact.unreadCount : [NSNumber numberWithInt:0];
         userContact.userStatus = contact.userStatus;
         userContact.connected = contact.connected;
@@ -161,7 +169,9 @@
             userContact.contactType = contact.contactType;
         }
         userContact.localImageResourceName = contact.localImageResourceName;
-        userContact.deletedAtTime = contact.deletedAtTime;
+        if(contact.deletedAtTime){
+            userContact.deletedAtTime = contact.deletedAtTime;
+        }
         userContact.roleType = contact.roleType;
         userContact.metadata = contact.metadata.description;
     }
@@ -290,6 +300,7 @@
 
     DB_CONTACT* existingContact = [self getContactByKey:@"userId" value:[userContact userId]];
     if (existingContact) {
+       [self updateContact:userContact];
         return NO;
     }
     

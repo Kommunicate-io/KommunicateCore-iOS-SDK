@@ -47,6 +47,8 @@
 #define CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT @"/rest/ws/upload/image"
 #define IMAGE_THUMBNAIL_ENDPOIT @"/files/"
 #define IMAGE_DOWNLOAD_ENDPOINT @"/files/get/"
+#define AL_EMPTY_JSON_STRING @"\"EMPTY_LIST\""
+
 
 #define SOURCE_IOS 3
 

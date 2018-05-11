@@ -1751,7 +1751,13 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    return self.getContextGroupOfTwoView;
+    ALChannelService * alChannelService = [ALChannelService new];
+    ALChannel * alChannel = [alChannelService getChannelByKey:self.channelKey];
+    if(alChannel.metadata!=nil && [alChannel.metadata objectForKey:@"title"]){
+        return self.getContextGroupOfTwoView;
+    }else{
+        return self.getHeaderView;
+    }
 }
 
 -(UIView *)getContextGroupOfTwoView
