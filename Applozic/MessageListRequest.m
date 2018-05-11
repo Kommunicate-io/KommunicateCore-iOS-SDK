@@ -8,6 +8,8 @@
 
 #import "MessageListRequest.h"
 #import "ALUserDefaultsHandler.h"
+#import "NSString+Encode.h"
+
 
 #define DEFAULT_PAGE_SIZE @"50";
 #define DEFAULT_START_INDEX @"0"
@@ -29,7 +31,7 @@
     {
         paramString = [NSString stringWithFormat:@"groupId=%@&startIndex=%@&pageSize=%@",self.channelKey,self.startIndex,self.pageSize];
     }else{
-        paramString = [NSString stringWithFormat:@"userId=%@&startIndex=%@&pageSize=%@",self.userId,self.startIndex,self.pageSize];
+        paramString = [NSString stringWithFormat:@"userId=%@&startIndex=%@&pageSize=%@",[self.userId urlEncodeUsingNSUTF8StringEncoding],self.startIndex,self.pageSize];
     }
     
     if(self.endTimeStamp!=nil && !self.isFirstCall){

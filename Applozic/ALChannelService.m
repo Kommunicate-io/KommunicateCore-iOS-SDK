@@ -705,6 +705,9 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupDetailTableReload" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
         }
+        if(!error){
+            [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
+        }
     }];
 }
 

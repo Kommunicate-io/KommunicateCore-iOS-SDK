@@ -710,5 +710,14 @@
     
 }
 
++(void)setPushNotificationFormat:(short)format{
+    [[NSUserDefaults standardUserDefaults] setInteger:format forKey:AL_USER_PUSH_NOTIFICATION_FORMATE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(short)getPushNotificationFormat{
+    short pushNotificationFormat = [[NSUserDefaults standardUserDefaults] integerForKey:AL_USER_PUSH_NOTIFICATION_FORMATE];
+    return pushNotificationFormat ? pushNotificationFormat : 0;
+}
 
 @end
