@@ -105,6 +105,11 @@
             {
                 [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
             }
+            if(response.userEncryptionKey)
+            {
+                [ALUserDefaultsHandler setUserEncryption:response.userEncryptionKey];
+            }
+            
             if(response.statusMessage)
             {
                 [ALUserDefaultsHandler setLoggedInUserStatus:response.statusMessage];

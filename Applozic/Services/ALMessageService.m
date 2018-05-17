@@ -738,6 +738,20 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
     }
 }
 
++(void)syncMessages{
+    
+    if([ALUserDefaultsHandler isLoggedIn])
+    {
+        [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *messageArray, NSError *error) {
+            
+            if(error)
+            {
+                NSLog(@"ERROR IN LATEST MSG APNs CLASS : %@",error);
+            }
+        }];
+    }
+}
+
 +(ALMessage*)getMessagefromKeyValuePair:(NSString*)key andValue:(NSString*)value
 {    
     ALMessageDBService * dbService = [[ALMessageDBService alloc]init];
