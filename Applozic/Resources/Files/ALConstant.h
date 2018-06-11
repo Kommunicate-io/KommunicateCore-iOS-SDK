@@ -98,5 +98,6 @@ typedef enum {
     STARTER = 1,
     LAUNCH = 2,
     GROWTH = 3,
-    ENTERPRISE = 4
+    ENTERPRISE = 4,
+    SUSPENDED = 6
 } PRICING_PACKAGE;

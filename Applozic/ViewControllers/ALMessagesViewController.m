@@ -518,8 +518,11 @@
                         isreloadRequire = NO;
                         [channelService getChannelInformation:msg.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
                             
-                            BOOL channelFlag = [alChannel.parentKey isEqualToNumber:self.parentGroupKey];
-                             if ((channelFlag && [ALApplozicSettings getSubGroupLaunchFlag])|| ![ALApplozicSettings getSubGroupLaunchFlag])
+                            BOOL channelFlag = ([ALApplozicSettings getSubGroupLaunchFlag] && [alChannel.parentKey isEqualToNumber:self.parentGroupKey]);
+                            BOOL categoryFlag =  [ALApplozicSettings getCategoryName] && [alChannel isPartOfCategory:[ALApplozicSettings getCategoryName]];
+                            
+                             if ((channelFlag || categoryFlag) ||
+                                 !([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getCategoryName]))
                              {
                                  [self.mContactsMessageListArray insertObject:msg atIndex:0];
                                  [self.mTableView reloadData];

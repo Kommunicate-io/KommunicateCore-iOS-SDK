@@ -301,7 +301,7 @@
 
 -(void)getMessages:(NSMutableArray *)subGroupList
 {
-    if ([self isMessageTableEmpty])  // db is not synced
+    if ([self isMessageTableEmpty] || [ALApplozicSettings getCategoryName])  // db is not synced
     {
         [self fetchAndRefreshFromServer:subGroupList];
         [self syncConactsDB];
@@ -421,7 +421,14 @@
         if([theDictionary[@"groupId"] intValue]==0){
             continue;
         }
-        
+        if([ALApplozicSettings getCategoryName]){
+            ALChannel* channel=  [[ALChannelService new] getChannelByKey:[NSNumber numberWithInt:[theDictionary[@"groupId"] intValue]]];
+            if(![channel isPartOfCategory:[ALApplozicSettings getCategoryName]])
+            {
+                continue;
+            }
+            
+        }
         [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
         [theRequest setPredicate:[NSPredicate predicateWithFormat:@"groupId==%d AND deletedFlag == %@ AND contentType != %i AND msgHidden == %@",
                                   [theDictionary[@"groupId"] intValue],@(NO),ALMESSAGE_CONTENT_HIDDEN,@(NO)]];

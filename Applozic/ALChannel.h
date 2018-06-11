@@ -14,6 +14,7 @@
 #define CHANNEL_SPECIAL_CASE 7
 #define CHANNEL_DEFAULT_MUTE @"MUTE"
 #define CHANNEL_CONVERSATION_STATUS @"CONVERSATION_STATUS"
+#define CATEGORY @"AL_CATEGORY"
 
 
 /*********************
@@ -66,5 +67,6 @@ typedef enum
 -(NSString*)getReceiverIdInGroupOfTwo;
 
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
+-(BOOL)isPartOfCategory:(NSString*)category;
 
 @end

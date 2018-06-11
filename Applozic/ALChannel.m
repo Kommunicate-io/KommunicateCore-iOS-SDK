@@ -155,4 +155,12 @@
     return NO;
 }
 
+-(BOOL)isPartOfCategory:(NSString*)category{
+    
+    if( _metadata && [_metadata  valueForKey:CATEGORY] ){
+        return ([ [_metadata  valueForKey:CATEGORY] isEqualToString:category]);
+    }
+    return NO;
+}
+
 @end

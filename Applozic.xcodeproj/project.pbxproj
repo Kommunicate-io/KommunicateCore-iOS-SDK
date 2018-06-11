@@ -334,6 +334,8 @@
 		6DDB074A1CB9162A00B99F33 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DDB07491CB9162A00B99F33 /* AddressBook.framework */; };
 		6DEAEE8C1D4CDBC700360060 /* ALUserProfileVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 6DEAEE8A1D4CDBC700360060 /* ALUserProfileVC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6DEAEE8D1D4CDBC700360060 /* ALUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */; };
+		8B0DD64C20CE5CF2002362E9 /* ALApplicationInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B0DD64A20CE5CF2002362E9 /* ALApplicationInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8B0DD64D20CE5CF2002362E9 /* ALApplicationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B0DD64B20CE5CF2002362E9 /* ALApplicationInfo.m */; };
 		8B24FFD1204EB1000097A46A /* ALGroupUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B24FFCF204EB0FF0097A46A /* ALGroupUser.m */; };
 		8B24FFD2204EB1000097A46A /* ALGroupUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B24FFD0204EB1000097A46A /* ALGroupUser.h */; };
 		8B7864221FE2329F004B9E64 /* MessageReplyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7864201FE2329E004B9E64 /* MessageReplyView.m */; };
@@ -685,6 +687,8 @@
 		6DDB07491CB9162A00B99F33 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		6DEAEE8A1D4CDBC700360060 /* ALUserProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALUserProfileVC.h; sourceTree = "<group>"; };
 		6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALUserProfileVC.m; sourceTree = "<group>"; };
+		8B0DD64A20CE5CF2002362E9 /* ALApplicationInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALApplicationInfo.h; path = Applozic/ALApplicationInfo.h; sourceTree = "<group>"; };
+		8B0DD64B20CE5CF2002362E9 /* ALApplicationInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALApplicationInfo.m; path = Applozic/ALApplicationInfo.m; sourceTree = "<group>"; };
 		8B24FFCF204EB0FF0097A46A /* ALGroupUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALGroupUser.m; path = Applozic/ALGroupUser.m; sourceTree = "<group>"; };
 		8B24FFD0204EB1000097A46A /* ALGroupUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALGroupUser.h; path = Applozic/ALGroupUser.h; sourceTree = "<group>"; };
 		8B7864201FE2329E004B9E64 /* MessageReplyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageReplyView.m; path = Applozic/MessageReplyView.m; sourceTree = "<group>"; };
@@ -851,6 +855,8 @@
 				8BE0F6F22063D57E00361DD9 /* SoundRecordingView.swift */,
 				8B7864211FE2329E004B9E64 /* MessageReplyView.h */,
 				8B7864201FE2329E004B9E64 /* MessageReplyView.m */,
+				8B0DD64A20CE5CF2002362E9 /* ALApplicationInfo.h */,
+				8B0DD64B20CE5CF2002362E9 /* ALApplicationInfo.m */,
 				C76D31431F0AAFB30087291F /* ALVOIPCell.h */,
 				C76D31441F0AAFB30087291F /* ALVOIPCell.m */,
 				6D7757291D5B845C0025560B /* Applozic_Prefix.pch */,
@@ -1555,6 +1561,7 @@
 				C70273CB1DED445E00BA2C8A /* ALUserDetailListFeed.h in Headers */,
 				C76366081DF82B500087221C /* ALNavigationController.h in Headers */,
 				465EBAF11E9624C100E7B79B /* ALSubViewController.h in Headers */,
+				8B0DD64C20CE5CF2002362E9 /* ALApplicationInfo.h in Headers */,
 				464F7D191E1D345300B68DCC /* ALChannelUser.h in Headers */,
 				46B258A01E5B03300078BBA5 /* ALChannelMsgCell.h in Headers */,
 				322B304A1EF9537600DB01FC /* AlApplicationInfoFeed.h in Headers */,
@@ -1826,6 +1833,7 @@
 				6D7756871D5B7FBE0025560B /* ALConversationClientService.m in Sources */,
 				6D7756F21D5B82A70025560B /* ALDataNetworkConnection.m in Sources */,
 				6D6DF14F1BC5364C00EBA00F /* ALMessageService.m in Sources */,
+				8B0DD64D20CE5CF2002362E9 /* ALApplicationInfo.m in Sources */,
 				6D7756D41D5B82000025560B /* ALLastSeenSyncFeed.m in Sources */,
 				6D77572E1D5B84940025560B /* ALCustomCell.m in Sources */,
 				103CC2BE2032EDF200600D16 /* AlChannelInfoModel.m in Sources */,

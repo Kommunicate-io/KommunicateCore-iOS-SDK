@@ -114,6 +114,10 @@
       theParamString = [NSString stringWithFormat:@"startIndex=%@&mainPageSize=%lu&endTime=%@&deletedGroupIncluded=%@",
                         @"0", (unsigned long)mainPageSize, startTime,@(YES)];
     }
+    if([ALApplozicSettings getCategoryName]){
+        theParamString = [theParamString stringByAppendingString:[NSString stringWithFormat:@"&category=%@",
+        [ALApplozicSettings getCategoryName]]];
+    }
     
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
