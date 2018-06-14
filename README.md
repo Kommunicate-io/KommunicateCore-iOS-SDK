@@ -22,7 +22,7 @@ Applozic Chat Framework for Cocoa Pod
 2) Go to project directory open pod file and add code in that
 
 ```
- pod 'Applozic', '~>4.1.0'
+ pod 'Applozic'
 ```
 
 
