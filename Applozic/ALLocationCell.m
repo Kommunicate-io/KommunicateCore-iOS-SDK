@@ -160,8 +160,8 @@
         
         if(alContact.contactImageUrl)
         {
-            NSURL * URL = [NSURL URLWithString:alContact.contactImageUrl];
-            [self.mUserProfileImageView sd_setImageWithURL:URL placeholderImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]  options:SDWebImageRefreshCached];
+            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {

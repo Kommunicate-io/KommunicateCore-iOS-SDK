@@ -30,6 +30,7 @@
 
 -(ALFileMetaInfo *) populate:(NSDictionary *)dict {
     self.blobKey=[dict objectForKey:@"blobKey"];
+    self.thumbnailBlobKey=[dict objectForKey:@"thumbnailBlobKey"];
     self.contentType=[dict objectForKey:@"contentType"];
     self.createdAtTime= @([[dict objectForKey:@"createdAtTime"] doubleValue]);
     self.key=[dict objectForKey:@"key"];

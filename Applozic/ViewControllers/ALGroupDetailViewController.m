@@ -18,7 +18,7 @@
 #import "ALGroupCreationViewController.h"
 #import "ALPushAssist.h"
 #import "ALChannelUser.h"
-
+#import "ALMessageClientService.h"
 
 @interface ALGroupDetailViewController () <ALGroupInfoDelegate>
 {
@@ -736,9 +736,8 @@
     }
     else if(alContact.contactImageUrl)
     {
-        NSURL * theUrl = [NSURL URLWithString:alContact.contactImageUrl];
-          [self.memberIconImageView sd_setImageWithURL:theUrl placeholderImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"] options:SDWebImageRefreshCached];
-        
+        ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+        [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.memberIconImageView defaultImage:@"ic_contact_picture_holo_light.png"];
     }
     else
     {
@@ -800,12 +799,8 @@
         UIImageView *imageView = [[UIImageView alloc] initWithImage:
                                   [ALUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
         
-        
-        NSURL * imageUrl = [NSURL URLWithString:self.alChannel.channelImageURL];
-        if(imageUrl.path.length)
-        {
-            [imageView sd_setImageWithURL:imageUrl placeholderImage:nil options:SDWebImageRefreshCached];
-        }
+        ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+        [messageClientService downloadImageUrlAndSet:self.alChannel.channelImageURL imageView:imageView defaultImage:nil];
         
         imageView.frame = CGRectMake((screenWidth/2)-30, 20, 60, 60);
         imageView.backgroundColor = [UIColor blackColor];

@@ -63,6 +63,7 @@
 #define USER_MQTT_ENCRYPTION_KEY @"com.applozic.userdefault.USER_MQTT_ENCRYPTION_KEY"
 
 #import <Foundation/Foundation.h>
+#import "ALApplozicSettings.h"
 
 @interface ALUserDefaultsHandler : NSObject
 

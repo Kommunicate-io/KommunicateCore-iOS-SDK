@@ -43,6 +43,7 @@
 #import "ALPushNotificationService.h"
 #import "ALPushAssist.h"
 #import "ALGroupCreationViewController.h"
+#import "ALMessageClientService.h"
 
 // Constants
 #define DEFAULT_TOP_LANDSCAPE_CONSTANT -34
@@ -747,8 +748,8 @@
             contactCell.onlineImageMarker.hidden = (!grpContact.connected);
             if(grpContact.contactImageUrl.length)
             {
-                NSURL * theUrl1 = [NSURL URLWithString:grpContact.contactImageUrl];
-                [contactCell.mUserImageView sd_setImageWithURL:theUrl1 placeholderImage:nil options:SDWebImageRefreshCached];
+                ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+                [messageClientService downloadImageUrlAndSet:grpContact.contactImageUrl imageView:contactCell.mUserImageView defaultImage:nil];
                 contactCell.imageNameLabel.hidden = YES;
                 nameIcon.hidden=YES;
             }
@@ -764,21 +765,19 @@
         else
         {
         
-            UIImage  *placeHolderImage ;
+            NSString  *placeHolderImage ;
             if (alChannel.type == BROADCAST)
             {
-                placeHolderImage = [ALUtilityClass getImageFromFramworkBundle:@"broadcast_group.png"];
+                placeHolderImage = @"broadcast_group.png";
                 [contactCell.mUserImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"broadcast_group.png"]];
             }else{
-                placeHolderImage = [ALUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"];
+                placeHolderImage = @"applozic_group_icon.png";
                 [contactCell.mUserImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
             }
-            NSURL * imageUrl = [NSURL URLWithString:alChannel.channelImageURL];
-            if(imageUrl.path.length)
-            {
-                [contactCell.mUserImageView sd_setImageWithURL:imageUrl placeholderImage:placeHolderImage options:SDWebImageRefreshCached];
-            }
 
+            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+            [messageClientService downloadImageUrlAndSet:alChannel.channelImageURL imageView:contactCell.mUserImageView defaultImage:placeHolderImage];
+            
             nameIcon.hidden = YES;
             contactCell.mUserNameLabel.text = [alChannel name];
             contactCell.onlineImageMarker.hidden = YES;
@@ -791,8 +790,8 @@
         contactCell.onlineImageMarker.hidden = (!contact.connected);
         if(contact.contactImageUrl.length)
         {
-            NSURL * theUrl1 = [NSURL URLWithString:contact.contactImageUrl];
-            [contactCell.mUserImageView sd_setImageWithURL:theUrl1 placeholderImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"] options:SDWebImageRefreshCached];
+            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+            [messageClientService downloadImageUrlAndSet:contact.contactImageUrl imageView:contactCell.mUserImageView defaultImage:@"ic_contact_picture_holo_light.png"];
             contactCell.imageNameLabel.hidden = YES;
             nameIcon.hidden= YES;
         }

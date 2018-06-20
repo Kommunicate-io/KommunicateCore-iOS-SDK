@@ -11,6 +11,7 @@
 #import "ALMediaPlayer.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
+#import "ALMessageClientService.h"
 
 // Constants
 #define MT_INBOX_CONSTANT "4"
@@ -178,8 +179,8 @@
         
         if(alContact.contactImageUrl)
         {
-            NSURL * theUrl1 = [NSURL URLWithString:alContact.contactImageUrl];
-            [self.mUserProfileImageView sd_setImageWithURL:theUrl1 placeholderImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"] options:SDWebImageRefreshCached];
+            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {

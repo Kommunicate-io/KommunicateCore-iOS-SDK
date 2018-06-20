@@ -436,6 +436,10 @@
 
 +(NSString *)getFILEURL
 {
+    if([ALApplozicSettings isS3StorageServiceEnabled]){
+        return [self getBASEURL];
+    }
+    
     NSString * kFileUrl = [[NSUserDefaults standardUserDefaults] valueForKey:APPLOZIC_FILE_URL];
     return (kFileUrl && ![kFileUrl isEqualToString:@""]) ? kFileUrl : @"https://applozic.appspot.com";
 }

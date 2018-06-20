@@ -2097,6 +2097,7 @@
     ALFileMetaInfo *info = [ALFileMetaInfo new];
     
     info.blobKey = nil;
+    info.thumbnailBlobKey=nil;
     info.contentType = @"";
     info.createdAtTime = nil;
     info.key = nil;
@@ -2356,7 +2357,7 @@
         NSError * theJsonError = nil;
         NSDictionary *theJson = [NSJSONSerialization JSONObjectWithData:connection.mData options:NSJSONReadingMutableLeaves error:&theJsonError];
         
-        if(ALApplozicSettings.isCustomStorageServiceEnabled){
+        if(ALApplozicSettings.isS3StorageServiceEnabled){
             [message.fileMeta populate:theJson];
         }else{
             NSDictionary *fileInfo = [theJson objectForKey:@"fileMeta"];
@@ -2365,16 +2366,37 @@
         ALMessage * almessage =  [ALMessageService processFileUploadSucess:message];
         [self sendMessage:almessage ];
     }
-    else
+    else if ([connection.connectionType isEqualToString:@"Thumbnail Downloading"])
     {
         DB_Message * messageEntity = (DB_Message*)[dbService getMessageByKey:@"key" value:connection.keystring];
         
         NSString * docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSArray *componentsArray = [messageEntity.fileMetaInfo.name componentsSeparatedByString:@"."];
         NSString *fileExtension = [componentsArray lastObject];
-        NSString * filePath = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_local.%@",connection.keystring,fileExtension]];
+        NSString * filePath = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_thumbnail_local.%@",connection.keystring,fileExtension]];
         [connection.mData writeToFile:filePath atomically:YES];
 
+        // UPDATE DB
+        messageEntity.fileMetaInfo.thumbnailFilePath = [NSString stringWithFormat:@"%@_thumbnail_local.%@",connection.keystring,fileExtension];
+        
+        [[ALDBHandler sharedInstance].managedObjectContext save:nil];
+        
+        ALMessage * message = [self getMessageFromViewList:@"key" withValue:connection.keystring];
+        if(message)
+        {
+            message.fileMeta.thumbnailFilePath = messageEntity.fileMetaInfo.thumbnailFilePath;
+            [self.mTableView reloadData];
+        }
+    }else{
+        
+        DB_Message * messageEntity = (DB_Message*)[dbService getMessageByKey:@"key" value:connection.keystring];
+
+        NSString * docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSArray *componentsArray = [messageEntity.fileMetaInfo.name componentsSeparatedByString:@"."];
+        NSString *fileExtension = [componentsArray lastObject];
+        NSString * filePath = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_local.%@",connection.keystring,fileExtension]];
+        [connection.mData writeToFile:filePath atomically:YES];
+        
         // If 'save video to gallery' is enabled then save to gallery
         if([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
             [self saveVideoToGallery:filePath];
@@ -2396,6 +2418,16 @@
     }
 }
 
+-(void) thumbnailDownload:(NSString *) key withThumbnailUrl:(NSString *) thumbnailUrl{
+
+    NSString * theUrlString = [NSString stringWithFormat:@"%@",thumbnailUrl];
+    NSMutableURLRequest * urlRequest =  [ALRequestHandler createGETRequestWithUrlStringWithoutHeader:theUrlString paramString:nil];
+    ALConnection * connection = [[ALConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:YES];
+    connection.keystring = key;
+    connection.connectionType = @"Thumbnail Downloading";
+    [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:connection];
+}
+    
 //Error
 -(void)connection:(ALConnection *)connection didFailWithError:(NSError *)error
 {
@@ -4239,15 +4271,22 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             {
                 NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
                 NSString * filePath = [docDir stringByAppendingPathComponent:message.imageFilePath];
-                theUrl = [NSURL fileURLWithPath:filePath];
+                [self showImage: [NSURL fileURLWithPath:filePath]];
             }
             else
             {
-                theUrl = [NSURL URLWithString:message.fileMeta.thumbnailUrl];
-            }
+                ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+                [messageClientService downloadImageUrl:message.fileMeta.thumbnailBlobKey withCompletion:^(NSString *fileURL, NSError *error) {
+                    if(error)
+                    {
+                        NSLog(@"ERROR GETTING DOWNLOAD URL : %@", error);
+                        return;
+                    }
+                    NSLog(@"ATTACHMENT DOWNLOAD URL : %@", fileURL);
+                    [self showImage: [NSURL URLWithString:fileURL]];
+                }];
             
-            [self.replyAttachmentPreview sd_setImageWithURL:theUrl];
-            [self.replyIcon setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
+            }
             
         }else if([message.fileMeta.contentType hasPrefix:@"video"]){
             UIImage * globalThumbnail = [UIImage new];
@@ -4319,6 +4358,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
     [messageDBService updateMessageReplyType:message.key replyType:[NSNumber numberWithInt:AL_A_REPLY]];
     
+}
+
+-(void) showImage:(NSURL *)url{
+    [self.replyAttachmentPreview sd_setImageWithURL:url];
+    [self.replyIcon setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
 }
 
 -(void) scrollToReplyMessage:(ALMessage *)alMessage

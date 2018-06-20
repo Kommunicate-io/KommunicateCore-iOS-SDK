@@ -24,6 +24,9 @@
 #import "ALDataNetworkConnection.h"
 #import "UIImage+MultiFormat.h"
 #import "ALShowImageViewController.h"
+#import "ALMessageClientService.h"
+#import "ALConnection.h"
+#import "ALConnectionQueueHandler.h"
 
 // Constants
 #define MT_INBOX_CONSTANT "4"
@@ -271,8 +274,8 @@ UIViewController * modalCon;
         
         if(alContact.contactImageUrl)
         {
-            NSURL * theUrl1 = [NSURL URLWithString:alContact.contactImageUrl];
-            [self.mUserProfileImageView sd_setImageWithURL:theUrl1 placeholderImage: [ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"] options:SDWebImageRefreshCached];
+            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {
@@ -427,19 +430,38 @@ UIViewController * modalCon;
     {
         NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.imageFilePath];
-        theUrl = [NSURL fileURLWithPath:filePath];
+        [self setInImageView:[NSURL fileURLWithPath:filePath]];
     }
     else
     {
-        theUrl = [NSURL URLWithString:alMessage.fileMeta.thumbnailUrl];
+        if(alMessage.fileMeta.thumbnailFilePath == nil){
+            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+            [messageClientService downloadImageThumbnailUrl:alMessage withCompletion:^(NSString *fileURL, NSError *error) {
+             
+                NSLog(@"ATTACHMENT DOWNLOAD URL : %@", fileURL);
+                if(error == nil){
+                    [self.delegate thumbnailDownload:alMessage.key withThumbnailUrl:fileURL];
+                }
+            
+            }];
+        }else{
+            
+            NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.fileMeta.thumbnailFilePath];
+            [self setInImageView:[NSURL fileURLWithPath:filePath]];
+        }
+        
     }
-    
-    [self.mImageView sd_setImageWithURL:theUrl];
     
     return self;
     
 }
 
+-(void) setInImageView:(NSURL*)url{
+    
+      [self.mImageView sd_setImageWithPreviousCachedImageWithURL:url placeholderImage:nil options:0 progress:nil completed:nil];
+
+}
 
 #pragma mark - Menu option tap Method -
 

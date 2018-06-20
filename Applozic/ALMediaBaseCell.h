@@ -31,6 +31,7 @@
 @protocol ALMediaBaseCellDelegate <NSObject>
 
 -(void) downloadRetryButtonActionDelegate:(int) index andMessage:(ALMessage *) message;
+-(void) thumbnailDownload:(NSString *) key withThumbnailUrl:(NSString *) thumbnailUrl;
 -(void) stopDownloadForIndex:(int)index andMessage:(ALMessage *)message;
 -(void) showFullScreen:(UIViewController *) fullView;
 -(void) deleteMessageFromView:(ALMessage *)message;

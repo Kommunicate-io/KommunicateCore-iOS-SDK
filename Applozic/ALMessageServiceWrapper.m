@@ -170,7 +170,7 @@ andWithStatusDelegate:(id)statusDelegate
         NSError * theJsonError = nil;
         NSDictionary *theJson = [NSJSONSerialization JSONObjectWithData:connection.mData options:NSJSONReadingMutableLeaves error:&theJsonError];
 
-        if(ALApplozicSettings.isCustomStorageServiceEnabled){
+        if(ALApplozicSettings.isS3StorageServiceEnabled){
             [message.fileMeta populate:theJson];
         }else{
             NSDictionary *fileInfo = [theJson objectForKey:@"fileMeta"];

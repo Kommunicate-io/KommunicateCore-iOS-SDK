@@ -141,6 +141,7 @@
                 ALFileMetaInfo * theFileMetaInfo = [ALFileMetaInfo new];
                 
                 theFileMetaInfo.blobKey = [self getStringFromJsonValue:fileMetaDict[@"blobKey"]];
+                theFileMetaInfo.thumbnailBlobKey = [self getStringFromJsonValue:fileMetaDict[@"thumbnailBlobKey"]];
                 theFileMetaInfo.contentType = [self getStringFromJsonValue:fileMetaDict[@"contentType"]];
                 theFileMetaInfo.createdAtTime = [self getNSNumberFromJsonValue:fileMetaDict[@"createdAtTime"]];
                 theFileMetaInfo.key = [self getStringFromJsonValue:fileMetaDict[@"key"]];
