@@ -129,6 +129,13 @@
     ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
     NSString *receiverName = [alContact getDisplayName];
     
+    
+    UITapGestureRecognizer *tapForOpenChat = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processOpenChat)];
+    tapForOpenChat.numberOfTapsRequired = 1;
+    [self.mUserProfileImageView setUserInteractionEnabled:YES];
+    [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
+    
+    
     if([alMessage.type isEqualToString:@MT_INBOX_CONSTANT])
     {
         
@@ -405,6 +412,8 @@
 
 -(void) proccessTapForMenu:(id)tap{
     
+    [self processKeyBoardHideTap];
+
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
     
@@ -545,9 +554,6 @@
     return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
 }
 
-
-
-
 -(void) messageReply:(id)sender
 {
     NSLog(@"Message forward option is pressed");
@@ -555,7 +561,10 @@
     
 }
 
-
+-(void) processKeyBoardHideTap
+{
+    [self.delegate handleTapGestureForKeyBoard];
+}
 
 -(BOOL)isMessageReplyMenuEnabled:(SEL) action
 {
@@ -564,5 +573,10 @@
     
 }
 
+-(void)processOpenChat
+{
+    [self processKeyBoardHideTap];
+    [self.delegate openUserChat:self.mMessage];
+}
 
 @end

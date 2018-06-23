@@ -92,8 +92,7 @@ Pod::Spec.new do |s|
 
   s.source_files  = "Applozic", "Applozic/**/*.{h,m,swift}"
   s.exclude_files = "Classes/Exclude"
-
-  s.xcconfig = { 'SWIFT_VERSION' => '4.1' }
+  s.swift_version = '4.1'
   # s.public_header_files = "Classes/**/*.h"
 
 
@@ -137,5 +136,4 @@ Pod::Spec.new do |s|
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   s.dependency 'SDWebImage', '~>4.2.2'
-
 end

@@ -64,6 +64,10 @@
         NSLog(@"adding conversationRequired true :theParamString :%@",paramString );
     }
     
+    if(self.skipRead){
+        paramString = [paramString stringByAppendingFormat:@"&skipRead=true"];
+    }
+    
     return paramString;
 }
 

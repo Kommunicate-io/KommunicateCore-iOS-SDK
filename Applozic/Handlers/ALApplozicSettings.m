@@ -1005,10 +1005,30 @@
 }
 
 +(NSArray*) getHideAttachmentsOption{
-
-
     return [[NSUserDefaults standardUserDefaults] objectForKey:HIDE_ATTACHMENT_OPTION];
+}
 
++(void) setTemplateMessages:(NSMutableDictionary*)dictionary{
+    
+    [[NSUserDefaults standardUserDefaults] setObject:dictionary forKey:TEMPLATE_MESSAGES];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+
++(NSMutableDictionary*) getTemplateMessages{
+    
+    return [[NSUserDefaults standardUserDefaults] objectForKey:TEMPLATE_MESSAGES];
+}
+
++(BOOL)isTemplateMessageEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:TEMPLATE_MESSAGE_VIEW];
+}
+
++(void)enableTeamplateMessage:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:TEMPLATE_MESSAGE_VIEW];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 +(BOOL) isCameraOptionHidden{

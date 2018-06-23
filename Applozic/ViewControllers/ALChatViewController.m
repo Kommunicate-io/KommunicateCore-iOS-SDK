@@ -93,11 +93,15 @@
 @property (nonatomic, strong) NSMutableArray * pickerConvIdsArray;
 @property (nonatomic, strong) NSMutableArray * conversationTitleList;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *tableViewSendMsgTextViewConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *typingLabelBottomConstraint;
 @property (nonatomic, assign) BOOL comingFromBackground;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *nsLayoutconstraintAttachmentWidth;
 
 //============Message Reply outlets====================================//
+
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *tableViewViewBottomConstraint;
+
 @property (weak, nonatomic) IBOutlet UIImageView *replyAttachmentPreview;
 @property (weak, nonatomic) IBOutlet UIView *messageReplyView;
 - (IBAction)cancelMessageReply:(id)sender;
@@ -133,9 +137,9 @@
     UIView * maskView;
     BOOL isPickerOpen;
     ALSoundRecorderButton * soundRecording;
+    ALKTemplateMessagesView *templateMessageView;
     BOOL isMicButtonVisible;
 
-    
     UIDocumentInteractionController * interaction;
     
     CGFloat TEXT_CELL_HEIGHT;
@@ -157,6 +161,7 @@
     ALMessageDBService * dbService;
 }
 
+
 //==============================================================================================================================================
 #pragma mark - VIEW LIFECYCLE
 //==============================================================================================================================================
@@ -170,6 +175,8 @@
         [self setUpSoundRecordingView];
         [self showMicButton];
     }
+    
+ 
 
     [self initialSetUp];
     [self fetchMessageFromDB];
@@ -180,6 +187,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateVOIPMsg)
                                                  name:@"UPDATE_VOIP_MSG" object:nil];
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -210,6 +218,10 @@
      addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION  object:nil];
     
     [self.tabBarController.tabBar setHidden: YES];
+    
+    if([ALApplozicSettings isTemplateMessageEnabled]) {
+        [self setUpTeamplateView];
+    }
 
     // In iOS 11, TableView by default starts estimating the row height. This setting will disable that.
     self.mTableView.estimatedRowHeight = 0;
@@ -219,9 +231,7 @@
     [self.loadEarlierAction setHidden:YES];
     self.showloadEarlierAction = TRUE;
     self.typingLabel.hidden = YES;
-    if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
-        self.typingLabel.textAlignment = NSTextAlignmentRight;
-    }
+    
     self.comingFromBackground = YES;
     [self.messageReplyView setHidden:YES];
     
@@ -296,7 +306,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCallForUser:)
                                                  name:@"USER_DETAILS_UPDATE_CALL" object:nil];
-    
+
     self.mqttObject = [ALMQTTConversationService sharedInstance];
     
     if(self.individualLaunch)
@@ -430,6 +440,10 @@
     
     [self.tabBarController.tabBar setHidden:YES];
     [self resetMessageReplyView];
+    
+    if([ALApplozicSettings isTemplateMessageEnabled]) {
+        [templateMessageView setHidden:YES];
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notificationIndividualChat" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"report_DELIVERED" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"report_DELIVERED_READ" object:nil];
@@ -445,7 +459,6 @@
     
     [self.sendMessageTextView resignFirstResponder];
     [self.label setHidden:YES];
-    [self.typingLabel setHidden:YES];
     [[ALMediaPlayer sharedInstance] stopPlaying];
     
     if(self.individualLaunch)
@@ -483,6 +496,30 @@
     [self.mTableView reloadData];
     [self setRefreshMainView:YES];
     [self setRefresh:YES];
+}
+
+-(void)processSendTemplateMessage:(NSString *)messageText{
+    
+    if(!messageText){
+        return;
+    }
+    // create message object
+    ALMessage * theMessage = [self getMessageToPost];
+    theMessage.
+    message = messageText;
+    // save msg to db
+    [self.alMessageWrapper addALMessageToMessageArray:theMessage];
+    
+    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
+    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
+    DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:theMessage];
+    [theDBHandler.managedObjectContext save:nil];
+    theMessage.msgDBObjectId = [theMessageEntity objectID];
+    
+    [self sendMessage:theMessage ];
+    [self.mTableView reloadData];
+    [self setRefreshMainView:TRUE];
+    [self scrollTableViewToBottomWithAnimation:YES];
 }
 
 //==============================================================================================================================================
@@ -818,7 +855,6 @@
     if((contact.blockBy || contact.block) && (self.alChannel.type == GROUP_OF_TWO || !self.channelKey))
     {
         [self.label setHidden:YES];
-        [self.typingLabel setHidden:YES];
     }
 }
 
@@ -1511,6 +1547,43 @@
     [soundRecording.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-7].active = true;
     [soundRecording.topAnchor constraintEqualToAnchor:self.sendMessageTextView.topAnchor constant:-5].active = true;
     [soundRecording.bottomAnchor constraintEqualToAnchor:self.sendMessageTextView.bottomAnchor constant:5].active = true;
+}
+
+-(void)setUpTeamplateView
+{
+
+    __weak typeof(self) weakSelf = self;
+    NSMutableDictionary *data =  [ALApplozicSettings getTemplateMessages];
+    NSMutableArray<ALKTemplateMessageModel *> * messageTemplate = [[NSMutableArray alloc] init];
+    NSArray *keys = [data allKeys];
+
+    for (NSString* key in keys) {
+        NSString *value = [data objectForKey:key];
+        ALKTemplateMessageModel* messageModel = [ALKTemplateMessageModel alloc] ;
+        messageModel.text = key;
+        messageModel.identifier = value;
+        [messageTemplate addObject:messageModel];
+    }
+    
+    NSArray<ALKTemplateMessageModel *> *array = [[NSArray alloc]initWithArray:messageTemplate];
+    
+    ALKTemplateMessagesViewModel *model = [[ALKTemplateMessagesViewModel alloc] initWithMessageTemplates:(array)];
+    
+    templateMessageView = [[ALKTemplateMessagesView alloc]initWithFrame:CGRectZero viewModel:model];
+    [self.view addSubview:templateMessageView ];
+    templateMessageView.messageSelected = ^(NSString * vlaue) {
+        [weakSelf processSendTemplateMessage:vlaue];
+    };
+    [templateMessageView setHidden:NO];
+    [templateMessageView setUserInteractionEnabled:YES];
+    templateMessageView.translatesAutoresizingMaskIntoConstraints = false;
+    [templateMessageView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:7].active = true;
+    [templateMessageView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-7].active = true;
+    [templateMessageView.widthAnchor constraintEqualToAnchor:self.view.widthAnchor constant: -10.0].active = true;
+    [templateMessageView.heightAnchor constraintEqualToConstant:40].active = YES;
+    [templateMessageView .bottomAnchor constraintEqualToAnchor:self.sendMessageTextView.topAnchor constant:-10].active = true;
+    self.tableViewViewBottomConstraint.constant = 40;
+    
 }
 
 -(void)showMicButton
@@ -2745,7 +2818,6 @@
                 {
                     self.isUserBlocked = YES;
                     [self.label setHidden:self.isUserBlocked];
-                    [self.typingLabel setHidden:self.isUserBlocked];
                     NSString * alertText = [NSString stringWithFormat:[@"%@ " stringByAppendingString:NSLocalizedStringWithDefaultValue(@"blockedSuccessfullyText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"is blocked successfully", @"")], [self.alContact getDisplayName]];
                     [ALUtilityClass showAlertMessage:alertText andTitle:NSLocalizedStringWithDefaultValue(@"userBlock", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"USER BLOCK", @"")  ];
                 }
@@ -3511,7 +3583,18 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     [self setRefreshMainView:TRUE];
     
     double value = [alUserDetail.lastSeenAtTime doubleValue];
-    
+    ALContactService *cnService = [[ALContactService alloc] init];
+    ALContact * contact = [cnService loadContactByKey:@"userId" value:alUserDetail.userId];
+    if(self.channelKey != nil){
+        if(contact.block || contact.blockBy){
+            return;
+        }
+    }else{
+        if(contact.block || contact.blockBy){
+            [self.label setText:@""];
+            return;
+        }
+    }
     if(self.channelKey != nil)
     {
         ALChannelService * channelService = [[ALChannelService alloc] init];
@@ -3944,7 +4027,10 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 {
     ALContactService *cntService = [ALContactService new];
     ALContact *contact = [cntService loadContactByKey:@"userId" value:userId];
-    
+    if(contact.block || contact.blockBy){
+        return;
+    }
+
     if(flag)
     {
         NSString * typingText = @"";
@@ -3954,14 +4040,20 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         }
         else
         {
-            typingText = [NSString stringWithFormat:@"%@ %@", [contact getDisplayName], NSLocalizedStringWithDefaultValue(@"userTyping", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle],@"is typing...", @"")];
+            typingText = [NSString stringWithFormat:@"%@", NSLocalizedStringWithDefaultValue(@"userTyping", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle],@"is typing...", @"")];
         }
-        [self.typingLabel setText:typingText];
-        [self.typingLabel setHidden:NO];
+        [self.label setHidden:NO];
+        [self.label setText:typingText];
     }
     else
     {
-        [self.typingLabel setHidden:YES];
+        ALUserDetail *userDetail = [[ALUserDetail alloc] init];
+        userDetail.connected = contact.connected;
+        userDetail.userId = contact.userId;
+        userDetail.lastSeenAtTime = contact.lastSeenAt;
+        userDetail.contactNumber = contact.contactNumber;
+        [self updateLastSeenAtStatus:userDetail];
+    
     }
 }
 
@@ -4210,7 +4302,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 }
 
 
-
 //================================================================================================================================
 #pragma mark - REPLY MESSAGE CALL
 //================================================================================================================================
@@ -4218,8 +4309,12 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(void) processMessageReply:(ALMessage *) message
 {
+    
     self.viewHeightConstraints.constant=50;
     self.messageReplyView.hidden =0;
+    if([ALApplozicSettings isTemplateMessageEnabled]) {
+        [templateMessageView setHidden:YES];
+    }
     
     if(message.groupId != 0){
         if([[ALUserDefaultsHandler getUserId] isEqualToString:message.to] || message.to == nil){
@@ -4433,10 +4528,12 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(void)handleTapGestureForKeyBoard
 {
-    if([self.sendMessageTextView isFirstResponder])
-    {
-        [self.sendMessageTextView resignFirstResponder];
-    }
+    
+        if([self.sendMessageTextView isFirstResponder])
+        {
+            [self.sendMessageTextView resignFirstResponder];
+        }
+
 }
 
 -(void)proccessReloadAndForwardMessage:(ALMessage *)alMessage{
@@ -4482,5 +4579,8 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     self.viewHeightConstraints.constant=0;
     self.messageReplyView.hidden =1;
     self.messageReplyId=nil;
+    if([ALApplozicSettings isTemplateMessageEnabled]) {
+        [templateMessageView setHidden:NO];
+    }
 }
 @end

@@ -96,6 +96,8 @@
 #define AL_CATEGORY_NAME @"com.applozic.userdefault.AL_CATEGORY_NAME"
 #define DELETE_CONVERSATION_OPTION @"com.applozic.userdefault.DELETE_CONVERSATION_OPTION"
 #define GOOGLE_CLOUD_SERVICE_ENABLE @"com.applozic.userdefault.GOOGLE_CLOUD_SERVICE_ENABLE"
+#define TEMPLATE_MESSAGES @"com.applozic.TEMPLATE_MESSAGES"
+#define TEMPLATE_MESSAGE_VIEW @"com.applozic.TEMPLATE_MESSAGE_VIEW"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -402,6 +404,11 @@
 
 +(NSString *)getLocalizableName;
 +(void)setLocalizableName:(NSString *)localizableName;
++(void) setTemplateMessages:(NSMutableDictionary*)dictionary;
++(NSMutableDictionary*) getTemplateMessages;
+
++(BOOL)isTemplateMessageEnabled;
++(void)enableTeamplateMessage:(BOOL)flag;
 
 +(void)setCategoryName:(NSString*)categoryName;
 +(NSString*)getCategoryName;

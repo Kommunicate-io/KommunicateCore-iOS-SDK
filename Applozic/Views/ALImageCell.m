@@ -140,6 +140,11 @@ UIViewController * modalCon;
     [self.mNameLabel setHidden:YES];
     [self.imageWithText setHidden:YES];
     [self.mMessageStatusImageView setHidden:YES];
+
+    UITapGestureRecognizer *tapForOpenChat = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processOpenChat)];
+    tapForOpenChat.numberOfTapsRequired = 1;
+    [self.mUserProfileImageView setUserInteractionEnabled:YES];
+    [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
     
     if ([alMessage.type isEqualToString:@MT_INBOX_CONSTANT]) { //@"4" //Recieved Message
         
@@ -458,8 +463,7 @@ UIViewController * modalCon;
 }
 
 -(void) setInImageView:(NSURL*)url{
-    
-      [self.mImageView sd_setImageWithPreviousCachedImageWithURL:url placeholderImage:nil options:0 progress:nil completed:nil];
+    [self.mImageView sd_setImageWithPreviousCachedImageWithURL:url andPlaceholderImage:nil options:0 progress:nil completed:nil];
 
 }
 
@@ -467,6 +471,8 @@ UIViewController * modalCon;
 
 -(void) proccessTapForMenu:(id)tap{
     
+    [self processKeyBoardHideTap];
+
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
     
@@ -654,6 +660,11 @@ UIViewController * modalCon;
     }];
 }
 
+-(void) processKeyBoardHideTap
+{
+    [self.delegate handleTapGestureForKeyBoard];
+}
+
 -(BOOL)isForwardMenuEnabled:(SEL) action;
 {
     return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
@@ -664,6 +675,12 @@ UIViewController * modalCon;
 
     return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
     
+}
+
+-(void)processOpenChat
+{
+    [self processKeyBoardHideTap];
+    [self.delegate openUserChat:self.mMessage];
 }
 
 @end
