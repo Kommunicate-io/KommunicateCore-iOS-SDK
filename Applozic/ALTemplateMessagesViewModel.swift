@@ -1,5 +1,5 @@
 //
-//  ALKTemplateMessagesViewModel.swift
+//  ALTemplateMessagesViewModel.swift
 //  ApplozicSwift
 //
 //  Created by Mukesh Thawani on 27/12/17.
@@ -7,16 +7,16 @@
 
 import Foundation
 
-@objc open class ALKTemplateMessagesViewModel: NSObject {
+@objc open class ALTemplateMessagesViewModel: NSObject {
     
-    @objc  open var messageTemplates: [ALKTemplateMessageModel]
+    @objc  open var messageTemplates: [ALTemplateMessageModel]
     
     public var leftRightPadding: CGFloat = 46.0
     public var height: CGFloat = 40.0
     
     public var textFont = UIFont.init(name: "Helvetica", size: CGFloat(14))
     
-    @objc  public init(messageTemplates: [ALKTemplateMessageModel]) {
+    @objc  public init(messageTemplates: [ALTemplateMessageModel]) {
         self.messageTemplates = messageTemplates
     }
     

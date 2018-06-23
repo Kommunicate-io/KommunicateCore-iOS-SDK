@@ -137,7 +137,7 @@
     UIView * maskView;
     BOOL isPickerOpen;
     ALSoundRecorderButton * soundRecording;
-    ALKTemplateMessagesView *templateMessageView;
+    ALTemplateMessagesView *templateMessageView;
     BOOL isMicButtonVisible;
 
     UIDocumentInteractionController * interaction;
@@ -1554,22 +1554,22 @@
 
     __weak typeof(self) weakSelf = self;
     NSMutableDictionary *data =  [ALApplozicSettings getTemplateMessages];
-    NSMutableArray<ALKTemplateMessageModel *> * messageTemplate = [[NSMutableArray alloc] init];
+    NSMutableArray<ALTemplateMessageModel *> * messageTemplate = [[NSMutableArray alloc] init];
     NSArray *keys = [data allKeys];
 
     for (NSString* key in keys) {
         NSString *value = [data objectForKey:key];
-        ALKTemplateMessageModel* messageModel = [ALKTemplateMessageModel alloc] ;
+        ALTemplateMessageModel* messageModel = [ALTemplateMessageModel alloc] ;
         messageModel.text = key;
         messageModel.identifier = value;
         [messageTemplate addObject:messageModel];
     }
     
-    NSArray<ALKTemplateMessageModel *> *array = [[NSArray alloc]initWithArray:messageTemplate];
+    NSArray<ALTemplateMessageModel *> *array = [[NSArray alloc]initWithArray:messageTemplate];
     
-    ALKTemplateMessagesViewModel *model = [[ALKTemplateMessagesViewModel alloc] initWithMessageTemplates:(array)];
+    ALTemplateMessagesViewModel *model = [[ALTemplateMessagesViewModel alloc] initWithMessageTemplates:(array)];
     
-    templateMessageView = [[ALKTemplateMessagesView alloc]initWithFrame:CGRectZero viewModel:model];
+    templateMessageView = [[ALTemplateMessagesView alloc]initWithFrame:CGRectZero viewModel:model];
     [self.view addSubview:templateMessageView ];
     templateMessageView.messageSelected = ^(NSString * vlaue) {
         [weakSelf processSendTemplateMessage:vlaue];

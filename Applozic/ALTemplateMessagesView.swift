@@ -1,5 +1,5 @@
 //
-//  ALKTemplateMessagesView.swift
+//  ALTemplateMessagesView.swift
 //  ApplozicSwift
 //
 //  Created by Mukesh Thawani on 27/12/17.
@@ -14,11 +14,11 @@ import Foundation
  Currently only textual messages are supported.
  A callback is sent, when any message is selected.
  */
-@objc open class ALKTemplateMessagesView: UIView {
+@objc open class ALTemplateMessagesView: UIView {
 
     // MARK: Public properties
     
-   @objc  open var viewModel: ALKTemplateMessagesViewModel!
+   @objc  open var viewModel: ALTemplateMessagesViewModel!
 
     @objc   open let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -34,7 +34,7 @@ import Foundation
 
     //MARK: Intialization
 
-   @objc public init(frame: CGRect, viewModel: ALKTemplateMessagesViewModel) {
+   @objc public init(frame: CGRect, viewModel: ALTemplateMessagesViewModel) {
         super.init(frame: frame)
         self.viewModel = viewModel
         setupViews()
@@ -58,7 +58,7 @@ import Foundation
 
         // Register cells
 
-        collectionView.register(ALKTemplateMessageCell.self, forCellWithReuseIdentifier:"ALKTemplateMessageCell")
+        collectionView.register(ALTemplateMessageCell.self, forCellWithReuseIdentifier:"ALTemplateMessageCell")
         // Set constaints
         for view in [collectionView] {
             view.translatesAutoresizingMaskIntoConstraints = false
@@ -76,7 +76,7 @@ import Foundation
 
 }
 
-extension ALKTemplateMessagesView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension ALTemplateMessagesView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -87,8 +87,8 @@ extension ALKTemplateMessagesView: UICollectionViewDelegate, UICollectionViewDat
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: ALKTemplateMessageCell = collectionView.dequeueReusableCell(withReuseIdentifier:"ALKTemplateMessageCell", for: indexPath)
-            as! ALKTemplateMessageCell
+        let cell: ALTemplateMessageCell = collectionView.dequeueReusableCell(withReuseIdentifier:"ALTemplateMessageCell", for: indexPath)
+            as! ALTemplateMessageCell
         cell.update(text: viewModel.getTextForItemAt(row: indexPath.row) ?? "")
         return cell
     }

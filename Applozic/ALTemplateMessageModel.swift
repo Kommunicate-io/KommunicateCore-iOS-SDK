@@ -1,5 +1,5 @@
 //
-//  ALKTemplateMessageModel.swift
+//  ALTemplateMessageModel.swift
 //  ApplozicSwift
 //
 //  Created by Mukesh Thawani on 27/12/17.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc open class ALKTemplateMessageModel: NSObject {
+@objc open class ALTemplateMessageModel: NSObject {
 
     /// Should be a unique identifier.
     @objc open var identifier: String
@@ -36,7 +36,7 @@ import Foundation
     }
 }
 
-extension ALKTemplateMessageModel {
+extension ALTemplateMessageModel {
 
     /// Json will be parsed and mapped to the model.
     public convenience init?(json: [String: Any]) {

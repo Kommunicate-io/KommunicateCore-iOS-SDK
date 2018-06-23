@@ -1,5 +1,5 @@
 //
-//  ALKTemplateMessageCell.swift
+//  ALTemplateMessageCell.swift
 //  ApplozicSwift
 //
 //  Created by Mukesh Thawani on 27/12/17.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-@objc open class ALKTemplateMessageCell: UICollectionViewCell {
+@objc open class ALTemplateMessageCell: UICollectionViewCell {
 
     open let textLabel: UILabel = {
         let label = UILabel(frame: CGRect.zero)
