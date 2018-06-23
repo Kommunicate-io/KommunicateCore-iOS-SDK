@@ -13,10 +13,6 @@
 		103CC2BE2032EDF200600D16 /* AlChannelInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 103CC2B82032EDF100600D16 /* AlChannelInfoModel.m */; };
 		103CC2BF2032EDF200600D16 /* AlChannelFeedResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 103CC2B92032EDF100600D16 /* AlChannelFeedResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		103CC2C02032EDF200600D16 /* AlChannelFeedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 103CC2BA2032EDF200600D16 /* AlChannelFeedResponse.m */; };
-		18DE3BE320DD7CC40054B793 /* ALKTemplateMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE3BE120DD7CC30054B793 /* ALKTemplateMessageModel.swift */; };
-		18DE3BE420DD7CC40054B793 /* ALKTemplateMessagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE3BE220DD7CC40054B793 /* ALKTemplateMessagesViewModel.swift */; };
-		18DE3BE720DD7CD00054B793 /* ALKTemplateMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE3BE520DD7CD00054B793 /* ALKTemplateMessageCell.swift */; };
-		18DE3BE820DD7CD00054B793 /* ALKTemplateMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE3BE620DD7CD00054B793 /* ALKTemplateMessagesView.swift */; };
 		18DE3BF220DD96A90054B793 /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18DE3BE920DD96A90054B793 /* AppLozic.xcdatamodeld */; };
 		2932B9F31C7C875F0017911D /* ALGroupDetailViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2932B9F11C7C875F0017911D /* ALGroupDetailViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2932B9F41C7C875F0017911D /* ALGroupDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2932B9F21C7C875F0017911D /* ALGroupDetailViewController.m */; };
@@ -341,6 +337,10 @@
 		6DEAEE8D1D4CDBC700360060 /* ALUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */; };
 		8B0DD64C20CE5CF2002362E9 /* ALApplicationInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B0DD64A20CE5CF2002362E9 /* ALApplicationInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8B0DD64D20CE5CF2002362E9 /* ALApplicationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B0DD64B20CE5CF2002362E9 /* ALApplicationInfo.m */; };
+		8B22F0D320DE393C00A4AF4A /* ALTemplateMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B22F0CF20DE393A00A4AF4A /* ALTemplateMessageCell.swift */; };
+		8B22F0D420DE393C00A4AF4A /* ALTemplateMessagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B22F0D020DE393B00A4AF4A /* ALTemplateMessagesViewModel.swift */; };
+		8B22F0D520DE393C00A4AF4A /* ALTemplateMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B22F0D120DE393B00A4AF4A /* ALTemplateMessagesView.swift */; };
+		8B22F0D620DE393C00A4AF4A /* ALTemplateMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B22F0D220DE393B00A4AF4A /* ALTemplateMessageModel.swift */; };
 		8B24FFD1204EB1000097A46A /* ALGroupUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B24FFCF204EB0FF0097A46A /* ALGroupUser.m */; };
 		8B24FFD2204EB1000097A46A /* ALGroupUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B24FFD0204EB1000097A46A /* ALGroupUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8B7864221FE2329F004B9E64 /* MessageReplyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7864201FE2329E004B9E64 /* MessageReplyView.m */; };
@@ -371,10 +371,6 @@
 		103CC2B82032EDF100600D16 /* AlChannelInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlChannelInfoModel.m; path = Applozic/AlChannelInfoModel.m; sourceTree = "<group>"; };
 		103CC2B92032EDF100600D16 /* AlChannelFeedResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AlChannelFeedResponse.h; path = Applozic/AlChannelFeedResponse.h; sourceTree = "<group>"; };
 		103CC2BA2032EDF200600D16 /* AlChannelFeedResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlChannelFeedResponse.m; path = Applozic/AlChannelFeedResponse.m; sourceTree = "<group>"; };
-		18DE3BE120DD7CC30054B793 /* ALKTemplateMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALKTemplateMessageModel.swift; path = Applozic/ALKTemplateMessageModel.swift; sourceTree = "<group>"; };
-		18DE3BE220DD7CC40054B793 /* ALKTemplateMessagesViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALKTemplateMessagesViewModel.swift; path = Applozic/ALKTemplateMessagesViewModel.swift; sourceTree = "<group>"; };
-		18DE3BE520DD7CD00054B793 /* ALKTemplateMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALKTemplateMessageCell.swift; path = Applozic/ALKTemplateMessageCell.swift; sourceTree = "<group>"; };
-		18DE3BE620DD7CD00054B793 /* ALKTemplateMessagesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALKTemplateMessagesView.swift; path = Applozic/ALKTemplateMessagesView.swift; sourceTree = "<group>"; };
 		18DE3BEA20DD96A90054B793 /* AppLozic 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 4.xcdatamodel"; sourceTree = "<group>"; };
 		18DE3BEB20DD96A90054B793 /* AppLozic 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 8.xcdatamodel"; sourceTree = "<group>"; };
 		18DE3BEC20DD96A90054B793 /* AppLozic 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -708,6 +704,10 @@
 		6DEAEE8B1D4CDBC700360060 /* ALUserProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALUserProfileVC.m; sourceTree = "<group>"; };
 		8B0DD64A20CE5CF2002362E9 /* ALApplicationInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALApplicationInfo.h; path = Applozic/ALApplicationInfo.h; sourceTree = "<group>"; };
 		8B0DD64B20CE5CF2002362E9 /* ALApplicationInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALApplicationInfo.m; path = Applozic/ALApplicationInfo.m; sourceTree = "<group>"; };
+		8B22F0CF20DE393A00A4AF4A /* ALTemplateMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessageCell.swift; path = Applozic/ALTemplateMessageCell.swift; sourceTree = "<group>"; };
+		8B22F0D020DE393B00A4AF4A /* ALTemplateMessagesViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessagesViewModel.swift; path = Applozic/ALTemplateMessagesViewModel.swift; sourceTree = "<group>"; };
+		8B22F0D120DE393B00A4AF4A /* ALTemplateMessagesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessagesView.swift; path = Applozic/ALTemplateMessagesView.swift; sourceTree = "<group>"; };
+		8B22F0D220DE393B00A4AF4A /* ALTemplateMessageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessageModel.swift; path = Applozic/ALTemplateMessageModel.swift; sourceTree = "<group>"; };
 		8B24FFCF204EB0FF0097A46A /* ALGroupUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALGroupUser.m; path = Applozic/ALGroupUser.m; sourceTree = "<group>"; };
 		8B24FFD0204EB1000097A46A /* ALGroupUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALGroupUser.h; path = Applozic/ALGroupUser.h; sourceTree = "<group>"; };
 		8B7864201FE2329E004B9E64 /* MessageReplyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageReplyView.m; path = Applozic/MessageReplyView.m; sourceTree = "<group>"; };
@@ -753,8 +753,6 @@
 		18DE3BDF20DD7C880054B793 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				18DE3BE120DD7CC30054B793 /* ALKTemplateMessageModel.swift */,
-				18DE3BE220DD7CC40054B793 /* ALKTemplateMessagesViewModel.swift */,
 			);
 			name = ViewModel;
 			sourceTree = "<group>";
@@ -876,6 +874,10 @@
 		6D6DF0731BC535C800EBA00F = {
 			isa = PBXGroup;
 			children = (
+				8B22F0CF20DE393A00A4AF4A /* ALTemplateMessageCell.swift */,
+				8B22F0D220DE393B00A4AF4A /* ALTemplateMessageModel.swift */,
+				8B22F0D120DE393B00A4AF4A /* ALTemplateMessagesView.swift */,
+				8B22F0D020DE393B00A4AF4A /* ALTemplateMessagesViewModel.swift */,
 				8BE0F6F22063D57E00361DD9 /* SoundRecordingView.swift */,
 				8B7864211FE2329E004B9E64 /* MessageReplyView.h */,
 				8B7864201FE2329E004B9E64 /* MessageReplyView.m */,
@@ -1077,8 +1079,6 @@
 		6D6DF1DB1BC5371200EBA00F /* ApplozicUIWidget */ = {
 			isa = PBXGroup;
 			children = (
-				18DE3BE520DD7CD00054B793 /* ALKTemplateMessageCell.swift */,
-				18DE3BE620DD7CD00054B793 /* ALKTemplateMessagesView.swift */,
 				18DE3BDF20DD7C880054B793 /* ViewModel */,
 				6D7757211D5B83AA0025560B /* ALHyperLabel.h */,
 				6D7757221D5B83AA0025560B /* ALHyperLabel.m */,
@@ -1747,6 +1747,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B22F0D320DE393C00A4AF4A /* ALTemplateMessageCell.swift in Sources */,
 				6D7756B41D5B80DF0025560B /* ALChannelInfo.m in Sources */,
 				6D1385751CA9B80D009E6F50 /* ALMultipleAttachmentView.m in Sources */,
 				6D6DF1671BC5364C00EBA00F /* ALNotificationView.m in Sources */,
@@ -1756,7 +1757,6 @@
 				6D7757131D5B83660025560B /* TSBlurView.m in Sources */,
 				6D6DF17D1BC5364C00EBA00F /* ALSyncMessageFeed.m in Sources */,
 				6D7756AE1D5B80DF0025560B /* ALChannelCreateResponse.m in Sources */,
-				18DE3BE420DD7CC40054B793 /* ALKTemplateMessagesViewModel.swift in Sources */,
 				6D08770A1D01B0FE00DB491A /* UIView+Toast.m in Sources */,
 				6D6DF1651BC5364C00EBA00F /* ALNewContactCell.m in Sources */,
 				6D7756BA1D5B80DF0025560B /* ALChannelUserX.m in Sources */,
@@ -1793,6 +1793,7 @@
 				6D6DF15F1BC5364C00EBA00F /* ALChatCell.m in Sources */,
 				C76D31461F0AAFB40087291F /* ALVOIPCell.m in Sources */,
 				6D6DF1611BC5364C00EBA00F /* ALImageCell.m in Sources */,
+				8B22F0D420DE393C00A4AF4A /* ALTemplateMessagesViewModel.swift in Sources */,
 				6D7756E61D5B821F0025560B /* ALSyncCallService.m in Sources */,
 				6D7756B61D5B80DF0025560B /* ALChannelService.m in Sources */,
 				6D7757001D5B82ED0025560B /* DB_CHANNEL_USER_X.m in Sources */,
@@ -1818,8 +1819,8 @@
 				6D6DF1B91BC5364C00EBA00F /* SDWebImageCompat.m in Sources */,
 				6D7756721D5B7EEC0025560B /* ALChatLauncher.m in Sources */,
 				6D77568E1D5B7FBE0025560B /* ALConversationService.m in Sources */,
+				8B22F0D620DE393C00A4AF4A /* ALTemplateMessageModel.swift in Sources */,
 				4612E9081E13882D0022DB23 /* MQTTSession.m in Sources */,
-				18DE3BE720DD7CD00054B793 /* ALKTemplateMessageCell.swift in Sources */,
 				6D7756901D5B7FBE0025560B /* ALTopicDetail.m in Sources */,
 				6D7756B81D5B80DF0025560B /* ALChannelSyncResponse.m in Sources */,
 				6D6DF1CA1BC5364C00EBA00F /* UIImage+MultiFormat.m in Sources */,
@@ -1830,6 +1831,7 @@
 				4612E8FC1E13882D0022DB23 /* MQTTClient.xcdatamodeld in Sources */,
 				6D6DF16B1BC5364C00EBA00F /* ALMessageClientService.m in Sources */,
 				4612E9001E13882D0022DB23 /* MQTTDecoder.m in Sources */,
+				8B22F0D520DE393C00A4AF4A /* ALTemplateMessagesView.swift in Sources */,
 				6D7757021D5B82ED0025560B /* DB_CHANNEL.m in Sources */,
 				4612E9051E13882D0022DB23 /* MQTTMessage.m in Sources */,
 				6D6DF1CC1BC5364C00EBA00F /* UIImage+WebP.m in Sources */,
@@ -1848,7 +1850,6 @@
 				6D6DF1C41BC5364C00EBA00F /* SDWebImagePrefetcher.m in Sources */,
 				103CC2C02032EDF200600D16 /* AlChannelFeedResponse.m in Sources */,
 				6D7757481D5B85100025560B /* ALLocationCell.m in Sources */,
-				18DE3BE820DD7CD00054B793 /* ALKTemplateMessagesView.swift in Sources */,
 				6D7756B01D5B80DF0025560B /* ALChannelDBService.m in Sources */,
 				8B24FFD1204EB1000097A46A /* ALGroupUser.m in Sources */,
 				2932B9F41C7C875F0017911D /* ALGroupDetailViewController.m in Sources */,
@@ -1858,7 +1859,6 @@
 				6D6DF1B31BC5364C00EBA00F /* MKAnnotationView+WebCache.m in Sources */,
 				6D6DF1431BC5364C00EBA00F /* ALDBHandler.m in Sources */,
 				6D6DF1571BC5364C00EBA00F /* ALBaseViewController.m in Sources */,
-				18DE3BE320DD7CC40054B793 /* ALKTemplateMessageModel.swift in Sources */,
 				C75576EF1E27A5B300358D9B /* ALMuteRequest.m in Sources */,
 				6D7757281D5B841B0025560B /* ALMessageInfoViewController.m in Sources */,
 				6D6DF1411BC5364C00EBA00F /* ALConnectionQueueHandler.m in Sources */,
