@@ -41,10 +41,11 @@
 -(void) showAnimationForMsgInfo:(BOOL)flag;
 -(void) processTapGesture:(ALMessage *)alMessage;
 -(void) processForwardMessage:(ALMessage *) message;
-
+-(void) handleTapGestureForKeyBoard;
 
 @optional
 
+-(void)openUserChat:(ALMessage *)alMessage;
 -(void) processUserChatView:(ALMessage *)alMessage;
 -(void) processMessageReply:(ALMessage *) message;
 -(void) scrollToReplyMessage:(ALMessage *)alMessage;

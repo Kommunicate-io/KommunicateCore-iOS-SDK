@@ -56,7 +56,8 @@
 @implementation ALChatCell
 {
     CGFloat msgFrameHeight;
-    UITapGestureRecognizer * tapForCustomView;
+    UITapGestureRecognizer * tapForCustomView, *tapGestureRecognizerForCell;
+    
 }
 
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -159,8 +160,9 @@
     }
     
     UITapGestureRecognizer * menuTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
+    menuTapGesture.cancelsTouchesInView = NO;
+    [self.contentView setUserInteractionEnabled:YES];
     [self.contentView addGestureRecognizer:menuTapGesture];
-    
     return self;
     
 }
@@ -472,6 +474,8 @@
 
 -(void) proccessTapForMenu:(id)tap{
 
+    [self processKeyBoardHideTap];
+    
      UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
        UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
     
@@ -602,6 +606,13 @@
     [self.delegate processMessageReply:self.mMessage];
     
 }
+
+-(void) processKeyBoardHideTap
+{
+    [self.delegate handleTapGestureForKeyBoard];
+    
+}
+
 -(void)processTapGesture
 {
     [self.delegate processALMessage:self.mMessage];
@@ -609,6 +620,7 @@
 
 -(void)processOpenChat
 {
+    [self processKeyBoardHideTap];
     [self.delegate openUserChat:self.mMessage];
 }
 
@@ -761,7 +773,6 @@
 
 -(BOOL)isMessageReplyMenuEnabled:(SEL) action
 {
-
     
     return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
     

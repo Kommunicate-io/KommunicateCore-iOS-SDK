@@ -58,9 +58,10 @@
     NSError * error;
     NSData * postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
-    
-    NSLog(@"PARAM_STRING USER_REGISTRATION :: %@",theParamString);
-    
+
+    NSString *logParamText = [self getUserParamTextForLogging:user];
+    NSLog(@"PARAM_STRING USER_REGISTRATION :: %@",logParamText);
+
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
@@ -337,6 +338,16 @@
         }
         NSLog(@"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
     }];
+}
+
+-(NSString *)getUserParamTextForLogging:(ALUser *)user
+{
+    NSString *passwordText = user.password ? @"***":@"";
+    [user setPassword: passwordText];
+    NSError * error;
+    NSData * userData = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
+    NSString *logParamString = [[NSString alloc] initWithData:userData encoding:NSUTF8StringEncoding];
+    return logParamString;
 }
 
 static BOOL isDevelopmentBuild(void) {

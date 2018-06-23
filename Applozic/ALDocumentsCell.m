@@ -144,6 +144,11 @@
     
     [self.replyUIView removeFromSuperview];
     
+    UITapGestureRecognizer *tapForOpenChat = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processOpenChat)];
+    tapForOpenChat.numberOfTapsRequired = 1;
+    [self.mUserProfileImageView setUserInteractionEnabled:YES];
+    [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
+    
     if([alMessage.type isEqualToString:@MT_INBOX_CONSTANT])
     {
         [self.mUserProfileImageView setFrame:CGRectMake(USER_PROFILE_PADDING_X, 0, USER_PROFILE_WIDTH, USER_PROFILE_HEIGHT)];
@@ -421,6 +426,8 @@
 
 -(void) proccessTapForMenu:(id)tap{
     
+    [self processKeyBoardHideTap];
+
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
     
@@ -438,9 +445,6 @@
     [[UIMenuController sharedMenuController] update];
     
 }
-
-
-
 
 -(void) addShadowEffects
 {
@@ -561,9 +565,6 @@
                                                                               || [self isMessageReplyMenuEnabled:action]));
 }
 
-
-
-
 -(void) delete:(id)sender
 {
     //UI
@@ -575,15 +576,15 @@
         NSLog(@"DELETE MESSAGE ERROR :: %@", error.description);
     }];
 }
-            
-            
 
 -(void) messageReply:(id)sender
 {
     NSLog(@"Message forward option is pressed");
     [self.delegate processMessageReply:self.mMessage];
     
-}-(void)openUserChatVC
+}
+
+-(void)openUserChatVC
 {
     [self.delegate processUserChatView:self.mMessage];
 }
@@ -608,8 +609,7 @@
         }
     }];
 }
-            
-            
+
 -(void) messageForward:(id)sender
 {
     NSLog(@"Message forward option is pressed");
@@ -617,18 +617,25 @@
         
 }
 
+-(void) processKeyBoardHideTap
+{
+    [self.delegate handleTapGestureForKeyBoard];
+}
 
 -(BOOL)isForwardMenuEnabled:(SEL) action;
 {
     return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
 }
+
 -(BOOL)isMessageReplyMenuEnabled:(SEL) action
 {
-    
-    
     return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
 }
 
-
+-(void)processOpenChat
+{
+    [self processKeyBoardHideTap];
+    [self.delegate openUserChat:self.mMessage];
+}
 
 @end
