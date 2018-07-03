@@ -463,8 +463,9 @@ UIViewController * modalCon;
 }
 
 -(void) setInImageView:(NSURL*)url{
+    
+     [self.mImageView sd_setImageWithPreviousCachedImageWithURL:url placeholderImage:nil options:0 progress:nil completed:nil];
 
-    [self.mImageView sd_setImageWithPreviousCachedImageWithURL:url placeholderImage:nil options:0 progress:nil completed:nil];
 }
 
 #pragma mark - Menu option tap Method -

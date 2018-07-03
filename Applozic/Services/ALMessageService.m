@@ -53,7 +53,7 @@ static ALMessageClientService *alMsgClientService;
             
             if(alMessageListResponse.messageList.count){
                 
-                for(ALMessage *message in [alMessageListResponse.messageList subarrayWithRange:NSMakeRange(0, 6)] ){
+                for(ALMessage *message in [alMessageListResponse.messageList subarrayWithRange:NSMakeRange(0, MIN( 6, alMessageListResponse.messageList.count))] ){
                     
                     if(message.groupId != nil && message.groupId != 0){
                         
