@@ -89,6 +89,8 @@
             [ALUserDefaultsHandler setDeviceKeyString:response.deviceKey];
             [ALUserDefaultsHandler setUserKeyString:response.userKey];
             [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
+            [ALUserDefaultsHandler setLastSyncTime:[NSNumber numberWithDouble:[response.currentTimeStamp doubleValue]]];
+            [ALUserDefaultsHandler setLastSyncChannelTime:(NSNumber *)response.currentTimeStamp];
             
             if(user.pushNotificationFormat){
                 [ALUserDefaultsHandler setPushNotificationFormat:user.pushNotificationFormat];
@@ -152,8 +154,6 @@
         
         completion(response,nil);
         
-        [ALUserDefaultsHandler setLastSyncTime:[NSNumber numberWithDouble:[response.currentTimeStamp doubleValue]]];
-        [ALUserDefaultsHandler setLastSyncChannelTime:(NSNumber *)response.currentTimeStamp];
         [self connect];
         ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
         if(dbService.isMessageTableEmpty)
