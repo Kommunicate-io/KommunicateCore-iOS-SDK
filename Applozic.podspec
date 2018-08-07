@@ -93,6 +93,7 @@ Pod::Spec.new do |s|
   s.source_files  = "Applozic", "Applozic/**/*.{h,m,swift}"
   s.exclude_files = "Classes/Exclude"
   s.swift_version = '4.1'
+  s.prefix_header_file = 'Applozic/Applozic_Prefix.pch'
   # s.public_header_files = "Classes/**/*.h"
 
 
