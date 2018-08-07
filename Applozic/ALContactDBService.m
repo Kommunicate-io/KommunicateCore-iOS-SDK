@@ -25,7 +25,7 @@
         
         if (!result) {
             
-            NSLog(@"Failure to delete the contacts");
+            ALSLog(ALLoggerSeverityInfo, @"Failure to delete the contacts");
             break;
         }
     }
@@ -64,8 +64,8 @@
     
     if (!success) {
         
-        NSLog(@"Unable to save managed object context.");
-        NSLog(@"%@, %@", deleteError, deleteError.localizedDescription);
+        ALSLog(ALLoggerSeverityInfo, @"Unable to save managed object context.");
+        ALSLog(ALLoggerSeverityError, @"%@, %@", deleteError, deleteError.localizedDescription);
     }
     
     return success;
@@ -97,8 +97,8 @@
     
     if (!success) {
         
-        NSLog(@"Unable to save managed object context.");
-        NSLog(@"%@, %@", deleteError, deleteError.localizedDescription);
+        ALSLog(ALLoggerSeverityInfo, @"Unable to save managed object context.");
+        ALSLog(ALLoggerSeverityError, @"%@, %@", deleteError, deleteError.localizedDescription);
     }
     
     return success;
@@ -116,7 +116,7 @@
         
         if (!result) {
             
-            NSLog(@"Failure to update the contacts");
+            ALSLog(ALLoggerSeverityInfo, @"Failure to update the contacts");
             break;
         }
     }
@@ -186,7 +186,7 @@
     
     if (!success) {
         
-        NSLog(@"updateContactFERROR :%@",error);
+        ALSLog(ALLoggerSeverityError, @"updateContactFERROR :%@",error);
     }
     
     return success;
@@ -214,7 +214,7 @@
     NSError *error = nil;
     if (![dbHandler.managedObjectContext save:&error]) {
 
-        NSLog(@"DB ERROR :%@",error);
+        ALSLog(ALLoggerSeverityError, @"DB ERROR :%@",error);
         return NO;
     }
 
@@ -433,7 +433,7 @@
     
     if (!success) {
         
-        NSLog(@"DB ERROR :%@",error);
+        ALSLog(ALLoggerSeverityError, @"DB ERROR :%@",error);
     }
     
     return success;
@@ -468,7 +468,7 @@
     
     if (!success) {
         
-        NSLog(@"DB ERROR :%@",error);
+        ALSLog(ALLoggerSeverityError, @"DB ERROR :%@",error);
     }
     
     return success;
@@ -485,7 +485,7 @@
     }
     NSError *error = nil;
     [dbHandler.managedObjectContext save:&error];
-    NSLog(@"ERROR(IF-ANY) WHILE UPDATING DELIVERED_AND_READ : %@",error.description);
+    ALSLog(ALLoggerSeverityError, @"ERROR(IF-ANY) WHILE UPDATING DELIVERED_AND_READ : %@",error.description);
     
     return messages.count;
 }
@@ -539,7 +539,7 @@
     
     if (!success)
     {
-        NSLog(@"DB ERROR FOR BLOCKING/UNBLOCKING USER %@ :%@",userId, error);
+        ALSLog(ALLoggerSeverityError, @"DB ERROR FOR BLOCKING/UNBLOCKING USER %@ :%@",userId, error);
     }
     return success;
 }
@@ -585,7 +585,7 @@
     
     if (!success)
     {
-        NSLog(@"DB ERROR FOR BLOCKED BY USER %@ :%@", userId, error);
+        ALSLog(ALLoggerSeverityError, @"DB ERROR FOR BLOCKED BY USER %@ :%@", userId, error);
     }
     return success;
 }
@@ -613,7 +613,7 @@
     }
     else
     {
-        NSLog(@"NO BLOCKED USER FOUND");
+        ALSLog(ALLoggerSeverityInfo, @"NO BLOCKED USER FOUND");
     }
     
     return userList;
@@ -713,7 +713,7 @@
     NSError *error = nil;
     BOOL result = [context save:&error];
     if (!result) {
-        NSLog(@"addContact DB ERROR :%@",error);
+        ALSLog(ALLoggerSeverityError, @"addContact DB ERROR :%@",error);
     }
     return result;
 }

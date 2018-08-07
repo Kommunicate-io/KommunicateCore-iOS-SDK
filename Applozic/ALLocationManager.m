@@ -25,7 +25,7 @@
 -(void)getAddress {
     
     [self setup];
-    NSLog(@"get Address...");
+    ALSLog(ALLoggerSeverityInfo, @"get Address...");
 
 }
 
@@ -34,7 +34,7 @@
     [_locationManager requestWhenInUseAuthorization];
     [_locationManager startUpdatingLocation];
     //[_locationManager requestLocation];
-    NSLog(@"get Address...####");
+    ALSLog(ALLoggerSeverityInfo, @"get Address...####");
 
 
 }
@@ -44,13 +44,13 @@
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
-    NSLog(@"didFailWithError: %@", error);
+    ALSLog(ALLoggerSeverityError, @"didFailWithError: %@", error);
     
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
-    NSLog(@"didUpdateToLocation: %@", newLocation);
+    ALSLog(ALLoggerSeverityInfo, @"didUpdateToLocation: %@", newLocation);
     CLLocation *currentLocation = newLocation;
     [ self handleLocationUpdate: currentLocation];
     
@@ -59,7 +59,7 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     
-    NSLog(@"didUpdateLocations called:");
+    ALSLog(ALLoggerSeverityInfo, @"didUpdateLocations called:");
     CLLocation *newLocation = locations[[locations count] -1];
     CLLocation *currentLocation = newLocation;
     [ self handleLocationUpdate: currentLocation];
@@ -78,13 +78,13 @@
     }
     
     // Reverse Geocoding
-    NSLog(@"Resolving the Address");
+    ALSLog(ALLoggerSeverityInfo, @"Resolving the Address");
     _geocoder = [[CLGeocoder alloc]init];
     
     [self.geocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error) {
         NSMutableDictionary * dict =  [[NSMutableDictionary alloc]init];
         if(error){
-            NSLog(@"%@", [error localizedDescription]);
+            ALSLog(ALLoggerSeverityError, @"%@", [error localizedDescription]);
             [dict setObject:error.debugDescription forKey:@"error"];
             
         }

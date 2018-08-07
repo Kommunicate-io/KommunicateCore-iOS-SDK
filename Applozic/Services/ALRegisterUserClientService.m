@@ -60,14 +60,14 @@
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
 
     NSString *logParamText = [self getUserParamTextForLogging:user];
-    NSLog(@"PARAM_STRING USER_REGISTRATION :: %@",logParamText);
+    ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING USER_REGISTRATION :: %@",logParamText);
 
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         NSString *statusStr = (NSString *)theJson;
-        NSLog(@"RESPONSE_USER_REGISTRATION :: %@", statusStr);
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", statusStr);
         
         if (theError)
         {
@@ -121,7 +121,7 @@
             {
                 NSArray * mqttURL = [response.brokerURL componentsSeparatedByString:@":"];
                 NSString * MQTTURL = [mqttURL[1] substringFromIndex:2];
-                NSLog(@"MQTT_URL :: %@",MQTTURL);
+                ALSLog(ALLoggerSeverityInfo, @"MQTT_URL :: %@",MQTTURL);
                 [ALUserDefaultsHandler setMQTTURL:MQTTURL];
             }
             if(response.encryptionKey)
@@ -144,12 +144,12 @@
         
         @catch (NSException *exception)
         {
-            NSLog(@"EXCEPTION :: %@", exception.description);
+            ALSLog(ALLoggerSeverityError, @"EXCEPTION :: %@", exception.description);
         }
         
         @finally
         {
-            NSLog(@"..");
+            ALSLog(ALLoggerSeverityInfo, @"..");
         }
         
         completion(response,nil);
@@ -172,7 +172,7 @@
 
 -(void) updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion
 {
-    NSLog(@" Saving  to  setApnDeviceToken ##");
+    ALSLog(ALLoggerSeverityInfo, @" Saving  to  setApnDeviceToken ##");
     [ALUserDefaultsHandler setApnDeviceToken:apnDeviceToken];
     if ([ALUserDefaultsHandler isLoggedIn])
     {
@@ -227,7 +227,7 @@
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"UPDATE NOTIFICATION MODE" WithCompletionHandler:^(id theJson, NSError *theError) {
-        NSLog(@"Updating Notification Mode Server Response Received %@", theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Updating Notification Mode Server Response Received %@", theJson);
         
         NSString *statusStr = (NSString *)theJson;
         if (theError) {
@@ -261,7 +261,7 @@
     
     [ALResponseHandler processRequest:request andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
 
-        NSLog(@"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         if(!error && [response.status isEqualToString:@"success"])
         {
@@ -291,7 +291,7 @@
     NSString *previousVersion = [defaults objectForKey:@"appVersion"];
     
     if (!previousVersion) {
-        NSLog(@"First start after installing the app");
+        ALSLog(ALLoggerSeverityInfo, @"First start after installing the app");
         [defaults setObject:currentAppVersion forKey:@"appVersion"];
         [defaults synchronize];
         return NO;
@@ -300,7 +300,7 @@
         return NO;
     }
     else {
-        NSLog(@"App was updated since last run");
+        ALSLog(ALLoggerSeverityInfo, @"App was updated since last run");
         
         [ALRegisterUserClientService sendServerRequestForAppUpdate];
         [defaults setObject:currentAppVersion forKey:@"appVersion"];
@@ -317,9 +317,9 @@
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
     [ALResponseHandler processRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
-            NSLog(@"error:%@",theError);
+            ALSLog(ALLoggerSeverityError, @"error:%@",theError);
         }
-        NSLog(@"Response: APP UPDATED:%@",theJson);
+        ALSLog(ALLoggerSeverityInfo, @"Response: APP UPDATED:%@",theJson);
     }];
     
     
@@ -334,9 +334,9 @@
         
         if (theError)
         {
-            NSLog(@"ERROR_SYNC_ACCOUNT_STATUS :: %@", theError.description);
+            ALSLog(ALLoggerSeverityError, @"ERROR_SYNC_ACCOUNT_STATUS :: %@", theError.description);
         }
-        NSLog(@"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
     }];
 }
 

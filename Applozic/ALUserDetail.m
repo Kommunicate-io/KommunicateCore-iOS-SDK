@@ -49,15 +49,6 @@
 -(void)userDetail
 {
     
-    //    NSLog(@"USER ID : %@",self.userId);
-    //    NSLog(@"CONNECTED : %d",self.connected);
-    //    NSLog(@"LAST SEEN : %@",self.lastSeenAtTime);
-    //    NSLog(@"UNREAD COUNT : %@",self.unreadCount);
-    //    NSLog(@"IMAGE LINK: %@",self.imageLink);
-    //    NSLog(@"Display Name: %@",self.displayName);
-    //    NSLog(@"Contact Number : %@",self.contactNumber);
-    //    NSLog(@"DeletedAt : %@",self.deletedAtTime);
-    
 }
 
 -(id)initWithDictonary:(NSDictionary *)messageDictonary{

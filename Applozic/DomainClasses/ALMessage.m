@@ -32,7 +32,7 @@
     }
     @catch (NSException *exception)
     {
-        NSLog(@"EXCEPTION : MSG_PARSING :: %@",exception.description);
+        ALSLog(ALLoggerSeverityError, @"EXCEPTION : MSG_PARSING :: %@",exception.description);
     }
     @finally
     { }
@@ -294,7 +294,7 @@
                                                                                       error:&error];
         if(!metaDataDictionary)
         {
-//            NSLog(@"ERROR: COULD NOT PARSE META-DATA : %@", error.description);
+//            ALSLog(ALLoggerSeverityError, @"ERROR: COULD NOT PARSE META-DATA : %@", error.description);
         }
     }
     @catch(NSException * exp)
@@ -332,6 +332,16 @@
 {
     BOOL hide = [[self.metadata objectForKey:@"hide"] boolValue];
 
+    // Check messages that we need to hide
+    NSArray *keys = [ALApplozicSettings metadataKeysToHideMessages];
+    if(keys != nil) {
+        for(NSString *key in keys) {
+            // If this key is present then it's a hidden message
+            if([self.metadata objectForKey:key] != nil) {
+                return true;
+            }
+        }
+    }
     return hide;
 }
 
@@ -372,6 +382,7 @@
     return (self.contentType ==ALMESSAGE_CONTENT_VCARD);
 
 }
+
 -(BOOL)isDocumentMessage
 {
     return (self.contentType ==ALMESSAGE_CONTENT_ATTACHMENT) &&
@@ -405,4 +416,64 @@
             return AL_NOT_A_REPLY;
     }
 }
+
+- (instancetype)initWithBuilder:(ALMessgaeBuilder *)builder {
+    if (self = [super init]) {
+        _contactIds = builder.to;
+        _to = builder.to;
+        _message = builder.message;
+        _contentType = builder.contentType;
+        _conversationId = builder.conversationId;
+        _deviceKey  =  [ALUserDefaultsHandler getDeviceKeyString];
+        _type = @"5";
+        _createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
+        _deviceKey = [ALUserDefaultsHandler getDeviceKeyString ];
+        _sendToDevice = NO;
+        _shared = NO;
+        _fileMeta = nil;
+        _storeOnDevice = NO;
+        _key = [[NSUUID UUID] UUIDString];
+        _delivered = NO;
+        _fileMetaKey = nil;
+        _groupId = builder.groupId;
+        _source = SOURCE_IOS;
+        _metadata = builder.metadata; // EXAMPLE FOR META DATA
+        if(builder.imageFilePath){
+        _imageFilePath = builder.imageFilePath.lastPathComponent;
+        _fileMeta = [self getFileMetaInfo];
+            //File Meta Creation
+            _fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", builder.imageFilePath];
+            if(builder.to){
+                _fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",builder.to, builder.imageFilePath];
+            }
+        }
+
+    }
+    return self;
+}
+
+-(ALFileMetaInfo *)getFileMetaInfo
+{
+    ALFileMetaInfo *info = [ALFileMetaInfo new];
+    
+    info.blobKey = nil;
+    info.contentType = @"";
+    info.createdAtTime = nil;
+    info.key = nil;
+    info.name = @"";
+    info.size = @"";
+    info.userKey = @"";
+    info.thumbnailUrl = @"";
+    info.progressValue = 0;
+    
+    return info;
+}
+
++ (instancetype)build:(void (^)(ALMessgaeBuilder *))builder {
+    ALMessgaeBuilder *alMessageBuilder = [ALMessgaeBuilder new];
+    builder(alMessageBuilder);
+    return [[ALMessage alloc] initWithBuilder:alMessageBuilder];
+}
+
+
 @end
