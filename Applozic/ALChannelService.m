@@ -205,7 +205,7 @@
 
 -(void)addChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey withCompletion:(void(^)(id json, NSError *error))completion
 {
-    NSLog(@"ADD_CHILD :: PARENT_KEY : %@ && CHILD_KEYs : %@",parentKey,childKeyList.description);
+    ALSLog(ALLoggerSeverityInfo, @"ADD_CHILD :: PARENT_KEY : %@ && CHILD_KEYs : %@",parentKey,childKeyList.description);
     if(parentKey)
     {
         [ALChannelClientService addChildKeyList:childKeyList andParentKey:parentKey withCompletion:^(id json, NSError *error) {
@@ -226,7 +226,7 @@
 
 -(void)removeChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey withCompletion:(void(^)(id json, NSError *error))completion
 {
-    NSLog(@"REMOVE_CHILD :: PARENT_KEY : %@ && CHILD_KEYs : %@",parentKey,childKeyList.description);
+    ALSLog(ALLoggerSeverityInfo, @"REMOVE_CHILD :: PARENT_KEY : %@ && CHILD_KEYs : %@",parentKey,childKeyList.description);
     if(parentKey)
     {
         [ALChannelClientService removeChildKeyList:childKeyList andParentKey:parentKey withCompletion:^(id json, NSError *error) {
@@ -252,7 +252,7 @@
 -(void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList andParentKey:(NSString *)clientParentKey
               withCompletion:(void(^)(id json, NSError *error))completion
 {
-    NSLog(@"ADD_CHILD :: PARENT_KEY : %@ && CHILD_KEYs (VIA_CLIENT) : %@",clientParentKey,clientChildKeyList.description);
+    ALSLog(ALLoggerSeverityInfo, @"ADD_CHILD :: PARENT_KEY : %@ && CHILD_KEYs (VIA_CLIENT) : %@",clientParentKey,clientChildKeyList.description);
     if(clientParentKey)
     {
         [ALChannelClientService addClientChildKeyList:clientChildKeyList andClientParentKey:clientParentKey withCompletion:^(id json, NSError *error) {
@@ -274,7 +274,7 @@
 -(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList andParentKey:(NSString *)clientParentKey
                  withCompletion:(void(^)(id json, NSError *error))completion
 {
-    NSLog(@"REMOVE_CHILD :: PARENT_KEY : %@ && CHILD_KEYs (VIA_CLIENT) : %@",clientParentKey,clientChildKeyList.description);
+    ALSLog(ALLoggerSeverityInfo, @"REMOVE_CHILD :: PARENT_KEY : %@ && CHILD_KEYs (VIA_CLIENT) : %@",clientParentKey,clientChildKeyList.description);
     if(clientParentKey)
     {
         [ALChannelClientService removeClientChildKeyList:clientChildKeyList andClientParentKey:clientParentKey withCompletion:^(id json, NSError *error) {
@@ -346,7 +346,7 @@
     }
     else
     {
-        NSLog(@"ERROR : CHANNEL NAME MISSING");
+        ALSLog(ALLoggerSeverityError, @"ERROR : CHANNEL NAME MISSING");
         return;
     }
 }
@@ -370,14 +370,14 @@
                                       }
                                       else
                                       {
-                                          NSLog(@"ERROR_IN_CHANNEL_CREATING :: %@",error);
+                                          ALSLog(ALLoggerSeverityError, @"ERROR_IN_CHANNEL_CREATING :: %@",error);
                                           completion(nil, error);
                                       }
                                   }];
     }
     else
     {
-        NSLog(@"ERROR : CHANNEL NAME MISSING");
+        ALSLog(ALLoggerSeverityError, @"ERROR : CHANNEL NAME MISSING");
         return;
     }
 }
@@ -418,7 +418,7 @@
     }
     else
     {
-        NSLog(@"EMPTY_BROADCAST_MEMBER_LIST");
+        ALSLog(ALLoggerSeverityError, @"EMPTY_BROADCAST_MEMBER_LIST");
         NSError *failError = [NSError errorWithDomain:@"EMPTY BROADCAST MEMBER LIST" code:0 userInfo:nil];
         completion(nil, failError);
     }
@@ -476,14 +476,14 @@
                                       }
                                       else
                                       {
-                                          NSLog(@"ERROR_IN_CHANNEL_CREATING :: %@",error);
+                                          ALSLog(ALLoggerSeverityError, @"ERROR_IN_CHANNEL_CREATING :: %@",error);
                                           completion(nil, error);
                                       }
                                   }];
     }
     else
     {
-        NSLog(@"ERROR : CHANNEL NAME MISSING");
+        ALSLog(ALLoggerSeverityError, @"ERROR : CHANNEL NAME MISSING");
         return;
     }
 }
@@ -597,27 +597,46 @@
     {
         [ALChannelClientService leaveChannel:channelKey orClientChannelKey:clientChannelKey
                                   withUserId:(NSString *)userId andCompletion:^(NSError *error, ALAPIResponse *response) {
-                                      
-                                      if([response.status isEqualToString:@"success"])
-                                      {
-                                          ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                                          if(clientChannelKey != nil)
-                                          {
-                                              ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
-                                              [channelDBService removeMemberFromChannel:userId andChannelKey:alChannel.key];
-                                              [channelDBService setLeaveFlag:YES forChannel:alChannel.key];
-                                          }
-                                          else
-                                          {
-                                              [channelDBService removeMemberFromChannel:userId andChannelKey:channelKey];
-                                              [channelDBService setLeaveFlag:YES forChannel:channelKey];
-                                          }
-                                          
-                                      }
+                                      [self proccessLeaveResponse:channelKey andUserId:userId orClientChannelKey:clientChannelKey withResponse:response withError:error];
                                       completion(error);
                                   }];
     }
 }
+
+-(void) proccessLeaveResponse:(NSNumber *)channelKey andUserId:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey withResponse:(ALAPIResponse *) response  withError:(NSError*)error{
+    
+    if([response.status isEqualToString:@"success"])
+    {
+        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+        if(clientChannelKey != nil)
+        {
+            ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
+            [channelDBService removeMemberFromChannel:userId andChannelKey:alChannel.key];
+            [channelDBService setLeaveFlag:YES forChannel:alChannel.key];
+        }
+        else
+        {
+            [channelDBService removeMemberFromChannel:userId andChannelKey:channelKey];
+            [channelDBService setLeaveFlag:YES forChannel:channelKey];
+        }
+        
+    }
+}
+
+-(void)leaveChannelWithChannelKey:(NSNumber *)channelKey andUserId:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey
+                   withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
+{
+    if((channelKey != nil || clientChannelKey != nil) && userId != nil)
+    {
+        [ALChannelClientService leaveChannel:channelKey orClientChannelKey:clientChannelKey
+                                  withUserId:(NSString *)userId andCompletion:^(NSError *error, ALAPIResponse *response) {
+                                      [self proccessLeaveResponse:channelKey andUserId:userId orClientChannelKey:clientChannelKey withResponse:response withError:error];
+                                      completion(error,response);
+                                  }];
+    }
+    
+}
+    
 
 //===========================================================================================================================
 #pragma mark UPDATE CHANNEL (FROM DEVICE SIDE)
@@ -646,25 +665,44 @@
     {
         [ALChannelClientService updateChannel:channelKey orClientChannelKey:clientChannelKey andNewName:newName andImageURL:imageURL metadata:metaData orChildKeys:childKeysList  orChannelUsers:(NSMutableArray *)channelUsers andCompletion:^(NSError *error, ALAPIResponse *response) {
             
-            if([response.status isEqualToString:@"success"])
-            {
-                ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-                if(clientChannelKey != nil)
-                {
-                    ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
-                    [channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag orChannelUsers:channelUsers];
-                }
-                else
-                {
-                    ALChannel *alChannel = [channelDBService loadChannelByKey:channelKey];
-                    [channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag orChannelUsers:channelUsers];
-                }
-                
-            }
+            [self proccessUpdateChannelResponse:channelKey andNewName:newName andImageURL:imageURL orClientChannelKey:clientChannelKey isUpdatingMetaData:flag metadata:metaData orChildKeys:childKeysList orChannelUsers:channelUsers withResponse:response];
             completion(error);
         }];
     }
 }
+
+-(void)updateChannelWithChannelKey:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
+  isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData orChildKeys:(NSMutableArray *)childKeysList orChannelUsers:(NSMutableArray *)channelUsers withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
+{
+    if(channelKey != nil || clientChannelKey != nil)
+    {
+        [ALChannelClientService updateChannel:channelKey orClientChannelKey:clientChannelKey andNewName:newName andImageURL:imageURL metadata:metaData orChildKeys:childKeysList  orChannelUsers:(NSMutableArray *)channelUsers andCompletion:^(NSError *error, ALAPIResponse *response) {
+            
+            [self proccessUpdateChannelResponse:channelKey andNewName:newName andImageURL:imageURL orClientChannelKey:clientChannelKey isUpdatingMetaData:flag metadata:metaData orChildKeys:childKeysList orChannelUsers:channelUsers withResponse:response];
+            completion(error,response);
+        }];
+    }
+}
+
+-(void)proccessUpdateChannelResponse:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData orChildKeys:(NSMutableArray *)childKeysList orChannelUsers:(NSMutableArray *)channelUsers withResponse :(ALAPIResponse *) response{
+    
+    if([response.status isEqualToString:@"success"])
+    {
+        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+        if(clientChannelKey != nil)
+        {
+            ALChannel *alChannel = [channelDBService loadChannelByClientChannelKey:clientChannelKey];
+            [channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag orChannelUsers:channelUsers];
+        }
+        else
+        {
+            ALChannel *alChannel = [channelDBService loadChannelByKey:channelKey];
+            [channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag orChannelUsers:channelUsers];
+        }
+        
+    }
+}
+
 
 -(void)updateChannelMetaData:(NSNumber *)channelKey
           orClientChannelKey:(NSString *)clientChannelKey
@@ -721,7 +759,7 @@
     
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
     NSUInteger count = [channelDBService markConversationAsRead:channelKey];
-    NSLog(@"Found %ld messages for marking as read.", (unsigned long)count);
+    ALSLog(ALLoggerSeverityInfo, @"Found %ld messages for marking as read.", (unsigned long)count);
     
     if(count == 0){
         return;

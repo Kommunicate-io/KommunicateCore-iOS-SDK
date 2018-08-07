@@ -61,7 +61,7 @@
     
     if(![ALUserDefaultsHandler isServerCallDoneForMSGList:self.userId]){
         paramString = [paramString stringByAppendingString:@"&conversationReq=true"];
-        NSLog(@"adding conversationRequired true :theParamString :%@",paramString );
+        ALSLog(ALLoggerSeverityInfo, @"adding conversationRequired true :theParamString :%@",paramString );
     }
     
     if(self.skipRead){

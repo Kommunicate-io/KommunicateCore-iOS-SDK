@@ -205,7 +205,7 @@
     
     self.replyParentView.hidden=NO;
     
-    NSLog(@"processReplyOfChat called");
+    ALSLog(ALLoggerSeverityInfo, @"processReplyOfChat called");
     self.replyUIView = [[MessageReplyView alloc] init];
     
     [self.replyUIView setBackgroundColor:[UIColor clearColor]];
@@ -216,12 +216,12 @@
     if( (self.mBubleImageView.frame.size.width) > replyWidthRequired )
     {
         replyWidthRequired = (self.mBubleImageView.frame.size.width);
-        NSLog(@" replyWidthRequired is less from parent one : %d", replyWidthRequired);
+        ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is less from parent one : %d", replyWidthRequired);
     }
     else
     {
         replyWidthRequired = replyWidthRequired;
-        NSLog(@" replyWidthRequired is grater from parent one : %d", replyWidthRequired);
+        ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is grater from parent one : %d", replyWidthRequired);
         
     }
     

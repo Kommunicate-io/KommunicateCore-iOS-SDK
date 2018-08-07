@@ -351,7 +351,7 @@
         if (alMessage.inProgress == YES)
         {
             self.progresLabel.alpha = 1;
-            NSLog(@"calling you progress label....");
+            ALSLog(ALLoggerSeverityInfo, @"calling you progress label....");
         }
         
         else if(!alMessage.imageFilePath && alMessage.fileMeta.blobKey)
@@ -373,7 +373,7 @@
         NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.imageFilePath];
         NSURL * soundFileURL = [NSURL fileURLWithPath:filePath];
-        NSLog(@"SOUND_URL :: %@",[soundFileURL path]);
+        ALSLog(ALLoggerSeverityInfo, @"SOUND_URL :: %@",[soundFileURL path]);
         [self.playPauseStop setHidden:NO];
     }
 
@@ -473,14 +473,14 @@
     [self.delegate deleteMessageFromView:self.mMessage];
     [ALMessageService deleteMessage:self.mMessage.key andContactId:self.mMessage.contactIds withCompletion:^(NSString *string, NSError *error) {
         
-        NSLog(@"DELETE MESSAGE ERROR :: %@", error.description);
+        ALSLog(ALLoggerSeverityError, @"DELETE MESSAGE ERROR :: %@", error.description);
     }];
 }
 
 
 -(void) messageForward:(id)sender
 {
-    NSLog(@"Message forward option is pressed");
+    ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processForwardMessage:self.mMessage];
     
 }
@@ -607,7 +607,7 @@
     [self setNeedsDisplay];
     self.progresLabel.startDegree = 0;
     self.progresLabel.endDegree = metaInfo.progressValue;
-     NSLog(@"##observer is called....%f",self.progresLabel.endDegree);
+     ALSLog(ALLoggerSeverityInfo, @"##observer is called....%f",self.progresLabel.endDegree);
 }
 
 -(void) hidePlayButtonOnUploading
@@ -648,7 +648,7 @@
 
 -(void) messageReply:(id)sender
 {
-    NSLog(@"Message forward option is pressed");
+    ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processMessageReply:self.mMessage];
     
 }

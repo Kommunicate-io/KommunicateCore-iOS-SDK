@@ -1198,6 +1198,15 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++(NSArray *) metadataKeysToHideMessages
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:HIDE_MESSAGES_WITH_METADATA_KEYS];
+}
 
++(void) hideMessagesWithMetadataKeys:(NSArray *)keys
+{
+    [[NSUserDefaults standardUserDefaults] setObject:keys forKey:HIDE_MESSAGES_WITH_METADATA_KEYS];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 @end

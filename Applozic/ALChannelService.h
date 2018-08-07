@@ -172,4 +172,11 @@
  and turn off the notifications for them.
  */
 - (NSDictionary *)metadataToHideActionMessagesAndTurnOffNotifications;
+
+-(void)leaveChannelWithChannelKey:(NSNumber *)channelKey andUserId:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey
+                   withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+
+-(void)updateChannelWithChannelKey:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
+                isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData orChildKeys:(NSMutableArray *)childKeysList orChannelUsers:(NSMutableArray *)channelUsers withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+
 @end

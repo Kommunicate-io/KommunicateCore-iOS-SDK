@@ -27,7 +27,7 @@
         
         if(error)
         {
-            NSLog(@"REACH_SEND_ERROR : %@",error);
+            ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
             return;
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:almessage];
@@ -45,7 +45,7 @@
         
         if(error)
         {
-            NSLog(@"REACH_SEND_ERROR : %@",error);
+            ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
             return;
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:almessage];
@@ -181,7 +181,7 @@ andWithStatusDelegate:(id)statusDelegate
             
             if(error)
             {
-                NSLog(@"REACH_SEND_ERROR : %@",error);
+                ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
                 [self.messageServiceDelegate uploadDownloadFailed:almessage];
                 return;
             }else{
@@ -217,7 +217,7 @@ andWithStatusDelegate:(id)statusDelegate
     
     if ([connection.connectionType isEqualToString:@"Image Posting"])
     {
-        NSLog(@" file posting done");
+        ALSLog(ALLoggerSeverityInfo, @" file posting done");
         return;
     }
     [self.messageServiceDelegate updateBytesDownloaded:connection.mData.length];
@@ -228,7 +228,7 @@ andWithStatusDelegate:(id)statusDelegate
 totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     //upload percentage
-    NSLog(@"didSendBodyData..upload is in process...");
+    ALSLog(ALLoggerSeverityInfo, @"didSendBodyData..upload is in process...");
     [self.messageServiceDelegate updateBytesUploaded:totalBytesWritten];
 }
 

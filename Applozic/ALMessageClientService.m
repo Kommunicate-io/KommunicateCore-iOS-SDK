@@ -41,14 +41,14 @@
 
 -(void) updateDeliveryReport: (NSString *) key
 {
-    NSLog(@"updating delivery report for: %@", key);
+    ALSLog(ALLoggerSeverityInfo, @"updating delivery report for: %@", key);
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/delivered",KBASE_URL];
     NSString *theParamString=[NSString stringWithFormat:@"userId=%@&key=%@",[[ALUserDefaultsHandler getUserId] urlEncodeUsingNSUTF8StringEncoding],key];
     
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"DEILVERY_REPORT" WithCompletionHandler:^(id theJson, NSError *theError) {
-        NSLog(@"server response received for delivery report %@", theJson);
+        ALSLog(ALLoggerSeverityInfo, @"server response received for delivery report %@", theJson);
         
         if (theError) {
             
@@ -76,7 +76,7 @@
                      return;
                  }
                  NSString * imageDownloadURL = (NSString *)theJson;
-                 NSLog(@"RESPONSE_IMG_URL :: %@",imageDownloadURL);
+                 ALSLog(ALLoggerSeverityInfo, @"RESPONSE_IMG_URL :: %@",imageDownloadURL);
                  completion(imageDownloadURL, nil);
                  
              }];
@@ -147,7 +147,7 @@
                     return;
                 }
                 NSString * imageDownloadURL = (NSString *)theJson;
-                NSLog(@"RESPONSE_IMG_URL :: %@",imageDownloadURL);
+                ALSLog(ALLoggerSeverityInfo, @"RESPONSE_IMG_URL :: %@",imageDownloadURL);
                 completion(imageDownloadURL, nil);
                 
             }];
@@ -208,7 +208,7 @@
 -(void) getLatestMessageGroupByContact:(NSUInteger)mainPageSize startTime:(NSNumber *)startTime
                         withCompletion:(void(^)(ALMessageList * alMessageList, NSError * error)) completion
 {
-    NSLog(@"\nGet Latest Messages \t State:- User Login ");
+    ALSLog(ALLoggerSeverityInfo, @"\nGet Latest Messages \t State:- User Login ");
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
     
@@ -239,7 +239,7 @@
         
         completion(messageListResponse, nil);
         
-        NSLog(@"message list response THE JSON %@",theJson);
+        ALSLog(ALLoggerSeverityInfo, @"message list response THE JSON %@",theJson);
         
         ALChannelService *channelService = [[ALChannelService alloc] init];
         [channelService callForChannelServiceForDBInsertion:theJson];
@@ -254,7 +254,7 @@
 
 -(void) getMessagesListGroupByContactswithCompletion:(void(^)(NSMutableArray * messages, NSError * error)) completion
 {
-    NSLog(@"\nGet Latest Messages \t State:- User Opens Message List View");
+    ALSLog(ALLoggerSeverityInfo, @"\nGet Latest Messages \t State:- User Opens Message List View");
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
     
     NSString * theParamString = [NSString stringWithFormat:@"startIndex=%@&deletedGroupIncluded=%@",@"0",@(YES)];
@@ -285,7 +285,7 @@
 
 -(void)getMessageListForUser:(MessageListRequest *)messageListRequest withOpenGroup:(BOOL )isOpenGroup withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
 {
-    NSLog(@"CHATVC_OPENS_1st TIME_CALL");
+    ALSLog(ALLoggerSeverityInfo, @"CHATVC_OPENS_1st TIME_CALL");
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:messageListRequest.getParamString];
     
@@ -293,7 +293,7 @@
         
         if (theError)
         {
-            NSLog(@"MSG_LIST ERROR :: %@",theError.description);
+            ALSLog(ALLoggerSeverityError, @"MSG_LIST ERROR :: %@",theError.description);
             completion(nil, theError, nil);
             return;
         }
@@ -325,7 +325,7 @@
         [channelService callForChannelServiceForDBInsertion:theJson];
         
         completion(messageListResponse.messageList, nil, messageListResponse.userDetailsList);
-        NSLog(@"MSG_LIST RESPONSE :: %@",(NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"MSG_LIST RESPONSE :: %@",(NSString *)theJson);
         
     }];
 }
@@ -365,7 +365,7 @@
             }
 
             NSString *imagePostingURL = (NSString *)theJson;
-            NSLog(@"RESPONSE_IMG_URL :: %@",imagePostingURL);
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_IMG_URL :: %@",imagePostingURL);
             completion(imagePostingURL, nil);
             
         }];
@@ -378,7 +378,7 @@
         
     NSString * lastSyncTime = [NSString stringWithFormat:@"%@", [ALUserDefaultsHandler getLastSyncTime]];
     
-    NSLog(@"LAST SYNC TIME IN CALL :  %@", lastSyncTime);
+    ALSLog(ALLoggerSeverityInfo, @"LAST SYNC TIME IN CALL :  %@", lastSyncTime);
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/sync",KBASE_URL];
     NSString * theParamString = [NSString stringWithFormat:@"lastSyncTime=%@",lastSyncTime];
     
@@ -395,7 +395,7 @@
         
         [ALUserDefaultsHandler setMsgSyncRequired:NO];
         ALSyncMessageFeed *syncResponse =  [[ALSyncMessageFeed alloc] initWithJSONString:theJson];
-        NSLog(@"LATEST_MESSAGE_JSON: %@", (NSString *)theJson);
+        ALSLog(ALLoggerSeverityInfo, @"LATEST_MESSAGE_JSON: %@", (NSString *)theJson);
         completion(syncResponse,nil);
     }];
         
@@ -419,7 +419,7 @@
         else{
             completion((NSString *)theJson,nil);
         }
-      NSLog(@"Response DELETE_MESSAGE: %@", (NSString *)theJson);
+      ALSLog(ALLoggerSeverityInfo, @"Response DELETE_MESSAGE: %@", (NSString *)theJson);
     }];
 }
 
@@ -445,8 +445,8 @@
             ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
         }
-        NSLog(@"Response DELETE_MESSAGE_THREAD: %@", (NSString *)theJson);
-        NSLog(@"ERROR DELETE_MESSAGE_THREAD: %@", theError.description);
+        ALSLog(ALLoggerSeverityInfo, @"Response DELETE_MESSAGE_THREAD: %@", (NSString *)theJson);
+        ALSLog(ALLoggerSeverityError, @"ERROR DELETE_MESSAGE_THREAD: %@", theError.description);
         completion((NSString *)theJson,theError);
     }];
 }
@@ -480,11 +480,11 @@
         
         if (theError)
         {
-            NSLog(@"ERROR IN MESSAGE INFORMATION API RESPONSE : %@", theError);
+            ALSLog(ALLoggerSeverityError, @"ERROR IN MESSAGE INFORMATION API RESPONSE : %@", theError);
         }
         else
         {
-            NSLog(@"RESPONSE MESSSAGE_INFORMATION API JSON : %@", (NSString *)theJson);
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE MESSSAGE_INFORMATION API JSON : %@", (NSString *)theJson);
             ALMessageInfoResponse *msgInfoObject = [[ALMessageInfoResponse alloc] initWithJSONString:(NSString *)theJson];
             completion(msgInfoObject, theError);
         }
