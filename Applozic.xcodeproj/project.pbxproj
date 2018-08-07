@@ -339,10 +339,10 @@
 		8B0DD64D20CE5CF2002362E9 /* ALApplicationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B0DD64B20CE5CF2002362E9 /* ALApplicationInfo.m */; };
 		8B1635C02119C4B10008191A /* ALMessgaeBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B1635BB2119C4B00008191A /* ALMessgaeBuilder.m */; };
 		8B1635C12119C4B10008191A /* ApplozicClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B1635BC2119C4B10008191A /* ApplozicClient.m */; };
-		8B1635C22119C4B10008191A /* ALRealTimeUpdate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635BD2119C4B10008191A /* ALRealTimeUpdate.h */; };
-		8B1635C32119C4B10008191A /* ALMessgaeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635BE2119C4B10008191A /* ALMessgaeBuilder.h */; };
-		8B1635C42119C4B10008191A /* ApplozicClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635BF2119C4B10008191A /* ApplozicClient.h */; };
-		8B1635C72119C4CB0008191A /* ALLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635C52119C4CB0008191A /* ALLogger.h */; };
+		8B1635C22119C4B10008191A /* ALRealTimeUpdate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635BD2119C4B10008191A /* ALRealTimeUpdate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8B1635C32119C4B10008191A /* ALMessgaeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635BE2119C4B10008191A /* ALMessgaeBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8B1635C42119C4B10008191A /* ApplozicClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635BF2119C4B10008191A /* ApplozicClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8B1635C72119C4CB0008191A /* ALLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635C52119C4CB0008191A /* ALLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8B1635C82119C4CB0008191A /* ALLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B1635C62119C4CB0008191A /* ALLogger.m */; };
 		8B1635CD2119C6BF0008191A /* ALChannelOfTwoMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B1635CB2119C6BF0008191A /* ALChannelOfTwoMetaData.m */; };
 		8B1635CE2119C6BF0008191A /* ALChannelOfTwoMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635CC2119C6BF0008191A /* ALChannelOfTwoMetaData.h */; };
@@ -1486,6 +1486,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B1635C72119C4CB0008191A /* ALLogger.h in Headers */,
+				8B1635C42119C4B10008191A /* ApplozicClient.h in Headers */,
+				8B1635C32119C4B10008191A /* ALMessgaeBuilder.h in Headers */,
 				C75576EE1E27A5B300358D9B /* ALMuteRequest.h in Headers */,
 				29C849A21CC932050042643C /* NSString+Encode.h in Headers */,
 				6D0877081D01B0F900DB491A /* UIView+Toast.h in Headers */,
@@ -1544,7 +1547,6 @@
 				6D77571F1D5B838A0025560B /* MessageListRequest.h in Headers */,
 				6D7756D11D5B82000025560B /* ALContactsResponse.h in Headers */,
 				6D7757231D5B83AA0025560B /* ALHyperLabel.h in Headers */,
-				8B1635C32119C4B10008191A /* ALMessgaeBuilder.h in Headers */,
 				6D7757271D5B841B0025560B /* ALMessageInfoViewController.h in Headers */,
 				6D7756DB1D5B82000025560B /* ALUserBlockResponse.h in Headers */,
 				6D7756E91D5B823B0025560B /* ALMQTTConversationService.h in Headers */,
@@ -1566,7 +1568,6 @@
 				6D6DF15C1BC5364C00EBA00F /* ALNewContactsViewController.h in Headers */,
 				6D6DF0811BC535C800EBA00F /* Applozic.h in Headers */,
 				6D6DF14A1BC5364C00EBA00F /* ALResponseHandler.h in Headers */,
-				8B1635C72119C4CB0008191A /* ALLogger.h in Headers */,
 				6D6DF1441BC5364C00EBA00F /* ALImagePickerHandler.h in Headers */,
 				6D6DF1721BC5364C00EBA00F /* ALFileMetaInfo.h in Headers */,
 				6D6DF1661BC5364C00EBA00F /* ALNotificationView.h in Headers */,
@@ -1591,6 +1592,7 @@
 				4612E9041E13882D0022DB23 /* MQTTMessage.h in Headers */,
 				4612E9061E13882D0022DB23 /* MQTTPersistence.h in Headers */,
 				4612E9151E13882D0022DB23 /* MQTTSSLSecurityPolicyTransport.h in Headers */,
+				8B1635C22119C4B10008191A /* ALRealTimeUpdate.h in Headers */,
 				4612E9011E13882D0022DB23 /* MQTTInMemoryPersistence.h in Headers */,
 				4612E9071E13882D0022DB23 /* MQTTSession.h in Headers */,
 				4612E9031E13882D0022DB23 /* MQTTLog.h in Headers */,
@@ -1626,7 +1628,6 @@
 				6D6DF1841BC5364C00EBA00F /* DB_Message.h in Headers */,
 				463E49201DB7B45D00CDFFE6 /* ALVCardClass.h in Headers */,
 				C70273CB1DED445E00BA2C8A /* ALUserDetailListFeed.h in Headers */,
-				8B1635C42119C4B10008191A /* ApplozicClient.h in Headers */,
 				C76366081DF82B500087221C /* ALNavigationController.h in Headers */,
 				465EBAF11E9624C100E7B79B /* ALSubViewController.h in Headers */,
 				8B0DD64C20CE5CF2002362E9 /* ALApplicationInfo.h in Headers */,
@@ -1649,7 +1650,6 @@
 				6D6DF1B61BC5364C00EBA00F /* SDImageCache.h in Headers */,
 				6D6DF1C91BC5364C00EBA00F /* UIImage+MultiFormat.h in Headers */,
 				6D6DF1C51BC5364C00EBA00F /* UIButton+WebCache.h in Headers */,
-				8B1635C22119C4B10008191A /* ALRealTimeUpdate.h in Headers */,
 				6D6DF1C71BC5364C00EBA00F /* UIImage+GIF.h in Headers */,
 				6D6DF1B41BC5364C00EBA00F /* NSData+ImageContentType.h in Headers */,
 				6D6DF1CB1BC5364C00EBA00F /* UIImage+WebP.h in Headers */,
