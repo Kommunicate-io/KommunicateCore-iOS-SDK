@@ -3701,8 +3701,8 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     {
         NSString *str = NSLocalizedStringWithDefaultValue(@"lastSeenYesterday", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Last seen yesterday at %@", @"");
         [format setDateFormat:@"hh:mm a"];
-
-        str = [str stringByAppendingString:[format stringFromDate:date]];
+        
+        str = [NSString stringWithFormat:str,[format stringFromDate:date]];
         if([str hasPrefix:@"0"])
         {
             str = [str substringFromIndex:[@"0" length]];
