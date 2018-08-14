@@ -6,12 +6,16 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "ALMultipleAttachmentView.h"
 #import "AlMultipleAttachmentCell.h"
 #import "ALUtilityClass.h"
 #import "ALChatViewController.h"
 #import "ALImagePickerHandler.h"
 #import "ALImagePickerController.h"
+#import "UIImage+animatedGIF.h"
+#import "ALAttachmentPickerData.h"
 
 #define NAVIGATION_TEXT_SIZE 20
 
@@ -107,17 +111,46 @@ static NSString * const reuseIdentifier = @"collectionCell";
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    UIImage * image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    UIImage * globalThumbnail = [UIImage new];
-    
-    ALMultipleAttachmentView * object = [ALMultipleAttachmentView new];
+    __block ALAttachmentPickerData * object = [ALAttachmentPickerData new];
     object.classVideoPath = nil;
     object.classImage = nil;
+    object.dataGIF = nil;
+    object.attachmentType = nil;
+    
+    __block UIImage * image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    __block UIImage * globalThumbnail = [UIImage new];
     
     if(image)
     {
-        object.classImage = [ALUtilityClass getNormalizedImage:image];
+        object = [self saveAttachmentData:ALAttachmentTypeImage withImage:[ALUtilityClass getNormalizedImage:image] withGif:nil withVideo:nil];
         globalThumbnail = image;
+    }
+    
+    NSURL * refUrl = [info objectForKey:UIImagePickerControllerReferenceURL];
+    if (refUrl) {
+        PHAsset * asset = [[PHAsset fetchAssetsWithALAssetURLs:@[refUrl] options:nil] lastObject];
+        if (asset) {
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            options.synchronous = YES;
+            options.networkAccessAllowed = NO;
+            options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+            [[PHImageManager defaultManager] requestImageDataForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+                NSNumber * isError = [info objectForKey:PHImageErrorKey];
+                NSNumber * isCloud = [info objectForKey:PHImageResultIsInCloudKey];
+                if ([isError boolValue] || [isCloud boolValue] || ! imageData) {
+                    // fail
+                    ALSLog(ALLoggerSeverityInfo, @"Couldn't find gif data");
+                } else {
+                    // success, data is in imageData
+                    CFStringRef uti = (__bridge CFStringRef)dataUTI;
+                    if(UTTypeConformsTo(uti, kUTTypeGIF)){
+                        image = [UIImage animatedImageWithAnimatedGIFData:imageData];
+                        globalThumbnail = image;
+                        object = [self saveAttachmentData:ALAttachmentTypeGif withImage:image withGif:imageData withVideo:nil];
+                    }
+                }
+            }];
+        }
     }
     
     NSString *mediaType = info[UIImagePickerControllerMediaType];
@@ -125,8 +158,8 @@ static NSString * const reuseIdentifier = @"collectionCell";
     if(isMovie)
     {
         NSURL *videoURL = info[UIImagePickerControllerMediaURL];
-        object.classVideoPath = [videoURL path];
         globalThumbnail = [ALUtilityClass subProcessThumbnail:videoURL];
+        object = [self saveAttachmentData:ALAttachmentTypeVideo withImage:nil withGif:nil withVideo:[videoURL path]];
     }
     
     [self.imageArray insertObject:globalThumbnail atIndex:0];
@@ -134,6 +167,17 @@ static NSString * const reuseIdentifier = @"collectionCell";
     
     [picker dismissViewControllerAnimated:YES completion:nil];
     [self.collectionView reloadData];
+}
+
+-(ALAttachmentPickerData *) saveAttachmentData:(ALAttachmentType)type
+                 withImage:(UIImage *) image withGif:(NSData *) gif withVideo:(NSString *) video
+{
+    ALAttachmentPickerData * updateAttachment = [ALAttachmentPickerData new];
+    updateAttachment.attachmentType = type;
+    updateAttachment.classImage = image;
+    updateAttachment.dataGIF = gif;
+    updateAttachment.classVideoPath = video;
+    return updateAttachment;
 }
 
 //====================================================================================================================================
@@ -185,7 +229,6 @@ static NSString * const reuseIdentifier = @"collectionCell";
 {
     if(!self.mediaFileArray.count)
     {
-        
         [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"selectAtleastAttachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Select at least one attachment" , @"")andTitle: NSLocalizedStringWithDefaultValue(@"attachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Attachment" , @"")];
         return;
     }
@@ -195,9 +238,18 @@ static NSString * const reuseIdentifier = @"collectionCell";
 
 -(void)pickImageFromGallery
 {
-    self.mImagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    self.mImagePicker.mediaTypes = @[(NSString *)kUTTypeImage, (NSString *)kUTTypeMovie];
-    [self presentViewController:self.mImagePicker animated:YES completion:nil];
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        if (status == PHAuthorizationStatusAuthorized)
+        {
+            self.mImagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            self.mImagePicker.mediaTypes = @[(NSString *)kUTTypeImage, (NSString *)kUTTypeMovie];
+            [self presentViewController:self.mImagePicker animated:YES completion:nil];
+        }
+        else
+        {
+            [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Photos Permission", @"") andViewController:self];
+        }
+    }];
 }
 
 //====================================================================================================================================

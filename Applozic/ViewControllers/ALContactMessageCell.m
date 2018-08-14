@@ -30,7 +30,7 @@
 #define BUBBLE_PADDING_X 13
 #define BUBBLE_PADDING_X_OUTBOX 60
 #define BUBBLE_PADDING_WIDTH 120
-#define BUBBLE_PADDING_HEIGHT 160
+#define BUBBLE_PADDING_HEIGHT 190
 #define BUBBLE_PADDING_HEIGHT_OUTBOX 180
 
 #define DATE_PADDING_X 20
@@ -64,6 +64,8 @@
 #define CHANNEL_PADDING_WIDTH 5
 #define CHANNEL_HEIGHT 20
 #define CHANNEL_PADDING_HEIGHT 20
+#define AL_CONTACT_PADDING_Y 20
+
 
 
 
@@ -204,6 +206,7 @@
 
         CGFloat imageViewY =  self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y;
 
+        CGFloat contactProfileViewY = 0.0;
         [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,
                                                   viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
         if(alMessage.groupId)
@@ -217,9 +220,11 @@
 
             requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;
             imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;
+            
+            contactProfileViewY =  self.mChannelMemberName.frame.origin.x-AL_CONTACT_PADDING_Y;
+
         }
-
-
+        
         if(alMessage.isAReplyMessage)
         {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
@@ -230,24 +235,27 @@
         }
 
 
-        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,
-                                                  viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
-
+        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
+        
+        if(!alMessage.groupId){
+            contactProfileViewY =  self.mUserProfileImageView.frame.origin.x + 20;
+        }
+        
         [self.contactProfileImage setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + CNT_PROFILE_X,
-                                                      self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y,
+                                                     contactProfileViewY,
                                                       CNT_PROFILE_WIDTH, CNT_PROFILE_HEIGHT)];
-
+        
         CGFloat widthName = self.mBubleImageView.frame.size.width - (self.contactProfileImage.frame.size.width + 25);
 
         [self.contactPerson setFrame:CGRectMake(self.contactProfileImage.frame.origin.x + self.contactProfileImage.frame.size.width + CNT_PERSON_X,
-                                                self.contactProfileImage.frame.origin.y, widthName, CNT_PERSON_HEIGHT)];
+                                                contactProfileViewY, widthName, CNT_PERSON_HEIGHT)];
 
         [self.userContact setFrame:CGRectMake(self.contactPerson.frame.origin.x,
-                                              self.contactPerson.frame.origin.y + self.contactPerson.frame.size.height + USER_CNT_Y,
+                                              contactProfileViewY + self.contactPerson.frame.size.height + USER_CNT_Y,
                                               widthName, USER_CNT_HEIGHT)];
 
         [self.emailId setFrame:CGRectMake(self.userContact.frame.origin.x,
-                                          self.userContact.frame.origin.y + self.userContact.frame.size.height + EMAIL_Y,
+                                          contactProfileViewY + self.userContact.frame.size.height + EMAIL_Y,
                                           widthName, EMAIL_HEIGHT)];
 
         [self.addContactButton setFrame:CGRectMake(self.contactProfileImage.frame.origin.x,

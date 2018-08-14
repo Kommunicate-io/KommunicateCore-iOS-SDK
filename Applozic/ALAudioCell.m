@@ -62,6 +62,8 @@
 #define PROGRESS_HEIGHT 30
 #define MEDIATRACKLENGTH_HEIGHT 20
 #define MEDIATRACKLENGTH_WIDTH 80
+#define AL_MEDIA_TRACK_PROGRESS_PADDING_Y 30
+
 
 @interface ALAudioCell()
 
@@ -80,13 +82,7 @@
     if(self)
     {
         
-        self.mediaName = [[UILabel alloc] init];
-        [self.mediaName setTextColor:[UIColor blackColor]];
-        [self.mediaName setBackgroundColor:[UIColor clearColor]];
-        [self.mediaName setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:DATE_LABEL_SIZE]];
-        [self.contentView addSubview:self.mediaName];
-        [self.mediaName setNumberOfLines:2];
-        [self.contentView sizeToFit];
+          [self.contentView sizeToFit];
         
         
         self.playPauseStop = [[UIButton alloc] init];
@@ -107,7 +103,6 @@
         
         if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
             self.transform = CGAffineTransformMakeScale(-1.0, 1.0);
-            self.mediaName.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.playPauseStop.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mediaTrackProgress.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mediaTrackLength.transform = CGAffineTransformMakeScale(-1.0, 1.0);
@@ -136,7 +131,6 @@
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[alMessage.createdAtTime doubleValue]/1000]];
     NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
-    [self.mediaName setText:alMessage.fileMeta.name];
     self.mediaTrackLength.text = [self getAudioLength:alMessage.imageFilePath];
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
     
@@ -231,11 +225,6 @@
                                                 paypauseBUttonY,
                                                 BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
         
-        
-        CGFloat nameWidth = self.mBubleImageView.frame.size.width - self.playPauseStop.frame.size.width - 20;
-        CGFloat nameX = self.playPauseStop.frame.origin.x + self.playPauseStop.frame.size.width + 10;
-        [self.mediaName setFrame:CGRectMake(nameX, self.playPauseStop.frame.origin.y, nameWidth, MEDIA_NAME_HEIGHT)];
-        
         [self.mDowloadRetryButton setFrame:CGRectMake(self.playPauseStop.frame.origin.x ,
                                                       self.playPauseStop.frame.origin.y,
                                                       DOWNLOAD_RETRY_WIDTH, DOWNLOAD_RETRY_HEIGHT)];
@@ -245,7 +234,7 @@
         CGFloat progressBarWidth = self.mBubleImageView.frame.size.width - self.playPauseStop.frame.size.width - 30;
         
         CGFloat progressX = self.playPauseStop.frame.origin.x + self.playPauseStop.frame.size.width + 10;
-        [self.mediaTrackProgress setFrame:CGRectMake(progressX, self.mediaName.frame.origin.y + self.mediaName.frame.size.height,
+        [self.mediaTrackProgress setFrame:CGRectMake(progressX, self.playPauseStop.frame.origin.y+AL_MEDIA_TRACK_PROGRESS_PADDING_Y,
                                                      progressBarWidth, PROGRESS_HEIGHT)];
         
         [self.mediaTrackLength setFrame:CGRectMake(self.mediaTrackProgress.frame.origin.x,
@@ -312,7 +301,7 @@
             
         }
                 [self.mDowloadRetryButton setFrame:CGRectMake(self.playPauseStop.frame.origin.x ,
-                                                      self.playPauseStop.frame.origin.y,
+                                                     self.playPauseStop.frame.origin.y,
                                                       DOWNLOAD_RETRY_WIDTH, DOWNLOAD_RETRY_WIDTH)];
         
         [self setupProgressValueX: (self.playPauseStop.frame.origin.x) andY: (self.playPauseStop.frame.origin.y)];
@@ -323,13 +312,8 @@
         
         CGFloat progressX = self.playPauseStop.frame.origin.x + self.playPauseStop.frame.size.width + 10;
         
-        CGFloat nameWidth = self.mBubleImageView.frame.size.width - self.playPauseStop.frame.size.width - 20;
-        CGFloat nameX = self.playPauseStop.frame.origin.x + self.playPauseStop.frame.size.width + 10;
-        
-        [self.mediaName setFrame:CGRectMake(nameX, self.playPauseStop.frame.origin.y, nameWidth, MEDIA_NAME_HEIGHT)];
-        
         [self.mediaTrackProgress setFrame:CGRectMake(progressX,
-                                                     self.mediaName.frame.origin.y + self.mediaName.frame.size.height
+                                                     self.playPauseStop.frame.origin.y+AL_MEDIA_TRACK_PROGRESS_PADDING_Y
                                                      ,progressBarWidth, PROGRESS_HEIGHT)];
         
         [self.mediaTrackLength setFrame:CGRectMake(self.mediaTrackProgress.frame.origin.x,
@@ -376,8 +360,6 @@
         ALSLog(ALLoggerSeverityInfo, @"SOUND_URL :: %@",[soundFileURL path]);
         [self.playPauseStop setHidden:NO];
     }
-
-    [self.mediaName sizeToFit];
     
     self.playPauseStop.layer.cornerRadius = self.playPauseStop.frame.size.width/2;
     self.playPauseStop.layer.masksToBounds = YES;

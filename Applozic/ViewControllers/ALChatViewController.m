@@ -5,7 +5,6 @@
 //
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
-
 #import "UIView+Toast.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "ALChatViewController.h"
@@ -68,6 +67,7 @@
 #import "ALAudioVideoBaseVC.h"
 #import "ALVOIPNotificationHandler.h"
 #import "ALChannelService.h"
+#import "ALAttachmentPickerData.h"
 #import <Applozic/Applozic-Swift.h>
 
 #define MQTT_MAX_RETRY 3
@@ -2683,22 +2683,29 @@
 
 -(void)multipleAttachmentProcess:(NSMutableArray *)attachmentPathArray andText:(NSString *)messageText
 {
-    for(ALMultipleAttachmentView * attachment in attachmentPathArray)
+    for(ALAttachmentPickerData * attachment in attachmentPathArray)
     {
         NSString *filePath = @"";
-        if(attachment.classImage)
-        {
-            filePath = [ALImagePickerHandler saveImageToDocDirectory:attachment.classImage];
-            [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
-        }
-        else
-        {
-            NSURL * videoURL = [NSURL fileURLWithPath:attachment.classVideoPath];
-            [ALImagePickerHandler saveVideoToDocDirectory:videoURL handler:^(NSString * filePath){
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
-                });
-             }];
+        NSURL * videoURL;
+        switch (attachment.attachmentType) {
+            case ALAttachmentTypeGif:
+                filePath = [ALImagePickerHandler saveGifToDocDirectory:attachment.classImage withGIFData :attachment.dataGIF];
+                [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+                break;
+                
+            case ALAttachmentTypeImage:
+                filePath = [ALImagePickerHandler saveImageToDocDirectory:attachment.classImage];
+                [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+                break;
+                
+            case ALAttachmentTypeVideo:
+                videoURL = [NSURL fileURLWithPath:attachment.classVideoPath];
+                [ALImagePickerHandler saveVideoToDocDirectory:videoURL handler:^(NSString * filePath){
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+                    });
+                }];
+                break;
         }
     }
 }
@@ -3637,11 +3644,12 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(NSString *)formatDateTime:(ALUserDetail*)alUserDetail andValue:(double)value
 {
+    
     NSDate *current = [[NSDate alloc] init];
     NSDate *date  = [[NSDate alloc] initWithTimeIntervalSince1970:value/1000];
-
+    
     NSTimeInterval difference = [current timeIntervalSinceDate:date];
-
+    
     NSDate *today = [NSDate date];
     NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
@@ -3649,29 +3657,30 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     NSString *todaydate = [format stringFromDate:current];
     NSString *yesterdaydate =[format stringFromDate:yesterday];
     NSString *serverdate =[format stringFromDate:date];
-
+    
+    
     if([serverdate compare:todaydate] == NSOrderedSame)
     {
-
+        
         NSString *str = NSLocalizedStringWithDefaultValue(@"lastSeenLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Last seen ", @"");
-
+        
         double minutes = 2 * 60.00;
         if(alUserDetail.connected)
         {
             [self.label setText:NSLocalizedStringWithDefaultValue(@"onlineLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Online", @"")];
-
+            
         }
         else if(difference < minutes)
         {
             [self.label setText:NSLocalizedStringWithDefaultValue(@"lastSeenJustNowLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Last seen Just Now ", @"")];
-
+            
         }
         else
         {
             NSString *theTime;
             int hours =  difference / 3600;
             int minutes = (difference - hours * 3600 ) / 60;
-
+            
             if(hours > 0)
             {
                 theTime = [NSString stringWithFormat:@"%.2d:%.2d", hours, minutes];
@@ -3679,7 +3688,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 {
                     theTime = [theTime substringFromIndex:[@"0" length]];
                 }
-
+                
                 str = [str stringByAppendingString: [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"hrsAgo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"%@ hrs ago", @""), theTime]];
             }
             else
@@ -3689,16 +3698,17 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 {
                     theTime = [theTime substringFromIndex:[@"0" length]];
                 }
-
+                
                 str = [str stringByAppendingString: [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"mins", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle],@"%@ mins ago", @""), theTime]];
-
+                
             }
             [self.label setText:str];
         }
-
+        
     }
     else if ([serverdate compare:yesterdaydate] == NSOrderedSame)
     {
+        
         NSString *str = NSLocalizedStringWithDefaultValue(@"lastSeenYesterday", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Last seen yesterday at %@", @"");
         [format setDateFormat:@"hh:mm a"];
         
@@ -3713,11 +3723,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     {
         [format setDateFormat:@"EE, MMM dd, yyy"];
         NSString *str = NSLocalizedStringWithDefaultValue(@"lastSeenLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Last seen ", @"");
-
+        
         str = [str stringByAppendingString:[format stringFromDate:date]];
         [self.label setText:str];
     }
-
+    
     return self.label.text;
 }
 -(NSMutableArray *)getLastSeenForGroupDetails
