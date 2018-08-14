@@ -127,11 +127,12 @@
         
         if( alMessage.groupId )
         {
+            [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
             [self.mChannelMemberName setText:receiverName];
             [self.mChannelMemberName setHidden:NO];
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + 5,
                                                        self.mBubleImageView.frame.origin.y + 2,
-                                                       self.mBubleImageView.frame.size.width + 30, 20);
+                                                       self.mBubleImageView.frame.size.width -5, 20);
             
             CELL_HEIGHT = CELL_HEIGHT + self.mChannelMemberName.frame.size.height ;
             imageViewY = imageViewY + self.mChannelMemberName.frame.size.height;

@@ -346,6 +346,10 @@
 		8B1635C82119C4CB0008191A /* ALLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B1635C62119C4CB0008191A /* ALLogger.m */; };
 		8B1635CD2119C6BF0008191A /* ALChannelOfTwoMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B1635CB2119C6BF0008191A /* ALChannelOfTwoMetaData.m */; };
 		8B1635CE2119C6BF0008191A /* ALChannelOfTwoMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1635CC2119C6BF0008191A /* ALChannelOfTwoMetaData.h */; };
+		8B170C2621232545003A14B3 /* ALAttachmentPickerData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B170C2221232544003A14B3 /* ALAttachmentPickerData.h */; };
+		8B170C2721232545003A14B3 /* UIImage+animatedGIF.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B170C2321232544003A14B3 /* UIImage+animatedGIF.h */; };
+		8B170C2821232545003A14B3 /* ALAttachmentPickerData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B170C2421232545003A14B3 /* ALAttachmentPickerData.m */; };
+		8B170C2921232545003A14B3 /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B170C2521232545003A14B3 /* UIImage+animatedGIF.m */; };
 		8B22F0D320DE393C00A4AF4A /* ALTemplateMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B22F0CF20DE393A00A4AF4A /* ALTemplateMessageCell.swift */; };
 		8B22F0D420DE393C00A4AF4A /* ALTemplateMessagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B22F0D020DE393B00A4AF4A /* ALTemplateMessagesViewModel.swift */; };
 		8B22F0D520DE393C00A4AF4A /* ALTemplateMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B22F0D120DE393B00A4AF4A /* ALTemplateMessagesView.swift */; };
@@ -722,6 +726,10 @@
 		8B1635C62119C4CB0008191A /* ALLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALLogger.m; path = Applozic/Utilities/ALLogger.m; sourceTree = "<group>"; };
 		8B1635CB2119C6BF0008191A /* ALChannelOfTwoMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALChannelOfTwoMetaData.m; path = Applozic/ALChannelOfTwoMetaData.m; sourceTree = "<group>"; };
 		8B1635CC2119C6BF0008191A /* ALChannelOfTwoMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALChannelOfTwoMetaData.h; path = Applozic/ALChannelOfTwoMetaData.h; sourceTree = "<group>"; };
+		8B170C2221232544003A14B3 /* ALAttachmentPickerData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAttachmentPickerData.h; sourceTree = "<group>"; };
+		8B170C2321232544003A14B3 /* UIImage+animatedGIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+animatedGIF.h"; sourceTree = "<group>"; };
+		8B170C2421232545003A14B3 /* ALAttachmentPickerData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALAttachmentPickerData.m; sourceTree = "<group>"; };
+		8B170C2521232545003A14B3 /* UIImage+animatedGIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+animatedGIF.m"; sourceTree = "<group>"; };
 		8B22F0CF20DE393A00A4AF4A /* ALTemplateMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessageCell.swift; path = Applozic/ALTemplateMessageCell.swift; sourceTree = "<group>"; };
 		8B22F0D020DE393B00A4AF4A /* ALTemplateMessagesViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessagesViewModel.swift; path = Applozic/ALTemplateMessagesViewModel.swift; sourceTree = "<group>"; };
 		8B22F0D120DE393B00A4AF4A /* ALTemplateMessagesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALTemplateMessagesView.swift; path = Applozic/ALTemplateMessagesView.swift; sourceTree = "<group>"; };
@@ -953,6 +961,10 @@
 		6D6DF0A21BC5364C00EBA00F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8B170C2221232544003A14B3 /* ALAttachmentPickerData.h */,
+				8B170C2421232545003A14B3 /* ALAttachmentPickerData.m */,
+				8B170C2321232544003A14B3 /* UIImage+animatedGIF.h */,
+				8B170C2521232545003A14B3 /* UIImage+animatedGIF.m */,
 				6D4FE48D1D7411F70044A7E6 /* NSData+AES.h */,
 				6D4FE48E1D7411F70044A7E6 /* NSData+AES.m */,
 				29CBF2001C0303A700BE6A20 /* ALColorUtility.h */,
@@ -1610,6 +1622,7 @@
 				4612E8F81E13882D0022DB23 /* MQTTCFSocketTransport.h in Headers */,
 				6D7757101D5B83660025560B /* HexColors.h in Headers */,
 				6D7757121D5B83660025560B /* TSBlurView.h in Headers */,
+				8B170C2621232545003A14B3 /* ALAttachmentPickerData.h in Headers */,
 				6D7757171D5B83660025560B /* TSMessageView.h in Headers */,
 				6D7756F91D5B82CA0025560B /* ALLogs.h in Headers */,
 				6D1385741CA9B80D009E6F50 /* ALMultipleAttachmentView.h in Headers */,
@@ -1621,6 +1634,7 @@
 				294637B61C6F16050025ED76 /* ALGroupCreationViewController.h in Headers */,
 				6D6DF1561BC5364C00EBA00F /* ALBaseViewController.h in Headers */,
 				6D6DF1401BC5364C00EBA00F /* ALConnectionQueueHandler.h in Headers */,
+				8B170C2721232545003A14B3 /* UIImage+animatedGIF.h in Headers */,
 				103CC2BB2032EDF200600D16 /* AlChannelResponse.h in Headers */,
 				103CC2BF2032EDF200600D16 /* AlChannelFeedResponse.h in Headers */,
 				103CC2BC2032EDF200600D16 /* AlChannelInfoModel.h in Headers */,
@@ -1808,6 +1822,7 @@
 				6D6DF1811BC5364C00EBA00F /* DB_CONTACT.m in Sources */,
 				6D7756DE1D5B82000025560B /* ALUserClientService.m in Sources */,
 				6D77573E1D5B84E70025560B /* ALAudioCell.m in Sources */,
+				8B170C2821232545003A14B3 /* ALAttachmentPickerData.m in Sources */,
 				6D7756891D5B7FBE0025560B /* ALConversationCreateResponse.m in Sources */,
 				4612E9101E13882D0022DB23 /* MQTTSSLSecurityPolicy.m in Sources */,
 				6D6DF1BF1BC5364C00EBA00F /* SDWebImageDownloaderOperation.m in Sources */,
@@ -1826,6 +1841,7 @@
 				6D81979B1CC55B5700E53EC3 /* ALCollectionReusableView.m in Sources */,
 				6D6DF1D21BC5364C00EBA00F /* UIView+WebCacheOperation.m in Sources */,
 				6D6DF15F1BC5364C00EBA00F /* ALChatCell.m in Sources */,
+				8B170C2921232545003A14B3 /* UIImage+animatedGIF.m in Sources */,
 				C76D31461F0AAFB40087291F /* ALVOIPCell.m in Sources */,
 				6D6DF1611BC5364C00EBA00F /* ALImageCell.m in Sources */,
 				8B22F0D420DE393C00A4AF4A /* ALTemplateMessagesViewModel.swift in Sources */,

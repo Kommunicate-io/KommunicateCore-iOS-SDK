@@ -26,6 +26,15 @@
     return filePath;
 }
 
++(NSString *) saveGifToDocDirectory:(UIImage *)image withGIFData:(NSData *)imageData;
+{
+    NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString * timestamp = [NSString stringWithFormat:@"IMG-%f.gif",[[NSDate date] timeIntervalSince1970] * 1000];
+    NSString * filePath = [docDirPath stringByAppendingPathComponent:timestamp];
+    [imageData writeToFile:filePath atomically:YES];
+    return filePath;
+}
+
 +(void) saveVideoToDocDirectory:(NSURL *)videoURL handler:(void (^)(NSString *))handler
 {
     NSString * videoPath1 = @"";
