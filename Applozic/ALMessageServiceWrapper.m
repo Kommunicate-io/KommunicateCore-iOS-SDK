@@ -23,7 +23,7 @@
     
     ALMessage * almessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
     
-    [ALMessageService sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
         
         if(error)
         {
@@ -41,7 +41,7 @@
     
     almessage.groupId=channelKey;
     
-    [ALMessageService sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
         
         if(error)
         {
@@ -177,7 +177,7 @@ andWithStatusDelegate:(id)statusDelegate
             [message.fileMeta populate:fileInfo];
         }
         ALMessage * almessage =  [ALMessageService processFileUploadSucess:message];
-        [ALMessageService sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
+        [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
             
             if(error)
             {

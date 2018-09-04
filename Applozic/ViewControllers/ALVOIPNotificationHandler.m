@@ -73,7 +73,7 @@
                                                                     andReceiverId:userId
                                                                    andMessageText:msgText];
     
-    [ALMessageService sendMessages:messageWithMetaData withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:messageWithMetaData withCompletion:^(NSString *message, NSError *error) {
         
         ALSLog(ALLoggerSeverityInfo, @"AUDIO/VIDEO MSG_RESPONSE :: %@",message);
         ALSLog(ALLoggerSeverityError, @"ERROR IN AUDIO/VIDEO MESSAGE WITH META-DATA : %@", error);

@@ -278,7 +278,11 @@
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED_AND_READ];
             [self.mqttConversationDelegate delivered:pairedKey contactId:contactId withStatus:DELIVERED_AND_READ];
             if(self.realTimeUpdate){
-                [self.realTimeUpdate onMessageDeliveredAndRead:contactId];
+                ALMessageDBService *messageDbService = [[ALMessageDBService alloc]init];
+                ALMessage* message = [messageDbService getMessageByKey:pairedKey];
+                if(message){
+                    [self.realTimeUpdate onMessageDeliveredAndRead:message withUserId:contactId];
+                }
             }
         }
         else if ([type isEqualToString:@"CONVERSATION_DELIVERED_AND_READ"] || [type isEqualToString:@"APPLOZIC_10"])

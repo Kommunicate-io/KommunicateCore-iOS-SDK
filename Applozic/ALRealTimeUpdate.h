@@ -17,7 +17,7 @@
 -(void) onUserDetailsUpdate:(ALUserDetail *) userDetail;
 -(void) onMessageDelivered:(ALMessage *) message;
 -(void) onMessageDeleted:(NSString *) messageKey;
--(void) onMessageDeliveredAndRead:(NSString *) userId;
+-(void) onMessageDeliveredAndRead:(ALMessage *) message withUserId:(NSString *) userId;
 -(void) onConversationDelete:(NSString *) userId withGroupId: (NSNumber*) groupId;
 -(void) onConversationRead:(NSString *) userId;
 -(void) onUpdateTypingStatus:(NSString *) userId status: (BOOL) status;

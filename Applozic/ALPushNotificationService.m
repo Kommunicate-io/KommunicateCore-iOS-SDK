@@ -160,7 +160,11 @@
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED_AND_READ];
             [[ NSNotificationCenter defaultCenter] postNotificationName:@"report_DELIVERED_READ" object:deliveryParts[0] userInfo:dictionary];
             if(self.realTimeUpdate){
-                [self.realTimeUpdate onMessageDeliveredAndRead:contactId];
+                ALMessageDBService *messageDbService = [[ALMessageDBService alloc]init];
+                ALMessage* message = [messageDbService getMessageByKey:pairedKey];
+                if(message){
+                    [self.realTimeUpdate onMessageDeliveredAndRead:message withUserId:contactId];
+                }
             }
         }
         else if ([type isEqualToString:MT_CONVERSATION_DELETED]){

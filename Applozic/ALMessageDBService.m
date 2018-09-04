@@ -1006,4 +1006,149 @@ FETCH LATEST MESSSAGE FOR SUB GROUPS
     }
 }
 
+
+-(void) getLatestMessages:(BOOL)isNextPage withOnlyGroups:(BOOL)isGroup withCompletionHandler: (void(^)(NSMutableArray * messageList, NSError *error)) completion{
+    
+    if(!isNextPage){
+        
+        if ([self isMessageTableEmpty])  // db is not synced
+        {
+            [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray * theArray,NSError *error) {
+                completion(theArray,error);
+            }];
+        }else{
+            completion([self fetchLatestMesssagesFromDb:isGroup],nil);
+        }
+    }else{
+        [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray * theArray,NSError *error) {
+            completion(theArray,error);
+            
+        }];
+    }
+}
+
+-(void)fetchLatestMesssagesFromServer:(BOOL) isGroupMesssages withCompletion:(void(^)(NSMutableArray * theArray,NSError *error)) completion{
+    
+    if(![ALUserDefaultsHandler getFlagForAllConversationFetched]){
+        [self getLatestMessagesWithCompletion:^(NSMutableArray * theArray,NSError *error) {
+            
+            if (!error) {
+                // save data into the db
+                [self addMessageList:theArray];
+                // set yes to userdefaults
+                [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
+                // add default contacts
+                //fetch data from db
+                completion([self fetchLatestMesssagesFromDb:isGroupMesssages],error);
+                return ;
+            }else{
+                completion(nil,error);
+            }
+        }];
+    }else{
+        completion(nil,nil);
+    }
+}
+
+-(NSMutableArray*)fetchLatestMesssagesFromDb :(BOOL) isGroupMessages {
+    
+    NSMutableArray *messagesArray = [NSMutableArray new];
+    
+    if(isGroupMessages){
+        messagesArray =  [self getLatestMessagesForGroup];
+    }else{
+        messagesArray = [self getLatestMessagesForContact];
+    }
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:NO];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSMutableArray *sortedArray = [[messagesArray sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
+    
+    return sortedArray;
+}
+
+-(NSMutableArray *) getLatestMessagesForContact{
+    
+    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    NSMutableArray *messagesArray = [NSMutableArray new];
+    
+    // Find all message only have contact ...
+    NSFetchRequest * theRequest1 = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    [theRequest1 setResultType:NSDictionaryResultType];
+    [theRequest1 setPredicate:[NSPredicate predicateWithFormat:@"groupId=%d OR groupId=nil",0]];
+    [theRequest1 setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+    [theRequest1 setPropertiesToFetch:[NSArray arrayWithObjects:@"contactId", nil]];
+    [theRequest1 setReturnsDistinctResults:YES];
+    NSArray * userMsgArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest1 error:nil];
+    
+    for (NSDictionary * theDictionary in userMsgArray) {
+        
+        NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+        [theRequest setPredicate:[NSPredicate predicateWithFormat:@"contactId = %@ and groupId=nil and deletedFlag == %@ AND contentType != %i AND msgHidden == %@",theDictionary[@"contactId"],@(NO),ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
+        
+        [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+        [theRequest setFetchLimit:1];
+        
+        NSArray * fetchArray =  [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
+        DB_Message * theMessageEntity = fetchArray.firstObject;
+        if(fetchArray.count)
+        {
+            ALMessage * theMessage = [self createMessageEntity:theMessageEntity];
+            [messagesArray addObject:theMessage];
+        }
+        
+    }
+    
+    return messagesArray;
+    
+}
+
+-(NSMutableArray*) getLatestMessagesForGroup{
+    
+    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    NSMutableArray *messagesArray = [NSMutableArray new];
+    
+    // get all unique contacts
+    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    [theRequest setResultType:NSDictionaryResultType];
+    [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+    [theRequest setPropertiesToFetch:[NSArray arrayWithObjects:@"groupId", nil]];
+    [theRequest setReturnsDistinctResults:YES];
+    
+    NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
+    // get latest record
+    for (NSDictionary * theDictionary in theArray) {
+        NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+        
+        if([theDictionary[@"groupId"] intValue]==0){
+            continue;
+        }
+        
+        if([ALApplozicSettings getCategoryName]){
+            ALChannel* channel=  [[ALChannelService new] getChannelByKey:[NSNumber numberWithInt:[theDictionary[@"groupId"] intValue]]];
+            if(![channel isPartOfCategory:[ALApplozicSettings getCategoryName]])
+            {
+                continue;
+            }
+            
+        }
+        [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+        [theRequest setPredicate:[NSPredicate predicateWithFormat:@"groupId==%d AND deletedFlag == %@ AND contentType != %i AND msgHidden == %@",
+                                  [theDictionary[@"groupId"] intValue],@(NO),ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
+        [theRequest setFetchLimit:1];
+        
+        NSArray * groupMsgArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
+        DB_Message * theMessageEntity = groupMsgArray.firstObject;
+        if(groupMsgArray.count)
+        {
+            ALMessage * theMessage = [self createMessageEntity:theMessageEntity];
+            [messagesArray addObject:theMessage];
+        }
+    }
+    
+    return messagesArray;
+    
+}
+
 @end

@@ -34,6 +34,16 @@
 
 static ALMessageClientService *alMsgClientService;
 
++(ALMessageService *)sharedInstance
+{
+    static ALMessageService *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[ALMessageService alloc] init];
+    });
+    return sharedInstance;
+}
+
 +(void) processLatestMessagesGroupByContact
 {
     ALMessageClientService * almessageClientService = [[ALMessageClientService alloc] init];
@@ -63,7 +73,7 @@ static ALMessageClientService *alMsgClientService;
                         messageListRequest.channelKey = message.groupId;
                         messageListRequest.skipRead = YES;
 
-                        [self getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+                        [[ALMessageService sharedInstance] getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
 
                         }];
                     }else{
@@ -73,7 +83,7 @@ static ALMessageClientService *alMsgClientService;
                         messageListRequest.channelKey = nil;
                         messageListRequest.skipRead = YES;
 
-                        [self getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+                        [[ALMessageService sharedInstance] getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
 
                         }];
 
@@ -125,7 +135,7 @@ static ALMessageClientService *alMsgClientService;
         messageListRequest.endTimeStamp = time;
         messageListRequest.conversationId = alMessage.conversationId;
 
-        [self getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+        [[ALMessageService sharedInstance] getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
 
             completion (messages,error,userDetailArray);
         }];
@@ -135,7 +145,7 @@ static ALMessageClientService *alMsgClientService;
 
 }
 
-+(void)getMessageListForUser:(MessageListRequest *)messageListRequest withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
+-(void)getMessageListForUser:(MessageListRequest *)messageListRequest withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion
 {
     //On Message List Cell Tap
     ALMessageDBService *almessageDBService =  [[ALMessageDBService alloc] init];
@@ -261,7 +271,7 @@ static ALMessageClientService *alMsgClientService;
 }
 
 
-+(void) sendMessages:(ALMessage *)alMessage withCompletion:(void(^)(NSString * message, NSError * error)) completion {
+-(void) sendMessages:(ALMessage *)alMessage withCompletion:(void(^)(NSString * message, NSError * error)) completion {
 
     //DB insert if objectID is null
     DB_Message* dbMessage;
@@ -748,7 +758,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
         if((!msg.fileMeta && !msg.pairedMessageKey))
         {
             ALSLog(ALLoggerSeverityInfo, @"RESENDING_MESSAGE : %@", msg.message);
-            [self sendMessages:msg withCompletion:^(NSString *message, NSError *error) {
+            [[ALMessageService sharedInstance] sendMessages:msg withCompletion:^(NSString *message, NSError *error) {
                 if(error)
                 {
                     ALSLog(ALLoggerSeverityError, @"PENDING_MESSAGES_NO_SENT : %@", error);
@@ -877,7 +887,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
         }
 
         ALMessage * almessage =  [ALMessageService processFileUploadSucess:message];
-        [ALMessageService sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
+        [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
 
             if(error)
             {
@@ -1021,6 +1031,17 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
         }];
 
     }
+}
+
+-(void) getLatestMessages:(BOOL)isNextPage withOnlyGroups:(BOOL)isGroup withCompletionHandler: (void(^)(NSMutableArray * messageList, NSError *error)) completion{
+    
+    ALMessageDBService *messageDbService = [[ALMessageDBService alloc] init];
+    
+    [messageDbService getLatestMessages:isNextPage withOnlyGroups:isGroup withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
+        
+        completion(messageList,error);
+        
+    }];
 }
 
 

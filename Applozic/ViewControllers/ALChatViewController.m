@@ -67,8 +67,9 @@
 #import "ALAudioVideoBaseVC.h"
 #import "ALVOIPNotificationHandler.h"
 #import "ALChannelService.h"
-#import "ALAttachmentPickerData.h"
+#import "ALMultimediaData.h"
 #import <Applozic/Applozic-Swift.h>
+#import "UIImage+animatedGIF.h"
 
 #define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
@@ -77,7 +78,7 @@
 @interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALLocationDelegate,
                                     ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
                                     UIAlertViewDelegate, ALMUltipleAttachmentDelegate, UIDocumentInteractionControllerDelegate,
-                                    ABPeoplePickerNavigationControllerDelegate, ALSoundRecorderProtocol>
+                                    ABPeoplePickerNavigationControllerDelegate, ALSoundRecorderProtocol, ALCustomPickerDelegate>
 
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, assign) int rp;
@@ -505,16 +506,9 @@
     }
     // create message object
     ALMessage * theMessage = [self getMessageToPost];
-    theMessage.
-    message = messageText;
+    theMessage.message = messageText;
     // save msg to db
-    [self.alMessageWrapper addALMessageToMessageArray:theMessage];
-
-    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
-    DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:theMessage];
-    [theDBHandler.managedObjectContext save:nil];
-    theMessage.msgDBObjectId = [theMessageEntity objectID];
+    theMessage.msgDBObjectId = [self saveMessageToDatabase:theMessage];
 
     [self sendMessage:theMessage ];
     [self.mTableView reloadData];
@@ -527,7 +521,7 @@
     BOOL isGroupNotification = (self.channelKey == nil ? false : true);
     if(self.channelKey && isGroupNotification)
     {
-        [ALChannelService markConversationAsRead:self.channelKey withCompletion:^(NSString * string, NSError * error) {
+        [[ALChannelService sharedInstance] markConversationAsRead:self.channelKey withCompletion:^(NSString * string, NSError * error) {
 
             if(error)
             {
@@ -544,7 +538,7 @@
 
     if(self.contactIds && !self.isGroup)
     {
-        [ALUserService markConversationAsRead:self.contactIds withCompletion:^(NSString * string, NSError *error) {
+        [[ALUserService sharedInstance] markConversationAsRead:self.contactIds withCompletion:^(NSString * string, NSError *error) {
             if(error)
             {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read for contact %@", self.contactIds);
@@ -694,7 +688,7 @@
         NSNumber *lastMsgTime = [NSNumber numberWithDouble:doubleTime];
         messageListRequest.startTimeStamp = lastMsgTime;
 
-        [ALMessageService getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+        [[ALMessageService sharedInstance] getMessageListForUser:messageListRequest withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
 
             if(messages.count)
             {
@@ -1311,7 +1305,7 @@
 
 -(void)sendLocationMessage:(ALMessage *)theMessage withCompletion:(void(^)(NSString *message, NSError *error))completion
 {
-    [ALMessageService sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
 
         if(error)
         {
@@ -2609,17 +2603,20 @@
     //theMessage.fileMetas.thumbnailUrl = filePath.lastPathComponent;
 
     // save msg to db
-    [self.alMessageWrapper addALMessageToMessageArray:theMessage];
-
-    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
-    DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:theMessage];
-    [theDBHandler.managedObjectContext save:nil];
-    theMessage.msgDBObjectId = [theMessageEntity objectID];
-
+    theMessage.msgDBObjectId = [self saveMessageToDatabase:theMessage];
+    
     [self.mTableView reloadData];
     [self scrollTableViewToBottomWithAnimation:NO];
     [self uploadImage:theMessage];
+}
+
+-(NSManagedObjectID *) saveMessageToDatabase: (ALMessage *) message{
+    [self.alMessageWrapper addALMessageToMessageArray:message];
+    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
+    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
+    DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage: message];
+    [theDBHandler.managedObjectContext save:nil];
+    return [theMessageEntity objectID];
 }
 
 -(void)uploadImage:(ALMessage *)theMessage
@@ -2683,22 +2680,22 @@
 
 -(void)multipleAttachmentProcess:(NSMutableArray *)attachmentPathArray andText:(NSString *)messageText
 {
-    for(ALAttachmentPickerData * attachment in attachmentPathArray)
+    for(ALMultimediaData * attachment in attachmentPathArray)
     {
         NSString *filePath = @"";
         NSURL * videoURL;
         switch (attachment.attachmentType) {
-            case ALAttachmentTypeGif:
+            case ALMultimediaTypeGif:
                 filePath = [ALImagePickerHandler saveGifToDocDirectory:attachment.classImage withGIFData :attachment.dataGIF];
                 [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
                 break;
                 
-            case ALAttachmentTypeImage:
+            case ALMultimediaTypeImage:
                 filePath = [ALImagePickerHandler saveImageToDocDirectory:attachment.classImage];
                 [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
                 break;
                 
-            case ALAttachmentTypeVideo:
+            case ALMultimediaTypeVideo:
                 videoURL = [NSURL fileURLWithPath:attachment.classVideoPath];
                 [ALImagePickerHandler saveVideoToDocDirectory:videoURL handler:^(NSString * filePath){
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -2833,11 +2830,15 @@
 
     if(![ALApplozicSettings isPhotoGalleryOptionHidden]){
         [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photosOrVideoOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Photos/Videos" , @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-
-            UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
-            ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
-            launchChat.multipleAttachmentDelegate = self;
-            [self.navigationController pushViewController:launchChat animated:YES];
+            if([ALApplozicSettings isMultiSelectGalleryViewDisabled]) {
+                UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+                ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
+                launchChat.multipleAttachmentDelegate = self;
+                [self.navigationController pushViewController:launchChat animated:YES];
+            } else {
+                ALBaseNavigationViewController *controller = [ALCustomPickerViewController makeInstanceWithDelegate:self];
+                [self presentViewController:controller animated:NO completion:nil];
+            }
         }]];
     }
 
@@ -3124,7 +3125,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(void)sendMessage:(ALMessage *)theMessage messageAtIndex:(NSUInteger) messageIndex{
     [self resetMessageReplyView];
-    [ALMessageService sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
 
         if(error)
         {
@@ -3440,7 +3441,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         messageListRequest.conversationId = self.conversationId;
     }
 
-    [ALMessageService getMessageListForUser:messageListRequest  withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
+    [[ALMessageService sharedInstance] getMessageListForUser:messageListRequest  withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
 
         [self.mActivityIndicator stopAnimating];
         ALSLog(ALLoggerSeverityInfo, @"LIST_CALL_CALLED");
@@ -4592,4 +4593,12 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [templateMessageView setHidden:NO];
     }
 }
+
+#pragma mark - ALCustomPickerDelegate
+
+- (void)multimediaSelected:(NSArray<ALMultimediaData *> *)list{
+    NSMutableArray * multimediaList = [[NSMutableArray alloc]initWithArray: list];
+    [self multipleAttachmentProcess:multimediaList andText:@""];
+}
+
 @end
