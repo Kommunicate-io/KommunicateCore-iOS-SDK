@@ -19,6 +19,8 @@
 
 @interface ALUserService : NSObject
 
++(ALUserService *)sharedInstance;
+
 +(void)processContactFromMessages:(NSArray *) messagesArr withCompletion:(void(^)())completionMark;
 
 +(void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark;
@@ -27,7 +29,7 @@
 
 +(void)updateUserDisplayName:(ALContact *)alContact;
 
-+(void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
+-(void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
 
 +(void)markMessageAsRead:(ALMessage *)alMessage withPairedkeyValue:(NSString *)pairedkeyValue withCompletion:(void (^)(NSString *, NSError *))completion;
 

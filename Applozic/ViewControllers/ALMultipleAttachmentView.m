@@ -15,7 +15,7 @@
 #import "ALImagePickerHandler.h"
 #import "ALImagePickerController.h"
 #import "UIImage+animatedGIF.h"
-#import "ALAttachmentPickerData.h"
+#import "ALMultimediaData.h"
 
 #define NAVIGATION_TEXT_SIZE 20
 
@@ -111,7 +111,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    __block ALAttachmentPickerData * object = [ALAttachmentPickerData new];
+    __block ALMultimediaData * object = [ALMultimediaData new];
     object.classVideoPath = nil;
     object.classImage = nil;
     object.dataGIF = nil;
@@ -122,7 +122,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
     
     if(image)
     {
-        object = [self saveAttachmentData:ALAttachmentTypeImage withImage:[ALUtilityClass getNormalizedImage:image] withGif:nil withVideo:nil];
+        object = [self saveAttachmentData:ALMultimediaTypeImage withImage:[ALUtilityClass getNormalizedImage:image] withGif:nil withVideo:nil];
         globalThumbnail = image;
     }
     
@@ -146,7 +146,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
                     if(UTTypeConformsTo(uti, kUTTypeGIF)){
                         image = [UIImage animatedImageWithAnimatedGIFData:imageData];
                         globalThumbnail = image;
-                        object = [self saveAttachmentData:ALAttachmentTypeGif withImage:image withGif:imageData withVideo:nil];
+                        object = [self saveAttachmentData:ALMultimediaTypeGif withImage:image withGif:imageData withVideo:nil];
                     }
                 }
             }];
@@ -159,7 +159,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
     {
         NSURL *videoURL = info[UIImagePickerControllerMediaURL];
         globalThumbnail = [ALUtilityClass subProcessThumbnail:videoURL];
-        object = [self saveAttachmentData:ALAttachmentTypeVideo withImage:nil withGif:nil withVideo:[videoURL path]];
+        object = [self saveAttachmentData:ALMultimediaTypeVideo withImage:nil withGif:nil withVideo:[videoURL path]];
     }
     
     [self.imageArray insertObject:globalThumbnail atIndex:0];
@@ -169,10 +169,10 @@ static NSString * const reuseIdentifier = @"collectionCell";
     [self.collectionView reloadData];
 }
 
--(ALAttachmentPickerData *) saveAttachmentData:(ALAttachmentType)type
+-(ALMultimediaData *) saveAttachmentData:(ALMultimediaType)type
                  withImage:(UIImage *) image withGif:(NSData *) gif withVideo:(NSString *) video
 {
-    ALAttachmentPickerData * updateAttachment = [ALAttachmentPickerData new];
+    ALMultimediaData * updateAttachment = [ALMultimediaData new];
     updateAttachment.attachmentType = type;
     updateAttachment.classImage = image;
     updateAttachment.dataGIF = gif;

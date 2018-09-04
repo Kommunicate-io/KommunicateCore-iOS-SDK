@@ -197,6 +197,10 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable:) name:@"reloadTable" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateChannelSync:)
+                                                 name:@"Update_channel_Info" object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLastSeenAtStatusPUSH:) name:@"update_USER_STATUS" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appEntersForegroundIntoListView:) name:@"appCameInForeground" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessages:) name:@"CONVERSATION_DELETION" object:nil];
@@ -236,6 +240,17 @@
 //    [self.childGroupList addObject:parentChannel];
 }
 
+// Channel details update notification
+-(void)updateChannelSync:(NSNotification*)notification {
+    ALChannel *channel =  notification.object;
+    if(channel){
+        ALContactCell *contactCell = [self getCellForGroup:channel.key];
+        if(contactCell){
+            [self updateProfileImageAndUnreadCount:contactCell WithChannel:channel orChannelId:nil];
+        }
+    }
+}
+
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -265,6 +280,7 @@
     [self.tabBarController.tabBar setHidden: [ALUserDefaultsHandler isBottomTabBarHidden]];
     //unregister for notification
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"Update_channel_Info" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_MESSAGE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BROADCAST_MSG_UPDATE" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -1001,8 +1017,6 @@
             
             [self.dBService deleteAllMessagesByContact:nil orChannelKey:[alMessageobj getGroupId]];
             [ALChannelService setUnreadCountZeroForGroupID:[alMessageobj getGroupId]];
-            [self subProcessDeleteMessageThread:filteredArray];
-            return;
         }
         
         [ALMessageService deleteMessageThread:alMessageobj.contactIds orChannelKey:[alMessageobj getGroupId]
@@ -1115,9 +1129,14 @@
         ALContactCell * contactCell = [self getCell:userId];
         UILabel* nameIcon = (UILabel *)[contactCell viewWithTag:102];
         [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[userDetail getDisplayName]]];
-       
+        
         if(contactCell)
         {
+            
+            if(userDetail.getDisplayName){
+                contactCell.mUserNameLabel.text = userDetail.getDisplayName;
+            }
+            
             NSURL * URL = [NSURL URLWithString:userDetail.imageLink];
             if(URL)
             {

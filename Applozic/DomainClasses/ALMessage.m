@@ -417,7 +417,7 @@
     }
 }
 
-- (instancetype)initWithBuilder:(ALMessgaeBuilder *)builder {
+- (instancetype)initWithBuilder:(ALMessageBuilder *)builder {
     if (self = [super init]) {
         _contactIds = builder.to;
         _to = builder.to;
@@ -469,8 +469,8 @@
     return info;
 }
 
-+ (instancetype)build:(void (^)(ALMessgaeBuilder *))builder {
-    ALMessgaeBuilder *alMessageBuilder = [ALMessgaeBuilder new];
++ (instancetype)build:(void (^)(ALMessageBuilder *))builder {
+    ALMessageBuilder *alMessageBuilder = [ALMessageBuilder new];
     builder(alMessageBuilder);
     return [[ALMessage alloc] initWithBuilder:alMessageBuilder];
 }

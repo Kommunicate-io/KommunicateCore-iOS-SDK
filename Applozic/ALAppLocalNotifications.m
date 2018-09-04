@@ -36,13 +36,20 @@
     return localNotificationHandler;
 }
 
--(void)dataConnectionNotificationHandler
+-(void)dataConnectionNotificationHandler{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(thirdPartyNotificationHandler:)
+                                                 name:@"showNotificationAndLaunchChat" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transferVOIPMessage:)
+                                                 name:@"newMessageNotification"
+                                               object:nil];
+
+    [self dataConnectionHandler];
+}
+
+-(void)dataConnectionHandler
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:)
                                                  name:AL_kReachabilityChangedNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(thirdPartyNotificationHandler:)
-                                                 name:@"showNotificationAndLaunchChat" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForegroundBase:)
                                                  name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -51,9 +58,7 @@
                                                   name:@"APP_ENTER_IN_BACKGROUND"
                                                 object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transferVOIPMessage:)
-                                                 name:@"newMessageNotification"
-                                               object:nil];
+   
     
     if([ALUserDefaultsHandler isLoggedIn]){
         

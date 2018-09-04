@@ -1209,4 +1209,14 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++(BOOL)isMultiSelectGalleryViewDisabled
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:ALDisableMultiSelectGalleryView];
+}
++(void)disableMultiSelectGalleryView:(BOOL)enabled
+{
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:ALDisableMultiSelectGalleryView];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

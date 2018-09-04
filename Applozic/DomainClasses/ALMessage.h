@@ -10,7 +10,7 @@
 #import "ALJson.h"
 #import "ALFileMetaInfo.h"
 #import "ALApplozicSettings.h"
-#import "ALMessgaeBuilder.h"
+#import "ALMessageBuilder.h"
 #import "ALConstant.h"
 
 #define ALMESSAGE_CONTENT_DEFAULT 0
@@ -138,7 +138,7 @@ typedef enum {
 
 @property (nonatomic,assign) BOOL deleted;
 @property (nonatomic, assign) BOOL msgHidden;
-- (instancetype)initWithBuilder:(ALMessgaeBuilder *)builder ;
-+ (instancetype)build:(void (^)(ALMessgaeBuilder *))builder ;
+- (instancetype)initWithBuilder:(ALMessageBuilder *)builder ;
++ (instancetype)build:(void (^)(ALMessageBuilder *))builder ;
 
 @end

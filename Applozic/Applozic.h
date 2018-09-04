@@ -116,6 +116,8 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/MQTTSSLSecurityPolicyDecoder.h>
 #import <Applozic/MQTTSessionManager.h>
 #import <Applozic/MQTTSSLSecurityPolicyEncoder.h>
-#import <Applozic/ALMessgaeBuilder.h>
+#import <Applozic/ALMessageBuilder.h>
 #import <Applozic/ApplozicClient.h>
 #import <Applozic/ALRealTimeUpdate.h>
+#import <Applozic/ALMultimediaData.h>
+#import <Applozic/UIImage+animatedGIF.h>

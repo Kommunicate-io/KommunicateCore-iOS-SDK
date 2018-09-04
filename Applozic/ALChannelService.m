@@ -16,6 +16,15 @@
 
 @implementation ALChannelService
 
++(ALChannelService *)sharedInstance
+{
+    static ALChannelService *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[ALChannelService alloc] init];
+    });
+    return sharedInstance;
+}
 
 -(void)callForChannelServiceForDBInsertion:(NSString *)theJson
 {
@@ -753,7 +762,7 @@
 #pragma mark MARK READ FOR GROUP
 //===========================================================================================================================
 
-+(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion
+-(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion
 {
     [ALChannelService setUnreadCountZeroForGroupID:channelKey];
     

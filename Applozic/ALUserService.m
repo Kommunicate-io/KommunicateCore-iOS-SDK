@@ -33,8 +33,19 @@
 {
     NSString * paramString;
 }
-//1. call this when each message comes
 
++(ALUserService *)sharedInstance
+{
+    static ALUserService *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[ALUserService alloc] init];
+    });
+    return sharedInstance;
+}
+
+
+//1. call this when each message comes
 + (void)processContactFromMessages:(NSArray *) messagesArr withCompletion:(void(^)())completionMark
 {
     
@@ -145,7 +156,7 @@
     }
 }
 
-+(void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion{
+-(void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion{
     
     [ALUserService setUnreadCountZeroForContactId:contactId];
 
