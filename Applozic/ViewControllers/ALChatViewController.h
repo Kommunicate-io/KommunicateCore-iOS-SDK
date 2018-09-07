@@ -21,6 +21,11 @@
 #import "ALVCardClass.h"
 #import <ContactsUI/CNContactPickerViewController.h>
 
+extern NSString * const ThirdPartyDetailVCNotification;
+extern NSString * const ThirdPartyDetailVCNotificationNavigationVC;
+extern NSString * const ThirdPartyDetailVCNotificationALContact;
+extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
+
 @protocol ALChatViewControllerDelegate <NSObject>
 
 @optional

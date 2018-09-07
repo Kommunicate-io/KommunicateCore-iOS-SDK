@@ -13,6 +13,7 @@
 #import "ALMuteRequest.h"
 #import "ALAPIResponse.h"
 #import "ALContactService.h"
+#import "ALRealTimeUpdate.h"
 
 @implementation ALChannelService
 
@@ -738,9 +739,13 @@
 //===========================================================================================================================
 #pragma mark CHANNEL SYNCHRONIZATION
 //===========================================================================================================================
-
 -(void)syncCallForChannel
 {
+    [self syncCallForChannelWithDelegate:nil];
+}
+
+-(void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate{
+    
     NSNumber *updateAt = [ALUserDefaultsHandler getLastSyncChannelTime];
     
     [ALChannelClientService syncCallForChannel:updateAt andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
@@ -748,7 +753,7 @@
         if([response.status isEqualToString:@"success"])
         {
             ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-            [channelDBService processArrayAfterSyncCall:response.alChannelArray];
+            [channelDBService createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupDetailTableReload" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
         }
@@ -756,6 +761,7 @@
             [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
         }
     }];
+    
 }
 
 //===========================================================================================================================
@@ -1037,4 +1043,15 @@
     metadata[@"Alert"] = @"false";
     return metadata;
 }
+
+-(void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate: (id<ApplozicUpdatesDelegate>)delegate{
+    
+    [ALChannelService setUnreadCountZeroForGroupID:channelKey];
+    if(delegate){
+        [delegate conversationReadByCurrentUser:nil withGroupId:channelKey];
+    }
+    NSDictionary *dict = @{@"channelKey":channelKey};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_unread_count" object:dict];
+}
+
 @end

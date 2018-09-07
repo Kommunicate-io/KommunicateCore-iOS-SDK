@@ -206,6 +206,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessages:) name:@"CONVERSATION_DELETION" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCallForUser:) name:@"USER_DETAILS_UPDATE_CALL" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateBroadCastMessages) name:@"BROADCAST_MSG_UPDATE" object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationUnreadCount:) name:@"Update_unread_count" object:nil];
+    
     
     [self.navigationController.navigationBar setTitleTextAttributes: @{
                                                                        NSForegroundColorAttributeName:[UIColor whiteColor],
@@ -251,6 +253,26 @@
     }
 }
 
+
+// Update channel/user unread count notification
+-(void)updateConversationUnreadCount:(NSNotification*)notification {
+    NSDictionary *dictionary =  notification.object;
+    if(dictionary){
+        ALContactCell *cell = nil;
+        NSString *userId = [ dictionary objectForKey:@"userId"];
+        if(userId){
+            cell = [self getCell:userId];
+        }else{
+            NSNumber  *channelKey = [ dictionary objectForKey:@"channelKey"];
+            cell = [self getCellForGroup:channelKey];
+        }
+        if(cell){
+            cell.unreadCountLabel.text = @"";
+            [cell.unreadCountLabel setHidden:YES];
+        }
+    }
+}
+
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -283,6 +305,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"Update_channel_Info" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_MESSAGE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BROADCAST_MSG_UPDATE" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"Update_unread_count" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

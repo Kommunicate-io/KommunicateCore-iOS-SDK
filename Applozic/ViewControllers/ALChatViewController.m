@@ -74,6 +74,11 @@
 #define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
 
+NSString * const ThirdPartyDetailVCNotification = @"ThirdPartyDetailVCNotification";
+NSString * const ThirdPartyDetailVCNotificationNavigationVC = @"ThirdPartyDetailVCNotificationNavigationVC";
+NSString * const ThirdPartyDetailVCNotificationALContact = @"ThirdPartyDetailVCNotificationALContact";
+NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVCNotificationChannelKey";
+
 
 @interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALLocationDelegate,
                                     ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
@@ -1138,16 +1143,24 @@
     }
     else if (![ALApplozicSettings isGroupInfoDisabled] && (self.alChannel.type != GROUP_OF_TWO) && ![ALChannelService isChannelDeleted:self.channelKey] && ![ALChannelService isConversationClosed:self.channelKey])
     {
-        UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
-        ALGroupDetailViewController * groupDetailViewController = (ALGroupDetailViewController*)[storyboard instantiateViewControllerWithIdentifier:@"ALGroupDetailViewController"];
-        groupDetailViewController.channelKeyID = self.channelKey;
-        groupDetailViewController.alChatViewController = self;
-
-        if([ALApplozicSettings isContactsGroupEnabled] && _contactsGroupId){
-            [ALApplozicSettings setContactsGroupId:_contactsGroupId];
+        if ([ALApplozicSettings getOptionToPushNotificationToShowCustomGroupDetalVC]) {
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
+                                                                                                                            ThirdPartyDetailVCNotificationChannelKey : self.channelKey
+                                                                                                                            }];
+        } else {
+            
+            UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
+            ALGroupDetailViewController * groupDetailViewController = (ALGroupDetailViewController*)[storyboard instantiateViewControllerWithIdentifier:@"ALGroupDetailViewController"];
+            groupDetailViewController.channelKeyID = self.channelKey;
+            groupDetailViewController.alChatViewController = self;
+            
+            if([ALApplozicSettings isContactsGroupEnabled] && _contactsGroupId){
+                [ALApplozicSettings setContactsGroupId:_contactsGroupId];
+            }
+            
+            [self.navigationController pushViewController:groupDetailViewController animated:YES];
         }
-
-        [self.navigationController pushViewController:groupDetailViewController animated:YES];
     }
 }
 
@@ -3134,8 +3147,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             return;
         }
 
-        [self addBroadcastMessageToDB:theMessage];
-
         if(messageIndex>0){
             [[self.alMessageWrapper getUpdatedMessageArray]replaceObjectAtIndex: messageIndex-1 withObject:theMessage];
 
@@ -4509,18 +4520,24 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     {
         return;
     }
-
-    [self.mActivityIndicator startAnimating];
-
-    UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic"
-                                                          bundle:[NSBundle bundleForClass:[self class]]];
-
-    ALReceiverUserProfileVC * receiverUserProfileVC =
-            (ALReceiverUserProfileVC *)[storyboard instantiateViewControllerWithIdentifier:@"ALReceiverUserProfile"];
-
-    receiverUserProfileVC.alContact = self.alContact;
-    [self.mActivityIndicator stopAnimating];
-    [self.navigationController pushViewController:receiverUserProfileVC animated:YES];
+    
+    if ([ALApplozicSettings getOptionToPushNotificationToShowCustomGroupDetalVC]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
+                                                                                                                        ThirdPartyDetailVCNotificationALContact : self.alContact
+                                                                                                                        }];
+    } else {
+        [self.mActivityIndicator startAnimating];
+        
+        UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic"
+                                                              bundle:[NSBundle bundleForClass:[self class]]];
+        
+        ALReceiverUserProfileVC * receiverUserProfileVC =
+        (ALReceiverUserProfileVC *)[storyboard instantiateViewControllerWithIdentifier:@"ALReceiverUserProfile"];
+        
+        receiverUserProfileVC.alContact = self.alContact;
+        [self.mActivityIndicator stopAnimating];
+        [self.navigationController pushViewController:receiverUserProfileVC animated:YES];
+    }
 }
 
 //==============================================================================================================================================

@@ -111,7 +111,7 @@
             fontName = DEFAULT_FONT_NAME;
         }
         
-        self.mMessageLabel.font = [UIFont fontWithName:[ALApplozicSettings getFontFace] size:MESSAGE_TEXT_SIZE];
+        self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:MESSAGE_TEXT_SIZE fontName:[ALApplozicSettings getFontFace]];
         self.mMessageLabel.textColor = [UIColor grayColor];
         [self.contentView addSubview:self.mMessageLabel];
         
@@ -167,6 +167,23 @@
     
 }
 
+-(UIFont *)getDynamicFontWithDefaultSize:(CGFloat)size fontName:(NSString *)fontName
+{
+    UIFont *defaultFont = [UIFont fontWithName:fontName size:size];
+    if (!defaultFont) {
+        defaultFont = [UIFont systemFontOfSize:size];
+    }
+    
+    if ([ALApplozicSettings getChatCellFontTextStyle]) {
+        if (@available(iOS 11.0, *)) {
+            UIFontMetrics *fontMetrics = [UIFontMetrics metricsForTextStyle:[ALApplozicSettings getChatCellFontTextStyle]];
+            return [fontMetrics scaledFontForFont:defaultFont];
+        } else if (@available(iOS 10.0, *)) {
+            return [UIFont preferredFontForTextStyle:[ALApplozicSettings getChatCellFontTextStyle]];
+        }
+    }
+    return defaultFont;
+}
 
 -(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize
 {
@@ -445,7 +462,7 @@
     
     /*    ====================================== END =================================  */
     
-    self.mMessageLabel.font = [UIFont fontWithName:[ALApplozicSettings getFontFace] size:MESSAGE_TEXT_SIZE];
+    self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:MESSAGE_TEXT_SIZE fontName:[ALApplozicSettings getFontFace]];
     if(alMessage.contentType == ALMESSAGE_CONTENT_TEXT_HTML)
     {
         
