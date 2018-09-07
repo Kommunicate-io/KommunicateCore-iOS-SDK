@@ -16,6 +16,7 @@
 #import  "MessageListRequest.h"
 #import "ALMessageInfoResponse.h"
 #import "ALMQTTConversationService.h"
+#import "ALRealTimeUpdate.h"
 
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
 #define CONVERSATION_CALL_COMPLETED @"conversationCallCompleted"
@@ -83,10 +84,12 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 -(ALMessage *)getALMessageByKey:(NSString*)messageReplyId;
 
 +(void)addBroadcastMessageToDB:(ALMessage *)alMessage;
-+(void)addOpenGroupMessage:(ALMessage*)alMessage;
 +(void)syncMessages;
 +(void) getLatestMessageForUser:(NSString *)deviceKeyString withDelegate : (id<ApplozicUpdatesDelegate>)theDelegate withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 
 -(void) getLatestMessages:(BOOL)isNextPage withOnlyGroups:(BOOL)isGroup withCompletionHandler: (void(^)(NSMutableArray * messageList, NSError *error)) completion;
+
++(void)addOpenGroupMessage:(ALMessage*)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+
 
 @end

@@ -187,7 +187,7 @@
             [self.alSyncCallService updateDeliveryStatusForContact:notificationMsg withStatus:DELIVERED_AND_READ];
             [[ NSNotificationCenter defaultCenter] postNotificationName:@"report_CONVERSATION_DELIVERED_READ" object:notificationMsg];
             if(self.realTimeUpdate){
-                [self.realTimeUpdate onConversationRead:notificationMsg];
+                [self.realTimeUpdate onAllMessagesRead:notificationMsg];
             }
 
         }
@@ -281,6 +281,19 @@
                 [self.realTimeUpdate onUserDetailsUpdate:userDetail];
             }];
             }
+        }
+        else if([type isEqualToString:@"APPLOZIC_09"]){
+            //Conversation read for user
+            ALUserService *channelService = [[ALUserService alloc]init];
+            NSString * userId = [theMessageDict objectForKey:@"message"];
+            [channelService updateConversationReadWithUserId:userId withDelegate:self.realTimeUpdate];
+            
+        }
+        else if([type isEqualToString:@"APPLOZIC_21"]){
+            //Conversation read for channel
+            ALChannelService *channelService = [[ALChannelService alloc]init];
+            NSNumber * channelKey  = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
+            [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
         }
         else
         {

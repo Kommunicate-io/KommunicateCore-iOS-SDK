@@ -22,11 +22,29 @@
     return self;
 }
 
+-(UIFont *)getDynamicFontWithDefaultSize:(CGFloat)size fontName:(NSString *)fontName
+{
+    UIFont *defaultFont = [UIFont fontWithName:fontName size:size];
+    if (!defaultFont) {
+        defaultFont = [UIFont systemFontOfSize:size];
+    }
+
+    if ([ALApplozicSettings getChatChannelCellFontTextStyle]) {
+        if (@available(iOS 11.0, *)) {
+            UIFontMetrics *fontMetrics = [UIFontMetrics metricsForTextStyle:[ALApplozicSettings getChatChannelCellFontTextStyle]];
+            return [fontMetrics scaledFontForFont:defaultFont];
+        } else if (@available(iOS 10.0, *)) {
+            return [UIFont preferredFontForTextStyle:[ALApplozicSettings getChatChannelCellFontTextStyle]];
+        }
+    }
+    return defaultFont;
+}
+
 -(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize
 {
     [super populateCell:alMessage viewSize:viewSize];
     
-    [self.mMessageLabel setFont:[UIFont fontWithName:@"Helvetica" size:CH_MESSAGE_TEXT_SIZE]];
+    [self.mMessageLabel setFont:[self getDynamicFontWithDefaultSize:CH_MESSAGE_TEXT_SIZE fontName:@"Helvetica"]];
     
     [self.mMessageLabel setTextAlignment:NSTextAlignmentCenter];
     [self.mMessageLabel setText:alMessage.message];

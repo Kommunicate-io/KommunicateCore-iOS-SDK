@@ -16,6 +16,7 @@
 #import "ALUserClientService.h"
 #import "ALAPIResponse.h"
 #import "ALUserBlockResponse.h"
+#import "ALRealTimeUpdate.h"
 
 @interface ALUserService : NSObject
 
@@ -68,5 +69,13 @@
 -(void)processResettingUnreadCount;
 
 -(void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse* response, NSError * error))completion;
+
+/**
+ This method will update unread count to zero for user once the conversation notification is received
+
+ @param userId  of user the count will be reset to zero
+ @param delegate is used for updating the callback for real time updates
+ */
+-(void)updateConversationReadWithUserId:(NSString *)userId withDelegate: (id<ApplozicUpdatesDelegate>)delegate;
 
 @end

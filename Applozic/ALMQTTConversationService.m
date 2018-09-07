@@ -25,13 +25,42 @@
 @implementation ALMQTTConversationService
 
 /*
- MESSAGE_RECEIVED("APPLOZIC_01"), MESSAGE_SENT("APPLOZIC_02"),
- MESSAGE_SENT_UPDATE("APPLOZIC_03"), MESSAGE_DELIVERED("APPLOZIC_04"),
- MESSAGE_DELETED("APPLOZIC_05"), CONVERSATION_DELETED("APPLOZIC_06"),
- MESSAGE_READ("APPLOZIC_07"), MESSAGE_DELIVERED_AND_READ("APPLOZIC_08"),
- CONVERSATION_READ("APPLOZIC_09"), CONVERSATION_DELIVERED_AND_READ("APPLOZIC_10"),
- USER_CONNECTED("APPLOZIC_11"), USER_DISCONNECTED("APPLOZIC_12"),
- GROUP_DELETED("APPLOZIC_13"), GROUP_LEFT("APPLOZIC_14");
+ Notification types :
+ 
+ MESSAGE_RECEIVED("APPLOZIC_01"),
+ MESSAGE_SENT("APPLOZIC_02"),
+ MESSAGE_SENT_UPDATE("APPLOZIC_03"),
+ MESSAGE_DELIVERED("APPLOZIC_04"),
+ MESSAGE_DELETED("APPLOZIC_05"),
+ CONVERSATION_DELETED("APPLOZIC_06"),
+ MESSAGE_READ("APPLOZIC_07"),
+ MESSAGE_DELIVERED_AND_READ("APPLOZIC_08"),
+ CONVERSATION_READ("APPLOZIC_09"),
+ CONVERSATION_DELIVERED_AND_READ("APPLOZIC_10"),
+ USER_CONNECTED("APPLOZIC_11"),
+ USER_DISCONNECTED("APPLOZIC_12"),
+ GROUP_DELETED("APPLOZIC_13"),
+ GROUP_LEFT("APPLOZIC_14"),
+ GROUP_SYNC("APPLOZIC_15"),
+ USER_BLOCKED("APPLOZIC_16"),
+ USER_UN_BLOCKED("APPLOZIC_17"),
+ ACTIVATED("APPLOZIC_18"),
+ DEACTIVATED("APPLOZIC_19"),
+ REGISTRATION("APPLOZIC_20"),
+ GROUP_CONVERSATION_READ("APPLOZIC_21"),
+ GROUP_MESSAGE_DELETED("APPLOZIC_22"),
+ GROUP_CONVERSATION_DELETED("APPLOZIC_23"),
+ APPLOZIC_TEST("APPLOZIC_24"),
+ USER_ONLINE_STATUS("APPLOZIC_25"),
+ CONTACT_SYNC("APPLOZIC_26"),
+ CONVERSATION_DELETED_NEW("APPLOZIC_27"),
+ CONVERSATION_DELIVERED_AND_READ_NEW("APPLOZIC_28"),
+ CONVERSATION_READ_NEW("APPLOZIC_29"),
+ USER_DETAIL_CHANGED("APPLOZIC_30"),
+ MESSAGE_METADATA_UPDATE("APPLOZIC_33"),
+ USER_DELETE_NOTIFICATION("APPLOZIC_34"),
+ USER_MUTE_NOTIFICATION("APPLOZIC_37");
+
  */
 
 +(ALMQTTConversationService *)sharedInstance
@@ -197,7 +226,7 @@
                                 return;
                             }
 
-                            [ALMessageService addOpenGroupMessage:alMessage];
+                            [ALMessageService addOpenGroupMessage:alMessage withDelegate:self.realTimeUpdate];
                             if(!assistant.isOurViewOnTop)
                             {
                                 [assistant assist:alMessage.contactIds and:dict ofUser:alMessage.contactIds];
@@ -205,7 +234,7 @@
                             }
                             else
                             {
-                                [self.alSyncCallService syncCall:alMessage];
+                                [self.alSyncCallService syncCall:alMessage withDelegate:self.realTimeUpdate];
                                 [self.mqttConversationDelegate syncCall:alMessage andMessageList:nil];
                             }
                         }else{
@@ -291,7 +320,7 @@
             [self.alSyncCallService updateDeliveryStatusForContact: contactId withStatus:DELIVERED_AND_READ];
             [self.mqttConversationDelegate updateStatusForContact:contactId withStatus:DELIVERED_AND_READ];
             if(self.realTimeUpdate){
-                [self.realTimeUpdate onConversationRead:contactId];
+                [self.realTimeUpdate onAllMessagesRead:contactId];
             }
         }
         else if ([type isEqualToString:@"USER_CONNECTED"]||[type isEqualToString: @"APPLOZIC_11"])
@@ -379,6 +408,19 @@
         else if ([type isEqualToString:@"APPLOZIC_32"])
         {
             // BROADCAST MESSAGE : MESSAGE_DELIVERED_AND_READ
+        }
+        else if([type isEqualToString:@"APPLOZIC_09"]){
+            //Conversation read for user
+            ALUserService *channelService = [[ALUserService alloc]init];
+            NSString * userId = [theMessageDict objectForKey:@"message"];
+            [channelService updateConversationReadWithUserId:userId withDelegate:self.realTimeUpdate];
+            
+        }
+        else if([type isEqualToString:@"APPLOZIC_21"]){
+            //Conversation read for channel
+             ALChannelService *channelService = [[ALChannelService alloc]init];
+             NSNumber * channelKey  = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
+            [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
         }
         else
         {

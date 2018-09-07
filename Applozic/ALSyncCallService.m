@@ -27,13 +27,18 @@
     //Todo: update ui
 }
 
--(void) syncCall: (ALMessage *) alMessage {
+-(void) syncCall: (ALMessage *) alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate{
     
-    if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
-        ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService syncCallForChannel];
+    if(delegate){
+        if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
+            [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
+        }
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"MQTT_APPLOZIC_01" object:alMessage];
+}
+
+-(void) syncCall: (ALMessage *) alMessage {
+    [self syncCall:alMessage withDelegate:nil];
 }
 
 -(void) updateConnectedStatus: (ALUserDetail *) alUserDetail {

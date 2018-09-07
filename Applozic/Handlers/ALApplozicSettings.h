@@ -15,6 +15,8 @@
 #define CONVERSATION_TITLE @"com.applozic.userdefault.CONVERSATION_TITLE"
 #define BACK_BUTTON_TITLE @"com.applozic.userdefault.BACK_BUTTON_TITLE"
 #define FONT_FACE @"com.applozic.userdefault.FONT_FACE"
+#define CHAT_CELL_FONT_TEXT_STYLE @"com.applozic.userdefault.CHAT_CELL_FONT_TEXT_STYLE"
+#define CHAT_CHANNEL_CELL_FONT_TEXT_STYLE @"com.applozic.userdefault.CHAT_CHANNEL_CELL_FONT_TEXT_STYLE"
 #define NOTIFICATION_TITLE @"com.applozic.userdefault.NOTIFICATION_TITLE"
 #define IMAGE_COMPRESSION_FACTOR @"com.applozic.userdefault.IMAGE_COMPRESSION_FACTOR"
 #define IMAGE_UPLOAD_MAX_SIZE @"com.applozic.userdefault.IMAGE_UPLOAD_MAX_SIZE"
@@ -31,6 +33,7 @@
 #define GROUP_MEMBER_ADD_OPTION @"com.applozic.userdefault.GROUP_MEMBER_ADD_OPTION"
 #define GROUP_MEMBER_REMOVE_OPTION @"com.applozic.userdefault.GROUP_MEMBER_REMOVE_OPTION"
 #define THIRD_PARTY_VC_NAME @"com.applozic.userdefault.THIRD_PARTY_VC_NAME"
+#define THIRD_PARTY_DETAIL_VC_NOTIFICATION @"com.applozic.userdefault.THIRD_PARTY_DETAIL_VC_NOTIFICATION"
 #define CONTEXTUAL_CHAT_OPTION @"com.applozic.userdefault.CONTEXTUAL_CHAT_OPTION"
 #define USER_CALL_OPTION @"com.applozic.userdefault.USER_CALL_OPTION"
 #define SEND_BUTTON_BG_COLOR @"com.applozic.userdefault.SEND_BUTTON_BG_COLOR"
@@ -109,8 +112,15 @@ static NSString *const ALDisableMultiSelectGalleryView = @"ALDisableMultiSelectG
 @interface ALApplozicSettings : NSObject
 
 +(void)setFontFace:(NSString *)fontFace;
-
 +(NSString *)getFontFace;
+
+// works with font face for iOS 11, uses system font face for iOS 10, being ignored for versions below
++(void)setChatCellFontTextStyle:(NSString *)fontTextStyle;
++(NSString *)getChatCellFontTextStyle;
+
+// works with font face for iOS 11, uses system font face for iOS 10, being ignored for versions below
++(void)setChatChannelCellFontTextStyle:(NSString *)fontTextStyle;
++(NSString *)getChatChannelCellFontTextStyle;
 
 +(void)setUserProfileHidden: (BOOL)flag;
 
@@ -196,6 +206,11 @@ static NSString *const ALDisableMultiSelectGalleryView = @"ALDisableMultiSelectG
 
 +(NSString *)getCustomClassName;
 +(void)setCustomClassName:(NSString *)className;
+
+// When a user taps on title view in ALChatViewController  with this option you can receive notification with name thirdPartyDetailVCNotification with options to show custom group detail VC
+// might be blocked by "setGroupInfoDisabled" and "setReceiverUserProfileOption"
++(BOOL)getOptionToPushNotificationToShowCustomGroupDetalVC;
++(void)setOptionToPushNotificationToShowCustomGroupDetalVC:(BOOL)option;
 
 +(void)setContextualChat:(BOOL)option;
 +(BOOL)getContextualChatOption;

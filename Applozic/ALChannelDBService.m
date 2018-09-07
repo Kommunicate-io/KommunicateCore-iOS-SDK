@@ -868,14 +868,19 @@
 }
 
 
--(void)processArrayAfterSyncCall:(NSMutableArray *)channelArray
-{
+-(void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate{
+   
     for(ALChannel *channelObject in channelArray)
     {
         [self createChannel:channelObject];
+        if(delegate){
+            [delegate onChannelUpdated:channelObject];
+        }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_channel_Info" object:channelObject];
     }
+
 }
+
 
 //------------------------------------------
 #pragma mark AFTER LEAVE LOGOUT and LOGIN

@@ -408,7 +408,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 
 }
 
-+(void) getLatestMessageForUser:(NSString *)deviceKeyString withDelegate : (id<ApplozicUpdatesDelegate>)theDelegate withCompletion:(void (^)( NSMutableArray *, NSError *))completion
++(void) getLatestMessageForUser:(NSString *)deviceKeyString withDelegate : (id<ApplozicUpdatesDelegate>)delegate withCompletion:(void (^)( NSMutableArray *, NSError *))completion
 {
     if(!alMsgClientService)
     {
@@ -432,52 +432,50 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                     ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
                     messageArray = [dbService addMessageList:syncResponse.messagesList];
 
-                    NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:messageArray];
-                    for(ALMessage * message in hiddenMsgFilteredArray)
-                    {
-                        if([message isHiddenMessage] && ![message isVOIPNotificationMessage])
+                    [ALUserService processContactFromMessages:messageArray withCompletion:^{
+                        NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:messageArray];
+                        
+                        for(ALMessage * message in hiddenMsgFilteredArray)
                         {
-                            [messageArray removeObject:message];
-                        }
-                       else if(![message isToIgnoreUnreadCountIncrement])
-                        {
-                            [ALMessageService incrementContactUnreadCount:message];
-                        }
-
-                        if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
-                            ALChannelService *channelService = [[ALChannelService alloc] init];
-                            [channelService syncCallForChannel];
-                            if([message isMsgHidden]) {
+                            
+                            if([message isHiddenMessage] && ![message isVOIPNotificationMessage])
+                            {
                                 [messageArray removeObject:message];
                             }
-                        }
-
-                        if(![message isHiddenMessage] && ![message isVOIPNotificationMessage] && theDelegate)
-                        {
-                            if([message.type  isEqual: OUT_BOX]){
-                                [theDelegate onMessageSent: message];
-                            }else{
-                                [theDelegate onMessageReceived: message];
+                            else if(![message isToIgnoreUnreadCountIncrement])
+                            {
+                                [ALMessageService incrementContactUnreadCount:message];
                             }
+                            
+                            if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
+                                [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
+                                if([message isMsgHidden]) {
+                                    [messageArray removeObject:message];
+                                }
+                            }
+                            
+                            if(![message isHiddenMessage] && ![message isVOIPNotificationMessage] && delegate)
+                            {
+                                if([message.type  isEqual: OUT_BOX]){
+                                    [delegate onMessageSent: message];
+                                }else{
+                                    [delegate onMessageReceived: message];
+                                }
+                            }
+                            
                         }
-
-                    }
-
-                    [ALUserService processContactFromMessages:messageArray withCompletion:^{
+                        
                         [[NSNotificationCenter defaultCenter] postNotificationName:NEW_MESSAGE_NOTIFICATION object:messageArray userInfo:nil];
-
+                        
                     }];
 
-                    completion(messageArray,error);
-
-                }else
-                {
-                    completion(messageArray,error);
                 }
-
+                
                 [ALUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
                 ALMessageClientService *messageClientService = [[ALMessageClientService alloc] init];
                 [messageClientService updateDeliveryReports:syncResponse.messagesList];
+                
+                completion(messageArray,error);
 
             }
             else
@@ -534,7 +532,8 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
        || (message.groupId && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
        || [message.type isEqualToString:@"5"]
        || [message isHiddenMessage]
-       || [message isVOIPNotificationMessage]) {
+       || [message isVOIPNotificationMessage]
+       || [message.status isEqualToNumber:[NSNumber numberWithInt:READ]]) {
 
         return NO;
 
@@ -1002,34 +1001,42 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     return [alMsgDBService createMessageEntity:dbMessage];
 }
 
-+(void)addOpenGroupMessage:(ALMessage*)alMessage{
++(void)addOpenGroupMessage:(ALMessage*)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate{
     {
-
+        
         if(!alMessage){
             return;
         }
-
+        
         NSMutableArray * singlemessageArray = [[NSMutableArray alloc] init];
         [singlemessageArray addObject:alMessage];
         NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:singlemessageArray];
         for(ALMessage * message in hiddenMsgFilteredArray)
         {
-
+            
             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                 ALChannelService *channelService = [[ALChannelService alloc] init];
-                [channelService syncCallForChannel];
+                [channelService syncCallForChannelWithDelegate:delegate];
                 if([message isMsgHidden]) {
                     [singlemessageArray removeObject:message];
                 }
             }
-
+            
+            if(delegate){
+                if([message.type  isEqual: OUT_BOX]){
+                    [delegate onMessageSent: message];
+                }else{
+                    [delegate onMessageReceived: message];
+                }
+            }
+            
         }
-
+        
         [ALUserService processContactFromMessages:singlemessageArray withCompletion:^{
             [[NSNotificationCenter defaultCenter] postNotificationName:NEW_MESSAGE_NOTIFICATION object:singlemessageArray userInfo:nil];
-
+            
         }];
-
+        
     }
 }
 
@@ -1039,10 +1046,10 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     
     [messageDbService getLatestMessages:isNextPage withOnlyGroups:isGroup withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
         
+        
         completion(messageList,error);
         
     }];
 }
-
 
 @end
