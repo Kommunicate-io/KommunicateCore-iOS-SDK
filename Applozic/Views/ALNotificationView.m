@@ -331,7 +331,7 @@
                      self.groupId = nil;
                  }
                  ALSLog(ALLoggerSeverityInfo, @"onTopMessageVC: ContactID %@ and ChannelID %@",self.contactId, self.groupId);
-                 [class2 createDetailChatViewController:_contactId];
+                 [class2 createDetailChatViewController:self.contactId];
                  self.checkContactId = [NSString stringWithFormat:@"%@",self.contactId];
              }
              else if([delegate isKindOfClass:[ALChatViewController class]] && top.isChatViewOnTop)

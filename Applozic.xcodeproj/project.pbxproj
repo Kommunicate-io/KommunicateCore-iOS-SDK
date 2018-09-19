@@ -13,7 +13,13 @@
 		103CC2BE2032EDF200600D16 /* AlChannelInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 103CC2B82032EDF100600D16 /* AlChannelInfoModel.m */; };
 		103CC2BF2032EDF200600D16 /* AlChannelFeedResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 103CC2B92032EDF100600D16 /* AlChannelFeedResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		103CC2C02032EDF200600D16 /* AlChannelFeedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 103CC2BA2032EDF200600D16 /* AlChannelFeedResponse.m */; };
+		1881CEBF2152794E00325270 /* ALCustomPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */; };
+		1881CEC02152794E00325270 /* CustomPicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1881CEBE2152794E00325270 /* CustomPicker.storyboard */; };
+		1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1881CEC321527AB900325270 /* ALMultimediaData.h */; };
+		1881CEC621527ABA00325270 /* ALMultimediaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1881CEC421527AB900325270 /* ALMultimediaData.m */; };
 		18DE3BF220DD96A90054B793 /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18DE3BE920DD96A90054B793 /* AppLozic.xcdatamodeld */; };
+		18FFE96B21519AD300E88C91 /* ALAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FFE96921519AD300E88C91 /* ALAudioSession.m */; };
+		18FFE96C21519AD300E88C91 /* ALAudioSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 18FFE96A21519AD300E88C91 /* ALAudioSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2932B9F31C7C875F0017911D /* ALGroupDetailViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2932B9F11C7C875F0017911D /* ALGroupDetailViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2932B9F41C7C875F0017911D /* ALGroupDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2932B9F21C7C875F0017911D /* ALGroupDetailViewController.m */; };
 		293446131D4F426F007BD1B4 /* ALImageActivity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2934460F1D4F426F007BD1B4 /* ALImageActivity.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -384,6 +390,10 @@
 		103CC2B82032EDF100600D16 /* AlChannelInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlChannelInfoModel.m; path = Applozic/AlChannelInfoModel.m; sourceTree = "<group>"; };
 		103CC2B92032EDF100600D16 /* AlChannelFeedResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AlChannelFeedResponse.h; path = Applozic/AlChannelFeedResponse.h; sourceTree = "<group>"; };
 		103CC2BA2032EDF200600D16 /* AlChannelFeedResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlChannelFeedResponse.m; path = Applozic/AlChannelFeedResponse.m; sourceTree = "<group>"; };
+		1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALCustomPickerViewController.swift; path = Applozic/ALCustomPickerViewController.swift; sourceTree = "<group>"; };
+		1881CEBE2152794E00325270 /* CustomPicker.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = CustomPicker.storyboard; path = Applozic/CustomPicker.storyboard; sourceTree = "<group>"; };
+		1881CEC321527AB900325270 /* ALMultimediaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALMultimediaData.h; sourceTree = "<group>"; };
+		1881CEC421527AB900325270 /* ALMultimediaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALMultimediaData.m; sourceTree = "<group>"; };
 		18DE3BEA20DD96A90054B793 /* AppLozic 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 4.xcdatamodel"; sourceTree = "<group>"; };
 		18DE3BEB20DD96A90054B793 /* AppLozic 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 8.xcdatamodel"; sourceTree = "<group>"; };
 		18DE3BEC20DD96A90054B793 /* AppLozic 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -392,6 +402,8 @@
 		18DE3BEF20DD96A90054B793 /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
 		18DE3BF020DD96A90054B793 /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
 		18DE3BF120DD96A90054B793 /* AppLozic 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 3.xcdatamodel"; sourceTree = "<group>"; };
+		18FFE96921519AD300E88C91 /* ALAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAudioSession.m; path = Applozic/ALAudioSession.m; sourceTree = "<group>"; };
+		18FFE96A21519AD300E88C91 /* ALAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAudioSession.h; path = Applozic/ALAudioSession.h; sourceTree = "<group>"; };
 		2932B9F11C7C875F0017911D /* ALGroupDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALGroupDetailViewController.h; sourceTree = "<group>"; };
 		2932B9F21C7C875F0017911D /* ALGroupDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALGroupDetailViewController.m; sourceTree = "<group>"; };
 		2934460F1D4F426F007BD1B4 /* ALImageActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALImageActivity.h; sourceTree = "<group>"; };
@@ -961,6 +973,8 @@
 		6D6DF0A21BC5364C00EBA00F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				1881CEC321527AB900325270 /* ALMultimediaData.h */,
+				1881CEC421527AB900325270 /* ALMultimediaData.m */,
 				8B170C2221232544003A14B3 /* ALAttachmentPickerData.h */,
 				8B170C2421232545003A14B3 /* ALAttachmentPickerData.m */,
 				8B170C2321232544003A14B3 /* UIImage+animatedGIF.h */,
@@ -1118,6 +1132,8 @@
 		6D6DF1DB1BC5371200EBA00F /* ApplozicUIWidget */ = {
 			isa = PBXGroup;
 			children = (
+				1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */,
+				1881CEBE2152794E00325270 /* CustomPicker.storyboard */,
 				18DE3BDF20DD7C880054B793 /* ViewModel */,
 				6D7757211D5B83AA0025560B /* ALHyperLabel.h */,
 				6D7757221D5B83AA0025560B /* ALHyperLabel.m */,
@@ -1136,6 +1152,8 @@
 		6D6DF1DC1BC5375700EBA00F /* ApplozicCommons */ = {
 			isa = PBXGroup;
 			children = (
+				18FFE96A21519AD300E88C91 /* ALAudioSession.h */,
+				18FFE96921519AD300E88C91 /* ALAudioSession.m */,
 				6D6DF0CC1BC5364C00EBA00F /* ALJson.m */,
 				6D6DF0CB1BC5364C00EBA00F /* ALJson.h */,
 			);
@@ -1528,6 +1546,7 @@
 				6D6DF1481BC5364C00EBA00F /* ALRequestHandler.h in Headers */,
 				6D7756B11D5B80DF0025560B /* ALChannelFeed.h in Headers */,
 				6D7756711D5B7EEC0025560B /* ALChatLauncher.h in Headers */,
+				1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */,
 				6D77570E1D5B83660025560B /* ALPushAssist.h in Headers */,
 				6D7756A91D5B80DF0025560B /* ALChannel.h in Headers */,
 				6D7756F51D5B82B50025560B /* ALAppLocalNotifications.h in Headers */,
@@ -1647,6 +1666,7 @@
 				8B0DD64C20CE5CF2002362E9 /* ALApplicationInfo.h in Headers */,
 				464F7D191E1D345300B68DCC /* ALChannelUser.h in Headers */,
 				46B258A01E5B03300078BBA5 /* ALChannelMsgCell.h in Headers */,
+				18FFE96C21519AD300E88C91 /* ALAudioSession.h in Headers */,
 				322B304A1EF9537600DB01FC /* AlApplicationInfoFeed.h in Headers */,
 				C76D314C1F0AAFCF0087291F /* ALVOIPNotificationHandler.h in Headers */,
 				C76D314B1F0AAFCE0087291F /* ALAudioVideoBaseVC.h in Headers */,
@@ -1741,6 +1761,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1881CEC02152794E00325270 /* CustomPicker.storyboard in Resources */,
 				4612E8F31E13882D0022DB23 /* Doxyfile in Resources */,
 				6D7757161D5B83660025560B /* TSMessagesDefaultDesign.json in Resources */,
 				4612E9191E13882D0022DB23 /* MQTTWebsocketTransport in Resources */,
@@ -1863,6 +1884,7 @@
 				C70983081E0177E900FC93A1 /* ALMessageServiceWrapper.m in Sources */,
 				6D7757201D5B838A0025560B /* MessageListRequest.m in Sources */,
 				8B1635C82119C4CB0008191A /* ALLogger.m in Sources */,
+				1881CEBF2152794E00325270 /* ALCustomPickerViewController.swift in Sources */,
 				4612E9181E13882D0022DB23 /* MQTTTransport.m in Sources */,
 				6D73B2FE1D4F0FF0007D3D72 /* ALReceiverUserProfileVC.m in Sources */,
 				6D7756EA1D5B823B0025560B /* ALMQTTConversationService.m in Sources */,
@@ -1871,6 +1893,7 @@
 				6D6DF1B91BC5364C00EBA00F /* SDWebImageCompat.m in Sources */,
 				6D7756721D5B7EEC0025560B /* ALChatLauncher.m in Sources */,
 				6D77568E1D5B7FBE0025560B /* ALConversationService.m in Sources */,
+				18FFE96B21519AD300E88C91 /* ALAudioSession.m in Sources */,
 				8B22F0D620DE393C00A4AF4A /* ALTemplateMessageModel.swift in Sources */,
 				4612E9081E13882D0022DB23 /* MQTTSession.m in Sources */,
 				6D7756901D5B7FBE0025560B /* ALTopicDetail.m in Sources */,
@@ -1948,6 +1971,7 @@
 				8B0DD64D20CE5CF2002362E9 /* ALApplicationInfo.m in Sources */,
 				6D7756D41D5B82000025560B /* ALLastSeenSyncFeed.m in Sources */,
 				6D77572E1D5B84940025560B /* ALCustomCell.m in Sources */,
+				1881CEC621527ABA00325270 /* ALMultimediaData.m in Sources */,
 				103CC2BE2032EDF200600D16 /* AlChannelInfoModel.m in Sources */,
 				6D7756E01D5B82000025560B /* ALUserDetail.m in Sources */,
 				6D77571E1D5B838A0025560B /* ALSendMessageResponse.m in Sources */,
@@ -2109,7 +2133,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -2141,7 +2165,7 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

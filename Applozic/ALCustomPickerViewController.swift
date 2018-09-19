@@ -58,9 +58,17 @@ public class ALBaseNavigationViewController: UINavigationController {
     var cameraMode:ALCameraPhotoType = .NoCropOption
     let option = PHImageRequestOptions()
     var selectedRows = [Int]()
-    var selectedImages = [Int: UIImage]()
-    var selectedVideos = [Int: String]()
-    var selectedGifs = [Int: Data]()
+    var selectedImages = [Int: PHAsset]()
+    var selectedVideos = [Int: PHAsset]()
+    var selectedGifs = [Int: PHAsset]()
+    
+    // EXPORT PROGRESS VALUES
+    var exportingVideoSessions = [String: AVAssetExportSession]()
+    var progressItems = [String: Progress]()
+    var mainProgress: Progress?
+    var exportProgressBarTimer: Timer?
+    var exportWasCalceled = false
+    
     
     var multimediaData: ALMultimediaData = ALMultimediaData()
     
@@ -111,8 +119,8 @@ public class ALBaseNavigationViewController: UINavigationController {
         self.navigationController?.navigationBar.barTintColor = ALApplozicSettings.getColorForNavigation()
         self.navigationController?.navigationBar.tintColor = ALApplozicSettings.getColorForNavigationItem()
         if let aSize = UIFont(name: "Helvetica-Bold", size: 18) {
-            self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: ALApplozicSettings.getColorForNavigationItem(),
-                                                                            NSAttributedStringKey.font: aSize]
+            self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: ALApplozicSettings.getColorForNavigationItem(),
+                                                                            NSAttributedString.Key.font: aSize]
         }
     }
 
@@ -172,13 +180,45 @@ public class ALBaseNavigationViewController: UINavigationController {
         }
 
     }
+    
+    func exportMultipleVideos(_ assets: [PHAsset], exportStarted: @escaping () -> Void, completion: @escaping ([String]) -> Void) {
+        
+        guard !assets.isEmpty else {
+            completion([])
+            return
+        }
+        
+        let dispatchExportStartedGroup = DispatchGroup()
+        let dispatchExportCompletedGroup = DispatchGroup()
+        
+        var videoPaths: [String] = []
+        for video in assets {
+            
+            dispatchExportStartedGroup.enter()
+            dispatchExportCompletedGroup.enter()
+            exportVideoAsset(video, exportStarted: dispatchExportStartedGroup.leave(), completion: { path in
+                if let videoPath = path {
+                    videoPaths.append(videoPath)
+                }
+                dispatchExportCompletedGroup.leave()
+            })
+        }
+        
+        dispatchExportStartedGroup.notify(queue: .main, execute: exportStarted)
+        dispatchExportCompletedGroup.notify(queue: .main) {
+            completion(videoPaths)
+        }
+    }
 
-    func exportVideoAsset(indexPath: IndexPath, _ asset: PHAsset) {
+    func exportVideoAsset(_ asset: PHAsset, exportStarted: @autoclosure @escaping () -> Void, completion: @escaping (String?) -> Void) {
         let filename = String(format: "VID-%f.mp4", Date().timeIntervalSince1970*1000)
         let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 
         let filePath = documentsUrl.absoluteString.appending(filename)
-        guard var fileurl = URL(string: filePath) else { return }
+        guard var fileurl = URL(string: filePath) else {
+            completion(nil)
+            return
+        }
         print("exporting video to ", fileurl)
         fileurl = fileurl.standardizedFileURL
 
@@ -195,30 +235,36 @@ public class ALBaseNavigationViewController: UINavigationController {
             // most likely, the file didn't exist.  Don't sweat it
         }
 
-        PHImageManager.default().requestExportSession(forVideo: asset, options: options, exportPreset: AVAssetExportPresetHighestQuality) {
+        PHImageManager.default().requestExportSession(forVideo: asset, options: options, exportPreset: AVAssetExportPresetHighestQuality) { [weak self]
             (exportSession: AVAssetExportSession?, _) in
 
-            if exportSession == nil {
+            guard let avExportSession = exportSession else {
                 print("COULD NOT CREATE EXPORT SESSION")
+                completion(nil)
                 return
             }
 
-            exportSession!.outputURL = fileurl
-            exportSession!.outputFileType = AVFileType.mp4 //file type encode goes here, you can change it for other types
+            avExportSession.outputURL = fileurl
+            avExportSession.outputFileType = AVFileType.mp4 //file type encode goes here, you can change it for other types
 
             print("GOT EXPORT SESSION")
-            exportSession!.exportAsynchronously() {
+            avExportSession.exportAsynchronously() {
                 print("EXPORT DONE")
-                self.selectedVideos[indexPath.row] = fileurl.path
+                completion(fileurl.path)
             }
+            
+            self?.exportingVideoSessions[filePath] = avExportSession
+            self?.progressItems[filePath] = Progress(totalUnitCount: 100)
 
-            print("progress: \(exportSession!.progress)")
-            print("error: \(String(describing: exportSession?.error))")
-            print("status: \(exportSession!.status.rawValue)")
+            print("progress: \(avExportSession.progress)")
+            print("error: \(String(describing: avExportSession.error))")
+            print("status: \(avExportSession.status.rawValue)")
+            
+            exportStarted()
         }
     }
     
-    func exportGifAsset(indexPath: IndexPath, _ asset: PHAsset){
+    func exportGifAsset(_ asset: PHAsset, completion: @escaping (Data?) -> Void){
         let options = PHImageRequestOptions()
         options.isSynchronous = true;
         options.isNetworkAccessAllowed = false;
@@ -226,11 +272,10 @@ public class ALBaseNavigationViewController: UINavigationController {
         
         gifData(asset: asset, options: options, completionHandler: {
             data, error in
-            if let gifData = data {
-                self.selectedGifs[indexPath.row] = gifData
-            }else{
+            if data == nil {
                 NSLog("Error while exporting gif \(error ?? "")")
             }
+            completion(data)
         })
     }
     
@@ -256,12 +301,92 @@ public class ALBaseNavigationViewController: UINavigationController {
 
     @IBAction func doneButtonAction(_ sender: UIBarButtonItem) {
 
-        let videos = Array(selectedVideos.values)
-        let images = Array(selectedImages.values)
-        let gifs = Array(selectedGifs.values)
-        delegate?.multimediaSelected(selectedMultimediaList(images: images, videos: videos, gifs: gifs))
-        self.navigationController?.dismiss(animated: false, completion: nil)
-
+        let dispatchGroup = DispatchGroup()
+        
+        var videoPaths: [String] = []
+        dispatchGroup.enter()
+        exportMultipleVideos(Array(selectedVideos.values), exportStarted: { [weak self] in
+            self?.showProgressAlert()
+        }, completion: { paths in
+            videoPaths = paths
+            dispatchGroup.leave()
+        })
+        
+        var images: [UIImage] = []
+        for image in selectedImages.values {
+            dispatchGroup.enter()
+            PHCachingImageManager.default().requestImageData(for: image, options:nil) { (imageData, _, _, _) in
+                if let image = UIImage(data: imageData!) {
+                    images.append(image)
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        var gifsData: [Data] = []
+        for gif in selectedGifs.values {
+            dispatchGroup.enter()
+            exportGifAsset(gif) { data in
+                if let data = data {
+                    gifsData.append(data)
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            
+            self?.exportProgressBarTimer?.invalidate()
+            guard self?.exportWasCalceled == false else {
+                self?.exportWasCalceled = false
+                self?.presentedViewController?.dismiss(animated: true)
+                return
+            }
+            
+            if let list = self?.selectedMultimediaList(images: images, videos: videoPaths, gifs: gifsData) {
+                self?.delegate?.multimediaSelected(list)
+            }
+            self?.navigationController?.presentingViewController?.dismiss(animated: false, completion: nil)
+        }
+    }
+    
+    func showProgressAlert() {
+        let alertView = UIAlertController(title: NSLocalizedString("Optimizing...", comment: ""), message: " ", preferredStyle: .alert)
+        alertView.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: { [weak self] _ in
+            self?.exportWasCalceled = true
+            self?.exportingVideoSessions.values.forEach { $0.cancelExport() }
+            self?.progressItems.removeAll()
+            self?.exportProgressBarTimer?.invalidate()
+            alertView.dismiss(animated: true)
+        }))
+        var mainProgress: Progress?
+        if #available(iOS 9.0, *) {
+            mainProgress = Progress(totalUnitCount: 100)
+            for item in progressItems.values {
+                mainProgress?.addChild(item, withPendingUnitCount: Int64(100.0/Double(progressItems.count)))
+            }
+            self.mainProgress = mainProgress
+        }
+        
+        present(alertView, animated: true, completion: {
+            if #available(iOS 9.0, *) {
+                let margin: CGFloat = 8.0
+                let rect = CGRect(x: margin, y: 62.0, width: alertView.view.frame.width - margin * 2.0, height: 2.0)
+                let progressView = UIProgressView(frame: rect)
+                progressView.observedProgress = mainProgress
+                progressView.tintColor = UIColor.blue
+                alertView.view.addSubview(progressView)
+            }
+        })
+        if #available(iOS 9.0, *) {
+            exportProgressBarTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateProgressIndicator), userInfo: nil, repeats: true)
+        }
+    }
+    
+    @objc func updateProgressIndicator() {
+        for (key, session) in exportingVideoSessions {
+            progressItems[key]?.completedUnitCount = Int64(session.progress * 100.0)
+        }
     }
 
     @IBAction func dismissAction(_ sender: UIBarButtonItem) {
@@ -319,14 +444,11 @@ extension ALCustomPickerViewController: UICollectionViewDelegate, UICollectionVi
         } else {
             selectedRows[indexPath.row] = 1
             if checkGif(asset: asset){
-                exportGifAsset(indexPath: indexPath, asset)
+                selectedGifs[indexPath.row] = asset
             }else if asset.mediaType == .video {
-                exportVideoAsset(indexPath: indexPath, asset)
+                selectedVideos[indexPath.row] = asset
             } else {
-                PHCachingImageManager.default().requestImageData(for: asset, options:nil) { (imageData, _, _, _) in
-                    let image = UIImage(data: imageData!)
-                    self.selectedImages[indexPath.row] = image
-                }
+                selectedImages[indexPath.row] = asset
             }
         }
 

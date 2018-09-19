@@ -867,6 +867,15 @@
     return NO;
 }
 
+-(BOOL)isAdminBroadcastChannel:(NSNumber *)groupId
+{
+    DB_CHANNEL *dbChannel = [self getChannelByKey:groupId];
+    ALChannel *channel = [ALChannel new];
+    NSMutableDictionary *metadata = [channel getMetaDataDictionary:dbChannel.metadata];
+    
+    return (metadata && [[metadata valueForKey:@"AL_ADMIN_BROADCAST"] isEqualToString:@"true"]);
+}
+
 
 -(void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate{
    
@@ -1030,7 +1039,7 @@
     NSError *fetchError = nil;
     NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
     
-    ALSLog(ALLoggerSeverityInfo, @"CHILD CHANNEL FOUND : %lu WITH PARENT KEY : %@",result.count, parentGroupKey);
+    ALSLog(ALLoggerSeverityInfo, @"CHILD CHANNEL FOUND : %lu WITH PARENT KEY : %@",(unsigned long)result.count, parentGroupKey);
     ALSLog(ALLoggerSeverityError, @"ERROR (IF-ANY) : %@",fetchError.description);
     
     for(DB_CHANNEL *dbChannel in result)

@@ -152,13 +152,17 @@
             ALSLog(ALLoggerSeverityInfo, @"..");
         }
         
-        completion(response,nil);
+        
         
         [self connect];
         ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
         if(dbService.isMessageTableEmpty)
         {
-            [ALMessageService processLatestMessagesGroupByContact];
+            [ALMessageService processLatestMessagesGroupByContactWithCompletion:^{
+                completion(response,nil);
+            }];
+        } else {
+            completion(response,nil);
         }
         
     }];
@@ -268,12 +272,15 @@
             NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
             //            [[UIApplication sharedApplication] unregisterForRemoteNotifications];
             [ALUserDefaultsHandler clearAll];
+            [ALApplozicSettings clearAll];
+
             ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
             [messageDBService deleteAllObjectsInCoreData];
-            
             [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
         } else {
             [ALUserDefaultsHandler clearAll];
+            [ALApplozicSettings clearAll];
+            
             ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
             [messageDBService deleteAllObjectsInCoreData];
             [[UIApplication sharedApplication] unregisterForRemoteNotifications];

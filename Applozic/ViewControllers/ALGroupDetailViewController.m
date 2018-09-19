@@ -51,7 +51,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(groupDetailsSyncCall) name:@"GroupDetailTableReload" object:nil];
     self.lastSeenMembersArray = [[NSMutableArray alloc] init];
     self.alChannel =[[ALChannelService new] getChannelByKey:self.channelKeyID];
-    ALSLog(ALLoggerSeverityInfo, @"## self.alChannel ::", self.alChannel.notificationAfterTime);
+    ALSLog(ALLoggerSeverityInfo, @"## self.alChannel :: %@", self.alChannel);
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -395,7 +395,7 @@
                             
                             if(!error && [response.status isEqualToString:@"success"])
                             {
-                                [memberIds addObject:self.memberIdToAdd];
+                                [self->memberIds addObject:self.memberIdToAdd];
                                 [self.tableView reloadData];
                                 
                             }
@@ -561,7 +561,7 @@
                                                                                                 
                                                                                                 if(!error)
                                                                                                 {
-                                                                                                    [memberIds removeObjectAtIndex:row];
+                                                                                                    [self->memberIds removeObjectAtIndex:row];
                                                                                                     [self setupView];
                                                                                                     [self.tableView reloadData];
                                                                                                 }
@@ -589,7 +589,7 @@
                                                                 ALChannelService *channelService = [ALChannelService new];
                                                                 ALChannelUser * alChannelUsers = [ALChannelUser new];
                                                                 alChannelUsers.role = [NSNumber numberWithInt:1];
-                                                                alChannelUsers.userId = memberIds[row];
+                                                                alChannelUsers.userId = self->memberIds[row];
                                                                 NSMutableArray * channelUsers = [NSMutableArray new];
                                                                 [channelUsers addObject:alChannelUsers.dictionary];
                                                                 

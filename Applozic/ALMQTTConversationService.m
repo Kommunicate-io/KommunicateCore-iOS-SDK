@@ -174,7 +174,6 @@
     ALSLog(ALLoggerSeverityInfo, @"MQTT_NOTIFICATION_TYPE :: %@",type);
     NSString *notificationId = (NSString* )[theMessageDict valueForKey:@"id"];
 
-    ALPushAssist *top = [[ALPushAssist alloc] init];
     if([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground )
     {
         ALSLog(ALLoggerSeverityInfo, @"Returing coz Application State is Background OR Our View is NOT on Top");

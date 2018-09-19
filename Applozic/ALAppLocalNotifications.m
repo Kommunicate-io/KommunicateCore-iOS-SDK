@@ -54,8 +54,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForegroundBase:)
                                                  name:UIApplicationWillEnterForegroundNotification object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(proactivelyDisconnectMQTT)
-                                                  name:@"APP_ENTER_IN_BACKGROUND"
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterBackground:)
+                                                  name:UIApplicationDidEnterBackgroundNotification
                                                 object:nil];
     
    
@@ -202,6 +202,12 @@
 {
         ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
         [alMqttConversationService  unsubscribeToConversation];
+}
+
+-(void)appWillEnterBackground:(NSNotification *)notification
+{
+    [self proactivelyDisconnectMQTT];
+    [ALLogger saveLogArray];
 }
 
 //receiver

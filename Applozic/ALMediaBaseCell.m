@@ -216,12 +216,12 @@
     if( (self.mBubleImageView.frame.size.width) > replyWidthRequired )
     {
         replyWidthRequired = (self.mBubleImageView.frame.size.width);
-        ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is less from parent one : %d", replyWidthRequired);
+        ALSLog(ALLoggerSeverityInfo, @"replyWidthRequired is less from parent one : %f", replyWidthRequired);
     }
     else
     {
         replyWidthRequired = replyWidthRequired;
-        ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is grater from parent one : %d", replyWidthRequired);
+        ALSLog(ALLoggerSeverityInfo, @"replyWidthRequired is grater from parent one : %f", replyWidthRequired);
         
     }
     

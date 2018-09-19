@@ -764,7 +764,7 @@
                     [self subProcessContactFetch];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self getSerachResult:_stopSearchText];
+                        [self getSerachResult:self.stopSearchText];
                     });
                 }
                 [[self activityIndicator] stopAnimating];
@@ -1140,7 +1140,7 @@
                                                                  }
                                                                  else if ([ALPushAssist isViewObjIsMsgContainerVC:aViewController])
                                                                  {
-                                                                     ALSubViewController * msgSubView = aViewController;
+                                                                     ALSubViewController * msgSubView = (ALSubViewController *)aViewController;
                                                                      [msgSubView.msgView insertChannelMessage:alChannel.key];
                                                                      [self.navigationController popToViewController:aViewController animated:YES];
                                                                  }
@@ -1183,7 +1183,7 @@
                                          }
                                          else if ([ALPushAssist isViewObjIsMsgContainerVC:aViewController])
                                          {
-                                             ALSubViewController * msgSubView = aViewController;
+                                             ALSubViewController * msgSubView = (ALSubViewController*)aViewController;
                                              [msgSubView.msgView insertChannelMessage:alChannel.key];
                                              [self.navigationController popToViewController:aViewController animated:YES];
                                          }
@@ -1442,9 +1442,9 @@
             return;
         }
         
-        if(_stopSearchText != nil){
+        if(self->_stopSearchText != nil){
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self getSerachResult:_stopSearchText];
+                [self getSerachResult:self->_stopSearchText];
             });
             [[self activityIndicator] stopAnimating];
         }else{
