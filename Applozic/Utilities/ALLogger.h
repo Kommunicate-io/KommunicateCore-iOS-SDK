@@ -100,6 +100,7 @@ static NSString * const ALLogger_LoggingEnabled = @"ALLogger_LoggingEnabled";	//
 
 + (NSMutableArray *) logArray;									// gets singleton instance of logArray - from disk, or new
 + (BOOL) saveLogArray;											// use inside applicationWillTerminate: for continuous logging
++ (NSString *) logArrayFilepath;
 + (NSString *) logArrayAsString;								// convenience method / migration from -applicationLog
 
 @end

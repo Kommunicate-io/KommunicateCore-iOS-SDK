@@ -7,7 +7,6 @@
 //
 
 #import "ALUserDefaultsHandler.h"
-#define NOTIFICATION_TITLE @"NOTIFICATION_TITLE"
 
 @implementation ALUserDefaultsHandler
 
@@ -317,13 +316,13 @@
 
 +(void)setNotificationTitle:(NSString *)notificationTitle
 {
-    [[NSUserDefaults standardUserDefaults] setValue:notificationTitle forKey:NOTIFICATION_TITLE];
+    [[NSUserDefaults standardUserDefaults] setValue:notificationTitle forKey:NOTIFICATION_TITLE_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 +(NSString *)getNotificationTitle
 {
-    return [[NSUserDefaults standardUserDefaults] valueForKey:NOTIFICATION_TITLE];
+    return [[NSUserDefaults standardUserDefaults] valueForKey:NOTIFICATION_TITLE_KEY];
 }
 
 +(void)setLastSyncChannelTime:(NSNumber *)lastSyncChannelTime

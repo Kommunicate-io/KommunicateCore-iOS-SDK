@@ -284,7 +284,7 @@ static NSInteger		UA__maxLogsRetained			= 200;
 + (NSString *) logArrayFilepath {
     NSArray *folders = [[NSFileManager defaultManager] URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask];
     NSURL *libraryDir = [folders objectAtIndex:0];
-    return [libraryDir.path stringByAppendingPathComponent:@"ALLogger_log.txt"];
+    return [libraryDir.path stringByAppendingPathComponent:@"ApplozicLogs.txt"];
 }
 
 + (NSString *) logArrayAsString {

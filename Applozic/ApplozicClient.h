@@ -33,6 +33,8 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 @property (nonatomic, retain) ALMessageDBService *messageDbService;
 @property (nonatomic, retain) ALUserService *userService;
 @property (nonatomic, retain) ALChannelService *channelService;
+@property (nonatomic, strong) id<ApplozicUpdatesDelegate> delegate;
+
 
 -(instancetype)initWithApplicationKey:(NSString *)applicationKey;
 

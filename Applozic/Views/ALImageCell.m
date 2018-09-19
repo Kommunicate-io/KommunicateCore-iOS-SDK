@@ -435,8 +435,6 @@ UIViewController * modalCon;
 
     if (alMessage.imageFilePath != NULL)
     {
-        NSString *name = alMessage.imageFilePath;
-       
         NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.imageFilePath];
         [self setInImageView:[NSURL fileURLWithPath:filePath]];

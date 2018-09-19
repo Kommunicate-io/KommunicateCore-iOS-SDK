@@ -174,11 +174,8 @@
         defaultFont = [UIFont systemFontOfSize:size];
     }
     
-    if ([ALApplozicSettings getChatCellFontTextStyle]) {
-        if (@available(iOS 11.0, *)) {
-            UIFontMetrics *fontMetrics = [UIFontMetrics metricsForTextStyle:[ALApplozicSettings getChatCellFontTextStyle]];
-            return [fontMetrics scaledFontForFont:defaultFont];
-        } else if (@available(iOS 10.0, *)) {
+    if ([ALApplozicSettings getChatCellFontTextStyle] && [ALApplozicSettings isTextStyleInCellEnabled]) {
+        if (@available(iOS 10.0, *)) {
             return [UIFont preferredFontForTextStyle:[ALApplozicSettings getChatCellFontTextStyle]];
         }
     }
@@ -736,11 +733,11 @@
     if(self.mBubleImageView.frame.size.width> replyWidthRequired )
     {
         replyWidthRequired = (self.mBubleImageView.frame.size.width);
-        ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is less from parent one : %d", replyWidthRequired);
+        ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is less from parent one : %f", replyWidthRequired);
     }
     else
     {
-        ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is grater from parent one : %d", replyWidthRequired);
+        ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is grater from parent one : %f", replyWidthRequired);
         
     }
     

@@ -46,6 +46,11 @@ static ALMessageClientService *alMsgClientService;
 
 +(void) processLatestMessagesGroupByContact
 {
+    [ALMessageService processLatestMessagesGroupByContactWithCompletion:nil];
+}
+
++(void) processLatestMessagesGroupByContactWithCompletion:(void(^)(void))completion
+{
     ALMessageClientService * almessageClientService = [[ALMessageClientService alloc] init];
     [almessageClientService getLatestMessageGroupByContact:[ALUserDefaultsHandler getFetchConversationPageSize] startTime:[ALUserDefaultsHandler getLastMessageListTime]  withCompletion:^( ALMessageList *alMessageListResponse,NSError *error) {
 
@@ -93,6 +98,9 @@ static ALMessageClientService *alMsgClientService;
         }
         else{
             ALSLog(ALLoggerSeverityInfo, @"Message List Response Nil");
+        }
+        if (completion) {
+            completion();
         }
     }];
 }
@@ -340,6 +348,10 @@ static ALMessageClientService *alMsgClientService;
                 alMessage.isUploadFailed= NO;
                 alMessage.status = [NSNumber numberWithInt:SENT];
 
+            }
+            
+            if(self.delegate){
+                [self.delegate onMessageSent:alMessage];
             }
 
         }else{

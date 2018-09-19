@@ -446,4 +446,10 @@
     
 }
 
+-(void)processOpenChat
+{
+    [self processKeyBoardHideTap];
+    [self.delegate openUserChat:self.mMessage];
+}
+
 @end

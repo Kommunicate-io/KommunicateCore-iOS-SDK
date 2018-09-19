@@ -115,7 +115,6 @@ static NSString * const reuseIdentifier = @"collectionCell";
     object.classVideoPath = nil;
     object.classImage = nil;
     object.dataGIF = nil;
-    object.attachmentType = nil;
     
     __block UIImage * image = [info valueForKey:UIImagePickerControllerOriginalImage];
     __block UIImage * globalThumbnail = [UIImage new];
@@ -205,7 +204,14 @@ static NSString * const reuseIdentifier = @"collectionCell";
     
     if(indexPath.row == self.imageArray.count - 1)
     {
-        [cell.imageView setBackgroundColor: self.navigationController.navigationBar.barTintColor];
+        if([ALApplozicSettings getBackgroundColorForAttachmentPlusIcon])
+        {
+            [cell.imageView setBackgroundColor: [ALApplozicSettings getBackgroundColorForAttachmentPlusIcon]];
+        }
+        else
+        {
+            [cell.imageView setBackgroundColor: self.navigationController.navigationBar.barTintColor];
+        }
     }
     
     return cell;

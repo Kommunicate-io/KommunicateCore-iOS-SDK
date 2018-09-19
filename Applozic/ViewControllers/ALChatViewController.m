@@ -422,7 +422,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
         [ALMessageService deleteMessage:messageKey andContactId:self.contactIds withCompletion:^(NSString * response, NSError * error) {
 
-            ALSLog(ALLoggerSeverityInfo, @"Message Deleted upon APPLOZIC_05",response);
+            ALSLog(ALLoggerSeverityInfo, @"Message Deleted upon APPLOZIC_05 and response: %@", response);
 
         }];
 //        ALMessageDBService * almessageDBService = [[ALMessageDBService alloc] init];
@@ -941,6 +941,16 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         [self freezeView:NO];
     }
 
+    if(self.channelKey){
+        ALChannelDBService *channelDBService = [[ALChannelDBService alloc]init];
+        
+        ALChannelUserX *alChannelUserXLoggedInUser = [channelDBService loadChannelUserXByUserId:self.channelKey andUserId:[ALUserDefaultsHandler getUserId]];
+        
+        if([channelDBService isAdminBroadcastChannel:self.channelKey] && !alChannelUserXLoggedInUser.isAdminUser){
+            self.typingMessageView.hidden = YES;
+        }
+        
+    }
 }
 
 //==============================================================================================================================================
@@ -2011,7 +2021,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
             self.tableViewTop2Constraint.constant = self.pickerView.frame.size.height;
             self.mTableView.frame = CGRectMake(0,self.pickerView.frame.size.height,
-                                               defaultTableRect.size.height,
+                                               self->defaultTableRect.size.height,
                                                [UIScreen mainScreen].bounds.size.width);
             [self.view layoutIfNeeded];
             [self.pickerView setHidden:NO];
@@ -2055,8 +2065,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     [UIView animateWithDuration:0.4 animations:^{
 
 
-        self.mTableView.frame = CGRectMake(0,defaultTableRect.origin.y,
-                                           defaultTableRect.size.height,
+        self.mTableView.frame = CGRectMake(0,self->defaultTableRect.origin.y,
+                                           self->defaultTableRect.size.height,
                                            [UIScreen mainScreen].bounds.size.width);
 
         self.tableViewTop2Constraint.constant = 0;
@@ -2944,6 +2954,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                     self.mImagePicker.allowsEditing = YES;
                     self.mImagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
                     self.mImagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *)kUTTypeMovie, nil];
+                    self.mImagePicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
                     [self presentViewController:self.mImagePicker animated:YES completion:nil];
                 }
                 else
@@ -4316,7 +4327,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.directContactVCLaunchForForward = YES;
     contactVC.alMessage = message;
-    contactVC .forwardDelegate = self;
+    contactVC.forwardDelegate = self;
     UINavigationController *conversationViewNavController = [[UINavigationController alloc] initWithRootViewController:contactVC];
     [self presentViewController:conversationViewNavController animated:YES completion:nil];
 
@@ -4382,7 +4393,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 self.replyMessageText.text = @"Image";
             }
 
-            NSURL *theUrl = nil;
             if (message.imageFilePath != NULL)
             {
                 NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];

@@ -455,7 +455,7 @@
 -(void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten
 totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
-    ALSLog(ALLoggerSeverityInfo, @"TOTAL_BYTES_WRITTEN :: %lu",totalBytesWritten);
+    ALSLog(ALLoggerSeverityInfo, @"TOTAL_BYTES_WRITTEN :: %ld",(long)totalBytesWritten);
 }
 
 -(void)connectionDidFinishLoading:(ALConnection *)connection
@@ -477,7 +477,7 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
                 
                 
                 [ALUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"imageUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image Updated Successfully!!!" , @"")  andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert" , @"") ];
-                [ALUserDefaultsHandler setProfileImageLinkFromServer:imageLinkFromServer];
+                [ALUserDefaultsHandler setProfileImageLinkFromServer:self->imageLinkFromServer];
                 
             }
         }];
@@ -639,9 +639,9 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
                                                                                       if(!error)
                                                                                       {
                                                                                           ALSLog(ALLoggerSeverityInfo, @"USER_STATUS_UPDATED_SUCCESSFULLY");
-                                                                                          myContact.userStatus = statusText;
-                                                                                          ALSLog(ALLoggerSeverityInfo, @"USER_STATUS_UPDATED_SUCCESSFULLY  %@", myContact.userStatus);
-                                                                                          [alContactService updateContact:myContact];
+                                                                                          self->myContact.userStatus = statusText;
+                                                                                          ALSLog(ALLoggerSeverityInfo, @"USER_STATUS_UPDATED_SUCCESSFULLY  %@", self->myContact.userStatus);
+                                                                                          [self->alContactService updateContact:self->myContact];
                                                                                           [self.userStatusLabel setText: statusText];
                                                                                           [ALUserDefaultsHandler setLoggedInUserStatus:statusText];
                                                                                           

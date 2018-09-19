@@ -49,6 +49,7 @@ NSString * const ApplozicClientDomain = @"ApplozicClient";
     {
         [ALUserDefaultsHandler setApplicationKey:applicationKey];
         alPushNotificationService = [[ALPushNotificationService alloc] init];
+        self.delegate = delegate;
         alPushNotificationService.realTimeUpdate = delegate;
         alMQTTConversationService = [ALMQTTConversationService sharedInstance];
         alMQTTConversationService.realTimeUpdate = delegate;
@@ -59,6 +60,7 @@ NSString * const ApplozicClientDomain = @"ApplozicClient";
 
 -(void)setUpServices {
     _messageService = [ALMessageService sharedInstance];
+    _messageService.delegate = self.delegate;
     _messageDbService = [ALMessageDBService new];
     _userService = [ALUserService sharedInstance];
     _channelService = [ALChannelService sharedInstance];
@@ -301,6 +303,9 @@ NSString * const ApplozicClientDomain = @"ApplozicClient";
             completion(nil,error);
             return;
         }
+        if(self.delegate){
+            [self.delegate onMessageSent:alMessage];
+        }
         completion(alMessage,error);
     }];
 
@@ -427,6 +432,9 @@ NSString * const ApplozicClientDomain = @"ApplozicClient";
             }else{
                 if(self.attachmentProgressDelegate){
                     [self.attachmentProgressDelegate onUploadCompleted:almessage];
+                }
+                if(self.delegate){
+                    [self.delegate onMessageSent:almessage];
                 }
             }
         }];

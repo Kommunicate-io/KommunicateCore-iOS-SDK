@@ -56,6 +56,7 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+
 +(NSString *)getTitleForConversationScreen
 {
     return [[NSUserDefaults standardUserDefaults] valueForKey:CONVERSATION_TITLE];
@@ -1042,14 +1043,14 @@
 }
 
 +(void) setTemplateMessages:(NSMutableDictionary*)dictionary{
-    
+
     [[NSUserDefaults standardUserDefaults] setObject:dictionary forKey:TEMPLATE_MESSAGES];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 
 +(NSMutableDictionary*) getTemplateMessages{
-    
+
     return [[NSUserDefaults standardUserDefaults] objectForKey:TEMPLATE_MESSAGES];
 }
 
@@ -1191,7 +1192,7 @@
 +(void)setCategoryName:(NSString*)categoryName{
     [[NSUserDefaults standardUserDefaults] setValue:categoryName forKey:AL_CATEGORY_NAME];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
 }
 
 +(NSString*)getCategoryName{
@@ -1244,11 +1245,50 @@
 
 +(BOOL)isMultiSelectGalleryViewDisabled
 {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:ALDisableMultiSelectGalleryView];
+    return [[NSUserDefaults standardUserDefaults] boolForKey:ALDisableMultiSelectGalleryView];
 }
 +(void)disableMultiSelectGalleryView:(BOOL)enabled
 {
     [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:ALDisableMultiSelectGalleryView];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(void)setBackgroundColorForAttachmentPlusIcon:(UIColor *)backgroundColor
+{
+    NSData *backgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroundColor];
+    [[NSUserDefaults standardUserDefaults] setObject:backgroundColorData forKey:BACKGROUND_COLOR_FOR_ATTACHMENT_PLUS_ICON];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(UIColor *)getBackgroundColorForAttachmentPlusIcon
+{
+    NSData *backgroundColorData = [[NSUserDefaults standardUserDefaults] objectForKey:BACKGROUND_COLOR_FOR_ATTACHMENT_PLUS_ICON];
+    UIColor *backgroundColor = [NSKeyedUnarchiver unarchiveObjectWithData:backgroundColorData];
+    return backgroundColor;
+}
+
++(void) clearAll
+{
+    NSDictionary * dictionary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    NSArray * keyArray = [dictionary allKeys];
+    for(NSString * defaultKeyString in keyArray)
+    {
+        if([defaultKeyString hasPrefix:@"com.applozic"] && ![defaultKeyString isEqualToString:APN_DEVICE_TOKEN])
+        {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:defaultKeyString];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+}
+
++(BOOL)isTextStyleInCellEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:AL_TEXT_STYLE_FOR_CELL];
+}
+
++(void)enableTextStyleCell:(BOOL)flag
+{
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:AL_TEXT_STYLE_FOR_CELL];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
