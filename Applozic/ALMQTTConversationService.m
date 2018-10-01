@@ -515,26 +515,24 @@
     [self unsubscribeToConversation: userKey];
 }
 
--(void) unsubscribeToConversation: (NSString *) userKey
+-(BOOL) unsubscribeToConversation: (NSString *) userKey
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-
-        if (self.session == nil) {
-            return;
-        }
-        [self.session publishAndWaitData:[[NSString stringWithFormat:@"%@,%@,%@",userKey, [ALUserDefaultsHandler getDeviceKeyString], @"0"] dataUsingEncoding:NSUTF8StringEncoding]
-                                 onTopic:MQTT_TOPIC_STATUS
-                                  retain:NO
-                                     qos:MQTTQosLevelAtMostOnce];
-        if([ALUserDefaultsHandler getEnableEncryption] && [ALUserDefaultsHandler getUserEncryptionKey] ){
-            [self.session unsubscribeTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY,[ALUserDefaultsHandler getUserKeyString]]];
-        }else{
-            [self.session unsubscribeTopic:[ALUserDefaultsHandler getUserKeyString]];
-        }
-        [self.session unsubscribeTopic:[NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], [ALUserDefaultsHandler getUserId]]];
-        [self.session close];
-        ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
-    });
+    if (self.session == nil) {
+        return NO;
+    }
+    [self.session publishAndWaitData:[[NSString stringWithFormat:@"%@,%@,%@",userKey, [ALUserDefaultsHandler getDeviceKeyString], @"0"] dataUsingEncoding:NSUTF8StringEncoding]
+                             onTopic:MQTT_TOPIC_STATUS
+                              retain:NO
+                                 qos:MQTTQosLevelAtMostOnce];
+    if([ALUserDefaultsHandler getEnableEncryption] && [ALUserDefaultsHandler getUserEncryptionKey] ){
+        [self.session unsubscribeTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY,[ALUserDefaultsHandler getUserKeyString]]];
+    }else{
+        [self.session unsubscribeTopic:[ALUserDefaultsHandler getUserKeyString]];
+    }
+    [self.session unsubscribeTopic:[NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], [ALUserDefaultsHandler getUserId]]];
+    [self.session close];
+    ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
+    return YES;
 }
 
 -(void)subscribeToChannelConversation:(NSNumber *)channelKey

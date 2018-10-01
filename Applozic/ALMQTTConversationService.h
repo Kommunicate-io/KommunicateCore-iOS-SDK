@@ -48,7 +48,7 @@
 
 -(void) unsubscribeToConversation;
 
--(void) unsubscribeToConversation: (NSString *)userKey;
+-(BOOL) unsubscribeToConversation: (NSString *)userKey;
 
 -(void) sendTypingStatus:(NSString *) applicationKey userID:(NSString *) userId andChannelKey:(NSNumber *)channelKey typing: (BOOL) typing;
 
