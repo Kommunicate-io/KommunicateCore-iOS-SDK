@@ -17,6 +17,7 @@
 #import "ALAPIResponse.h"
 #import "ALUserBlockResponse.h"
 #import "ALRealTimeUpdate.h"
+#import "ALMuteRequest.h"
 
 @interface ALUserService : NSObject
 
@@ -77,5 +78,9 @@
  @param delegate is used for updating the callback for real time updates
  */
 -(void)updateConversationReadWithUserId:(NSString *)userId withDelegate: (id<ApplozicUpdatesDelegate>)delegate;
+
+-(void)getMutedUserListWithDelegate: (id<ApplozicUpdatesDelegate>)delegate withCompletion:(void(^)(NSMutableArray* userDetailArray, NSError * error))completion;
+
+-(void) muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion;
 
 @end

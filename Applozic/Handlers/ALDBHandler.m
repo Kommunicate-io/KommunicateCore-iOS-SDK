@@ -344,6 +344,11 @@
 }
 
 - (ALContact *) loadContactByKey:(NSString *) key value:(NSString*) value {
+
+    if(!value){
+        return nil;
+    }
+
     DB_CONTACT *dbContact = [self getContactByKey:key value:value];
     ALContact *contact = [[ALContact alloc]init];
 

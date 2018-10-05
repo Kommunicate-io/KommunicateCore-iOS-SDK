@@ -43,6 +43,7 @@
     self.deletedAtTime = [JSONString valueForKey:@"deletedAtTime"];
     self.metadata = [JSONString valueForKey:@"metadata"];
     self.roleType = [JSONString valueForKey:@"roleType"];
+    self.notificationAfterTime = [JSONString valueForKey:@"notificationAfterTime"];
     
 }
 
@@ -69,6 +70,8 @@
     self.deletedAtTime = [self getNSNumberFromJsonValue:json[@"deletedAtTime"]];
     self.metadata = [[NSMutableDictionary  alloc] initWithDictionary:json[@"metadata"]];
     self.roleType = [self getNSNumberFromJsonValue:json[@"roleType"]];
+    self.notificationAfterTime = [self getNSNumberFromJsonValue:json[@"notificationAfterTime"]];
+
 }
 
 -(NSString *)getDisplayName
@@ -92,6 +95,12 @@
     {
         self.userIdString = [tempString substringFromIndex:1];
     }
+}
+
+-(BOOL)isNotificationMuted{
+    
+    long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970] ] longValue ]*1000L;
+    return (_notificationAfterTime && [_notificationAfterTime longValue]> secsUtc1970);
 }
 
 @end

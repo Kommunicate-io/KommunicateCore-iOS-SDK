@@ -11,7 +11,7 @@
 #import "DB_Message.h"
 #import "ALMessage.h"
 #import "ALFileMetaInfo.h"
-
+#import "ALConnection.h"
 
 @protocol ALMessagesDelegate <NSObject>
 
@@ -96,5 +96,11 @@
 -(void) getLatestMessages:(BOOL)isNextPage withCompletionHandler: (void(^)(NSMutableArray * messageList, NSError *error)) completion;
 
 -(void) getLatestMessages:(BOOL)isNextPage withOnlyGroups:(BOOL)isGroup withCompletionHandler: (void(^)(NSMutableArray * messageList, NSError *error)) completion;
+
+-(ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
+
+-(ALMessage*)writeFileAndUpdateMessageInDb:(ALConnection*)connection withFileFlag:(BOOL)isFile;
+
+-(DB_Message*)addAttachmentMessage:(ALMessage*)message;
 
 @end

@@ -34,7 +34,7 @@
         paramString = [NSString stringWithFormat:@"userId=%@&startIndex=%@&pageSize=%@",[self.userId urlEncodeUsingNSUTF8StringEncoding],self.startIndex,self.pageSize];
     }
     
-    if(self.endTimeStamp!=nil && !self.isFirstCall){
+    if(self.endTimeStamp!=nil){
         
         paramString = [paramString stringByAppendingFormat:@"&endTime=%@",self.endTimeStamp.stringValue];
     }

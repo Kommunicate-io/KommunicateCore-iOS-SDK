@@ -41,7 +41,7 @@
 {
     [super populateCell:alMessage viewSize:viewSize];
     
-    [self.mMessageLabel setFont:[self getDynamicFontWithDefaultSize:CH_MESSAGE_TEXT_SIZE fontName:@"Helvetica"]];
+    [self.mMessageLabel setFont:[self getDynamicFontWithDefaultSize:[ALApplozicSettings getChatCellTextFontSize] fontName:@"Helvetica"]];
     
     [self.mMessageLabel setTextAlignment:NSTextAlignmentCenter];
     [self.mMessageLabel setText:alMessage.message];

@@ -111,7 +111,7 @@
             fontName = DEFAULT_FONT_NAME;
         }
         
-        self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:MESSAGE_TEXT_SIZE fontName:[ALApplozicSettings getFontFace]];
+        self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:[ALApplozicSettings getChatCellTextFontSize] fontName:[ALApplozicSettings getFontFace]];
         self.mMessageLabel.textColor = [UIColor grayColor];
         [self.contentView addSubview:self.mMessageLabel];
         
@@ -423,8 +423,8 @@
         
     }
     
-    if ([alMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && (alMessage.contentType != ALMESSAGE_CHANNEL_NOTIFICATION)) {
-        
+    if ([alMessage isSentMessage] && ![alMessage isChannelContentTypeMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
+
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName;
         
@@ -459,7 +459,7 @@
     
     /*    ====================================== END =================================  */
     
-    self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:MESSAGE_TEXT_SIZE fontName:[ALApplozicSettings getFontFace]];
+    self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:[ALApplozicSettings getChatCellTextFontSize] fontName:[ALApplozicSettings getFontFace]];
     if(alMessage.contentType == ALMESSAGE_CONTENT_TEXT_HTML)
     {
         
@@ -497,22 +497,22 @@
 -(void) proccessTapForMenu:(id)tap{
 
     [self processKeyBoardHideTap];
-    
+
      UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
        UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
-    
+
     if ([self.mMessage.type isEqualToString:@MT_INBOX_CONSTANT]){
-       
+
         [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
 
     }else if ([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT]){
-       
+
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
-        
+
         [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
     }
        [[UIMenuController sharedMenuController] update];
-    
+
 }
 
 -(void)dateTextSetupForALMessage:(ALMessage *)alMessage withViewSize:(CGSize)viewSize andTheTextSize:(CGSize)theTextSize
@@ -549,7 +549,7 @@
         }
     }
     
-    if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
+    if([self.mMessage isSentMessage] && self.mMessage.groupId)
     {
         return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:) || action == @selector(copy:)) : (action == @selector(delete:)|| action == @selector(msgInfo:)|| [self isForwardMenuEnabled:action]  || [self isMessageReplyMenuEnabled:action] || action == @selector(copy:)));
     }

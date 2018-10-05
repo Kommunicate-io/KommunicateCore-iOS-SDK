@@ -116,6 +116,9 @@
  onMqttConnected will be called once the MQTT is connected
  */
 -(void) onMqttConnected;
+
+-(void)onUserMuteStatus:(ALUserDetail *)userDetail;
+
 @end
 
 @interface ALRealTimeUpdate : NSObject

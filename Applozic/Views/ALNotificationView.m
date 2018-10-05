@@ -130,10 +130,10 @@
 -(void)buildAndShowNotificationWithcompletionHandler:(void (^)(BOOL))handler
 {
 
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE || (self.alMessageObject.metadata && ([self.alMessageObject isSilentNotification] || [self.alMessageObject isHiddenMessage])))
-       {
-           return;
-       }
+    if([self.alMessageObject isNotificationDisabled])
+    {
+        return;
+    }
     
     NSString * title; // Title of Notification Banner (Display Name or Group Name)
     NSString * subtitle = self.text; //Message to be shown
@@ -227,7 +227,7 @@
 -(void)buildAndShowNotification:(id)delegate
 {
     
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE || (self.alMessageObject.metadata && ([self.alMessageObject isSilentNotification] || [self.alMessageObject isHiddenMessage])))
+    if([self.alMessageObject isNotificationDisabled])
     {
         return;
     }

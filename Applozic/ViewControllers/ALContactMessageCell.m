@@ -9,7 +9,6 @@
 // Constants
 #define MT_INBOX_CONSTANT "4"
 #define MT_OUTBOX_CONSTANT "5"
-
 #define DATE_LABEL_SIZE 12
 
 #import "ALContactMessageCell.h"
@@ -168,7 +167,7 @@
     [self.mUserProfileImageView setUserInteractionEnabled:YES];
     [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
     
-    if ([alMessage.type isEqualToString:@MT_INBOX_CONSTANT])
+    if ([alMessage isReceivedMessage])
     {
         if([ALApplozicSettings isUserProfileHidden])
         {
@@ -346,7 +345,7 @@
 
     }
 
-    if ([alMessage.type isEqualToString:@MT_OUTBOX_CONSTANT]) {
+    if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
 
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName;
@@ -433,17 +432,18 @@
 
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
-    
+
     if ([self.mMessage.type isEqualToString:@MT_INBOX_CONSTANT]){
         [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
     }else if ([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT]){
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
         [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
     }
-    
+
     [[UIMenuController sharedMenuController] update];
 
 }
+
 
 -(void)addButtonAction
 {
@@ -504,7 +504,7 @@
 
 -(BOOL) canPerformAction:(SEL)action withSender:(id)sender
 {
-    if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
+    if([self.mMessage isSentMessage] && self.mMessage.groupId)
     {
         return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)||  [self isForwardMenuEnabled:action]  ||  [self isMessageReplyMenuEnabled:action]));
     }

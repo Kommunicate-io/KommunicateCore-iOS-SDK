@@ -1044,6 +1044,41 @@
     return metadata;
 }
 
+-(void)createChannelWithChannelInfo:(ALChannelInfo*)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
+    
+    if(!channelInfo.type){
+        channelInfo.type = PUBLIC;
+    }
+    
+    if(!channelInfo.groupMemberList){
+        NSError *memberError = [NSError errorWithDomain:@"ALChannelService"
+                                                    code:2
+                                                userInfo:@{NSLocalizedDescriptionKey : @"Nil in member list"}];
+        
+        completion(nil,memberError);
+        return;
+    }
+    
+    [ALChannelClientService createChannel:channelInfo.groupName andParentChannelKey:nil orClientChannelKey:channelInfo.clientGroupId andMembersList:channelInfo.groupMemberList andImageLink:channelInfo.imageUrl channelType:channelInfo.type
+                              andMetaData:channelInfo.metadata adminUser:channelInfo.admin withGroupUsers:channelInfo.groupRoleUsers withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
+                                  
+                                  if(!error)
+                                  {
+                                      response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
+                                      ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+                                      [channelDBService createChannel:response.alChannel];
+                                      completion(response, error);
+                                  }
+                                  else
+                                  {
+                                      ALSLog(ALLoggerSeverityError, @"ERROR_IN_CHANNEL_CREATING :: %@",error);
+                                      completion(nil, error);
+                                  }
+                              }];
+    
+}
+
+
 -(void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate: (id<ApplozicUpdatesDelegate>)delegate{
     
     [ALChannelService setUnreadCountZeroForGroupID:channelKey];

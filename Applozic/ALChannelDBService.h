@@ -88,6 +88,7 @@
 
 -(void)updateMuteAfterTime:(NSNumber*)notificationAfterTime andChnnelKey:(NSNumber*)channelKey;
 
+-(ALUserDetail *)updateMuteAfterTime:(NSNumber*)notificationAfterTime andUserId:(NSString*)userId;
 
 -(DB_CHANNEL_USER_X *)getChannelUserX:(NSNumber *)channelKey;
 

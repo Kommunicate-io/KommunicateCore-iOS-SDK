@@ -1253,6 +1253,16 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++(BOOL)is5MinVideoLimitInGalleryEnabled
+{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:AL_5MIN_VIDEO_LIMIT_IN_GALLERY];
+}
++(void)enable5MinVideoLimitInGallery:(BOOL)enabled
+{
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:AL_5MIN_VIDEO_LIMIT_IN_GALLERY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 +(void)setBackgroundColorForAttachmentPlusIcon:(UIColor *)backgroundColor
 {
     NSData *backgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroundColor];
@@ -1290,6 +1300,30 @@
 {
     [[NSUserDefaults standardUserDefaults] setBool:flag forKey:AL_TEXT_STYLE_FOR_CELL];
     [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(void)setChatCellTextFontSize:(float)fontSize
+{
+    [[NSUserDefaults standardUserDefaults] setFloat:fontSize forKey:AL_CHAT_CELL_FONT_SIZE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(float)getChatCellTextFontSize
+{
+    float size = [[NSUserDefaults standardUserDefaults] floatForKey:AL_CHAT_CELL_FONT_SIZE];
+    return size ? size : 14;
+}
+
++(void)setChannelCellTextFontSize:(float)fontSize
+{
+    [[NSUserDefaults standardUserDefaults] setFloat:fontSize forKey:AL_CHANNEL_CELL_FONT_SIZE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(float)getChannelCellTextFontSize
+{
+    float size = [[NSUserDefaults standardUserDefaults] floatForKey:AL_CHANNEL_CELL_FONT_SIZE];
+    return size ? size : 14;
 }
 
 @end
