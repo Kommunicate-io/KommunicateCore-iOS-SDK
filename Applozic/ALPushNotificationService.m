@@ -294,6 +294,27 @@
             ALChannelService *channelService = [[ALChannelService alloc]init];
             NSNumber * channelKey  = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
+        } else if([type isEqualToString:@"APPLOZIC_37"]){
+            
+            NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
+            NSString * userId = parts[0];
+            NSString * flag = parts[1];
+            
+            ALContactDBService *contactDataBaseService = [[ALContactDBService alloc] init];
+            
+            if([flag isEqualToString:@"0"]){
+               ALUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
+                if(self.realTimeUpdate){
+                    [self.realTimeUpdate onUserMuteStatus:userDetail];
+                }
+            }else if([flag isEqualToString:@"1"]) {
+                ALUserService *userService = [[ALUserService alloc]init];
+                
+                [userService getMutedUserListWithDelegate:self.realTimeUpdate withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+                    
+                }];
+            }
+        
         }
         else
         {

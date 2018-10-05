@@ -716,26 +716,36 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 
 +(void) processImageDownloadforMessage:(ALMessage *) message withdelegate:(id)delegate
 {
+    [self processImageDownloadforMessage:message withDelegate:delegate withCompletionHandler:^(NSError * error) {
+    
+    }];
+}
+
+
++(void) processImageDownloadforMessage:(ALMessage *) message withDelegate:(id)delegate withCompletionHandler:(void (^)(NSError *))completion{
+    
     ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
     [messageClientService downloadImageUrl:message.fileMeta.blobKey withCompletion:^(NSString *fileURL, NSError *error) {
         if(error)
         {
             ALSLog(ALLoggerSeverityError, @"ERROR GETTING DOWNLOAD URL : %@", error);
+            completion(error);
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"ATTACHMENT DOWNLOAD URL : %@", fileURL);
-
+        
         NSMutableURLRequest * theRequest;
-        if(ALApplozicSettings.isS3StorageServiceEnabled) {
+        if(ALApplozicSettings.isS3StorageServiceEnabled || ALApplozicSettings.isGoogleCloudServiceEnabled) {
             theRequest = [ALRequestHandler createGETRequestWithUrlStringWithoutHeader:fileURL paramString:nil];
         }else{
             theRequest = [ALRequestHandler createGETRequestWithUrlString: fileURL paramString:nil];
         }
-
+        
         ALConnection * connection = [[ALConnection alloc] initWithRequest:theRequest delegate:delegate startImmediately:YES];
         connection.keystring = message.key;
         connection.connectionType = @"Image Downloading";
         [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:connection];
+        completion(nil);
     }];
 }
 
@@ -1064,4 +1074,17 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     }];
 }
 
+-(ALMessage *)handleMessageFailedStatus:(ALMessage *)message{
+    ALMessageDBService *messageDBServce = [[ALMessageDBService alloc]init];
+    return [messageDBServce handleMessageFailedStatus:message];
+}
+
+-(ALMessage*) getMessageByKey:(NSString*)messageKey{
+    if(!messageKey){
+        return nil;
+    }
+    
+    ALMessageDBService *messageDBServce = [[ALMessageDBService alloc]init];
+    return [messageDBServce getMessageByKey:messageKey];
+}
 @end

@@ -70,6 +70,7 @@
 #import "ALMultimediaData.h"
 #import <Applozic/Applozic-Swift.h>
 #import "UIImage+animatedGIF.h"
+#import <Photos/Photos.h>
 
 #define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
@@ -101,6 +102,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *tableViewSendMsgTextViewConstraint;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *typingLabelBottomConstraint;
 @property (nonatomic, assign) BOOL comingFromBackground;
+@property (nonatomic, strong) ALVideoCoder *videoCoder;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *nsLayoutconstraintAttachmentWidth;
 
@@ -682,7 +684,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     // WHEN APP ENTERS FOREGROUND SYNC CHANNEL MSGS (CHANNEL_TYPE = OPEN) AND LOGIN USER ISN'T A MEMEBER OF CHANNEL
     ALChannelService *channelService = [[ALChannelService alloc] init];
     self.alChannel = [channelService getChannelByKey:self.channelKey];
-    if(self.alChannel.type == OPEN && ![channelService isLoginUserInChannel:self.channelKey])
+    if(self.alChannel.type == OPEN)
     {
         //FOR SYNC MESSAGES SEND LATEST MSG TIME STAMP
         MessageListRequest * messageListRequest = [MessageListRequest new];
@@ -757,9 +759,10 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
                                userID:self.contactIds
                         andChannelKey:self.channelKey
                                typing:NO];
-
-    [self.mqttObject unSubscribeToChannelConversation:self.channelKey];
-    [self.mqttObject unSubscribeToOpenChannel:self.channelKey];
+    if(self.channelKey){
+        [self.mqttObject unSubscribeToChannelConversation:self.channelKey];
+        [self.mqttObject unSubscribeToOpenChannel:self.channelKey];
+    }
 
 }
 
@@ -1333,7 +1336,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         if(error)
         {
             ALSLog(ALLoggerSeverityError, @"SEND_MSG_ERROR :: %@", error.description);
-            [self handleErrorStatus:theMessage];
+            [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
             return;
         }
         completion(message, error);
@@ -1632,6 +1635,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALLocationCell *theCell = (ALLocationCell *)[tableView dequeueReusableCellWithIdentifier:@"LocationCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1641,6 +1646,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALImageCell *theCell = (ALImageCell *)[tableView dequeueReusableCellWithIdentifier:@"ImageCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1650,6 +1657,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALVideoCell *theCell = (ALVideoCell *)[tableView dequeueReusableCellWithIdentifier:@"VideoCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1659,6 +1668,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALAudioCell *theCell = (ALAudioCell *)[tableView dequeueReusableCellWithIdentifier:@"AudioCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1689,6 +1700,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1698,6 +1711,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALChatCell *theCell = (ALChatCell *)[tableView dequeueReusableCellWithIdentifier:@"ChatCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1708,6 +1723,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALContactMessageCell *theCell = (ALContactMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"ContactMessageCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1717,6 +1734,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALDocumentsCell *theCell = (ALDocumentsCell *)[tableView dequeueReusableCellWithIdentifier:@"DocumentsCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -2382,7 +2401,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     imageCell.downloadRetryView.alpha = 1;
     imageCell.sizeLabel.alpha = 1;
     message.inProgress = NO;
-    [self handleErrorStatus:message];
+    [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
     [self releaseConnection:message.key];
 
 }
@@ -2516,7 +2535,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     imageCell.mDowloadRetryButton.alpha = 1;
     imageCell.downloadRetryView.alpha = 1;
     imageCell.sizeLabel.alpha = 1;
-    [self handleErrorStatus:imageCell.mMessage];
+    [[ALMessageService sharedInstance] handleMessageFailedStatus:imageCell.mMessage];
     ALSLog(ALLoggerSeverityError, @"didFailWithError ::: %@",error);
     [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:connection];
 }
@@ -2577,16 +2596,28 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     if(isMovie)
     {
         NSURL *videoURL = info[UIImagePickerControllerMediaURL];
-        [ALImagePickerHandler saveVideoToDocDirectory:videoURL handler:^(NSString * videoFilePath){
-            dispatch_async(dispatch_get_main_queue(), ^{
-                short contentType = ALMESSAGE_CONTENT_ATTACHMENT;
-                if(picker.sourceType == UIImagePickerControllerSourceTypeCamera)
-                {
-                    contentType = ALMESSAGE_CONTENT_CAMERA_RECORDING;
+        AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:videoURL options:nil];
+        
+        if (avAsset) {
+            self.videoCoder = [[ALVideoCoder alloc] init];
+            
+            double start = [info[@"_UIImagePickerControllerVideoEditingStart"] doubleValue];
+            double end = [info[@"_UIImagePickerControllerVideoEditingEnd"] doubleValue];
+            
+            double timescale = 600;
+            CMTimeRange range = CMTimeRangeMake(CMTimeMake(start*timescale, timescale), CMTimeMake((end-start)*timescale, timescale));
+            [self.videoCoder convertWithAvAssets:@[avAsset] range:range baseVC:self completion:^(NSArray<NSString *> * _Nullable paths) {
+                NSString *videoFilePath = [paths firstObject];
+                if (!videoFilePath) {
+                    return;
                 }
-                [self processAttachment:videoFilePath andMessageText:@"" andContentType:contentType];
-            });
-        }];
+                // If 'save video to gallery' is enabled then save to gallery
+                if([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
+                    UISaveVideoAtPathToSavedPhotosAlbum(videoFilePath, self, nil, nil);
+                }
+                [self processAttachment:videoFilePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_CAMERA_RECORDING];
+            }];
+        }
     }
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
@@ -2688,7 +2719,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
                 imageCell.mDowloadRetryButton.alpha = 1;
                 imageCell.downloadRetryView.alpha = 1;
                 imageCell.sizeLabel.alpha = 1;
-                [self handleErrorStatus:theMessage];
+                [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
                 return;
             }
             [ALMessageService proessUploadImageForMessage:theMessage databaseObj:dbMessage.fileMetaInfo uploadURL:message  withdelegate:self];
@@ -2955,6 +2986,9 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                     self.mImagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
                     self.mImagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *)kUTTypeMovie, nil];
                     self.mImagePicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
+                    if ([ALApplozicSettings is5MinVideoLimitInGalleryEnabled]) {
+                        self.mImagePicker.videoMaximumDuration = 300;
+                    }
                     [self presentViewController:self.mImagePicker animated:YES completion:nil];
                 }
                 else
@@ -3096,27 +3130,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                            }];
 }
 
-//==============================================================================================================================================
-#pragma mark - HANDLE ERROR METHOD
-//==============================================================================================================================================
-
--(void)handleErrorStatus:(ALMessage *)message
-{
-    if(!message.msgDBObjectId){
-        return;
-    }
-    message.inProgress = NO;
-    message.isUploadFailed = YES;
-    NSError *error = nil;
-    dbService = [[ALMessageDBService alloc] init];
-
-    DB_Message *dbMessage = (DB_Message*)[dbService getMeesageById:message.msgDBObjectId error:&error];
-    dbMessage.inProgress = [NSNumber numberWithBool:NO];
-    dbMessage.isUploadFailed = [NSNumber numberWithBool:YES];
-    dbMessage.sentToServer= [NSNumber numberWithBool:NO];;
-
-    [[ALDBHandler sharedInstance].managedObjectContext save:nil];
-}
 
 -(ALMediaBaseCell *)getCell:(NSString *)key
 {
@@ -3154,7 +3167,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         if(error)
         {
             ALSLog(ALLoggerSeverityError, @"SEND_MSG_ERROR :: %@",error.description);
-            [self handleErrorStatus:theMessage];
+            [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
             return;
         }
 
@@ -3844,9 +3857,12 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     else
     {
         NSString * IDs = (self.channelKey ? [self.channelKey stringValue] : self.contactIds);
-        doneOtherwise = ([ALUserDefaultsHandler isShowLoadEarlierOption:IDs]
-                                 && [ALUserDefaultsHandler isServerCallDoneForMSGList:IDs]);
-
+        if(self.alChannel && self.alChannel.type == OPEN){
+            doneOtherwise = ([ALUserDefaultsHandler isShowLoadEarlierOption:IDs]);
+        }else{
+            doneOtherwise = ([ALUserDefaultsHandler isShowLoadEarlierOption:IDs]
+                             && [ALUserDefaultsHandler isServerCallDoneForMSGList:IDs]);
+        }
     }
 
     if(scrollOffset == 0 && (doneConversation || doneOtherwise))

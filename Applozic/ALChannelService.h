@@ -23,6 +23,7 @@
 #import "ALChannelSyncResponse.h"
 #import "AlChannelFeedResponse.h"
 #import "ALRealTimeUpdate.h"
+#import "ALChannelInfo.h"
 
 
 @interface ALChannelService : NSObject
@@ -638,5 +639,8 @@
  */
 
 -(void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate: (id<ApplozicUpdatesDelegate>)delegate;
+
+
+-(void)createChannelWithChannelInfo:(ALChannelInfo*)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
 @end

@@ -528,6 +528,48 @@
 }
 
 
+-(void)getMutedUserListWithCompletion:(void(^)(id theJson, NSError * error))completion
+{
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/chat/mute/list",KBASE_URL];
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:nil];
+    [ALResponseHandler processRequest:theRequest andTag:@"FETCH_MUTED_USER_LIST" WithCompletionHandler:^(id theJson, NSError * theError) {
+        
+        if (theError)
+        {
+            completion(nil, theError);
+            ALSLog(ALLoggerSeverityError, @"Error in mute user list api  call : %@", theError);
+            return;
+        }
+        
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_FETCH_MUTED_USER_LIST : %@",(NSString *)theJson);
+        
+        completion(theJson, theError);
+    }];
+}
 
+
+-(void) muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion
+{
+    
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/chat/mute?userId=%@&notificationAfterTime=%@",KBASE_URL,[alMuteRequest.userId urlEncodeUsingNSUTF8StringEncoding],alMuteRequest.notificationAfterTime];
+
+    
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:nil];
+    
+    [ALResponseHandler processRequest:theRequest andTag:@"MUTE_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
+        
+        if (theError)
+        {
+            ALSLog(ALLoggerSeverityError, @"Error in mute user  : %@", theError);
+            completion(nil, theError);
+            return;
+        }
+        ALAPIResponse*  response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        completion(response, nil);
+        
+    }];
+    
+}
 
 @end

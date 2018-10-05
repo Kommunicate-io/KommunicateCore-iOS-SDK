@@ -133,6 +133,7 @@ typedef enum {
 
 -(BOOL)isLocationMessage;
 -(BOOL)isContactMessage;
+-(BOOL)isChannelContentTypeMessage;
 -(BOOL)isDocumentMessage;
 -(BOOL)isSilentNotification;
 
@@ -140,5 +141,6 @@ typedef enum {
 @property (nonatomic, assign) BOOL msgHidden;
 - (instancetype)initWithBuilder:(ALMessageBuilder *)builder ;
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder ;
+-(BOOL)isNotificationDisabled;
 
 @end

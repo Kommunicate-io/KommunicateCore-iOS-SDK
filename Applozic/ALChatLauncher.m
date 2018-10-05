@@ -149,20 +149,6 @@
     
 }
 
--(void)registerForNotification
-{
-//    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:
-//                                                                         (UIUserNotificationTypeSound |
-//                                                                          UIUserNotificationTypeAlert |
-//                                                                          UIUserNotificationTypeBadge) categories:nil]];
-//    
-//    [[UIApplication sharedApplication] registerForRemoteNotifications];
-    
-    UIUserNotificationSettings * APNSetting = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-    
-    [[UIApplication sharedApplication] registerUserNotificationSettings:APNSetting];
-}
-
 -(void)launchContactList:(UIViewController *)uiViewController
 {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];

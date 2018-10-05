@@ -48,6 +48,8 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 
 +(void) processImageDownloadforMessage:(ALMessage *) message withdelegate:(id)delegate;
 
++(void) processImageDownloadforMessage:(ALMessage *) message withDelegate:(id)delegate withCompletionHandler:(void (^)(NSError *))completion;
+
 +(ALMessage*) processFileUploadSucess: (ALMessage *)message;
 
 +(void)deleteMessageThread:( NSString * ) contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
@@ -95,6 +97,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 
 +(void)addOpenGroupMessage:(ALMessage*)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
--(NSMutableArray *)filterMessageListAndUpdateMessageNotification:(NSMutableArray *) messageArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+-(ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
 
+-(ALMessage*) getMessageByKey:(NSString*)messageKey;
 @end

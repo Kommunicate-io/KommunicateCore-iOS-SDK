@@ -27,6 +27,7 @@
 #import "ALMessageClientService.h"
 #import "ALConnection.h"
 #import "ALConnectionQueueHandler.h"
+#import "UIImage+animatedGIF.h"
 
 // Constants
 #define MT_INBOX_CONSTANT "4"
@@ -148,7 +149,7 @@ UIViewController * modalCon;
     [self.mUserProfileImageView setUserInteractionEnabled:YES];
     [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
     
-    if ([alMessage.type isEqualToString:@MT_INBOX_CONSTANT]) { //@"4" //Recieved Message
+    if ([alMessage isReceivedMessage]) { //@"4" //Recieved Message
         
         [self.contentView bringSubviewToFront:self.mChannelMemberName];
         
@@ -404,7 +405,7 @@ UIViewController * modalCon;
                                                 self.mImageView.frame.origin.y + self.mImageView.frame.size.height/2.0 - DOWNLOAD_RETRY_PADDING_Y,
                                                 90, 40);
     
-    if ([alMessage.type isEqualToString:@MT_OUTBOX_CONSTANT])
+    if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || self.contact))
     {
         
         self.mMessageStatusImageView.hidden = NO;
@@ -465,33 +466,37 @@ UIViewController * modalCon;
 }
 
 -(void) setInImageView:(NSURL*)url{
+    NSString *stringUrl = url.absoluteString;
+    if (stringUrl != nil && [stringUrl localizedCaseInsensitiveContainsString:@"gif"]) { 
+        UIImage *image = [UIImage animatedImageWithAnimatedGIFURL:url];
+        [self.mImageView setImage: image];
+        return;
+    }
     [self.mImageView sd_setImageWithURL:url placeholderImage:nil options:0];
-
-
 }
 
 #pragma mark - Menu option tap Method -
 
 -(void) proccessTapForMenu:(id)tap{
-    
+
     [self processKeyBoardHideTap];
 
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
-    
+
     if ([self.mMessage.type isEqualToString:@MT_INBOX_CONSTANT]){
-        
+
         [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
-        
+
     }else if ([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT]){
 
-        
+
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
-        
+
         [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
     }
     [[UIMenuController sharedMenuController] update];
-    
+
 }
 
 
@@ -599,7 +604,7 @@ UIViewController * modalCon;
         }
     }
     
-    if([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT] && self.mMessage.groupId)
+    if([self.mMessage isSentMessage] && self.mMessage.groupId)
     {
         return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) || [self isMessageReplyMenuEnabled:action]));
     }
