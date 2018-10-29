@@ -234,20 +234,28 @@
             completion(nil, theError);
             return ;
         }
-        
+
+
         ALMessageList *messageListResponse =  [[ALMessageList alloc] initWithJSONString:theJson] ;
-        
-        completion(messageListResponse, nil);
-        
         ALSLog(ALLoggerSeverityInfo, @"message list response THE JSON %@",theJson);
-        
-        ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService callForChannelServiceForDBInsertion:theJson];
-        
+
+        if(theJson){
+
+            if(messageListResponse.userDetailsList){
+                ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
+                [alContactDBService addUserDetails:messageListResponse.userDetailsList];
+            }
+
+            ALChannelService *channelService = [[ALChannelService alloc] init];
+            [channelService callForChannelServiceForDBInsertion:theJson];
+        }
+
         //USER BLOCK SYNC CALL
         ALUserService * userService = [ALUserService new];
         [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
-        
+
+        completion(messageListResponse, nil);
+
     }];
     
 }

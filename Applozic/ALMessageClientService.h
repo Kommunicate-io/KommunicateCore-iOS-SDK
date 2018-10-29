@@ -13,6 +13,7 @@
 #import "MessageListRequest.h"
 #import "ALMessageInfoResponse.h"
 #import "ALMessageService.h"
+#import "ALContactDBService.h"
 
 @interface ALMessageClientService : NSObject
 

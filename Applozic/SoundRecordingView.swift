@@ -89,7 +89,8 @@ import Foundation
     private func displayDefaultRecordingText() {
         backgroundColor = UIColor.red
         let swipeUpToCancelMessage = NSLocalizedString("swipeUpToCancel", value: "Swipe up to cancel",comment: "")
-        let recordingMessage = NSLocalizedString("initialRecordingMessage", value: "00:00:00)", comment: "")
+        let recordingMessage = NSLocalizedString("recordingMessage", value: "00:", comment: "") +
+            NSLocalizedString("initialRecordingMessage", value: "00:00)", comment: "")
         setTitle("\(recordingMessage)   \(swipeUpToCancelMessage)", for: .normal)
         setTitle("\(recordingMessage)   \(swipeUpToCancelMessage)", for: .highlighted)
     }

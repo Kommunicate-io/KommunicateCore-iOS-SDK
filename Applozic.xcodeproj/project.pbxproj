@@ -17,6 +17,10 @@
 		1821DDE92167D47B00CB24A5 /* ALAttachmentService.h in Headers */ = {isa = PBXBuildFile; fileRef = 1821DDE72167D47A00CB24A5 /* ALAttachmentService.h */; };
 		1821DDEA2167D47B00CB24A5 /* ALAttachmentService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */; };
 		1821DDF52167D4B100CB24A5 /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1821DDEB2167D4B100CB24A5 /* AppLozic.xcdatamodeld */; };
+		1866E32C218749BD00667018 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32B218749BD00667018 /* UIColor+Extension.swift */; };
+		1866E32E218749CA00667018 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32D218749C900667018 /* ALImagePreviewController.m */; };
+		1866E33121874A0700667018 /* AudioRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32F21874A0600667018 /* AudioRecordButton.swift */; };
+		1866E33221874A0700667018 /* AudioRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1866E33021874A0700667018 /* AudioRecordingView.swift */; };
 		1881CEBF2152794E00325270 /* ALCustomPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */; };
 		1881CEC02152794E00325270 /* CustomPicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1881CEBE2152794E00325270 /* CustomPicker.storyboard */; };
 		1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1881CEC321527AB900325270 /* ALMultimediaData.h */; };
@@ -405,6 +409,10 @@
 		1821DDF22167D4B100CB24A5 /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
 		1821DDF32167D4B100CB24A5 /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
 		1821DDF42167D4B100CB24A5 /* AppLozic 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 3.xcdatamodel"; sourceTree = "<group>"; };
+		1866E32B218749BD00667018 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		1866E32D218749C900667018 /* ALImagePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
+		1866E32F21874A0600667018 /* AudioRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioRecordButton.swift; path = Applozic/AudioRecordButton.swift; sourceTree = "<group>"; };
+		1866E33021874A0700667018 /* AudioRecordingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioRecordingView.swift; path = Applozic/AudioRecordingView.swift; sourceTree = "<group>"; };
 		1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALCustomPickerViewController.swift; path = Applozic/ALCustomPickerViewController.swift; sourceTree = "<group>"; };
 		1881CEBE2152794E00325270 /* CustomPicker.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = CustomPicker.storyboard; path = Applozic/CustomPicker.storyboard; sourceTree = "<group>"; };
 		1881CEC321527AB900325270 /* ALMultimediaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALMultimediaData.h; sourceTree = "<group>"; };
@@ -919,6 +927,8 @@
 		6D6DF0731BC535C800EBA00F = {
 			isa = PBXGroup;
 			children = (
+				1866E32F21874A0600667018 /* AudioRecordButton.swift */,
+				1866E33021874A0700667018 /* AudioRecordingView.swift */,
 				8B1635CC2119C6BF0008191A /* ALChannelOfTwoMetaData.h */,
 				8B1635CB2119C6BF0008191A /* ALChannelOfTwoMetaData.m */,
 				8B1635C52119C4CB0008191A /* ALLogger.h */,
@@ -980,6 +990,7 @@
 		6D6DF0A21BC5364C00EBA00F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				1866E32B218749BD00667018 /* UIColor+Extension.swift */,
 				1881CEC321527AB900325270 /* ALMultimediaData.h */,
 				1881CEC421527AB900325270 /* ALMultimediaData.m */,
 				8B170C2221232544003A14B3 /* ALAttachmentPickerData.h */,
@@ -1007,6 +1018,7 @@
 		6D6DF0A71BC5364C00EBA00F /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				1866E32D218749C900667018 /* ALImagePreviewController.m */,
 				C76D31471F0AAFCE0087291F /* ALAudioVideoBaseVC.h */,
 				C76D31481F0AAFCE0087291F /* ALVOIPNotificationHandler.h */,
 				C76D31491F0AAFCE0087291F /* ALAudioVideoBaseVC.m */,
@@ -1883,6 +1895,7 @@
 				6D77568C1D5B7FBE0025560B /* ALConversationProxy.m in Sources */,
 				6D6DF1D41BC5364C00EBA00F /* KAProgressLabel.m in Sources */,
 				6D6DF1511BC5364C00EBA00F /* ALRegisterUserClientService.m in Sources */,
+				1866E32C218749BD00667018 /* UIColor+Extension.swift in Sources */,
 				29C849A31CC932050042643C /* NSString+Encode.m in Sources */,
 				6D7756EE1D5B82560025560B /* ALReachability.m in Sources */,
 				C76D314E1F0AAFCF0087291F /* ALVOIPNotificationHandler.m in Sources */,
@@ -1940,6 +1953,7 @@
 				1821DDF52167D4B100CB24A5 /* AppLozic.xcdatamodeld in Sources */,
 				8B24FFD1204EB1000097A46A /* ALGroupUser.m in Sources */,
 				2932B9F41C7C875F0017911D /* ALGroupDetailViewController.m in Sources */,
+				1866E33121874A0700667018 /* AudioRecordButton.swift in Sources */,
 				4612E8F91E13882D0022DB23 /* MQTTCFSocketTransport.m in Sources */,
 				6D6DF14B1BC5364C00EBA00F /* ALResponseHandler.m in Sources */,
 				8BE0F6F32063D57E00361DD9 /* SoundRecordingView.swift in Sources */,
@@ -1956,6 +1970,7 @@
 				6D6DF1CE1BC5364C00EBA00F /* UIImageView+HighlightedWebCache.m in Sources */,
 				6D3A4E061C76ED6C0067A4C8 /* ALAudioAttachmentViewController.m in Sources */,
 				6D77573A1D5B84D60025560B /* ALMediaBaseCell.m in Sources */,
+				1866E33221874A0700667018 /* AudioRecordingView.swift in Sources */,
 				4612E9141E13882D0022DB23 /* MQTTSSLSecurityPolicyEncoder.m in Sources */,
 				6D6DF1D61BC5364C00EBA00F /* TPPropertyAnimation.m in Sources */,
 				6D7757241D5B83AA0025560B /* ALHyperLabel.m in Sources */,
@@ -1969,6 +1984,7 @@
 				6D7756FA1D5B82CA0025560B /* ALLogs.m in Sources */,
 				6D6DF1791BC5364C00EBA00F /* ALMessageList.m in Sources */,
 				6D6DF1D01BC5364C00EBA00F /* UIImageView+WebCache.m in Sources */,
+				1866E32E218749CA00667018 /* ALImagePreviewController.m in Sources */,
 				6D1385791CA9B83C009E6F50 /* AlMultipleAttachmentCell.m in Sources */,
 				C76D314D1F0AAFCF0087291F /* ALAudioVideoBaseVC.m in Sources */,
 				6D7756D81D5B82000025560B /* ALMessageInfoResponse.m in Sources */,
