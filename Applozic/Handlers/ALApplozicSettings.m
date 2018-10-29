@@ -1326,4 +1326,74 @@
     return size ? size : 14;
 }
 
++(void)setBackgroundColorForAudioRecordingView:(UIColor *)backgroundColor {
+    NSData *backgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroundColor];
+    [[NSUserDefaults standardUserDefaults] setObject:backgroundColorData forKey:AUDIO_RECORDING_VIEW_BACKGROUND_COLOR];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
++(UIColor *)getBackgroundColorForAudioRecordingView {
+    NSData *backgroundColorData = [[NSUserDefaults standardUserDefaults] objectForKey:AUDIO_RECORDING_VIEW_BACKGROUND_COLOR];
+    UIColor *backgroundColor = [NSKeyedUnarchiver unarchiveObjectWithData:backgroundColorData];
+    return backgroundColor ? backgroundColor : [UIColor lightGrayColor];
+}
+
++(void)setColorForSlideToCancelText:(UIColor *)color {
+    NSData *textColorData = [NSKeyedArchiver archivedDataWithRootObject:color];
+    [[NSUserDefaults standardUserDefaults] setObject:textColorData forKey:SLIDE_TO_CANCEL_TEXT_COLOR];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
++(UIColor *)getColorForSlideToCancelText {
+    NSData *textColorData = [[NSUserDefaults standardUserDefaults] objectForKey:SLIDE_TO_CANCEL_TEXT_COLOR];
+    UIColor *textColor = [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
+    return textColor ? textColor : [UIColor darkGrayColor];
+}
+
++(void)setColorForAudioRecordingText:(UIColor *)color {
+    NSData *textColorData = [NSKeyedArchiver archivedDataWithRootObject:color];
+    [[NSUserDefaults standardUserDefaults] setObject:textColorData forKey:AUDIO_RECORDING_TEXT_COLOR];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
++(UIColor *)getColorForAudioRecordingText {
+    NSData *textColorData = [[NSUserDefaults standardUserDefaults] objectForKey:AUDIO_RECORDING_TEXT_COLOR];
+    UIColor *textColor = [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
+    return textColor ? textColor : [UIColor redColor];
+}
+
++(void)setFontForAudioView:(NSString *)font {
+    [[NSUserDefaults standardUserDefaults] setValue:font forKey:AUDIO_RECORD_VIEW_FONT];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
++(NSString *)getFontForAudioView {
+    NSString * font = [[NSUserDefaults standardUserDefaults] valueForKey:AUDIO_RECORD_VIEW_FONT];
+    return font ? font : @"Helvetica";
+}
+
++ (void)enableNewAudioDesign:(BOOL)enable {
+    [[NSUserDefaults standardUserDefaults] setBool:enable forKey:ENABLE_NEW_AUDIO_DESIGN];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (BOOL)isNewAudioDesignEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:ENABLE_NEW_AUDIO_DESIGN];
+}
+
++(void)setBackgroundColorForReplyView:(UIColor *)backgroudColor
+{
+    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroudColor];
+    [[NSUserDefaults standardUserDefaults] setObject:receiveColorData forKey:AL_BACKGROUND_COLOR_FOR_REPLY_VIEW];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(UIColor *)getBackgroundColorForReplyView
+{
+    NSData *sendColorData = [[NSUserDefaults standardUserDefaults] objectForKey:AL_BACKGROUND_COLOR_FOR_REPLY_VIEW];
+    UIColor *backgroundColor = [NSKeyedUnarchiver unarchiveObjectWithData:sendColorData];
+    if(backgroundColor)
+    {
+        return backgroundColor;
+    }
+    return [UIColor grayColor];
+  
+}
+
 @end

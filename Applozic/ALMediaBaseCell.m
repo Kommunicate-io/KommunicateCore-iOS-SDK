@@ -231,23 +231,23 @@
     if(almessage.groupId && almessage.isReceivedMessage)
     {
         self.replyParentView.frame =
-        CGRectMake( bubbleXposition+2 ,
+        CGRectMake( bubbleXposition ,
                    self.mChannelMemberName.frame.origin.y + self.mChannelMemberName.frame.size.height,
-                   replyWidthRequired+5,
+                   replyWidthRequired-10,
                    60);
         
     }else if(!almessage.groupId & !almessage.isSentMessage  ){
         self.replyParentView.frame =
         CGRectMake( bubbleXposition -1 ,
                    self.mBubleImageView.frame.origin.y+3 ,
-                   replyWidthRequired+5,
+                   replyWidthRequired-10,
                    60);
         
     }else{
         self.replyParentView.frame =
-        CGRectMake( bubbleXposition -5 ,
-                   self.mBubleImageView.frame.origin.y+3 ,
-                   replyWidthRequired+5,
+        CGRectMake( bubbleXposition,
+                   self.mBubleImageView.frame.origin.y +3,
+                   replyWidthRequired-10,
                    60);
         
     }
@@ -258,7 +258,7 @@
         [v removeFromSuperview];
     }
     
-    [self.replyParentView setBackgroundColor:[UIColor redColor]];
+    [self.replyParentView setBackgroundColor:[ALApplozicSettings getBackgroundColorForReplyView]];
     [self.replyUIView populateUI:almessage withSuperView:self.replyParentView];
     [self.replyParentView addSubview:self.replyUIView];
 }

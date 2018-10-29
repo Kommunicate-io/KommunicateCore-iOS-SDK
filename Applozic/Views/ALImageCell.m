@@ -606,12 +606,36 @@ UIViewController * modalCon;
     
     if([self.mMessage isSentMessage] && self.mMessage.groupId)
     {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) || [self isMessageReplyMenuEnabled:action]));
+        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) || [self isMessageReplyMenuEnabled:action] || (action == @selector(copy:))));
     }
     
-    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)|| [self isForwardMenuEnabled:action]|| [self isMessageReplyMenuEnabled:action]));
+    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)|| [self isForwardMenuEnabled:action] || [self isMessageReplyMenuEnabled:action] || (action == @selector(copy:))));
 }
 
+
+
+- (void)copy:(id)sender {
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
+    dispatch_async(queue, ^{
+
+        UIPasteboard *appPasteBoard = UIPasteboard.generalPasteboard;
+        appPasteBoard.persistent = YES;
+
+        NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString * filePath = [docDir stringByAppendingPathComponent:self.mMessage.imageFilePath];
+
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+
+        BOOL isFileExist = [fileManager fileExistsAtPath: filePath];
+        if (isFileExist) {
+            UIImage  *image = [[UIImage alloc] initWithContentsOfFile:filePath];
+            appPasteBoard.image = [image copy];
+        }
+
+    });
+
+}
 
 -(void) delete:(id)sender
 {
