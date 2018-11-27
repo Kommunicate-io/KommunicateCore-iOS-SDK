@@ -387,6 +387,11 @@
 
 }
 
+-(BOOL)isLinkMessage
+{
+    return (_metadata && [_metadata  valueForKey:@"linkMessage"] && [ [_metadata  valueForKey:@"linkMessage"] isEqualToString:@"true"]);
+}
+
 -(BOOL)isChannelContentTypeMessage
 {
     return (self.contentType == ALMESSAGE_CHANNEL_NOTIFICATION);
