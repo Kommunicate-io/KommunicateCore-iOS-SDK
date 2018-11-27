@@ -447,7 +447,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                     [ALUserService processContactFromMessages:messageArray withCompletion:^{
                         NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:messageArray];
                         
-                        for(ALMessage * message in hiddenMsgFilteredArray)
+                        for(ALMessage * message in [hiddenMsgFilteredArray reverseObjectEnumerator])
                         {
                             
                             if([message isHiddenMessage] && ![message isVOIPNotificationMessage])

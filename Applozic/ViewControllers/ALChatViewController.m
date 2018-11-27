@@ -72,6 +72,7 @@
 #import "UIImage+animatedGIF.h"
 #import <Photos/Photos.h>
 #import "ALImagePreviewController.h"
+#import "ALLinkCell.h"
 
 #define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
@@ -1019,6 +1020,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
     [self.mTableView registerClass:[ALChatCell class] forCellReuseIdentifier:@"ChatCell"];
     [self.mTableView registerClass:[ALImageCell class] forCellReuseIdentifier:@"ImageCell"];
+    [self.mTableView registerClass:[ALLinkCell class] forCellReuseIdentifier:@"ALLinkCell"];
+
     [self.mTableView registerClass:[ALAudioCell class] forCellReuseIdentifier:@"AudioCell"];
     [self.mTableView registerClass:[ALVideoCell class] forCellReuseIdentifier:@"VideoCell"];
     [self.mTableView registerClass:[ALDocumentsCell class] forCellReuseIdentifier:@"DocumentsCell"];
@@ -1694,6 +1697,17 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     if(theMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
         ALLocationCell *theCell = (ALLocationCell *)[tableView dequeueReusableCellWithIdentifier:@"LocationCell"];
+        theCell.tag = indexPath.row;
+        theCell.delegate = self;
+        theCell.channel = self.alChannel;
+        theCell.contact = self.alContact;
+        [theCell populateCell:theMessage viewSize:self.view.frame.size];
+        [self.view layoutIfNeeded];
+        return theCell;
+    }
+   else  if(theMessage.isLinkMessage)
+    {
+        ALLinkCell *theCell = (ALLinkCell *)[tableView dequeueReusableCellWithIdentifier:@"ALLinkCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
         theCell.channel = self.alChannel;

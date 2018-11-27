@@ -25,6 +25,8 @@
 		1881CEC02152794E00325270 /* CustomPicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1881CEBE2152794E00325270 /* CustomPicker.storyboard */; };
 		1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1881CEC321527AB900325270 /* ALMultimediaData.h */; };
 		1881CEC621527ABA00325270 /* ALMultimediaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1881CEC421527AB900325270 /* ALMultimediaData.m */; };
+		1885ADA821AD982600FF06A7 /* ALLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1885ADA621AD982600FF06A7 /* ALLinkCell.m */; };
+		1885ADA921AD982600FF06A7 /* ALLinkCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1885ADA721AD982600FF06A7 /* ALLinkCell.h */; };
 		18FFE96B21519AD300E88C91 /* ALAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FFE96921519AD300E88C91 /* ALAudioSession.m */; };
 		18FFE96C21519AD300E88C91 /* ALAudioSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 18FFE96A21519AD300E88C91 /* ALAudioSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2932B9F31C7C875F0017911D /* ALGroupDetailViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2932B9F11C7C875F0017911D /* ALGroupDetailViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -417,6 +419,8 @@
 		1881CEBE2152794E00325270 /* CustomPicker.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = CustomPicker.storyboard; path = Applozic/CustomPicker.storyboard; sourceTree = "<group>"; };
 		1881CEC321527AB900325270 /* ALMultimediaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALMultimediaData.h; sourceTree = "<group>"; };
 		1881CEC421527AB900325270 /* ALMultimediaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALMultimediaData.m; sourceTree = "<group>"; };
+		1885ADA621AD982600FF06A7 /* ALLinkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALLinkCell.m; path = Applozic/Views/ALLinkCell.m; sourceTree = "<group>"; };
+		1885ADA721AD982600FF06A7 /* ALLinkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALLinkCell.h; path = Applozic/Views/ALLinkCell.h; sourceTree = "<group>"; };
 		18FFE96921519AD300E88C91 /* ALAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAudioSession.m; path = Applozic/ALAudioSession.m; sourceTree = "<group>"; };
 		18FFE96A21519AD300E88C91 /* ALAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAudioSession.h; path = Applozic/ALAudioSession.h; sourceTree = "<group>"; };
 		2932B9F11C7C875F0017911D /* ALGroupDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALGroupDetailViewController.h; sourceTree = "<group>"; };
@@ -824,6 +828,8 @@
 		29867A2D1CDB4F8F00CAA49D /* Media Base Cells */ = {
 			isa = PBXGroup;
 			children = (
+				1885ADA721AD982600FF06A7 /* ALLinkCell.h */,
+				1885ADA621AD982600FF06A7 /* ALLinkCell.m */,
 				6D77573F1D5B85100025560B /* ALDocumentsCell.h */,
 				6D7757401D5B85100025560B /* ALDocumentsCell.m */,
 				6D7757411D5B85100025560B /* ALLocationCell.h */,
@@ -1655,6 +1661,7 @@
 				4612E9131E13882D0022DB23 /* MQTTSSLSecurityPolicyEncoder.h in Headers */,
 				4612E90D1E13882D0022DB23 /* MQTTSessionSynchron.h in Headers */,
 				4612E90B1E13882D0022DB23 /* MQTTSessionManager.h in Headers */,
+				1885ADA921AD982600FF06A7 /* ALLinkCell.h in Headers */,
 				4612E8FF1E13882D0022DB23 /* MQTTDecoder.h in Headers */,
 				4612E8FB1E13882D0022DB23 /* MQTTClient.h in Headers */,
 				4612E8FD1E13882D0022DB23 /* MQTTCoreDataPersistence.h in Headers */,
@@ -1877,6 +1884,7 @@
 				6D6DF15D1BC5364C00EBA00F /* ALNewContactsViewController.m in Sources */,
 				6D7756DC1D5B82000025560B /* ALUserBlockResponse.m in Sources */,
 				6D6DF1831BC5364C00EBA00F /* DB_FileMetaInfo.m in Sources */,
+				1885ADA821AD982600FF06A7 /* ALLinkCell.m in Sources */,
 				6D7757341D5B84BE0025560B /* ALMessageArrayWrapper.m in Sources */,
 				6D6DF1B51BC5364C00EBA00F /* NSData+ImageContentType.m in Sources */,
 				6D6DF15B1BC5364C00EBA00F /* ALMessagesViewController.m in Sources */,
