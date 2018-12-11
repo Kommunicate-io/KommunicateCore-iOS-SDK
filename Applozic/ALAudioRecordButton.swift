@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc public protocol ALKAudioRecorderProtocol: class {
+@objc public protocol ALAudioRecorderProtocol: class {
     func moveButton(location: CGPoint)
     func finishRecordingAudioWith(filePath: String)
     func startAudioRecord()
@@ -16,7 +16,7 @@ import Foundation
     func permissionNotGranted()
 }
 
-@objc public class AudioRecordButton: UIButton{
+@objc public class ALAudioRecordButton: UIButton{
     
     public enum ALKSoundRecorderState{
         case Recording
@@ -31,7 +31,7 @@ import Foundation
         }
     }
     
-    private var delegate: ALKAudioRecorderProtocol!
+    private var delegate: ALAudioRecorderProtocol!
     
     //aduio session
     private var recordingSession: AVAudioSession!
@@ -41,7 +41,7 @@ import Foundation
     
     let recordButton: UIButton = UIButton(type: .custom)
     
-    @objc public func setAudioRecDelegate(recorderDelegate:ALKAudioRecorderProtocol) {
+    @objc public func setAudioRecDelegate(recorderDelegate:ALAudioRecorderProtocol) {
         delegate = recorderDelegate
     }
     
@@ -224,7 +224,7 @@ import Foundation
     }
 }
 
-extension AudioRecordButton: AVAudioRecorderDelegate
+extension ALAudioRecordButton: AVAudioRecorderDelegate
 {
     public func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         if !flag {

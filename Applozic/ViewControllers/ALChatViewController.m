@@ -83,7 +83,7 @@ NSString * const ThirdPartyDetailVCNotificationALContact = @"ThirdPartyDetailVCN
 NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVCNotificationChannelKey";
 
 
-@interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALLocationDelegate, ALKAudioRecorderViewProtocol, ALKAudioRecorderProtocol,
+@interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALLocationDelegate, ALAudioRecorderViewProtocol, ALAudioRecorderProtocol,
                                     ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
                                     UIAlertViewDelegate, ALMUltipleAttachmentDelegate, UIDocumentInteractionControllerDelegate,
                                     ABPeoplePickerNavigationControllerDelegate, ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate>
@@ -146,11 +146,11 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     CGRect defaultTableRect;
     UIView * maskView;
     BOOL isPickerOpen;
-    ALKAudioRecorderView * soundRecordingView;
+    ALAudioRecorderView * soundRecordingView;
     ALSoundRecorderButton * soundRecording;
     ALTemplateMessagesView *templateMessageView;
     BOOL isMicButtonVisible;
-    AudioRecordButton * micButton;
+    ALAudioRecordButton * micButton;
     BOOL isAudioRecordingEnabled;
     BOOL isNewAudioDesignEnabled;
 
@@ -1565,7 +1565,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 -(void)setUpSoundRecordingView
 {
     if (isNewAudioDesignEnabled) {
-        soundRecordingView = [[ALKAudioRecorderView alloc] initWithFrame:CGRectZero];
+        soundRecordingView = [[ALAudioRecorderView alloc] initWithFrame:CGRectZero];
         [soundRecordingView setAudioRecViewDelegateWithRecorderDelegate:self];
         [self.view addSubview: soundRecordingView];
         [soundRecordingView setHidden:YES];
@@ -1627,7 +1627,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 -(void)showMicButton
 {
     if(isNewAudioDesignEnabled){
-        micButton = [[AudioRecordButton alloc] initWithFrame: CGRectZero];
+        micButton = [[ALAudioRecordButton alloc] initWithFrame: CGRectZero];
         [micButton setAudioRecDelegateWithRecorderDelegate:self];
         [self.view addSubview: micButton];
         [micButton setHidden:NO];
@@ -4760,14 +4760,14 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     [self multipleAttachmentProcess:multimediaList andText:@""];
 }
 
-#pragma mark - ALKAudioRecorderViewDelegate
+#pragma mark - ALAudioRecorderViewDelegate
 
 - (void)cancelAudioRecording {
     [micButton cancelAudioRecord];
     [self cancelAudioRecord];
 }
 
-#pragma mark - ALKAudioRecorderProtocol
+#pragma mark - ALAudioRecorderProtocol
 
 - (void)moveButtonWithLocation:(CGPoint)location{
     [soundRecordingView moveViewWithLocation:location];
