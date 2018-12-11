@@ -60,6 +60,19 @@
         [userArray addObject:channelUser];
     }
     self.groupUsers = userArray;
+    
+    // Channel conversation status
+    if (self.metadata) {
+        if ([self.metadata objectForKey:CONVERSATION_ASSIGNEE] != nil && ([[self.metadata valueForKey:CONVERSATION_ASSIGNEE] isEqualToString:[ALUserDefaultsHandler getUserId]])) {
+            self.category = ASSIGNED_CONVERSATION;
+        } else if ([self.metadata objectForKey:CHANNEL_CONVERSATION_STATUS] != nil && ([[self.metadata valueForKey:CHANNEL_CONVERSATION_STATUS] isEqualToString:@"2"])) {
+            self.category = CLOSED_CONVERSATION;
+        } else {
+            self.category = ALL_CONVERSATION;
+        }
+    } else {
+        self.category = ALL_CONVERSATION;
+    }
 }
 
 -(NSNumber *)getChannelMemberParentKey:(NSString *)userId

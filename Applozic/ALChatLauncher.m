@@ -72,6 +72,34 @@
     }
 }
 
+/**
+ * Use this to launch individual chat using conversationId. 
+ */
+-(void)launchIndividualChat:(NSString *)userId withGroupId:(NSNumber*)groupID withConversationId:(NSNumber *)conversationId
+    andViewControllerObject:(UIViewController *)viewController andWithText:(NSString *)text
+{
+    self.chatLauncherFLAG = [NSNumber numberWithInt:1];
+    
+    if(groupID){
+        [self launchIndividualChatForGroup:userId withGroupId:groupID withDisplayName:nil andViewControllerObject:viewController andWithText:text];
+    }else{
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+        
+        ALChatViewController * chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
+        
+        chatView.channelKey = groupID;
+        chatView.contactIds = userId;
+        chatView.conversationId = conversationId;
+        chatView.text = text;
+        chatView.individualLaunch = YES;
+        chatView.chatViewDelegate = self;
+        ALSLog(ALLoggerSeverityInfo, @"CALLED_VIA_NOTIFICATION");
+        
+        UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:chatView];
+        conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
+    }
+}
 
 -(void)launchIndividualChat:(NSString *)userId withGroupId:(NSNumber*)groupID
             withDisplayName:(NSString*)displayName

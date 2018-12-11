@@ -1317,49 +1317,63 @@
      }];
 }
 
--(void)pushNotificationhandler:(NSNotification *) notification
+-(ALMessage *)getMessageFromAlertValue:(NSString *) alertValue
 {
-    NSString * contactId = notification.object;
+    ALMessage *msg = [[ALMessage alloc] init];
+    msg.message = alertValue;
+    NSArray *myArray = [msg.message componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"]];
     
-    NSArray * myArray = [contactId componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"]];
-    
-    if(myArray.count > 2)
+    if(myArray.count > 1)
     {
-        self.channelKey = @([ myArray[1] intValue]);
+        alertValue = [NSString stringWithFormat:@"%@", myArray[1]];
     }
     else
     {
-        self.channelKey = nil;
+        alertValue = myArray[0];
     }
+    msg.message = alertValue;
+    msg.groupId = self.channelKey;
+    return msg;
+}
+
+-(void)pushNotificationhandler:(NSNotification *) notification
+{
+    NSString * notificationObject = notification.object;
+    NSString * contactId = nil;
+    NSNumber * conversationId = nil;
+    NSArray * myArray = [notificationObject componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"]];
+    
+    if (myArray.count > 2) {
+        self.channelKey = @([ myArray[1] intValue]);
+        contactId = myArray[2];
+    } else if (myArray.count == 2) {
+        self.channelKey = nil;
+        contactId = myArray[0];
+        conversationId = @([myArray[1] intValue]);
+    } else {
+        self.channelKey = nil;
+        contactId = myArray[0];
+    }
+    
     
     NSDictionary *dict = notification.userInfo;
     NSNumber * updateUI = [dict valueForKey:@"updateUI"];
     NSString * alertValue = [dict valueForKey:@"alertValue"];
     
+    ALMessage *message = [self getMessageFromAlertValue:alertValue];
+    message.contactIds = contactId;
+    message.groupId = self.channelKey;
+    if (conversationId) {
+        message.conversationId = conversationId;
+    }
+    
     if (self.isViewLoaded && self.view.window && [updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]])
     {
-        ALMessage *msg = [[ALMessage alloc] init];
-        msg.message = alertValue;
-        NSArray *myArray = [msg.message componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"]];
-        
-        if(myArray.count > 1)
-        {
-            alertValue = [NSString stringWithFormat:@"%@", myArray[1]];
-        }
-        else
-        {
-            alertValue = myArray[0];
-        }
-        msg.message = alertValue;
-        msg.contactIds = contactId;
-        msg.groupId = self.channelKey;
-
-        [self syncCall:msg andMessageList:nil];
+        [self syncCall:message andMessageList:nil];
     }
     else if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
     {
-        ALSLog(ALLoggerSeverityInfo, @"######## IT SHOULD NEVER COME HERE #########");
-        [self createDetailChatViewController: contactId];
+        [self createDetailChatViewControllerWithMessage:message];
 //      [self.detailChatViewController fetchAndRefresh];
         [self.detailChatViewController setRefresh: YES];
     }

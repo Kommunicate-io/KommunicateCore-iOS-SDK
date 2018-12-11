@@ -105,5 +105,6 @@
 -(NSMutableArray *)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName;
 
 -(DB_CHANNEL *)getContactsGroupChannelByName:(NSString *)channelName;
+-(NSMutableArray *) getGroupUsersInChannel:(NSNumber *)key;
 
 @end

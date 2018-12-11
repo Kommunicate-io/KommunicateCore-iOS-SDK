@@ -218,7 +218,7 @@
 
 
 
-+(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID delegate:(id)delegate
++(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate
 {
     
     if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE ){
@@ -260,7 +260,7 @@
                                        callback:^(void){
         
                                            
-                                           [delegate thirdPartyNotificationTap1:contactId withGroupId:groupID];
+                                           [delegate thirdPartyNotificationTap1:contactId withGroupId:groupID withConversationId: conversationId];
 
         
     }buttonTitle:nil buttonCallback:nil atPosition:TSMessageNotificationPositionTop canBeDismissedByUser:YES];
