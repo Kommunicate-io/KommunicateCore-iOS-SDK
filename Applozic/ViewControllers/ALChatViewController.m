@@ -381,8 +381,10 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         [self.pickerView selectRow:0 inComponent:0 animated:NO];
         [self.pickerView reloadAllComponents];
     }
-
-     [self checkIfChannelLeft];
+ 
+    if (self.channelKey) {
+        [self checkIfChannelLeft];
+    }
     [self setCallButtonInNavigationBar];
     [self checkUserBlockStatus];
     if(self.contactIds ){
@@ -3399,29 +3401,29 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     [self setRefreshMainView:TRUE];
     // see if this view is visible or not...
 
-    NSString * contactId = (NSString *)notification.object;
-    alMessage.contactIds = contactId;
-
+    NSString * notificationObject = (NSString *)notification.object;
     NSDictionary *dict = notification.userInfo;
     NSNumber *updateUI = [dict valueForKey:@"updateUI"];
     NSString *alertValue = [dict valueForKey:@"alertValue"];
-    ALSLog(ALLoggerSeverityInfo, @"Notification received by Individual chat list: %@", contactId);
+    ALSLog(ALLoggerSeverityInfo, @"Notification received by Individual chat list: %@", notificationObject);
 
-    NSArray *componentsContactId = [contactId componentsSeparatedByString:@":"];
-
-    if(componentsContactId.count > 1 && [componentsContactId[0] isEqualToString:@"AL_GROUP"] )
+    NSArray *componentsArray = [notificationObject componentsSeparatedByString:@":"];
+    if (componentsArray.count > 2) {
+        alMessage.groupId = @([ componentsArray[1] intValue]);
+        alMessage.contactIds = componentsArray[2];
+    } else if (componentsArray.count == 2) {
+        alMessage.groupId = nil;
+        alMessage.contactIds = componentsArray[0];
+        alMessage.conversationId = @([componentsArray[1] intValue]);
+    } else {
+        alMessage.groupId = nil;
+        alMessage.contactIds = componentsArray[0];
+    }
+    
+    NSArray * componentsAlertValue = [alertValue componentsSeparatedByString:@":"];
+    if(componentsAlertValue.count > 1)
     {
-        NSNumber * appendedGroupId = [NSNumber numberWithInt:[componentsContactId[1] intValue]];
-        alMessage.groupId = appendedGroupId;
-
-        NSString * appendedContactId = [NSString stringWithFormat:@"%@",componentsContactId[2]];
-        alMessage.contactIds =appendedContactId;
-
-        NSArray * componentsAlertValue = [alertValue componentsSeparatedByString:@":"];
-        if(componentsAlertValue.count > 1)
-        {
-            alertValue = [NSString stringWithFormat:@"%@",componentsAlertValue[1]];
-        }
+        alertValue = [NSString stringWithFormat:@"%@",componentsAlertValue[1]];
     }
 
     alMessage.message = alertValue;

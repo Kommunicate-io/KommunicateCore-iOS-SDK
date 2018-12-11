@@ -331,7 +331,7 @@
                      self.groupId = nil;
                  }
                  ALSLog(ALLoggerSeverityInfo, @"onTopMessageVC: ContactID %@ and ChannelID %@",self.contactId, self.groupId);
-                 [class2 createDetailChatViewController:self.contactId];
+                 [class2 createDetailChatViewControllerWithMessage:self.alMessageObject];
                  self.checkContactId = [NSString stringWithFormat:@"%@",self.contactId];
              }
              else if([delegate isKindOfClass:[ALChatViewController class]] && top.isChatViewOnTop)
@@ -448,11 +448,11 @@
     else
     {
         class1.conversationId = nil;
-        class1.contactIds=self.contactId;
-        [class1 reloadView];
-        [class1 markConversationRead];
-        [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     }
+    class1.contactIds=self.contactId;
+    [class1 reloadView];
+    [class1 markConversationRead];
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     
 }
 

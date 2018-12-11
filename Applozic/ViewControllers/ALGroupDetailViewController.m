@@ -6,7 +6,7 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 #import "ALGroupDetailViewController.h"
-#import "ALContactCell.h"
+#import "ALGroupDetailsMemberCell.h"
 #import "ALChatViewController.h"
 #import "ALChannel.h"
 #import "ALApplozicSettings.h"
@@ -30,12 +30,7 @@
     ALChannel *alchannel;
 }
 
-@property (nonatomic, retain) UILabel * memberNameLabel;
-@property (nonatomic, retain) UILabel * firstLetterLabel;
-@property (nonatomic, retain) UIImageView * memberIconImageView;
 @property (nonatomic, retain) NSString * groupName;
-@property (nonatomic, retain) UILabel * adminLabel;
-@property (nonatomic, retain) UILabel * lastSeenLabel;
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) ALMQTTConversationService * mqttObject;
 @property (nonatomic, strong) ALChannel * alChannel;
@@ -650,50 +645,52 @@
 //========================
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ALContactCell * memberCell = (ALContactCell*)[tableView dequeueReusableCellWithIdentifier:@"memberCell" forIndexPath:indexPath];
+    ALGroupDetailsMemberCell *memberCell = (ALGroupDetailsMemberCell*)[tableView dequeueReusableCellWithIdentifier:@"GroupMemberCell" forIndexPath:indexPath];
+
     [memberCell setSeparatorInset:UIEdgeInsetsMake(0, 0, 0, 0)];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         
         [self setupCellItems:memberCell];
-        [self.firstLetterLabel setHidden:YES];
-        [self.memberIconImageView setHidden:YES];
-        [self.memberNameLabel setTextAlignment:NSTextAlignmentCenter];
-        [self.memberNameLabel setTextColor:[UIColor blackColor]];
-        [self.memberNameLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:15]];
-        [self.adminLabel setHidden:YES];
-        [self.lastSeenLabel setHidden:YES];
-        
+        [memberCell.lastSeenTimeLabel setHidden:YES];
+        [memberCell.profileImageView setHidden:YES];
+        [memberCell.nameLabel setTextColor:[UIColor blackColor]];
+        [memberCell.nameLabel  setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:15]];
+        [memberCell.nameLabel setTextAlignment:NSTextAlignmentCenter];
+        [memberCell.adminLabel setHidden:YES];
+        [memberCell.lastSeenTimeLabel setHidden:YES];
+
         switch (indexPath.section)
         {
             case 0:
             {
+                memberCell.nameLeftConstraint.constant = 0;
                 if(indexPath.row == 0)
                 {
-                    [self.memberNameLabel setFont:[UIFont boldSystemFontOfSize:18]];
-                    self.memberNameLabel.text = [NSString stringWithFormat:@"%@", self.groupName];
+                    [memberCell.nameLabel setFont:[UIFont boldSystemFontOfSize:18]];
+                    memberCell.nameLabel.text = [NSString stringWithFormat:@"%@", self.groupName];
                 }
                 else if(indexPath.row==1)
                 {
-                    self.memberNameLabel.text = [self.alChannel isNotificationMuted]
+
+                    memberCell.nameLabel.text = [self.alChannel isNotificationMuted]
                     ? [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"unMuteGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unmute Group", @"")]
                     : [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"muteGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Mute Group", @"") ];
                 }
                 else
                 {
-                    
-                    self.memberNameLabel.textColor = self.view.tintColor;
-                    self.memberNameLabel.text = NSLocalizedStringWithDefaultValue(@"addNewMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Add New Member", @"");
+                    memberCell.nameLabel.textColor = self.view.tintColor;
+                    memberCell.nameLabel.text = NSLocalizedStringWithDefaultValue(@"addNewMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Add New Member", @"");
                     
                 }
             }break;
             case 1:
             {
-                [self setMemberIcon:indexPath.row];
+                [self setMemberIcon:indexPath.row withCell:memberCell];
             }break;
             case 2:
             {
-                [self.memberNameLabel setTextColor:[UIColor redColor]];
+                [memberCell.nameLabel setTextColor:[UIColor redColor]];
                 
                 ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
                 ALChannel *channel = [channelDBService loadChannelByKey:self.channelKeyID];
@@ -707,7 +704,7 @@
                     NSLocalizedStringWithDefaultValue(@"deleteGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delete Group", @"");
                     
                 }
-                self.memberNameLabel.text = labelTitle;
+                memberCell.nameLabel.text = labelTitle;
             }break;
             default:break;
         }
@@ -717,7 +714,7 @@
 }
 
 
--(void)setMemberIcon:(NSInteger)row
+-(void)setMemberIcon:(NSInteger)row withCell:(ALGroupDetailsMemberCell*)memberCell
 {
     
     ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
@@ -725,58 +722,53 @@
     
     if(alChannelUserX.isAdminUser)
     {
-        [self.adminLabel setHidden:NO];
+        [memberCell.adminLabel setHidden:NO];
     }
     
     //    Member Name Label
-    [self.lastSeenLabel setTextAlignment:NSTextAlignmentNatural];
-    [self.memberNameLabel setTextAlignment:NSTextAlignmentNatural];
-    self.memberNameLabel.text = [NSString stringWithFormat:@"%@", memberNames[row]];
+    [memberCell.lastSeenTimeLabel setTextAlignment:NSTextAlignmentNatural];
+    [memberCell.nameLabel setTextAlignment:NSTextAlignmentNatural];
+    memberCell.nameLabel.text = [NSString stringWithFormat:@"%@", memberNames[row]];
     
-    [self.firstLetterLabel setHidden:YES];
-    [self.memberIconImageView setHidden:NO];
+    [memberCell.alphabeticLabel setHidden:YES];
+    [memberCell.profileImageView setHidden:NO];
     
     ALContactDBService * alContactDBService = [[ALContactDBService alloc] init];
     ALContact * alContact = [alContactDBService loadContactByKey:@"userId" value:memberIds[row]];
     
     if (![alContact.userId isEqualToString:[ALUserDefaultsHandler getUserId]])
     {
-        [self.lastSeenLabel setHidden:NO];
-        [self.lastSeenLabel setText:self.lastSeenMembersArray[row]];
+        [memberCell.lastSeenTimeLabel setHidden:NO];
+        [memberCell.lastSeenTimeLabel setText:self.lastSeenMembersArray[row]];
     }
     
     if (alContact.localImageResourceName)
     {
         UIImage *someImage = [ALUtilityClass getImageFromFramworkBundle:alContact.localImageResourceName];
-        [self.memberIconImageView  setImage:someImage];
+        [memberCell.profileImageView  setImage:someImage];
     }
     else if(alContact.contactImageUrl)
     {
         ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-        [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.memberIconImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+        [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:memberCell.profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
     }
     else
     {
-        [self.firstLetterLabel setHidden:NO];
-        self.firstLetterLabel.text = [[alContact getDisplayName] substringToIndex:1];
+        [memberCell.alphabeticLabel setHidden:NO];
+        memberCell.alphabeticLabel.text = [[alContact getDisplayName] substringToIndex:1];
         NSUInteger randomIndex = random()% [colors count];
-        self.memberIconImageView.image = [ALColorUtility imageWithSize:CGRectMake(0,0,55,55) WithHexString:colors[randomIndex]];
+        memberCell.profileImageView.image = [ALColorUtility imageWithSize:CGRectMake(0,0,55,55) WithHexString:colors[randomIndex]];
     }
 }
 
--(void)setupCellItems:(ALContactCell*)memberCell
+-(void)setupCellItems:(ALGroupDetailsMemberCell*)memberCell
 {
-    self.memberNameLabel  = (UILabel*)[memberCell viewWithTag:101];
-    self.memberIconImageView = (UIImageView*)[memberCell viewWithTag:102];
-    self.memberIconImageView.clipsToBounds = YES;
-    self.memberIconImageView.layer.cornerRadius = self.memberIconImageView.frame.size.width/2;
-    
-    self.firstLetterLabel = (UILabel*)[memberCell viewWithTag:103];
-    self.firstLetterLabel.textColor = [UIColor whiteColor];
-    self.adminLabel = (UILabel*)[memberCell viewWithTag:104];
-    [self.adminLabel setText:NSLocalizedStringWithDefaultValue(@"adminText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Admin", @"")];
-    self.adminLabel.textColor = self.view.tintColor;
-    self.lastSeenLabel = (UILabel *)[memberCell viewWithTag:105];
+    memberCell.profileImageView.clipsToBounds = YES;
+    memberCell.profileImageView.layer.cornerRadius =  memberCell.profileImageView.frame.size.width/2;
+    memberCell.alphabeticLabel.textColor = [UIColor whiteColor];
+    [memberCell.adminLabel setText:NSLocalizedStringWithDefaultValue(@"adminText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Admin", @"")];
+    memberCell.adminLabel.textColor = [UIColor blackColor];
+
 }
 
 #pragma mark Row Height

@@ -74,6 +74,17 @@
     return sharedInstance;
 }
 
+-(NSString *) getNotificationObjectFromMessage:(ALMessage *) message
+{
+    if (message.groupId != nil) {
+        return [NSString stringWithFormat:@"AL_GROUP:%@:%@",message.groupId.stringValue,message.contactIds];
+    } else if (message.conversationId != nil) {
+        return [NSString stringWithFormat:@"%@:%@",message.contactIds,message.conversationId.stringValue];
+    } else {
+        return [[NSString alloc] initWithString:message.contactIds];
+    }
+}
+
 -(void) subscribeToConversation {
 
     dispatch_async(dispatch_get_main_queue (),^{
@@ -213,7 +224,7 @@
             {
                 NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
                 [dict setObject:[alMessage getNotificationText] forKey:@"alertValue"];
-                [dict setObject:[NSNumber numberWithInt:APP_STATE_BACKGROUND] forKey:@"updateUI"];
+                [dict setObject:[NSNumber numberWithInt:APP_STATE_ACTIVE] forKey:@"updateUI"];
 
                 if(alMessage.groupId){
                     ALChannelService *channelService = [[ALChannelService alloc] init];
@@ -228,7 +239,7 @@
                             [ALMessageService addOpenGroupMessage:alMessage withDelegate:self.realTimeUpdate];
                             if(!assistant.isOurViewOnTop)
                             {
-                                [assistant assist:alMessage.contactIds and:dict ofUser:alMessage.contactIds];
+                                [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:dict ofUser:alMessage.contactIds];
                                 [dict setObject:@"mqtt" forKey:@"Calledfrom"];
                             }
                             else
@@ -661,7 +672,7 @@
         ALSLog(ALLoggerSeverityInfo, @"ALMQTTConversationService SYNC CALL");
         if(!assistant.isOurViewOnTop)
         {
-            [assistant assist:alMessage.contactIds and:nsMutableDictionary ofUser:alMessage.contactIds];
+            [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:nsMutableDictionary ofUser:alMessage.contactIds];
             [nsMutableDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
         }
         else

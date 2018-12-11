@@ -128,7 +128,9 @@
     theChannelEntity.adminId = channel.adminKey;
     theChannelEntity.unreadCount = channel.unreadCount;
     theChannelEntity.metadata = channel.metadata.description;
-    
+    if (channel.category) {
+        theChannelEntity.category = channel.category;
+    }
     return theChannelEntity;
 }
 
@@ -259,6 +261,9 @@
     alChannel.deletedAtTime = dbChannel.deletedAtTime;
     alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
     alChannel.userCount = dbChannel.userCount;
+    if (dbChannel.category) {
+        alChannel.category = dbChannel.category;
+    }
     return alChannel;
 }
 
@@ -555,6 +560,11 @@
         channel.deletedAtTime = dbChannel.deletedAtTime;
         channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
         channel.userCount = dbChannel.userCount;
+        if (dbChannel.category) {
+            channel.category = dbChannel.category;
+        } else {
+            channel.category = ALL_CONVERSATION;
+        }
         return channel;
     }
     else
@@ -658,6 +668,11 @@
             channel.deletedAtTime = dbChannel.deletedAtTime;
             channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
             channel.userCount = dbChannel.userCount;
+            if (dbChannel.category) {
+                channel.category = dbChannel.category;
+            } else {
+                channel.category = ALL_CONVERSATION;
+            }
             [alChannels addObject:channel];
         }
     }
@@ -752,6 +767,15 @@
         DB_CHANNEL *dbChannel = [result objectAtIndex:0];
         if(newMetaData!=nil) {
             dbChannel.metadata = newMetaData.description;
+            
+            // Update conversation status from metadata
+            if ([newMetaData objectForKey:CONVERSATION_ASSIGNEE] != nil && ([[newMetaData valueForKey:CONVERSATION_ASSIGNEE] isEqualToString:[ALUserDefaultsHandler getUserId]])) {
+                dbChannel.category = ASSIGNED_CONVERSATION;
+            } else if ([newMetaData objectForKey:CHANNEL_CONVERSATION_STATUS] != nil && ([[newMetaData valueForKey:CHANNEL_CONVERSATION_STATUS] isEqualToString:@"2"])) {
+                dbChannel.category = CLOSED_CONVERSATION;
+            } else {
+                dbChannel.category = ALL_CONVERSATION;
+            }
         }
         
         [dbHandler.managedObjectContext save:nil];
@@ -1021,6 +1045,9 @@
     alChannel.deletedAtTime = dbChannel.deletedAtTime;
     alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
     alChannel.userCount = dbChannel.userCount;
+    if (dbChannel.category) {
+        alChannel.category = dbChannel.category;
+    }
     return alChannel;
 }
 
@@ -1058,7 +1085,11 @@
         alChannel.deletedAtTime = dbChannel.deletedAtTime;
         alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
         alChannel.userCount = dbChannel.userCount;
-        
+        if (dbChannel.category) {
+            alChannel.category = dbChannel.category;
+        } else {
+            alChannel.category = ALL_CONVERSATION;
+        }
         [childArray addObject:alChannel];
     }
     
@@ -1072,6 +1103,35 @@
     DB_CHANNEL *dbChannel = [self getChannelByKey:channelKey];
     dbChannel.notificationAfterTime = notificationAfterTime;
     [dbHandler.managedObjectContext save:nil];
+}
+
+-(NSMutableArray *) getGroupUsersInChannel:(NSNumber *)key {
+    NSMutableArray *memberList = [[NSMutableArray alloc] init];
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X"
+                                              inManagedObjectContext:dbHandler.managedObjectContext];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",key];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+
+    NSError *fetchError = nil;
+    NSArray *resultArray = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+
+    if (resultArray.count)
+    {
+        for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
+        {
+            [memberList addObject:dbChannelUserX];
+        }
+
+        return memberList;
+    }
+    else
+    {
+        return nil;
+    }
 }
 
 @end
