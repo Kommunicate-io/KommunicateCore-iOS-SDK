@@ -9,12 +9,12 @@
 import Foundation
 import AVFoundation
 
-@objc public protocol ALKAudioRecorderViewProtocol{
+@objc public protocol ALAudioRecorderViewProtocol{
     func cancelAudioRecording()
 }
 
 @available(iOS 9.0, *)
-@objc public class ALKAudioRecorderView: UIView {
+@objc public class ALAudioRecorderView: UIView {
     
     private var isTimerStart:Bool = false
     private var timer = Timer()
@@ -25,7 +25,7 @@ import AVFoundation
     private var redDotStartLocation: CGFloat = 0.0
     private var customBackgroundColor: UIColor!
     
-    private var delegate: ALKAudioRecorderViewProtocol!
+    private var delegate: ALAudioRecorderViewProtocol!
     
     lazy var slideToCancel: UILabel = {
         let label = self.commonLabel()
@@ -96,7 +96,7 @@ import AVFoundation
         return label
     }
     
-    @objc public func setAudioRecViewDelegate(recorderDelegate:ALKAudioRecorderViewProtocol) {
+    @objc public func setAudioRecViewDelegate(recorderDelegate:ALAudioRecorderViewProtocol) {
         delegate = recorderDelegate
     }
     
