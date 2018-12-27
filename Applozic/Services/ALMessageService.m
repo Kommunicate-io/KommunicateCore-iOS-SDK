@@ -192,28 +192,19 @@ static ALMessageClientService *alMsgClientService;
                    withCompletion:^(NSMutableArray *messages,
                                     NSError *error,
                                     NSMutableArray *userDetailArray) {
-
                        [alContactDBService addUserDetails:userDetailArray];
 
                        ALContactService *contactService = [ALContactService new];
                        NSMutableArray * userNotPresentIds = [NSMutableArray new];
 
-                       NSMutableArray  *messageArray = messages;
-                       NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:messageArray];
-
-                       for(ALMessage* msg  in hiddenMsgFilteredArray){
-
-                           if([msg isHiddenMessage] && ![msg isVOIPNotificationMessage])
-                           {
-                               [messageArray removeObject:msg];
+                       for (int i=0; i<messages.count; i++) {
+                           ALMessage * message = messages[i];
+                           if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
+                               [messages removeObjectAtIndex:i];
                            }
-
-                           NSString* contactId = msg.to;
-
-                           if(![contactService isContactExist:contactId]){
-                               [userNotPresentIds addObject:contactId];
+                           if (![contactService isContactExist:message.to]) {
+                               [userNotPresentIds addObject:message.to];
                            }
-
                        }
 
                        if(userNotPresentIds.count>0)
@@ -445,27 +436,25 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                     messageArray = [dbService addMessageList:syncResponse.messagesList];
 
                     [ALUserService processContactFromMessages:messageArray withCompletion:^{
-                        NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:messageArray];
-                        
-                        for(ALMessage * message in [hiddenMsgFilteredArray reverseObjectEnumerator])
-                        {
-                            
+
+                        for (int i = messageArray.count - 1; i>=0; i--) {
+                            ALMessage * message = messageArray[i];
                             if([message isHiddenMessage] && ![message isVOIPNotificationMessage])
                             {
-                                [messageArray removeObject:message];
+                                [messageArray removeObjectAtIndex:i];
                             }
                             else if(![message isToIgnoreUnreadCountIncrement])
                             {
                                 [ALMessageService incrementContactUnreadCount:message];
                             }
-                            
+
                             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                                 [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
                                 if([message isMsgHidden]) {
-                                    [messageArray removeObject:message];
+                                    [messageArray removeObjectAtIndex:i];
                                 }
                             }
-                            
+
                             if(![message isHiddenMessage] && ![message isVOIPNotificationMessage] && delegate)
                             {
                                 if([message.type  isEqual: OUT_BOX]){
@@ -474,7 +463,6 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
                                     [delegate onMessageReceived: message];
                                 }
                             }
-                            
                         }
                         
                         [[NSNotificationCenter defaultCenter] postNotificationName:NEW_MESSAGE_NOTIFICATION object:messageArray userInfo:nil];
@@ -1032,18 +1020,15 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
         
         NSMutableArray * singlemessageArray = [[NSMutableArray alloc] init];
         [singlemessageArray addObject:alMessage];
-        NSMutableArray * hiddenMsgFilteredArray = [[NSMutableArray alloc] initWithArray:singlemessageArray];
-        for(ALMessage * message in hiddenMsgFilteredArray)
-        {
-            
+        for (int i=0; i<singlemessageArray.count; i++) {
+            ALMessage * message = singlemessageArray[i];
             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                 ALChannelService *channelService = [[ALChannelService alloc] init];
                 [channelService syncCallForChannelWithDelegate:delegate];
                 if([message isMsgHidden]) {
-                    [singlemessageArray removeObject:message];
+                    [singlemessageArray removeObjectAtIndex:i];
                 }
             }
-            
             if(delegate){
                 if([message.type  isEqual: OUT_BOX]){
                     [delegate onMessageSent: message];
@@ -1051,7 +1036,6 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
                     [delegate onMessageReceived: message];
                 }
             }
-            
         }
         
         [ALUserService processContactFromMessages:singlemessageArray withCompletion:^{

@@ -1396,4 +1396,22 @@
   
 }
 
++(void) setHideMediaSelectOption:(NSMutableArray*)array{
+
+    [[NSUserDefaults standardUserDefaults] setObject:array forKey:MEDIA_SELECT_OPTIONS];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSArray*) getHideMediaSelectOption{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:MEDIA_SELECT_OPTIONS];
+}
+
++(BOOL) imagesHiddenInGallery{
+    return [self getHideMediaSelectOption] && [[self getHideMediaSelectOption] containsObject:@":image"];
+}
+
++(BOOL) videosHiddenInGallery{
+    return [self getHideMediaSelectOption] && [[self getHideMediaSelectOption] containsObject:@":video"];
+}
+
 @end

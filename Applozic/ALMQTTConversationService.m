@@ -86,9 +86,13 @@
 }
 
 -(void) subscribeToConversation {
+    [self subscribeToConversationWithTopic:[ALUserDefaultsHandler getUserKeyString]];
+}
 
+-(void) subscribeToConversationWithTopic:(NSString *) topic {
+    
     dispatch_async(dispatch_get_main_queue (),^{
-
+        
         @try
         {
             if (![ALUserDefaultsHandler isLoggedIn]) {
@@ -99,21 +103,21 @@
                 return;
             }
             ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTING_MQTT_SERVER");
-
+            
             self.session = [[MQTTSession alloc] initWithClientId:[NSString stringWithFormat:@"%@-%f",
                                                                   [ALUserDefaultsHandler getUserKeyString],fmod([[NSDate date] timeIntervalSince1970], 10.0)]];
-
+            
             NSString * willMsg = [NSString stringWithFormat:@"%@,%@,%@",[ALUserDefaultsHandler getUserKeyString],[ALUserDefaultsHandler getDeviceKeyString],@"0"];
-
+            
             self.session.willFlag = YES;
             self.session.willTopic = MQTT_TOPIC_STATUS;
             self.session.willMsg = [willMsg dataUsingEncoding:NSUTF8StringEncoding];
             self.session.willQoS = MQTTQosLevelAtMostOnce;
             [self.session setDelegate:self];
             ALSLog(ALLoggerSeverityInfo, @"MQTT : WAITING_FOR_CONNECT...");
-
+            
             [self.session connectToHost:MQTT_URL port:[MQTT_PORT intValue] withConnectionHandler:^(MQTTSessionEvent event) {
-
+                
                 if (event == MQTTSessionEventConnected)
                 {
                     ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTED");
@@ -122,12 +126,12 @@
                                              onTopic:MQTT_TOPIC_STATUS
                                               retain:NO
                                                  qos:MQTTQosLevelAtMostOnce];
-
+                    
                     ALSLog(ALLoggerSeverityInfo, @"MQTT : SUBSCRIBING TO CONVERSATION TOPICS");
                     if([ALUserDefaultsHandler getEnableEncryption] && [ALUserDefaultsHandler getUserEncryptionKey] ){
-                        [self.session subscribeToTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY,[ALUserDefaultsHandler getUserKeyString]] atLevel:MQTTQosLevelAtMostOnce];
+                        [self.session subscribeToTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic] atLevel:MQTTQosLevelAtMostOnce];
                     }else{
-                        [self.session subscribeToTopic:[ALUserDefaultsHandler getUserKeyString] atLevel:MQTTQosLevelAtMostOnce];
+                        [self.session subscribeToTopic: topic atLevel:MQTTQosLevelAtMostOnce];
                     }
                     [self.session subscribeToTopic:[NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], [ALUserDefaultsHandler getUserId]] atLevel:MQTTQosLevelAtMostOnce];
                     [ALUserDefaultsHandler setLoggedInUserSubscribedMQTT:YES];
@@ -137,9 +141,9 @@
                     }
                 }
             } messageHandler:^(NSData *data, NSString *topic) {
-
+                
             }];
-
+            
             /*if (session.status == MQTTSessionStatusConnected) {
              [session subscribeToTopic:[ALUserDefaultsHandler getUserKeyString] atLevel:MQTTQosLevelAtMostOnce];
              }*/
@@ -149,7 +153,6 @@
         }
     });
 }
-
 
 - (void)session:(MQTTSession*)session newMessage:(NSData*)data onTopic:(NSString*)topic {
     ALSLog(ALLoggerSeverityInfo, @"MQTT: GOT_NEW_MESSAGE");
@@ -549,6 +552,15 @@
 
 -(BOOL) unsubscribeToConversation: (NSString *) userKey
 {
+    return [self unsubscribeToConversationForUser: userKey WithTopic: [ALUserDefaultsHandler getUserKeyString]];
+}
+
+-(void) unsubscribeToConversationWithTopic:(NSString *)topic {
+    NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
+    [self unsubscribeToConversationForUser: userKey WithTopic: topic];
+}
+
+-(BOOL) unsubscribeToConversationForUser:(NSString *) userKey WithTopic:(NSString *)topic {
     if (self.session == nil) {
         return NO;
     }
@@ -557,9 +569,9 @@
                               retain:NO
                                  qos:MQTTQosLevelAtMostOnce];
     if([ALUserDefaultsHandler getEnableEncryption] && [ALUserDefaultsHandler getUserEncryptionKey] ){
-        [self.session unsubscribeTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY,[ALUserDefaultsHandler getUserKeyString]]];
+        [self.session unsubscribeTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
     }else{
-        [self.session unsubscribeTopic:[ALUserDefaultsHandler getUserKeyString]];
+        [self.session unsubscribeTopic: topic];
     }
     [self.session unsubscribeTopic:[NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], [ALUserDefaultsHandler getUserId]]];
     [self.session close];

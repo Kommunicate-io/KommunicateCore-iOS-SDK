@@ -35,7 +35,7 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 @property (nonatomic, retain) ALChannelService *channelService;
 
 
-@property (nonatomic, strong) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
 
 
 -(instancetype)initWithApplicationKey:(NSString *)applicationKey;

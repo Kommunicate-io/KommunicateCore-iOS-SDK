@@ -156,11 +156,22 @@ public class ALBaseNavigationViewController: UINavigationController {
         let allPhotosOptions = PHFetchOptions()
         allPhotosOptions.includeHiddenAssets = false
 
-        let p1 = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
-        let p2 = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue)
-        allPhotosOptions.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [p1, p2])
+
+        if(ALApplozicSettings.imagesHiddenInGallery()){
+            let videoNSPredicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue)
+            allPhotosOptions.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [videoNSPredicate])
+        }else if (ALApplozicSettings.videosHiddenInGallery()){
+            let imageNSPredicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+            allPhotosOptions.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [imageNSPredicate])
+        }else{
+            let imageNSPredicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+            let videoNSPredicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue)
+            allPhotosOptions.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [imageNSPredicate,videoNSPredicate])
+        }
+
         allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         allPhotos = PHAsset.fetchAssets(with: allPhotosOptions)
+
         (allPhotos != nil) ? completion(true) :  completion(false)
     }
 

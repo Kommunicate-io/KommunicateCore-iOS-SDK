@@ -2996,7 +2996,18 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     }
 
     if(![ALApplozicSettings isPhotoGalleryOptionHidden]){
-        [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photosOrVideoOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Photos/Videos" , @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString *attachmentMenuDefaultText = nil;
+        if([ALApplozicSettings videosHiddenInGallery] && [ALApplozicSettings imagesHiddenInGallery]){
+            attachmentMenuDefaultText = @"Photos/Videos";
+        }else if([ALApplozicSettings videosHiddenInGallery]){
+            attachmentMenuDefaultText = @"Photos";
+        }else if([ALApplozicSettings imagesHiddenInGallery]) {
+            attachmentMenuDefaultText = @"Videos";
+        }else {
+            attachmentMenuDefaultText = @"Photos/Videos";
+        }
+
+        [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photosOrVideoOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], attachmentMenuDefaultText , @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             if([ALApplozicSettings isMultiSelectGalleryViewDisabled]) {
                 UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
                 ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
