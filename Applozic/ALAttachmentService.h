@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ALAttachmentService : NSObject <NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
-@property (nonatomic, strong) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
 
 +(ALAttachmentService *)sharedInstance;
 

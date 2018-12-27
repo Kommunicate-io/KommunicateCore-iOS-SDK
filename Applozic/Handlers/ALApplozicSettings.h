@@ -118,6 +118,7 @@ static NSString *const AUDIO_RECORDING_VIEW_BACKGROUND_COLOR = @"com.applozic.AU
 static NSString *const SLIDE_TO_CANCEL_TEXT_COLOR = @"com.applozic.SLIDE_TO_CANCEL_TEXT_COLOR";
 static NSString *const AUDIO_RECORDING_TEXT_COLOR = @"com.applozic.AUDIO_RECORDING_TEXT_COLOR";
 static NSString *const AUDIO_RECORD_VIEW_FONT = @"com.applozic.AUDIO_VIEW_FONT";
+static NSString *const MEDIA_SELECT_OPTIONS = @"com.applozic.MEDIA_SELECT_OPTIONS";
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -490,5 +491,11 @@ static NSString *const AUDIO_RECORD_VIEW_FONT = @"com.applozic.AUDIO_VIEW_FONT";
 
 +(void)setBackgroundColorForReplyView:(UIColor *)backgroudColor;
 +(UIColor *)getBackgroundColorForReplyView;
+
++(void) setHideMediaSelectOption:(NSMutableArray*)array;
++(NSArray*) getHideMediaSelectOption;
+
++(BOOL) imagesHiddenInGallery;
++(BOOL) videosHiddenInGallery;
 
 @end
