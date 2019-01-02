@@ -450,9 +450,6 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 
                             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
                                 [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
-                                if([message isMsgHidden]) {
-                                    [messageArray removeObjectAtIndex:i];
-                                }
                             }
 
                             if(![message isHiddenMessage] && ![message isVOIPNotificationMessage] && delegate)
