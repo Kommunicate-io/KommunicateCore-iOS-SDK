@@ -26,6 +26,9 @@
 #import "ALConstant.h"
 #import "ALMessagesViewController.h"
 #import "ALPushAssist.h"
+#import "ALUserDefaultsHandler.h"
+#import "ALUserService.h"
+#import "ALUserDetail.h"
 
 @interface ALUserProfileVC () <NSURLConnectionDataDelegate>
 
@@ -67,8 +70,9 @@
     self.notificationToggle.transform = CGAffineTransformMakeScale(0.75, 0.75);
     self.onlineToggleSwitch.transform = CGAffineTransformMakeScale(0.75, 0.75);
     
-    
-    
+    [self.profileMainImage setBackgroundColor:[ALApplozicSettings getProfileMainColour]];
+    [self.profileMainView setBackgroundColor:[ALApplozicSettings getProfileSubColour]];
+    [self.mobileNotification setTextColor:[ALApplozicSettings getProfileMainColour]];
 }
 
 - (void)didReceiveMemoryWarning {

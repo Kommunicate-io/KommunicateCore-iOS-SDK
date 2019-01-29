@@ -367,12 +367,8 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 {
     NSString * theAnimationDuration = [self handleKeyboardNotification:notification];
 
-    if (@available(iOS 11.0, *)) {
-        self.checkBottomConstraint.constant = self.view.frame.size.height - keyboardEndFrame.origin.y + navigationWidth - self.view.safeAreaInsets.bottom;
-    } else {
-        // Fallback on earlier versions
-        self.checkBottomConstraint.constant = self.view.frame.size.height - keyboardEndFrame.origin.y + navigationWidth;
-    }
+    self.checkBottomConstraint.constant = -1 * keyboardEndFrame.size.height +
+    self.bottomLayoutGuide.length;
 
     [UIView animateWithDuration:theAnimationDuration.doubleValue animations:^{
         [self.view layoutIfNeeded];

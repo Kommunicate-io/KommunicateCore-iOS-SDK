@@ -73,6 +73,7 @@
 #import <Photos/Photos.h>
 #import "ALImagePreviewController.h"
 #import "ALLinkCell.h"
+#import "ALDocumentPickerHandler.h"
 
 #define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
@@ -86,7 +87,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 @interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALLocationDelegate, ALAudioRecorderViewProtocol, ALAudioRecorderProtocol,
                                     ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
                                     UIAlertViewDelegate, ALMUltipleAttachmentDelegate, UIDocumentInteractionControllerDelegate,
-                                    ABPeoplePickerNavigationControllerDelegate, ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate>
+                                    ABPeoplePickerNavigationControllerDelegate, ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPickerDelegate>
 
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, assign) int rp;
@@ -133,7 +134,6 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 @property (weak, nonatomic) IBOutlet UIPickerView *pickerView;
 @property (nonatomic) BOOL isUserBlocked;
 @property (nonatomic) BOOL isUserBlockedBy;
-@property (weak, nonatomic) IBOutlet UIButton *attachmentButton;
 
 -(void)processAttachment:(NSString *)filePath andMessageText:(NSString *)textwithimage andContentType:(short)contentype;
 
@@ -208,6 +208,9 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateVOIPMsg)
                                                  name:@"UPDATE_VOIP_MSG" object:nil];
 
+    [self.attachmentOutlet setTintColor:[ALApplozicSettings getAttachmentIconColour]];
+    [self.sendButton setTintColor:[ALApplozicSettings getSendIconColour]];
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -257,9 +260,6 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
     typingStat = NO;
 
-    if (ALApplozicSettings.isAttachmentButtonHidden) {
-        _attachmentButton.hidden = YES;
-    }
     if([self isReloadRequired])
     {
         [self reloadView];
@@ -343,29 +343,14 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         }
     }
 
-    if(![self isGroup])
-    {
-        self.nsLayoutconstraintAttachmentWidth.constant = 40;
-        self.attachmentOutlet.hidden = NO;
-        [self serverCallForLastSeen];
-    }else{
-        ALChannelService * alChannelService  = [[ALChannelService alloc] init];
-        ALChannel *alChannel = [alChannelService getChannelByKey:self.channelKey];
-        if(alChannel && alChannel.type == OPEN){
-            self.attachmentOutlet.hidden = YES;
-            self.nsLayoutconstraintAttachmentWidth.constant = 0;
-        }else{
-            self.attachmentOutlet.hidden = NO;
-            self.nsLayoutconstraintAttachmentWidth.constant = 40;
-
-        }
-    }
+    [self serverCallForLastSeen];
+    [self handleAttachmentButtonVisibility];
 
     [self setTitle];
 
     if(self.text && !self.alMessageWrapper.getUpdatedMessageArray.count)
     {
-        [self.sendMessageTextView setTextColor:[UIColor blackColor]];
+        [self.sendMessageTextView setTextColor:[ALApplozicSettings getTextColorForMessageTextView]];
         self.sendMessageTextView.text = self.text;
     }
     else if ([self.sendMessageTextView.text isEqualToString:@""])
@@ -403,6 +388,22 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     [self loadMessagesForOpenChannel];
 
 
+}
+
+-(void) handleAttachmentButtonVisibility
+{
+    BOOL hidden = NO; // Default don't hide.
+    if (ALApplozicSettings.isAttachmentButtonHidden) { // Hide if setting is present
+        hidden = YES;
+    } else if (![self isGroup]) { // Else show for one-to-one chat
+        hidden = NO;
+    } else {
+        ALChannelService * alChannelService  = [[ALChannelService alloc] init];
+        ALChannel *alChannel = [alChannelService getChannelByKey:self.channelKey];
+        hidden = (alChannel && alChannel.type == OPEN); // Else hide for open group only.
+    }
+    self.attachmentOutlet.hidden = hidden;
+    self.nsLayoutconstraintAttachmentWidth.constant = hidden ? 0 : 40;
 }
 
 -(void)setFreezeForAddingRemovingUser:(NSNotification *)notifyObject
@@ -2417,15 +2418,17 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 {
     NSString * imagName = [ALApplozicSettings getChatWallpaperImageName];
     UIImage * backgroundImage = [UIImage imageNamed:imagName];
-    if(!backgroundImage)
+    if(backgroundImage)
     {
+        [self.mTableView setBackgroundColor:[UIColor clearColor]];
+        UIImageView * backgroundImageView = [[UIImageView alloc] initWithFrame:self.view.frame];
+        backgroundImageView.image = backgroundImage;
+        [self.view insertSubview:backgroundImageView atIndex:0];
         return;
     }
 
-    [self.mTableView setBackgroundColor:[UIColor clearColor]];
-    UIImageView * backgroundImageView = [[UIImageView alloc] initWithFrame:self.view.frame];
-    backgroundImageView.image = backgroundImage;
-    [self.view insertSubview:backgroundImageView atIndex:0];
+    [self.mTableView setBackgroundColor:[ALApplozicSettings getChatViewControllerBackgroundColor]];
+    [self.mTableView.superview setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
 }
 
 //==============================================================================================================================================
@@ -2934,6 +2937,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
     [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
     if(![ALApplozicSettings isCameraOptionHidden]){
+
         [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"takePhotoText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Take photo", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
             [self openCamera];
@@ -2957,6 +2961,13 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"sendVideoOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle],  @"Send Video", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
             [self openVideoCamera];
+        }]];
+    }
+
+    if(![ALApplozicSettings isDocumentOptionHidden]){
+        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"DocumentText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle],  @"Document", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            ALDocumentPickerHandler *documentPickerHandler = [[ALDocumentPickerHandler alloc]init];
+            [documentPickerHandler showDocumentPickerViewController:self];
         }]];
     }
 
@@ -2994,6 +3005,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
             [self openContactsView];
         }]];
     }
+    
+
 
     if(![ALApplozicSettings isPhotoGalleryOptionHidden]){
         NSString *attachmentMenuDefaultText = nil;
@@ -3934,7 +3947,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
     if ([textView.text isEqualToString:self.placeHolderTxt])
     {
-        [self placeHolder:@"" andTextColor:[UIColor blackColor]];
+        [self placeHolder:@"" andTextColor:[ALApplozicSettings getTextColorForMessageTextView]];
     }
 }
 
@@ -4810,6 +4823,15 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
     self.messageReplyId = messageKey;
     [self processAttachment:filePath andMessageText:nil andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+}
+
+- (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
+
+    if(urls != nil && urls.count){
+        NSURL *filePath =  urls.firstObject;
+        NSString *filePathString = [ALDocumentPickerHandler saveFile:filePath];
+        [self processAttachment:filePathString andMessageText:@"" andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+    }
 }
 
 @end

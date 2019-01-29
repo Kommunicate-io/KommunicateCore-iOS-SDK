@@ -129,6 +129,18 @@
     self.groupMembers=[[NSMutableSet alloc] init];
     
     [self emptyConversationAlertLabel];
+    
+    [self.segmentControl setTintColor:[ALApplozicSettings getNewContactMainColour]];
+    [self.segmentControl setBackgroundColor:[ALApplozicSettings getNewContactSubColour]];
+    
+    UIColor *textColor = [ALApplozicSettings getNewContactTextColour];
+    if(textColor != nil){
+        NSDictionary *highlightedAttributes = [NSDictionary dictionaryWithObject:textColor forKey:NSForegroundColorAttributeName];
+        [self.segmentControl setTitleTextAttributes:highlightedAttributes forState:UIControlStateSelected];
+        [self.segmentControl setTitleTextAttributes:highlightedAttributes forState:UIControlStateNormal];
+    }
+    
+    [_searchBar setBarTintColor:[ALApplozicSettings getSearchBarTintColour]];
 }
 
 -(void)subProcessContactFetch

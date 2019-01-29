@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "6.7.1"
+  s.version      = "6.8.0"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
