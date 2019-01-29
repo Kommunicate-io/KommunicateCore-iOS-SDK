@@ -28,6 +28,7 @@
 #define FILTER_CONTACT_START_TIME @"com.applozic.userdefault.FILTER_CONTACT_START_TIME"
 #define WALLPAPER_IMAGE @"com.applozic.userdefault.WALLPAPER_IMAGE"
 #define CUSTOM_MSG_BACKGROUND_COLOR @"com.applozic.userdefault.CUSTOM_MSG_BACKGROUND_COLOR"
+#define CUSTOM_MSG_TEXT_COLOR @"com.applozic.userdefault.CUSTOM_MSG_TEXT_COLOR"
 #define ONLINE_CONTACT_LIMIT @"com.applozic.userdefault.ONLINE_CONTACT_LIMIT"
 #define GROUP_EXIT_BUTTON @"com.applozic.userdefault.GROUP_EXIT_BUTTON"
 #define GROUP_MEMBER_ADD_OPTION @"com.applozic.userdefault.GROUP_MEMBER_ADD_OPTION"
@@ -103,6 +104,22 @@
 #define TEMPLATE_MESSAGE_VIEW @"com.applozic.TEMPLATE_MESSAGE_VIEW"
 #define AL_CONTACT_SEARCH @"com.applozic.AL_CONTACT_SEARCH"
 #define CHANNEL_MEMBER_INFO_IN_SUBTITLE @"com.applozic.CHANNEL_MEMBER_INFO_IN_SUBTITLE"
+
+static NSString *const TABBAR_BACKGROUND_COLOUR = @"com.applozic.TABBAR_BACKGROUND_COLOUR";
+static NSString *const TABBAR_SELECTED_ITEM_COLOUR = @"com.applozic.TABBAR_SELECTED_ITEM_COLOUR";
+static NSString *const TABBAR_UNSELECTED_ITEM_COLOUR = @"com.applozic.TABBAR_UNSELECTED_ITEM_COLOUR";
+static NSString *const ATTACHMENT_ITEM_COLOUR = @"com.applozic.ATTACHMENT_ITEM_COLOUR";
+static NSString *const SEND_ITEM_COLOUR = @"com.applozic.SEND_ITEM_COLOUR";
+static NSString *const MESSAGE_SUBTEXT_COLOUR = @"com.applozic.MESSAGE_SUBTEXT_COLOUR";
+static NSString *const MESSAGE_TEXT_COLOUR = @"com.applozic.MESSAGE_TEXT_COLOUR";
+static NSString *const PROFILE_MAIN_COLOUR = @"com.applozic.PROFILE_MAIN_COLOUR";
+static NSString *const PROFILE_SUB_COLOUR = @"com.applozic.PROFILE_SUB_COLOUR";
+static NSString *const NEW_CONTACT_SUB_COLOUR = @"com.applozic.NEW_CONTACT_SUB_COLOUR";
+static NSString *const NEW_CONTACT_MAIN_COLOUR = @"com.applozic.NEW_CONTACT_MAIN_COLOUR";
+static NSString *const NEW_CONTACT_TEXT_COLOUR = @"com.applozic.NEW_CONTACT_TEXT_COLOUR";
+static NSString *const MESSAGES_VIEW_BG_COLOUR = @"com.applozic.MESSAGES_VIEW_BG_COLOUR";
+static NSString *const CHAT_VIEW_BG_COLOUR = @"com.applozic.CHAT_VIEW_BG_COLOUR";
+static NSString *const SEARCHBAR_TINT_COLOUR = @"com.applozic.SEARCHBAR_TINT_COLOUR";
 static NSString *const HIDE_MESSAGES_WITH_METADATA_KEYS = @"com.applozic.HIDE_MESSAGES_WITH_METADATA_KEYS";
 static NSString *const ALDisableMultiSelectGalleryView = @"ALDisableMultiSelectGalleryView";
 static NSString *const AL_5MIN_VIDEO_LIMIT_IN_GALLERY= @"com.applozic.AL_5MIN_VIDEO_LIMIT_IN_GALLERY";
@@ -111,6 +128,7 @@ static NSString *const AL_TEXT_STYLE_FOR_CELL= @"com.applozic.AL_TEXT_STYLE_FOR_
 static NSString *const AL_CHAT_CELL_FONT_SIZE= @"com.applozic.AL_CHAT_CELL_FONT_SIZE";
 static NSString *const AL_CHANNEL_CELL_FONT_SIZE= @"com.applozic.AL_CHANNEL_CELL_FONT_SIZE";
 static NSString *const AL_BACKGROUND_COLOR_FOR_REPLY_VIEW= @"com.applozic.AL_BACKGROUND_COLOR_FOR_REPLY_VIEW";
+static NSString *const MESSAGE_TEXT_VIEW_COLOR = @"com.applozic.MESSAGE_TEXT_VIEW_COLOR";
 
 //Audio Recording View
 static NSString *const ENABLE_NEW_AUDIO_DESIGN = @"com.applozic.ENABLE_NEW_AUDIO_DESIGN";
@@ -205,6 +223,9 @@ static NSString *const MEDIA_SELECT_OPTIONS = @"com.applozic.MEDIA_SELECT_OPTION
 +(void)setCustomMessageBackgroundColor:(UIColor *)color;
 
 +(UIColor *)getCustomMessageBackgroundColor;
+
++(void)setCustomMessageTextColor:(UIColor *)color;
++(UIColor *)getCustomMessageTextColor;
 
 +(void)setGroupExitOption:(BOOL)option;
 +(BOOL)getGroupExitOption;
@@ -416,7 +437,7 @@ static NSString *const MEDIA_SELECT_OPTIONS = @"com.applozic.MEDIA_SELECT_OPTION
 +(BOOL) isBlockUserOptionHidden;
 +(BOOL) isShareContactOptionHidden;
 +(BOOL) isAttachmentButtonHidden;
-
++(BOOL) isDocumentOptionHidden;
 +(BOOL)isS3StorageServiceEnabled;
 +(void)enableS3StorageService:(BOOL)flag;
 +(void) setDefaultGroupType:(NSInteger)type;
@@ -451,6 +472,37 @@ static NSString *const MEDIA_SELECT_OPTIONS = @"com.applozic.MEDIA_SELECT_OPTION
 
 +(BOOL)isChannelMembersInfoInNavigationBarEnabled;
 +(void)showChannelMembersInfoInNavigationBar:(BOOL)flag;
+
++(UIColor *) getTabBarBackgroundColour;
++(void) setTabBarBackgroundColour:(UIColor *)color;
++(UIColor *) getTabBarSelectedItemColour;
++(void) setTabBarSelectedItemColour:(UIColor *)color;
++(UIColor *) getTabBarUnSelectedItemColour;
++(void) setTabBarUnSelectedItemColour:(UIColor *)color;
++(UIColor *) getAttachmentIconColour;
++(void) setAttachmentIconColour:(UIColor *)color;
++(UIColor *) getSendIconColour;
++(void) setSendIconColour:(UIColor *)color;
++(UIColor *) getMessageSubtextColour;
++(void) setMessageSubtextColour:(UIColor *)color;
++(UIColor *) getProfileMainColour;
++(void) setProfileMainColour:(UIColor *)color;
++(UIColor *) getProfileSubColour;
++(void) setProfileSubColour:(UIColor *)color;
++(UIColor *) getNewContactMainColour;
++(void) setNewContactMainColour:(UIColor *)color;
++(UIColor *) getNewContactSubColour;
++(void) setNewContactSubColour:(UIColor *)color;
++(UIColor *) getNewContactTextColour;
++(void) setNewContactTextColour:(UIColor *)color;
++(UIColor *) getMessageListTextColor;
++(void) setMessageListTextColor:(UIColor *)color;
++(UIColor *) getMessagesViewBackgroundColour;
++(void) setMessagesViewBackgroundColour:(UIColor *)color;
++(UIColor *) getChatViewControllerBackgroundColor;
++(void) setChatViewControllerBackgroundColor:(UIColor *)color;
++(UIColor *) getSearchBarTintColour;
++(void) setSearchBarTintColour:(UIColor *)color;
 
 +(NSArray *) metadataKeysToHideMessages;
 +(void) hideMessagesWithMetadataKeys:(NSArray *)keys;
@@ -497,5 +549,8 @@ static NSString *const MEDIA_SELECT_OPTIONS = @"com.applozic.MEDIA_SELECT_OPTION
 
 +(BOOL) imagesHiddenInGallery;
 +(BOOL) videosHiddenInGallery;
+
++(void)setTextColorForMessageTextView:(UIColor *)txtColor;
++(UIColor *)getTextColorForMessageTextView;
 
 @end

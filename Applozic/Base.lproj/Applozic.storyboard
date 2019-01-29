@@ -25,7 +25,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="groupCell" rowHeight="50" id="IGO-Q9-WQK">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="groupCell" rowHeight="50" id="IGO-Q9-WQK">
                                         <rect key="frame" x="0.0" y="22" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="IGO-Q9-WQK" id="L3w-n8-49r">
@@ -33,7 +33,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lgk-it-0jV">
-                                                    <rect key="frame" x="252" y="13" width="100" height="23.5"/>
+                                                    <rect key="frame" x="291" y="13" width="100" height="23.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="100" id="X4i-Dn-68O"/>
                                                     </constraints>
@@ -63,7 +63,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" misplaced="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="82" id="nkO-yU-f6Y" customClass="ALContactCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="82" id="nkO-yU-f6Y" customClass="ALContactCell">
                                         <rect key="frame" x="0.0" y="72" width="375" height="82"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nkO-yU-f6Y" id="jVl-2p-Q74">
@@ -72,9 +72,10 @@
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" tag="103" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9sE-W8-i33">
                                                     <rect key="frame" x="26" y="16" width="55" height="49.5"/>
+                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Muserlabel" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G4M-aZ-RgP">
-                                                    <rect key="frame" x="99" y="18" width="170" height="21"/>
+                                                    <rect key="frame" x="99" y="18" width="209" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="VmO-tv-hFx"/>
                                                     </constraints>
@@ -83,7 +84,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="14:14" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r8N-HC-XMt">
-                                                    <rect key="frame" x="275" y="18" width="73" height="21"/>
+                                                    <rect key="frame" x="314" y="18" width="73" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="73" id="xxK-GN-SW7"/>
                                                     </constraints>
@@ -107,7 +108,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="104" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8um-DV-I1M" userLabel="mCount Label">
-                                                    <rect key="frame" x="328" y="41" width="20" height="15"/>
+                                                    <rect key="frame" x="367" y="41" width="20" height="15"/>
                                                     <accessibility key="accessibilityConfiguration">
                                                         <accessibilityTraits key="traits" notEnabled="YES"/>
                                                     </accessibility>
@@ -125,7 +126,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="MMessageLabel" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mUK-kK-XjJ">
-                                                    <rect key="frame" x="99" y="43" width="121" height="16.5"/>
+                                                    <rect key="frame" x="99" y="43" width="160" height="16.5"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                                     <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -253,7 +254,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="82" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="201-eK-m3i">
                                 <rect key="frame" x="0.0" y="71" width="375" height="596"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" misplaced="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="NewContactCell" rowHeight="82" id="NOy-HJ-2YL" customClass="ALNewContactCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NewContactCell" rowHeight="82" id="NOy-HJ-2YL" customClass="ALNewContactCell">
                                         <rect key="frame" x="0.0" y="22" width="375" height="82"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NOy-HJ-2YL" id="p0o-92-QNi">
@@ -273,7 +274,7 @@
                                                     <rect key="frame" x="25" y="14" width="55" height="50"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Contact Person Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H8h-Lp-4Jd">
-                                                    <rect key="frame" x="99" y="33" width="211" height="15.5"/>
+                                                    <rect key="frame" x="99" y="33" width="250" height="15.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -738,6 +739,7 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SYV-N5-4VE">
                                             <rect key="frame" x="8" y="28" width="319" height="7"/>
+                                            <color key="tintColor" red="0.46666666670000001" green="0.77647058820000003" blue="0.7725490196" alpha="1" colorSpace="calibratedRGB"/>
                                         </imageView>
                                     </subviews>
                                 </view>
@@ -1373,7 +1375,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="izp-vg-4yT">
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="izp-vg-4yT">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="204"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
@@ -1572,6 +1574,8 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                         <outlet property="notificationTitle" destination="1ch-V6-7WF" id="2cZ-DU-bdN"/>
                         <outlet property="notificationToggle" destination="ssR-vs-NN9" id="O2Q-uB-zDa"/>
                         <outlet property="profileImage" destination="fEQ-TE-P0v" id="SpR-ah-6UK"/>
+						<outlet property="profileMainImage" destination="Ky4-is-ZmF" id="tNY-hX-U5r"/>
+						<outlet property="profileMainView" destination="izp-vg-4yT" id="qHu-GC-kbL"/>
                         <outlet property="profileStatus" destination="uPH-8k-6t7" id="cqF-cb-mUT"/>
                         <outlet property="uploadImageButton" destination="nY9-bD-W8V" id="I1R-Xc-UBx"/>
                         <outlet property="userDesignationLabel" destination="d2x-8G-9aN" id="wUS-5t-Hbs"/>
@@ -1693,8 +1697,12 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QaG-wG-Gle" userLabel="DummyView">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="90" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="3bd-KT-wrK">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="547"/>
+                                <rect key="frame" x="0.0" y="20" width="600" height="524"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="sectionIndexBackgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.94901960780000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
@@ -1708,23 +1716,23 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                                 <state key="normal" title="Button"/>
                             </button>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IKJ-fO-atY">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="216"/>
+                                <rect key="frame" x="0.0" y="10" width="600" height="216"/>
                             </pickerView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="asq-OT-e0Z">
-                                <rect key="frame" x="290" y="290" width="20" height="20"/>
+                                <rect key="frame" x="290" y="300" width="20" height="20"/>
                                 <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </activityIndicatorView>
                             <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bt8-EH-qKK">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="30"/>
+                                <rect key="frame" x="0.0" y="20" width="600" height="30"/>
                                 <state key="normal" title="Load Earlier Messages"/>
                                 <connections>
                                     <action selector="loadEarlierButtonAction:" destination="rWz-Vg-7Ha" eventType="touchDown" id="u2g-16-vwB"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Npf-hG-Fxp">
-                                <rect key="frame" x="0.0" y="546" width="600" height="56"/>
+                                <rect key="frame" x="0.0" y="544" width="600" height="56"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6XL-ms-PBf">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6XL-ms-PBf">
                                         <rect key="frame" x="552" y="8" width="40" height="40"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" identifier="sendButtonHeight" id="3Xa-rx-R9F"/>
@@ -1750,11 +1758,15 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" identifier="textView-Height" id="ZEF-sY-zaa"/>
                                         </constraints>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IoT-HK-LWd">
+                                    <button autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IoT-HK-LWd">
                                         <rect key="frame" x="6" y="8" width="40" height="40"/>
+										<accessibility key="accessibilityConfiguration">
+										    <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
+									    </accessibility>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="40" id="oOD-ac-EA7"/>
                                         </constraints>
@@ -1788,19 +1800,19 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                                 </variation>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You have no conversation." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTD-T1-vIc">
-                                <rect key="frame" x="20" y="263" width="560" height="21"/>
+                                <rect key="frame" x="20" y="271.5" width="560" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1sI-lr-lrM">
-                                <rect key="frame" x="0.0" y="526" width="600" height="21"/>
+                                <rect key="frame" x="0.0" y="523" width="600" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2ki-he-soP">
-                                <rect key="frame" x="0.0" y="497" width="600" height="50"/>
+                                <rect key="frame" x="0.0" y="494" width="600" height="50"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_action_camera" translatesAutoresizingMaskIntoConstraints="NO" id="3sa-6d-hOq">
                                         <rect key="frame" x="469" y="1" width="67" height="49"/>
@@ -1865,10 +1877,12 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="3bd-KT-wrK" secondAttribute="trailing" identifier="trailing" id="0ea-Ef-fir"/>
+                            <constraint firstItem="3bd-KT-wrK" firstAttribute="trailing" secondItem="QaG-wG-Gle" secondAttribute="trailing" identifier="trailing" id="0ea-Ef-fir"/>
                             <constraint firstItem="1sI-lr-lrM" firstAttribute="leading" secondItem="Npf-hG-Fxp" secondAttribute="leading" id="177-pk-BeK"/>
+                            <constraint firstItem="QaG-wG-Gle" firstAttribute="leading" secondItem="Roy-PQ-nSZ" secondAttribute="leading" id="1dd-We-i6R"/>
                             <constraint firstItem="Bt8-EH-qKK" firstAttribute="trailing" secondItem="3bd-KT-wrK" secondAttribute="trailing" identifier="Load Earlier Action.trailing" id="31p-Fb-ys2"/>
                             <constraint firstItem="2ki-he-soP" firstAttribute="leading" secondItem="1sI-lr-lrM" secondAttribute="leading" id="4N6-CG-eAO"/>
+                            <constraint firstItem="QaG-wG-Gle" firstAttribute="top" secondItem="8vf-2P-mJH" secondAttribute="bottom" id="4Qa-6k-C6T"/>
                             <constraint firstItem="sTD-T1-vIc" firstAttribute="centerX" secondItem="asq-OT-e0Z" secondAttribute="centerX" id="4l9-2s-Jp8"/>
                             <constraint firstItem="sTD-T1-vIc" firstAttribute="centerY" secondItem="3bd-KT-wrK" secondAttribute="centerY" constant="-0.25" id="4vV-Fd-ln3"/>
                             <constraint firstItem="IKJ-fO-atY" firstAttribute="leading" secondItem="Bt8-EH-qKK" secondAttribute="leading" id="9Ce-HE-sji"/>
@@ -1876,19 +1890,21 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                             <constraint firstItem="Bt8-EH-qKK" firstAttribute="top" secondItem="3bd-KT-wrK" secondAttribute="top" identifier="Load Earlier Action.top" id="DOJ-Sw-Y2W"/>
                             <constraint firstItem="3bd-KT-wrK" firstAttribute="centerX" secondItem="asq-OT-e0Z" secondAttribute="centerX" identifier="MTable View.centreX" id="EIf-0e-AZ1"/>
                             <constraint firstItem="2ki-he-soP" firstAttribute="trailing" secondItem="1sI-lr-lrM" secondAttribute="trailing" id="FmH-Sg-MKS"/>
-                            <constraint firstItem="asq-OT-e0Z" firstAttribute="centerY" secondItem="Roy-PQ-nSZ" secondAttribute="centerY" identifier="MActivity Indicator.centerY" id="Gm6-YJ-4jr"/>
-                            <constraint firstItem="3bd-KT-wrK" firstAttribute="leading" secondItem="Roy-PQ-nSZ" secondAttribute="leading" identifier="MTable View.Leading" id="LH0-Rj-rKi"/>
+                            <constraint firstItem="asq-OT-e0Z" firstAttribute="centerY" secondItem="QaG-wG-Gle" secondAttribute="centerY" identifier="MActivity Indicator.centerY" id="Gm6-YJ-4jr"/>
+                            <constraint firstItem="3bd-KT-wrK" firstAttribute="leading" secondItem="QaG-wG-Gle" secondAttribute="leading" identifier="MTable View.Leading" id="LH0-Rj-rKi"/>
                             <constraint firstItem="IKJ-fO-atY" firstAttribute="trailing" secondItem="Bt8-EH-qKK" secondAttribute="trailing" id="SBO-AN-gyP"/>
-                            <constraint firstItem="Llo-HA-CrT" firstAttribute="top" secondItem="Npf-hG-Fxp" secondAttribute="bottom" constant="-2" identifier="CheckBottom" id="UVH-LX-Lg7"/>
+                            <constraint firstItem="Npf-hG-Fxp" firstAttribute="bottom" secondItem="QaG-wG-Gle" secondAttribute="bottom" identifier="CheckBottom" id="UVH-LX-Lg7"/>
                             <constraint firstItem="Bt8-EH-qKK" firstAttribute="leading" secondItem="3bd-KT-wrK" secondAttribute="leading" identifier="Load Earlier Action.leading" id="Yft-c9-bRs"/>
-                            <constraint firstItem="3bd-KT-wrK" firstAttribute="top" secondItem="Roy-PQ-nSZ" secondAttribute="top" identifier="MTable View.top" id="bVW-y4-4Ob"/>
+                            <constraint firstItem="3bd-KT-wrK" firstAttribute="top" secondItem="QaG-wG-Gle" secondAttribute="top" identifier="MTable View.top" id="bVW-y4-4Ob"/>
                             <constraint firstItem="asq-OT-e0Z" firstAttribute="top" secondItem="IKJ-fO-atY" secondAttribute="bottom" constant="74" identifier="ActivityIndicatorTop" id="eu3-wg-Veb"/>
                             <constraint firstItem="1sI-lr-lrM" firstAttribute="bottom" secondItem="3bd-KT-wrK" secondAttribute="bottom" id="fxQ-VQ-Ib3"/>
                             <constraint firstItem="2ki-he-soP" firstAttribute="bottom" secondItem="3bd-KT-wrK" secondAttribute="bottom" id="j8u-fR-uQN"/>
                             <constraint firstItem="1sI-lr-lrM" firstAttribute="trailing" secondItem="Npf-hG-Fxp" secondAttribute="trailing" id="lef-r0-TiR"/>
                             <constraint firstItem="Npf-hG-Fxp" firstAttribute="trailing" secondItem="Bt8-EH-qKK" secondAttribute="trailing" identifier="typingMessageViewTrailing" id="pyF-Q1-4Gh"/>
-                            <constraint firstItem="sTD-T1-vIc" firstAttribute="leading" secondItem="Roy-PQ-nSZ" secondAttribute="leadingMargin" id="q9g-8O-blW"/>
-                            <constraint firstItem="Npf-hG-Fxp" firstAttribute="top" secondItem="3bd-KT-wrK" secondAttribute="bottom" constant="-1" identifier="typeMessageTopView" id="vKK-qV-zkZ"/>
+                            <constraint firstItem="sTD-T1-vIc" firstAttribute="leading" secondItem="QaG-wG-Gle" secondAttribute="leadingMargin" constant="12" id="q9g-8O-blW"/>
+                            <constraint firstItem="QaG-wG-Gle" firstAttribute="trailing" secondItem="Roy-PQ-nSZ" secondAttribute="trailing" id="vCc-Vx-E3G"/>
+                            <constraint firstItem="Npf-hG-Fxp" firstAttribute="top" secondItem="3bd-KT-wrK" secondAttribute="bottom" identifier="typeMessageTopView" id="vKK-qV-zkZ"/>
+                            <constraint firstItem="QaG-wG-Gle" firstAttribute="bottom" secondItem="Llo-HA-CrT" secondAttribute="top" id="xtJ-hI-jyg"/>
                             <constraint firstItem="Llo-HA-CrT" firstAttribute="top" secondItem="3bd-KT-wrK" secondAttribute="bottom" id="z9P-dh-9kx"/>
                         </constraints>
                         <variation key="default">
@@ -1943,10 +1959,11 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
         <image name="applozic_edit" width="18" height="18"/>
         <image name="applozic_group_icon" width="100" height="100"/>
         <image name="applozic_uploadCamera" width="20" height="16"/>
-        <image name="attachments" width="56" height="26"/>
+        <image name="attachments" width="28" height="13"/>
         <image name="audio_mic" width="462" height="726"/>
         <image name="ic_action_camera" width="64" height="64"/>
         <image name="ic_phone_gray" width="30" height="32"/>
-        <image name="online_show" width="100" height="100"/>
+        <image name="online_show" width="200" height="200"/>
     </resources>
+    <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

@@ -19,4 +19,3 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *nameLeftConstraint;
 
 @end
-
