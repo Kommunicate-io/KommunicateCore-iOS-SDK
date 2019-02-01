@@ -442,5 +442,49 @@
 }
 
 
+- (void)savePrivateAndMainContext:(NSManagedObjectContext *)context {
+    NSError *error;
+    [context save:&error];
+    if (!error) {
+        [self saveMainContext];
+    }else{
+        ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+    }
+}
+
+- (void)saveMainContext {
+    [self.mainManagedObjectContext performBlock:^{
+        NSError *error = nil;
+        [self.mainManagedObjectContext save:&error];
+        if(error){
+            ALSLog(ALLoggerSeverityError, @"DB ERROR in saveMainContext :%@",error);
+        }
+    }];
+}
+
+
+- (NSManagedObjectContext *)mainManagedObjectContext {
+
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil) {
+
+        self.mainManagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [_mainManagedObjectContext setPersistentStoreCoordinator:coordinator];
+        [_mainManagedObjectContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
+
+    }
+    return _mainManagedObjectContext;
+}
+
+- (NSManagedObjectContext *)temporaryWorkerContext {
+
+    NSManagedObjectContext *tempMOContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    if(self.mainManagedObjectContext != nil){
+        tempMOContext.parentContext = self.mainManagedObjectContext;
+    }
+    return tempMOContext;
+}
+
+
 
 @end
