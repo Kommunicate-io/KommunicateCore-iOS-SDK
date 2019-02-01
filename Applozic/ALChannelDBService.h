@@ -27,10 +27,6 @@
 
 -(DB_CHANNEL *) createChannelEntity:(ALChannel *)channel;
 
--(void)insertChannelUserX:(NSMutableArray *)channelUserX;
-
--(DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserXList;
-
 -(NSMutableArray *)getChannelMembersList:(NSNumber *)channelKey;
 
 -(ALChannel *)loadChannelByKey:(NSNumber *)key;
@@ -74,7 +70,7 @@
               andWithParentKey:(NSNumber *)channelParentKey isAdding:(BOOL)flag;
 
 -(void)updateClientChannelParentKey:(NSString *)clientChildKey
-                   andWithClientParentKey:(NSString *)clientParentKey isAdding:(BOOL)flag;
+             andWithClientParentKey:(NSString *)clientParentKey isAdding:(BOOL)flag;
 
 -(NSNumber *)getOverallUnreadCountForChannelFromDB;
 
@@ -87,8 +83,6 @@
 -(NSMutableArray *)fetchChildChannels:(NSNumber *)parentGroupKey;
 
 -(void)updateMuteAfterTime:(NSNumber*)notificationAfterTime andChnnelKey:(NSNumber*)channelKey;
-
--(ALUserDetail *)updateMuteAfterTime:(NSNumber*)notificationAfterTime andUserId:(NSString*)userId;
 
 -(DB_CHANNEL_USER_X *)getChannelUserX:(NSNumber *)channelKey;
 
@@ -106,5 +100,9 @@
 
 -(DB_CHANNEL *)getContactsGroupChannelByName:(NSString *)channelName;
 -(NSMutableArray *) getGroupUsersInChannel:(NSNumber *)key;
+
+-(void)saveDataInBackgroundWithContext:(NSManagedObjectContext *) nsContext withChannel:(ALChannel *)channel;
+
+-(DB_CHANNEL_USER_X *)getChannelUserXByUserId:(NSNumber *)channelKey andUserId:(NSString *) userId;
 
 @end
