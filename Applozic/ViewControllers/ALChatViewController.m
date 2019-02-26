@@ -106,6 +106,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *typingLabelBottomConstraint;
 @property (nonatomic, assign) BOOL comingFromBackground;
 @property (nonatomic, strong) ALVideoCoder *videoCoder;
+@property (strong, nonatomic)  NSMutableDictionary *alphabetiColorCodesDictionary;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *nsLayoutconstraintAttachmentWidth;
 
@@ -210,6 +211,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
     [self.attachmentOutlet setTintColor:[ALApplozicSettings getAttachmentIconColour]];
     [self.sendButton setTintColor:[ALApplozicSettings getSendIconColour]];
+    self.alphabetiColorCodesDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
     
 }
 
@@ -1078,15 +1080,15 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALTopicDetail * topicDetail = [[ALTopicDetail alloc] init];   //WithDictonary:conversation.topicDetailJson];
         topicDetail = conversation.getTopicDetail;
 
-        if(topicDetail.title != nil)
-        {
-            [self.conversationTitleList addObject:topicDetail.title];
-            [self.pickerConvIdsArray addObject:conversation.Id];
-        }
-        else
-        {
-            ALSLog(ALLoggerSeverityError, @"<< ERROR: Topic Detail NILL >>");
-        }
+            if(conversation.getTopicDetail != nil && topicDetail.title != nil)
+            {
+                [self.conversationTitleList addObject:topicDetail.title];
+                [self.pickerConvIdsArray addObject:conversation.Id];
+            }
+            else
+            {
+                ALSLog(ALLoggerSeverityError, @"<< ERROR: Topic Detail NILL >>");
+            }
     }
 
     [self.pickerView setHidden:YES];
@@ -1704,6 +1706,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1715,6 +1718,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1726,6 +1730,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1737,6 +1742,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1748,6 +1754,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1757,6 +1764,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         ALCustomCell * theCell = (ALCustomCell *)[tableView dequeueReusableCellWithIdentifier:@"CustomCell"];
         theCell.tag = indexPath.row;
         theCell.delegate = self;
+        theCell.colourDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1765,6 +1773,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
     else if (theMessage.contentType == AV_CALL_CONTENT_THREE)
     {
         ALVOIPCell * theCell = (ALVOIPCell *)[tableView dequeueReusableCellWithIdentifier:@"VOIPCell"];
+        theCell.colourDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         return theCell;
     }
@@ -1780,6 +1789,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.colourDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1791,6 +1801,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.colourDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1803,6 +1814,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1814,6 +1826,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         theCell.delegate = self;
         theCell.channel = self.alChannel;
         theCell.contact = self.alContact;
+        theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
         [theCell populateCell:theMessage viewSize:self.view.frame.size];
         [self.view layoutIfNeeded];
         return theCell;
@@ -1979,6 +1992,9 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
     ALTopicDetail * topicDetail = [[ALTopicDetail alloc] init];//WithJSONString:alConversationProxy.topicDetailJson];
     topicDetail = alConversationProxy.getTopicDetail;
+    if(topicDetail == nil){
+        return  [[UIView alloc]init];
+    }
 
     // Image View ....
     UIImageView *imageView = [[UIImageView alloc] init];

@@ -21,6 +21,7 @@
     NSMutableArray *deliveredList;
 }
 
+@property (strong, nonatomic)  NSMutableDictionary *colourDictionary;
 -(void)cellAtIndexPath:(ALMessageInfo *)msgInfo inSection:(NSInteger)section;
 -(UIView *)customHeaderView:(NSInteger)section withTitle:(NSString *)title andName:(NSString *)name;
 
@@ -36,6 +37,7 @@
     self.alTableView.dataSource = self;
     [self.view bringSubviewToFront:self.activityIndicator];
     [self.activityIndicator startAnimating];
+    self.colourDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
 }
 
 - (void)didReceiveMemoryWarning
@@ -260,7 +262,7 @@
     if(!alContact.contactImageUrl)
     {
         [self.firstAlphabet setHidden:NO];
-        [self.userImage setBackgroundColor:[ALColorUtility getColorForAlphabet:[alContact getDisplayName]]];
+        [self.userImage setBackgroundColor:[ALColorUtility getColorForAlphabet:[alContact getDisplayName] colorCodes:self.colourDictionary]];
         [self.firstAlphabet setText:[ALColorUtility getAlphabetForProfileImage:[alContact getDisplayName]]];
     }
     

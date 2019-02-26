@@ -734,5 +734,17 @@
     return [[NSUserDefaults standardUserDefaults] valueForKey:USER_MQTT_ENCRYPTION_KEY];
 }
 
++(void)setLastSyncTimeForMetaData :( NSNumber *) metaDataLastSyncTime
+{
+    metaDataLastSyncTime = @([metaDataLastSyncTime doubleValue] + 1);
+    NSLog(@"saving last Sync time for meta data in the preference ...%@" ,metaDataLastSyncTime);
+    [[NSUserDefaults standardUserDefaults] setDouble:[metaDataLastSyncTime doubleValue] forKey:LAST_SYNC_TIME_FOR_META_DATA];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(NSNumber *)getLastSyncTimeForMetaData
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:LAST_SYNC_TIME_FOR_META_DATA];
+}
 
 @end
