@@ -315,6 +315,37 @@
                 }];
             }
         
+        } else if( [type isEqualToString:@"APPLOZIC_33"]){
+            NSString* keyString;
+            NSString* deviceKey;
+            @try
+            {
+                NSDictionary * message = [theMessageDict objectForKey:@"message"];
+                ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:message];
+                keyString = alMessage.key;
+                deviceKey = alMessage.deviceKey;
+            } @catch (NSException * exp) {
+                ALSLog(ALLoggerSeverityError, @"Error while fetching message from dictionary : %@", exp.description);
+                @try
+                {
+                    NSString * messageKey = [theMessageDict valueForKey:@"message"];
+                    if(messageKey){
+                        ALMessageDBService * messagedbService = [[ALMessageDBService alloc]init];
+                        DB_Message * dbMessage  = (DB_Message *)[messagedbService getMessageByKey:@"key" value:messageKey];
+                        if (dbMessage != nil) {
+                            deviceKey = dbMessage.deviceKey;
+                        }
+                    }
+                } @catch (NSException * exp) {
+                    ALSLog(ALLoggerSeverityError, @"Error while fetching message from dictionary : %@", exp.description);
+                }
+            }
+            if (deviceKey != nil && [deviceKey isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]) {
+                return TRUE;
+            }
+            [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
+                ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
+            }];
         }
         else
         {
@@ -373,12 +404,17 @@
     NSArray *mqttMSGArray = [[theMessageDict valueForKey:@"message"] componentsSeparatedByString:@":"];
     NSString *BlockType = mqttMSGArray[0];
     NSString *userId = mqttMSGArray[1];
-    if(![BlockType isEqualToString:@"BLOCKED_BY"] && ![BlockType isEqualToString:@"UNBLOCKED_BY"])
+    ALContactDBService *dbService = [ALContactDBService new];
+    if([BlockType isEqualToString:@"BLOCKED_BY"] || [BlockType isEqualToString:@"UNBLOCKED_BY"])
     {
+        [dbService setBlockByUser:userId andBlockedByState:flag];
+    } else if([BlockType isEqualToString:@"BLOCKED_TO"] || [BlockType isEqualToString:@"UNBLOCKED_TO"])
+    {
+        [dbService setBlockUser:userId andBlockedState:flag];
+    } else {
         return NO;
     }
-    ALContactDBService *dbService = [ALContactDBService new];
-    [dbService setBlockByUser:userId andBlockedByState:flag];
+
     if(self.realTimeUpdate){
         [self.realTimeUpdate onUserBlockedOrUnBlocked:userId andBlockFlag:flag];
     }

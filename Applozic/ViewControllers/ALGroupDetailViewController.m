@@ -228,17 +228,8 @@
 
 -(void)groupDetailsSyncCall
 {
-
-    //TO-Do change this delay
-    double delayInSeconds = 2.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul), ^(void){
-        [self setupView];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    });
-
+    [self setupView];
+    [self.tableView reloadData];
 }
 
 //------------------------------------------------------------------------------------------------------------------

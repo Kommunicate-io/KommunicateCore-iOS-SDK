@@ -196,7 +196,7 @@
         {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
             [self.mNameLabel setHidden:NO];
-            self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to];
+            self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to colorCodes:self.alphabetiColorCodesDictionary];
         }
 
         //Shift for message reply and channel name..
@@ -212,7 +212,7 @@
         {
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setText:receiverName];
-            [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
+            [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary]];
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width + CHANNEL_PADDING_WIDTH, CHANNEL_PADDING_HEIGHT);

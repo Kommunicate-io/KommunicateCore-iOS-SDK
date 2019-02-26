@@ -184,7 +184,7 @@
         {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
             [self.mNameLabel setHidden:NO];
-            self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to];
+            self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to colorCodes:self.alphabetiColorCodesDictionary];
         }
          CGFloat requiredHeight  = BUBBLE_PADDING_HEIGHT;
         CGFloat paypauseBUttonY = self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y ;
@@ -198,7 +198,7 @@
         {
          
             [self.mChannelMemberName setHidden:NO];
-            [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
+            [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary]];
             [self.mChannelMemberName setText:receiverName];
    
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,

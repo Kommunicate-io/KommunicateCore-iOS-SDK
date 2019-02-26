@@ -69,7 +69,7 @@
 @property (nonatomic, strong) UITextView *imageWithText;
 @property (retain, nonatomic) UILabel *mChannelMemberName;
 @property (retain, retain) UIView * replyParentView;
-
+@property (strong, nonatomic)  NSMutableDictionary *alphabetiColorCodesDictionary;
 
 @property (nonatomic, assign) id <ALMediaBaseCellDelegate> delegate;
 

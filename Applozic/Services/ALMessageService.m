@@ -58,6 +58,8 @@ static ALMessageClientService *alMsgClientService;
         {
             ALMessageDBService *alMessageDBService = [[ALMessageDBService alloc] init];
             [alMessageDBService addMessageList:alMessageListResponse.messageList];
+            ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
+            [alContactDBService addUserDetails:alMessageListResponse.userDetailsList];
             [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
 
             [self getMessageListForUserIfLastIsHiddenMessageinMessageList:alMessageListResponse withCompletion:^(NSMutableArray * messages, NSError *error, NSMutableArray *userDetailArray) {
@@ -515,7 +517,9 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
     }
 
     if(message.conversationId){
-        [self fetchTopicDetails:message.conversationId];
+        ALConversationService * alConversationService = [[ALConversationService alloc] init];
+        [alConversationService fetchTopicDetails:message.conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
+        }];
     }
 
     return YES;
@@ -536,14 +540,7 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
         return YES;
     }
 }
-+(void)fetchTopicDetails :(NSNumber *)conversationId
-{
-    if(conversationId)
-    {
-        ALConversationService * alConversationService = [[ALConversationService alloc] init];
-        [alConversationService fetchTopicDetails:conversationId];
-    }
-}
+
 
 +(void) updateDeliveredReport: (NSArray *) deliveredMessageKeys withStatus:(int)status
 {
@@ -1066,4 +1063,52 @@ totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInte
     ALMessageDBService *messageDBServce = [[ALMessageDBService alloc]init];
     return [messageDBServce getMessageByKey:messageKey];
 }
+
++ (void) syncMessageMetaData:(NSString *)deviceKeyString withCompletion:(void (^)( NSMutableArray *, NSError *))completion
+{
+    if(!alMsgClientService)
+    {
+        alMsgClientService = [[ALMessageClientService alloc] init];
+    }
+    @synchronized(alMsgClientService) {
+        [alMsgClientService getLatestMessageForUser:deviceKeyString withMetaDataSync:YES withCompletion:^(ALSyncMessageFeed * syncResponse , NSError *error) {
+            NSMutableArray *messageArray = nil;
+
+            if(!error)
+            {
+                if(syncResponse.messagesList.count > 0)
+                {
+                    messageArray = [[NSMutableArray alloc] init];
+                    ALMessageDBService *messageDatabase  = [[ALMessageDBService alloc]init];
+                    for(ALMessage * message in syncResponse.messagesList)
+                    {
+                        [messageDatabase updateMessageMetadataOfKey:message.key withMetadata:message.metadata];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:MESSAGE_META_DATA_UPDATE object:message userInfo:nil];
+                    }
+                }
+                [ALUserDefaultsHandler setLastSyncTimeForMetaData:syncResponse.lastSyncTime];
+                completion(syncResponse.messagesList,error);
+            }
+            else
+            {
+                completion(messageArray,error);
+            }
+        }];
+    }
+}
+
+- (void)updateMessageMetadataOfKey:(NSString *)messageKey withMetadata:(NSMutableDictionary *)metadata withCompletion:(void (^)(ALAPIResponse *, NSError *))completion
+{
+    ALMessageClientService *messageService = [[ALMessageClientService alloc] init];
+    [messageService updateMessageMetadataOfKey:messageKey withMetadata:metadata withCompletion:^(id theJson, NSError *theError) {
+        ALAPIResponse * alAPIResponse;
+        if(!theError) {
+            ALMessageDBService *messagedb = [[ALMessageDBService alloc] init];
+            [messagedb updateMessageMetadataOfKey:messageKey withMetadata:metadata];
+            alAPIResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        }
+        completion(alAPIResponse,theError);
+    }];
+}
+
 @end

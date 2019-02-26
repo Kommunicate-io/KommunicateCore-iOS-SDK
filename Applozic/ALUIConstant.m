@@ -157,7 +157,7 @@
 {
     CGSize theTextSize = [ALUtilityClass getSizeForText:alMessage.message
                                                maxWidth:cellFrame.size.width - 115
-                                                   font:@"Helvetica"
+                                                   font:[ALApplozicSettings getCustomMessageFont]
                                                fontSize:[ALApplozicSettings getChannelCellTextFontSize]];
     
     CGFloat HEIGHT = theTextSize.height + 30;    

@@ -13,21 +13,21 @@
 		103CC2BE2032EDF200600D16 /* AlChannelInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 103CC2B82032EDF100600D16 /* AlChannelInfoModel.m */; };
 		103CC2BF2032EDF200600D16 /* AlChannelFeedResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 103CC2B92032EDF100600D16 /* AlChannelFeedResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		103CC2C02032EDF200600D16 /* AlChannelFeedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 103CC2BA2032EDF200600D16 /* AlChannelFeedResponse.m */; };
-		180FE81021BFCFFD00A38447 /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 180FE80521BFCFFD00A38447 /* AppLozic.xcdatamodeld */; };
 		180FE81321BFD01E00A38447 /* ALGroupDetailsMemberCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 180FE81121BFD01E00A38447 /* ALGroupDetailsMemberCell.h */; };
 		180FE81421BFD01E00A38447 /* ALGroupDetailsMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 180FE81221BFD01E00A38447 /* ALGroupDetailsMemberCell.m */; };
 		181F69C222007B720018FC13 /* ALDocumentPickerHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 181F69C022007B720018FC13 /* ALDocumentPickerHandler.h */; };
 		181F69C322007B720018FC13 /* ALDocumentPickerHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 181F69C122007B720018FC13 /* ALDocumentPickerHandler.m */; };
-		181F69C622007C4A0018FC13 /* ALMessageBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 181F69C422007C4A0018FC13 /* ALMessageBuilder.h */; };
+		181F69C622007C4A0018FC13 /* ALMessageBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 181F69C422007C4A0018FC13 /* ALMessageBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		181F69C722007C4A0018FC13 /* ALMessageBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 181F69C522007C4A0018FC13 /* ALMessageBuilder.m */; };
 		1821DDE62167D42700CB24A5 /* ALVideoCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821DDE52167D42600CB24A5 /* ALVideoCoder.swift */; };
 		1821DDE92167D47B00CB24A5 /* ALAttachmentService.h in Headers */ = {isa = PBXBuildFile; fileRef = 1821DDE72167D47A00CB24A5 /* ALAttachmentService.h */; };
 		1821DDEA2167D47B00CB24A5 /* ALAttachmentService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */; };
+		1854790D222590320008CB76 /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18547901222590310008CB76 /* AppLozic.xcdatamodeld */; };
 		1866E32C218749BD00667018 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32B218749BD00667018 /* UIColor+Extension.swift */; };
 		1866E32E218749CA00667018 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32D218749C900667018 /* ALImagePreviewController.m */; };
 		1881CEBF2152794E00325270 /* ALCustomPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */; };
 		1881CEC02152794E00325270 /* CustomPicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1881CEBE2152794E00325270 /* CustomPicker.storyboard */; };
-		1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1881CEC321527AB900325270 /* ALMultimediaData.h */; };
+		1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1881CEC321527AB900325270 /* ALMultimediaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1881CEC621527ABA00325270 /* ALMultimediaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1881CEC421527AB900325270 /* ALMultimediaData.m */; };
 		1885ADA821AD982600FF06A7 /* ALLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1885ADA621AD982600FF06A7 /* ALLinkCell.m */; };
 		1885ADA921AD982600FF06A7 /* ALLinkCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1885ADA721AD982600FF06A7 /* ALLinkCell.h */; };
@@ -403,16 +403,6 @@
 		103CC2B82032EDF100600D16 /* AlChannelInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlChannelInfoModel.m; path = Applozic/AlChannelInfoModel.m; sourceTree = "<group>"; };
 		103CC2B92032EDF100600D16 /* AlChannelFeedResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AlChannelFeedResponse.h; path = Applozic/AlChannelFeedResponse.h; sourceTree = "<group>"; };
 		103CC2BA2032EDF200600D16 /* AlChannelFeedResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlChannelFeedResponse.m; path = Applozic/AlChannelFeedResponse.m; sourceTree = "<group>"; };
-		180FE80621BFCFFD00A38447 /* AppLozic 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 4.xcdatamodel"; sourceTree = "<group>"; };
-		180FE80721BFCFFD00A38447 /* AppLozic 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 8.xcdatamodel"; sourceTree = "<group>"; };
-		180FE80821BFCFFD00A38447 /* AppLozic 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 2.xcdatamodel"; sourceTree = "<group>"; };
-		180FE80921BFCFFD00A38447 /* AppLozic 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 7.xcdatamodel"; sourceTree = "<group>"; };
-		180FE80A21BFCFFD00A38447 /* AppLozic 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 9.xcdatamodel"; sourceTree = "<group>"; };
-		180FE80B21BFCFFD00A38447 /* AppLozic 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 5.xcdatamodel"; sourceTree = "<group>"; };
-		180FE80C21BFCFFD00A38447 /* AppLozic 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 10.xcdatamodel"; sourceTree = "<group>"; };
-		180FE80D21BFCFFD00A38447 /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
-		180FE80E21BFCFFD00A38447 /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
-		180FE80F21BFCFFD00A38447 /* AppLozic 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 3.xcdatamodel"; sourceTree = "<group>"; };
 		180FE81121BFD01E00A38447 /* ALGroupDetailsMemberCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALGroupDetailsMemberCell.h; path = Applozic/Views/ALGroupDetailsMemberCell.h; sourceTree = "<group>"; };
 		180FE81221BFD01E00A38447 /* ALGroupDetailsMemberCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALGroupDetailsMemberCell.m; path = Applozic/Views/ALGroupDetailsMemberCell.m; sourceTree = "<group>"; };
 		181F69C022007B720018FC13 /* ALDocumentPickerHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALDocumentPickerHandler.h; path = Applozic/Handlers/ALDocumentPickerHandler.h; sourceTree = "<group>"; };
@@ -422,6 +412,17 @@
 		1821DDE52167D42600CB24A5 /* ALVideoCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALVideoCoder.swift; path = Applozic/ALVideoCoder.swift; sourceTree = "<group>"; };
 		1821DDE72167D47A00CB24A5 /* ALAttachmentService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAttachmentService.h; path = Applozic/ALAttachmentService.h; sourceTree = "<group>"; };
 		1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAttachmentService.m; path = Applozic/ALAttachmentService.m; sourceTree = "<group>"; };
+		18547902222590310008CB76 /* AppLozic 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 4.xcdatamodel"; sourceTree = "<group>"; };
+		18547903222590310008CB76 /* AppLozic 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 8.xcdatamodel"; sourceTree = "<group>"; };
+		18547904222590310008CB76 /* AppLozic 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 2.xcdatamodel"; sourceTree = "<group>"; };
+		18547905222590310008CB76 /* AppLozic 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 11.xcdatamodel"; sourceTree = "<group>"; };
+		18547906222590310008CB76 /* AppLozic 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 7.xcdatamodel"; sourceTree = "<group>"; };
+		18547907222590310008CB76 /* AppLozic 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 9.xcdatamodel"; sourceTree = "<group>"; };
+		18547908222590310008CB76 /* AppLozic 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 5.xcdatamodel"; sourceTree = "<group>"; };
+		18547909222590310008CB76 /* AppLozic 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 10.xcdatamodel"; sourceTree = "<group>"; };
+		1854790A222590310008CB76 /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
+		1854790B222590310008CB76 /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
+		1854790C222590310008CB76 /* AppLozic 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 3.xcdatamodel"; sourceTree = "<group>"; };
 		1866E32B218749BD00667018 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		1866E32D218749C900667018 /* ALImagePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
 		1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALCustomPickerViewController.swift; path = Applozic/ALCustomPickerViewController.swift; sourceTree = "<group>"; };
@@ -1294,7 +1295,7 @@
 		6D6DF1E21BC537B300EBA00F /* database */ = {
 			isa = PBXGroup;
 			children = (
-				180FE80521BFCFFD00A38447 /* AppLozic.xcdatamodeld */,
+				18547901222590310008CB76 /* AppLozic.xcdatamodeld */,
 				6D7756FB1D5B82ED0025560B /* DB_CHANNEL_USER_X.h */,
 				6D7756FC1D5B82ED0025560B /* DB_CHANNEL_USER_X.m */,
 				6D7756FD1D5B82ED0025560B /* DB_CHANNEL.h */,
@@ -1561,6 +1562,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */,
+				181F69C622007C4A0018FC13 /* ALMessageBuilder.h in Headers */,
 				8B1635C72119C4CB0008191A /* ALLogger.h in Headers */,
 				8B1635C42119C4B10008191A /* ApplozicClient.h in Headers */,
 				C75576EE1E27A5B300358D9B /* ALMuteRequest.h in Headers */,
@@ -1591,7 +1594,6 @@
 				6D6DF1481BC5364C00EBA00F /* ALRequestHandler.h in Headers */,
 				6D7756B11D5B80DF0025560B /* ALChannelFeed.h in Headers */,
 				6D7756711D5B7EEC0025560B /* ALChatLauncher.h in Headers */,
-				1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */,
 				6D77570E1D5B83660025560B /* ALPushAssist.h in Headers */,
 				6D7756A91D5B80DF0025560B /* ALChannel.h in Headers */,
 				6D7756F51D5B82B50025560B /* ALAppLocalNotifications.h in Headers */,
@@ -1701,7 +1703,6 @@
 				294637B61C6F16050025ED76 /* ALGroupCreationViewController.h in Headers */,
 				6D6DF1561BC5364C00EBA00F /* ALBaseViewController.h in Headers */,
 				6D6DF1401BC5364C00EBA00F /* ALConnectionQueueHandler.h in Headers */,
-				8B170C2721232545003A14B3 /* UIImage+animatedGIF.h in Headers */,
 				103CC2BB2032EDF200600D16 /* AlChannelResponse.h in Headers */,
 				103CC2BF2032EDF200600D16 /* AlChannelFeedResponse.h in Headers */,
 				103CC2BC2032EDF200600D16 /* AlChannelInfoModel.h in Headers */,
@@ -1717,13 +1718,13 @@
 				18FFE96C21519AD300E88C91 /* ALAudioSession.h in Headers */,
 				322B304A1EF9537600DB01FC /* AlApplicationInfoFeed.h in Headers */,
 				C76D314C1F0AAFCF0087291F /* ALVOIPNotificationHandler.h in Headers */,
+				8B170C2721232545003A14B3 /* UIImage+animatedGIF.h in Headers */,
 				C76D314B1F0AAFCE0087291F /* ALAudioVideoBaseVC.h in Headers */,
 				C76D31451F0AAFB30087291F /* ALVOIPCell.h in Headers */,
 				8B7864231FE2329F004B9E64 /* MessageReplyView.h in Headers */,
 				C70983071E0177E900FC93A1 /* ALMessageServiceWrapper.h in Headers */,
 				6D95476B1BE38DFF00776652 /* ALContactService.h in Headers */,
 				6D46B6C51BD025060014A5D3 /* ALMapViewController.h in Headers */,
-				181F69C622007C4A0018FC13 /* ALMessageBuilder.h in Headers */,
 				6D36F2081BFF3EE3003D46D3 /* ALApplozicSettings.h in Headers */,
 				6D9547691BE38DFF00776652 /* ALContactDBService.h in Headers */,
 				6D6DF1541BC5364C00EBA00F /* UIImage+Utility.h in Headers */,
@@ -1881,6 +1882,7 @@
 				6D6DF14D1BC5364C00EBA00F /* ALUserDefaultsHandler.m in Sources */,
 				293446161D4F426F007BD1B4 /* ALShowImageViewController.m in Sources */,
 				6D4FE4901D7411F70044A7E6 /* NSData+AES.m in Sources */,
+				1854790D222590320008CB76 /* AppLozic.xcdatamodeld in Sources */,
 				4612E9021E13882D0022DB23 /* MQTTInMemoryPersistence.m in Sources */,
 				6D6DF1C81BC5364C00EBA00F /* UIImage+GIF.m in Sources */,
 				6D7756761D5B7F150025560B /* ALVCFClass.m in Sources */,
@@ -1985,7 +1987,6 @@
 				4612E8F91E13882D0022DB23 /* MQTTCFSocketTransport.m in Sources */,
 				6D6DF14B1BC5364C00EBA00F /* ALResponseHandler.m in Sources */,
 				8BE0F6F32063D57E00361DD9 /* SoundRecordingView.swift in Sources */,
-				180FE81021BFCFFD00A38447 /* AppLozic.xcdatamodeld in Sources */,
 				6D6DF1B31BC5364C00EBA00F /* MKAnnotationView+WebCache.m in Sources */,
 				6D6DF1431BC5364C00EBA00F /* ALDBHandler.m in Sources */,
 				6D6DF1571BC5364C00EBA00F /* ALBaseViewController.m in Sources */,
@@ -2251,21 +2252,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		180FE80521BFCFFD00A38447 /* AppLozic.xcdatamodeld */ = {
+		18547901222590310008CB76 /* AppLozic.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				180FE80621BFCFFD00A38447 /* AppLozic 4.xcdatamodel */,
-				180FE80721BFCFFD00A38447 /* AppLozic 8.xcdatamodel */,
-				180FE80821BFCFFD00A38447 /* AppLozic 2.xcdatamodel */,
-				180FE80921BFCFFD00A38447 /* AppLozic 7.xcdatamodel */,
-				180FE80A21BFCFFD00A38447 /* AppLozic 9.xcdatamodel */,
-				180FE80B21BFCFFD00A38447 /* AppLozic 5.xcdatamodel */,
-				180FE80C21BFCFFD00A38447 /* AppLozic 10.xcdatamodel */,
-				180FE80D21BFCFFD00A38447 /* AppLozic 6.xcdatamodel */,
-				180FE80E21BFCFFD00A38447 /* AppLozic.xcdatamodel */,
-				180FE80F21BFCFFD00A38447 /* AppLozic 3.xcdatamodel */,
+				18547902222590310008CB76 /* AppLozic 4.xcdatamodel */,
+				18547903222590310008CB76 /* AppLozic 8.xcdatamodel */,
+				18547904222590310008CB76 /* AppLozic 2.xcdatamodel */,
+				18547905222590310008CB76 /* AppLozic 11.xcdatamodel */,
+				18547906222590310008CB76 /* AppLozic 7.xcdatamodel */,
+				18547907222590310008CB76 /* AppLozic 9.xcdatamodel */,
+				18547908222590310008CB76 /* AppLozic 5.xcdatamodel */,
+				18547909222590310008CB76 /* AppLozic 10.xcdatamodel */,
+				1854790A222590310008CB76 /* AppLozic 6.xcdatamodel */,
+				1854790B222590310008CB76 /* AppLozic.xcdatamodel */,
+				1854790C222590310008CB76 /* AppLozic 3.xcdatamodel */,
 			);
-			currentVersion = 180FE80C21BFCFFD00A38447 /* AppLozic 10.xcdatamodel */;
+			currentVersion = 18547905222590310008CB76 /* AppLozic 11.xcdatamodel */;
 			name = AppLozic.xcdatamodeld;
 			path = Applozic/AppLozic.xcdatamodeld;
 			sourceTree = "<group>";

@@ -17,9 +17,11 @@
 #import "ALMessageInfoResponse.h"
 #import "ALMQTTConversationService.h"
 #import "ALRealTimeUpdate.h"
+#import "ALConversationProxy.h"
 
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
 #define CONVERSATION_CALL_COMPLETED @"conversationCallCompleted"
+#define MESSAGE_META_DATA_UPDATE @"messageMetaDataUpdateNotification"
 
 @interface ALMessageService : NSObject <NSURLConnectionDataDelegate>
 
@@ -100,4 +102,8 @@ withAttachmentAtLocation:(NSString *)attachmentLocalPath
 -(ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
 
 -(ALMessage*) getMessageByKey:(NSString*)messageKey;
+
++(void) syncMessageMetaData:(NSString *)deviceKeyString withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
+
+-(void)updateMessageMetadataOfKey:(NSString*) messageKey withMetadata: (NSMutableDictionary *) metadata withCompletion:(void(^)(ALAPIResponse* theJson, NSError *theError)) completion;
 @end

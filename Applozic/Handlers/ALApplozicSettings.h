@@ -137,6 +137,9 @@ static NSString *const SLIDE_TO_CANCEL_TEXT_COLOR = @"com.applozic.SLIDE_TO_CANC
 static NSString *const AUDIO_RECORDING_TEXT_COLOR = @"com.applozic.AUDIO_RECORDING_TEXT_COLOR";
 static NSString *const AUDIO_RECORD_VIEW_FONT = @"com.applozic.AUDIO_VIEW_FONT";
 static NSString *const MEDIA_SELECT_OPTIONS = @"com.applozic.MEDIA_SELECT_OPTIONS";
+static NSString *const AL_CHANNEL_ACTION_MESSAGE_BG_COLOR = @"com.applozic.AL_CHANNEL_ACTION_MESSAGE_BG_COLOR";
+static NSString *const AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR = @"com.applozic.AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR";
+static NSString *const AL_ALPHABETIC_COLOR_CODES = @"com.applozic.AL_ALPHABETIC_COLOR_CODES";
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -552,5 +555,15 @@ static NSString *const MEDIA_SELECT_OPTIONS = @"com.applozic.MEDIA_SELECT_OPTION
 
 +(void)setTextColorForMessageTextView:(UIColor *)txtColor;
 +(UIColor *)getTextColorForMessageTextView;
+
++(void)setChannelActionMessageBgColor:(UIColor *)txtColor;
++(UIColor *)getChannelActionMessageBgColor;
+
++(void)setChannelActionMessageTextColor:(UIColor *)txtColor;
++(UIColor *)getChannelActionMessageTextColor;
+
++(void)setUserIconFirstNameColorCodes:(NSMutableDictionary*)nsMutableDictionary;
++(NSMutableDictionary*) getUserIconFirstNameColorCodes;
+
 
 @end

@@ -21,6 +21,7 @@
 
 #define MQTT_TOPIC_STATUS @"status-v2"
 #define MQTT_ENCRYPTION_SUB_KEY @"encr-"
+static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessage";
 
 @implementation ALMQTTConversationService
 
@@ -133,7 +134,6 @@
                     }else{
                         [self.session subscribeToTopic: topic atLevel:MQTTQosLevelAtMostOnce];
                     }
-                    [self.session subscribeToTopic:[NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], [ALUserDefaultsHandler getUserId]] atLevel:MQTTQosLevelAtMostOnce];
                     [ALUserDefaultsHandler setLoggedInUserSubscribedMQTT:YES];
                     [self.mqttConversationDelegate mqttDidConnected];
                     if(self.realTimeUpdate){
@@ -272,6 +272,8 @@
                 ALSLog(ALLoggerSeverityInfo, @"MQTT : RETURNING, SENT_BY_SELF_DEVICE");
                 return;
             }
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:observeSupportGroupMessage object:alMessage];
 
             [ALMessageService getMessageSENT:alMessage withDelegate: self.realTimeUpdate withCompletion:^(NSMutableArray * messageArray, NSError *error) {
 
@@ -422,6 +424,38 @@
         {
             // BROADCAST MESSAGE : MESSAGE_DELIVERED_AND_READ
         }
+        else if( [type isEqualToString:@"APPLOZIC_33"]){ // MESSAGE_METADATA_UPDATE
+            NSString* keyString;
+            NSString* deviceKey;
+            @try
+            {
+                NSDictionary * message = [theMessageDict objectForKey:@"message"];
+                ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:message];
+                keyString = alMessage.key;
+                deviceKey = alMessage.deviceKey;
+            } @catch (NSException * exp) {
+                ALSLog(ALLoggerSeverityError, @"Error while fetching message from dictionary : %@", exp.description);
+                @try
+                {
+                    NSString * messageKey = [theMessageDict valueForKey:@"message"];
+                    if(messageKey){
+                        ALMessageDBService * messagedbService = [[ALMessageDBService alloc]init];
+                        DB_Message * dbMessage  = (DB_Message *)[messagedbService getMessageByKey:@"key" value:messageKey];
+                        if (dbMessage != nil) {
+                            deviceKey = dbMessage.deviceKey;
+                        }
+                    }
+                } @catch (NSException * exp) {
+                    ALSLog(ALLoggerSeverityError, @"Error while fetching message from dictionary : %@", exp.description);
+                }
+            }
+            if (deviceKey != nil && [deviceKey isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]) {
+                return;
+            }
+            [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
+                ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
+            }];
+        }
         else if([type isEqualToString:@"APPLOZIC_09"]){
             //Conversation read for user
             ALUserService *channelService = [[ALUserService alloc]init];
@@ -483,13 +517,16 @@
     NSArray *mqttMSGArray = [[theMessageDict valueForKey:@"message"] componentsSeparatedByString:@":"];
     NSString *BlockType = mqttMSGArray[0];
     NSString *userId = mqttMSGArray[1];
-    if(![BlockType isEqualToString:@"BLOCKED_BY"] && ![BlockType isEqualToString:@"UNBLOCKED_BY"])
+    ALContactDBService *dbService = [ALContactDBService new];
+    if([BlockType isEqualToString:@"BLOCKED_BY"] || [BlockType isEqualToString:@"UNBLOCKED_BY"])
     {
+        [dbService setBlockByUser:userId andBlockedByState:flag];
+    } else if([BlockType isEqualToString:@"BLOCKED_TO"] || [BlockType isEqualToString:@"UNBLOCKED_TO"])
+    {
+        [dbService setBlockUser:userId andBlockedState:flag];
+    } else {
         return;
     }
-
-    ALContactDBService *dbService = [ALContactDBService new];
-    [dbService setBlockByUser:userId andBlockedByState:flag];
 
     [self.mqttConversationDelegate reloadDataForUserBlockNotification:userId andBlockFlag:flag];
     if(self.realTimeUpdate){
@@ -573,7 +610,6 @@
     }else{
         [self.session unsubscribeTopic: topic];
     }
-    [self.session unsubscribeTopic:[NSString stringWithFormat:@"typing-%@-%@", [ALUserDefaultsHandler getApplicationKey], [ALUserDefaultsHandler getUserId]]];
     [self.session close];
     ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
     return YES;

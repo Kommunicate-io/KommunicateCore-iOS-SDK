@@ -186,7 +186,7 @@
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setText:receiverName];
 
-            [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName]];
+            [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary]];
 
 
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
@@ -260,7 +260,7 @@
         {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
             [self.mNameLabel setHidden:NO];
-            self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:receiverName];
+            self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary];
         }
 
 

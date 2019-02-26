@@ -385,33 +385,9 @@
 
 -(void) getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void (^)( ALSyncMessageFeed *, NSError *))completion
 {
-    //@synchronized(self) {
-        
-    NSString * lastSyncTime = [NSString stringWithFormat:@"%@", [ALUserDefaultsHandler getLastSyncTime]];
-    
-    ALSLog(ALLoggerSeverityInfo, @"LAST SYNC TIME IN CALL :  %@", lastSyncTime);
-    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/sync",KBASE_URL];
-    NSString * theParamString = [NSString stringWithFormat:@"lastSyncTime=%@",lastSyncTime];
-    
-    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"SYNC LATEST MESSAGE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
-        if(theError)
-        {
-            [ALUserDefaultsHandler setMsgSyncRequired:YES];
-            completion(nil,theError);
-            return;
-        }
-        
-        [ALUserDefaultsHandler setMsgSyncRequired:NO];
-        ALSyncMessageFeed *syncResponse =  [[ALSyncMessageFeed alloc] initWithJSONString:theJson];
-        ALSLog(ALLoggerSeverityInfo, @"LATEST_MESSAGE_JSON: %@", (NSString *)theJson);
-        completion(syncResponse,nil);
+    [self getLatestMessageForUser:deviceKeyString withMetaDataSync:NO withCompletion:^(ALSyncMessageFeed *syncResponse, NSError *nsError) {
+        completion(syncResponse,nsError);
     }];
-        
-    //}
-    
 }
 
 -(void)deleteMessage:(NSString *) keyString andContactId:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion
@@ -501,6 +477,67 @@
         }
     }];
 
+}
+
+-(void) getLatestMessageForUser:(NSString *)deviceKeyString withMetaDataSync:(BOOL)isMetaDataUpdate withCompletion:(void (^)( ALSyncMessageFeed *, NSError *))completion
+{
+    if(!deviceKeyString){
+        return;
+    }
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/sync",KBASE_URL];
+    NSString * lastSyncTime;
+    NSString * theParamString;
+    if(isMetaDataUpdate) {
+        lastSyncTime =  [NSString stringWithFormat:@"%@", [ALUserDefaultsHandler getLastSyncTimeForMetaData]];
+        theParamString =  [NSString stringWithFormat:@"lastSyncTime=%@&metadataUpdate=true",lastSyncTime];
+    } else {
+        lastSyncTime =  [NSString stringWithFormat:@"%@", [ALUserDefaultsHandler getLastSyncTime]];
+        theParamString =  [NSString stringWithFormat:@"lastSyncTime=%@",lastSyncTime];
+    }
+
+    ALSLog(ALLoggerSeverityInfo, @"LAST SYNC TIME IN CALL :  %@", lastSyncTime);
+
+    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+
+    [ALResponseHandler processRequest:theRequest andTag:@"SYNC LATEST MESSAGE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+        if(theError)
+        {
+            [ALUserDefaultsHandler setMsgSyncRequired:YES];
+            completion(nil,theError);
+            return;
+        }
+
+        [ALUserDefaultsHandler setMsgSyncRequired:NO];
+        ALSyncMessageFeed *syncResponse =  [[ALSyncMessageFeed alloc] initWithJSONString:theJson];
+        ALSLog(ALLoggerSeverityInfo, @"LATEST_MESSAGE_JSON: %@", (NSString *)theJson);
+        completion(syncResponse,nil);
+    }];
+}
+
+- (void)updateMessageMetadataOfKey:(NSString *)messageKey withMetadata:(NSMutableDictionary *)metadata withCompletion:(void (^)(id, NSError *))completion
+{
+    ALSLog(ALLoggerSeverityInfo, @"Updating message metadata for message : %@", messageKey);
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/update/metadata",KBASE_URL];
+    NSMutableDictionary *messageMetadata = [NSMutableDictionary new];
+
+    [messageMetadata setObject:messageKey forKey:@"key"];
+    [messageMetadata setObject:metadata forKey:@"metadata"];
+
+    NSError *error;
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:messageMetadata options:0 error:&error];
+    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+
+    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_MESSAGE_METADATA" WithCompletionHandler:^(id theJson, NSError *theError) {
+        if (theError) {
+            ALSLog(ALLoggerSeverityError, @"Error while updating message metadata: %@", theError);
+            completion(nil,theError);
+            return;
+        }
+        ALSLog(ALLoggerSeverityInfo, @"Message metadata updated successfully with result : %@", theJson);
+        completion(theJson,nil);
+    }];
 }
 
 @end
