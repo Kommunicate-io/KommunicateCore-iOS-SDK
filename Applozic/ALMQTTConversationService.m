@@ -160,6 +160,11 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
 
 - (void)newMessage:(MQTTSession *)session data:(NSData *)data onTopic:(NSString *)topic qos:(MQTTQosLevel)qos retained:(BOOL)retained mid:(unsigned int)mid
 {
+
+    if(![ALUserDefaultsHandler getUserKeyString]){
+        return;
+    }
+
     NSString *fullMessage = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
     if([ALUserDefaultsHandler getEnableEncryption] && [ALUserDefaultsHandler getUserEncryptionKey] && [topic hasPrefix:MQTT_ENCRYPTION_SUB_KEY]){
