@@ -65,6 +65,8 @@
         NSError *error = nil;
         NSDictionary *theMessageDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         NSString *notificationMsg = [theMessageDict valueForKey:@"message"];
+        NSDictionary * metadataDictionary =  [theMessageDict valueForKey:@"messageMetaData"];
+
 
         //CHECK for any special messages...
         if ([self processMetaData:theMessageDict withAlert:alertValue withUpdateUI:updateUI])
@@ -89,7 +91,7 @@
                 }
 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self assitingNotificationMessage:notificationMsg andDictionary:dict];
+                    [self assitingNotificationMessage:notificationMsg andDictionary:dict withMetadata:metadataDictionary];
                 });
             }
             else
@@ -110,8 +112,7 @@
 
              ALSLog(ALLoggerSeverityInfo, @"ALPushNotificationService's SYNC CALL");
             [dict setObject:(alertValue ? alertValue : @"") forKey:@"alertValue"];
-
-            [self assitingNotificationMessage:notificationMsg andDictionary:dict];
+             [self assitingNotificationMessage:notificationMsg andDictionary:dict withMetadata:metadataDictionary];
 
         }
         else if ([type isEqualToString:@"MESSAGE_SENT"]||[type isEqualToString:@"APPLOZIC_02"])
@@ -358,8 +359,13 @@
     return FALSE;
 }
 
--(void)assitingNotificationMessage:(NSString*)notificationMsg andDictionary:(NSMutableDictionary*)dict
+-(void)assitingNotificationMessage:(NSString*)notificationMsg andDictionary:(NSMutableDictionary*)dict withMetadata:(NSDictionary *)messageMetaData
 {
+
+    if([self isNotificationDisabled:messageMetaData]){
+        return;
+    }
+
     ALPushAssist* assistant = [[ALPushAssist alloc] init];
     if(!assistant.isOurViewOnTop)
     {
@@ -379,6 +385,16 @@
                                                            userInfo:dict];
     }
 
+}
+
+-(BOOL)isNotificationDisabled:(NSDictionary*)messageMetaData{
+
+    if(!messageMetaData){
+        return NO;
+    }
+
+    NSString * notificationFlag = [messageMetaData objectForKey:@"show"];
+    return (messageMetaData && notificationFlag && [notificationFlag isEqualToString:@"false"]);
 }
 
 -(BOOL)processMetaData:(NSDictionary*)dict withAlert:alertValue withUpdateUI:(NSNumber *)updateUI

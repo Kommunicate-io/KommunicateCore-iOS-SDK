@@ -113,11 +113,9 @@
     for (ALContact *contact in contacts) {
         
         result = [self updateContact:contact];
-        
+
         if (!result) {
-            
-            ALSLog(ALLoggerSeverityInfo, @"Failure to update the contacts");
-            break;
+            ALSLog(ALLoggerSeverityInfo, @"Failure to update the contacts %@",contact.userId);
         }
     }
     
@@ -237,7 +235,7 @@
         result = [self addContact:contact];
 
         if (!result) {
-            break;
+            ALSLog(ALLoggerSeverityInfo, @"Failure to add/update the contacts %@",contact.userId);
         }
     }
 

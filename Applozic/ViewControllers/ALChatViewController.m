@@ -932,7 +932,9 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
                               }];
 
     [alert addAction:ok];
-    [alert addAction:unblock];
+    if (![ALApplozicSettings isUnblockInChatDisabled]) {
+        [alert addAction:unblock];
+    }
     [self presentViewController:alert animated:YES completion:nil];
 }
 

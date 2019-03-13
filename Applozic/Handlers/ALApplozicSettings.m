@@ -1640,4 +1640,14 @@
     return [[NSUserDefaults standardUserDefaults] objectForKey:AL_ALPHABETIC_COLOR_CODES];
 }
 
++(void) setIsUnblockInChatDisabled:(BOOL)flag {
+    [[NSUserDefaults standardUserDefaults] setBool:flag forKey:DISABLE_UNBLOCK_FROM_CHAT];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++(BOOL) isUnblockInChatDisabled {
+    BOOL key = [[NSUserDefaults standardUserDefaults] boolForKey:DISABLE_UNBLOCK_FROM_CHAT];
+    return key;
+}
+
 @end
