@@ -13,13 +13,10 @@
 #import "ALGroupCreationViewController.h"
 #import "ALNewContactsViewController.h"
 #import "ALChatViewController.h"
-#import "ALConnection.h"
 #import "ALConnectionQueueHandler.h"
 #import "UIImage+Utility.h"
 #import "ALApplozicSettings.h"
 #import "ALUtilityClass.h"
-#import "ALConnection.h"
-#import "ALConnectionQueueHandler.h"
 #import "ALUserDefaultsHandler.h"
 #import "ALImagePickerHandler.h"
 #import "ALRequestHandler.h"
@@ -30,6 +27,7 @@
 #import "UIImageView+WebCache.h"
 #import "ALContactService.h"
 #import "ALVOIPNotificationHandler.h"
+#import "ALHTTPManager.h"
 
 @interface ALGroupCreationViewController ()
 
@@ -351,10 +349,19 @@
         NSString * uploadUrl = [KBASE_URL stringByAppendingString:IMAGE_UPLOAD_URL];
         
         self.groupImageUploadURL = uploadUrl;
-        
-        //TODO: Call From Delegate !!
-        [self proessUploadImage:image uploadURL:uploadUrl withdelegate:self];
-        
+
+        ALHTTPManager * manager = [[ALHTTPManager alloc]init];
+        [manager uploadProfileImage:image withFilePath:self.mainFilePath uploadURL:uploadUrl withCompletion:^(NSData * _Nullable data, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(error == nil){
+
+                    NSString *imageLinkFromServer = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                    ALSLog(ALLoggerSeverityInfo, @"GROUP_IMAGE_LINK :: %@",imageLinkFromServer);
+                    self.groupImageURL = imageLinkFromServer;
+                }
+                [self.activityIndicator stopAnimating];
+            });
+        }];
     }];
     
     [alert addAction:cancel];
@@ -363,104 +370,5 @@
     
 }
 
--(void)proessUploadImage:(UIImage *)profileImage uploadURL:(NSString *)uploadURL withdelegate:(id)delegate
-{
-    [self.navigationItem.rightBarButtonItem setEnabled:NO];
-    [self.activityIndicator startAnimating];
-    NSString *filePath = self.mainFilePath;
-    NSMutableURLRequest * request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
-    {
-        //Create boundary, it can be anything
-        NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
-        // set Content-Type in HTTP header
-        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-        [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
-        // post body
-        NSMutableData *body = [NSMutableData data];
-        NSString *FileParamConstant = @"file";
-        NSData *imageData = [[NSData alloc] initWithContentsOfFile:filePath];
-        ALSLog(ALLoggerSeverityInfo, @"IMAGE_DATA :: %f",imageData.length/1024.0);
-        
-        //Assuming data is not nil we add this to the multipart form
-        if (imageData)
-        {
-            
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant, @"imge_123_profile"] dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            [body appendData:[[NSString stringWithFormat:@"Content-Type:%@\r\n\r\n", @"image/jpeg"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:imageData];
-            [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-        }
-        //Close off the request with the boundary
-        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        // setting the body of the post to the request
-        [request setHTTPBody:body];
-        // set URL
-        [request setURL:[NSURL URLWithString:uploadURL]];
-        
-        ALConnection * connection = [[ALConnection alloc] initWithRequest:request delegate:delegate startImmediately:YES];
-        connection.connectionType = CONNECTION_TYPE_GROUP_IMG_UPLOAD;
-        
-        [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:connection];
-        
-    }else{
-        [self.navigationItem.rightBarButtonItem setEnabled:YES];
-        [self.activityIndicator stopAnimating];
-        UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"Error!"
-                                                                        message:@"Unable to locate file on device"
-                                                                 preferredStyle:UIAlertControllerStyleAlert];
-        
-        [ALUtilityClass setAlertControllerFrame:alert andViewController:self];
-        
-        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            [alert dismissViewControllerAnimated:YES completion:nil];
-        }];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-    
-}
-
-//==============================================================================================================================
-#pragma NSURL CONNECTION DELEGATES + HELPER METHODS
-//==============================================================================================================================
-
--(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    ALSLog(ALLoggerSeverityError, @"GROUP_IMAGE UPLOAD_ERROR :: %@",error.description);
-    [self.navigationItem.rightBarButtonItem setEnabled:YES];
-    [self.activityIndicator stopAnimating];
-}
-
--(void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten
-totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
-{
-    ALSLog(ALLoggerSeverityInfo, @"GROUP_IMAGE UPLOAD PROGRESS :: %ld out of %ld",(long)totalBytesWritten,(long)totalBytesExpectedToWrite);
-}
-
--(void)connectionDidFinishLoading:(ALConnection *)connection
-{
-    ALSLog(ALLoggerSeverityInfo, @"CONNNECTION_FINISHED");
-    [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:connection];
-    if([connection.connectionType isEqualToString:CONNECTION_TYPE_GROUP_IMG_UPLOAD])
-    {
-        NSString *imageLinkFromServer = [[NSString alloc] initWithData:connection.mData encoding:NSUTF8StringEncoding];
-        ALSLog(ALLoggerSeverityInfo, @"GROUP_IMAGE_LINK :: %@",imageLinkFromServer);
-        self.groupImageURL = imageLinkFromServer;
-    }
-    [self.navigationItem.rightBarButtonItem setEnabled:YES];
-    [self.activityIndicator stopAnimating];
-}
-
--(void)connection:(ALConnection *)connection didReceiveData:(NSData *)data
-{
-    [connection.mData appendData:data];
-}
 
 @end
-// TextView     = 100
-// ImageView    = 102
-// Text Field   = 103

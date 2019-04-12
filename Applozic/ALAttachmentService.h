@@ -7,18 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALConnection.h"
-#import "ALConnectionQueueHandler.h"
 #import "ALMessageDBService.h"
 #import "ALMessage.h"
 #import "ALMessageService.h"
 #import "ALRealTimeUpdate.h"
 #import "ApplozicClient.h"
-
+#import "ALHTTPManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ALAttachmentService : NSObject <NSURLConnectionDataDelegate>
+@interface ALAttachmentService : NSObject
 
 @property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
@@ -28,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)sendMessageWithAttachment:(ALMessage*) attachmentMessage withDelegate:(id<ApplozicUpdatesDelegate>) delegate withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
 -(void) downloadMessageAttachment:(ALMessage*)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+
+-(void) downloadImageThumbnail:(ALMessage*)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
 @end
 

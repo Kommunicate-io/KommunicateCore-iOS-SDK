@@ -173,9 +173,7 @@
     
         }];
     }];
-    
-    
-    
+
 }
 
 
@@ -192,9 +190,63 @@
         [user setPassword:[ALUserDefaultsHandler getPassword]];
         [user setDisplayName:[ALUserDefaultsHandler getDisplayName]];
         [user setEmail:[ALUserDefaultsHandler getEmailId]];
-        [self initWithCompletion:user withCompletion: completion];
-        
+
+        [self updateDeviceToken:apnDeviceToken withCompletion:^(ALRegistrationResponse *response, NSError *error) {
+            completion(response,error);
+        }];
     }
+}
+
+
+-(void) updateDeviceToken:(NSString *)apnDeviceToken withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion
+{
+
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/update",KBASE_URL];
+
+    ALUser * user = [ALUser new];
+
+    [user setUserId:[ALUserDefaultsHandler getUserId]];
+    [user setApplicationId:[ALUserDefaultsHandler getApplicationKey]];
+    [user setNotificationMode:[ALUserDefaultsHandler getNotificationMode]];
+    [user setPassword:[ALUserDefaultsHandler getPassword]];
+    [user setRegistrationId:apnDeviceToken];
+    [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
+    [user setPrefContactAPI:2];
+    [user setEmailVerified:true];
+    [user setDeviceType:4];
+    [user setDeviceApnsType:!isDevelopmentBuild()];
+    [user setAppVersionCode: VERSION_CODE];
+    [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
+    [user setRoleName:[ALApplozicSettings getUserRoleName]];
+
+    if([ALUserDefaultsHandler getAppModuleName] != NULL){
+        [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
+    }
+    [user setPushNotificationFormat:[ALUserDefaultsHandler getPushNotificationFormat]];
+    if([ALUserDefaultsHandler getNotificationSoundFileName] != nil){
+        [user setNotificationSoundFileName:[ALUserDefaultsHandler getNotificationSoundFileName]];
+    }
+
+    [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
+    [user setUnreadCountType:[ALUserDefaultsHandler getUnreadCountType]];
+
+    NSError * error;
+    NSData * postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
+    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
+
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+
+    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE DEVICE TOKEN" WithCompletionHandler:^(id theJson, NSError *theError) {
+        ALSLog(ALLoggerSeverityInfo, @"Update device token to Server Response Received %@", theJson);
+
+        NSString *statusStr = (NSString *)theJson;
+        if (theError) {
+            completion(nil,theError);
+            return ;
+        }
+        ALRegistrationResponse *response = [[ALRegistrationResponse alloc] initWithJSONString:statusStr];
+        completion(response,nil);
+    }];
 }
 
 +(void) updateNotificationMode:(short)notificationMode withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion

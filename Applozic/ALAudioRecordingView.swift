@@ -187,8 +187,8 @@ import AVFoundation
         //min
         let min = (counter / 60) % 60
         let sec = (counter % 60)
-        var minStr = numberInCurrentLocale(min)
-        var secStr = numberInCurrentLocale(sec)
+        let minStr = numberInCurrentLocale(min)
+        let secStr = numberInCurrentLocale(sec)
         
         self.recordingValue.text = "\(minStr):\(secStr)"
     }

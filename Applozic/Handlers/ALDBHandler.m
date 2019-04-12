@@ -79,48 +79,46 @@
 }
 
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-    
-    // The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it.
-    
-    if (_persistentStoreCoordinator != nil) {
-        
-        return _persistentStoreCoordinator;
-        
+
+    @synchronized (self) {
+        // The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it.
+
+        if (_persistentStoreCoordinator != nil) {
+
+            return _persistentStoreCoordinator;
+
+        }
+
+        // Create the coordinator and store
+
+        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+
+        NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AppLozic.sqlite"];
+
+        NSError *error = nil;
+
+        NSString *failureReason = @"There was an error creating or loading the application's saved data.";
+
+        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:@{NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES],NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES]} error:&error]) {
+
+            // Report any error we got.
+
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+
+            dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
+
+            dict[NSLocalizedFailureReasonErrorKey] = failureReason;
+
+            dict[NSUnderlyingErrorKey] = error;
+
+            error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
+
+
+            ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
+
+        }
     }
-    
-    // Create the coordinator and store
-    
-    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AppLozic.sqlite"];
-    
-    NSError *error = nil;
-    
-    NSString *failureReason = @"There was an error creating or loading the application's saved data.";
-    
-    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:@{NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES],NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES]} error:&error]) {
-        
-        // Report any error we got.
-        
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        
-        dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
-        
-        dict[NSLocalizedFailureReasonErrorKey] = failureReason;
-        
-        dict[NSUnderlyingErrorKey] = error;
-        
-        error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
-        
-        // Replace this with code to handle the error appropriately.
-        
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        
-        ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
-        
-        abort();
-    }
-    
+
     return _persistentStoreCoordinator;
 }
 
@@ -143,7 +141,7 @@
         
     }
     
-    _managedObjectContext = [[NSManagedObjectContext alloc] init];
+    _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     
     [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     [_managedObjectContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
@@ -162,13 +160,7 @@
         
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
             
-            // Replace this implementation with code to handle the error appropriately.
-            
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            
             ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
-            
-            abort();
         }
     }
 }
@@ -441,6 +433,32 @@
     return result;
 }
 
+- (void)savePrivateAndMainContext:(NSManagedObjectContext *)context {
+    NSError *error;
+    [context save:&error];
+    if (!error) {
+        [self saveMainContext];
+    }else{
+        ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+    }
+}
 
+- (void)saveMainContext {
+    [self.managedObjectContext performBlock:^{
+        NSError *error = nil;
+        [self.managedObjectContext save:&error];
+        if(error){
+            ALSLog(ALLoggerSeverityError, @"DB ERROR in saveMainContext :%@",error);
+        }
+    }];
+}
+
+- (NSManagedObjectContext *)privateContext {
+
+    NSManagedObjectContext *managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    [managedObjectContext setParentContext:self.managedObjectContext];
+
+    return managedObjectContext;
+}
 
 @end

@@ -123,6 +123,9 @@ static UIColor *ALHyperLabelLinkColorHighlight;
         {
 			NSRange range = [rangeValue rangeValue];
 			NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]initWithAttributedString:self.attributedText];
+            if (NSMaxRange(range) > attributedString.length) {
+                return;
+            }
 			[attributedString addAttributes:self.linkAttributeHighlight range:range];
 			
 			[UIView transitionWithView:self duration:highLightAnimationTime options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
