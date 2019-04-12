@@ -24,7 +24,6 @@
 #import "NSString+Encode.h"
 #import "ALApplozicSettings.h"
 #import "UIImageView+WebCache.h"
-#import "ALConnection.h"
 #import "ALConnectionQueueHandler.h"
 #import "ALApplozicSettings.h"
 
@@ -113,51 +112,44 @@
     }
 }
 
--(void)getNSMutableURLRequestForThumbnail: (ALMessage *) message withCompletion:(void(^)(NSMutableURLRequest * urlRequest, NSString *fileUrl)) completion{
-    
-    NSMutableURLRequest * urlRequest = [[NSMutableURLRequest alloc] init];
-    if([ALApplozicSettings isGoogleCloudServiceEnabled]){
-        NSString * theUrlString = [NSString stringWithFormat:@"%@/files/url",KBASE_FILE_URL];
-        NSString * blobParamString = [@"" stringByAppendingFormat:@"key=%@",message.fileMeta.thumbnailBlobKey];
-        urlRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:blobParamString];
-        completion(urlRequest,nil);
-        return;
-    }else if([ALApplozicSettings isS3StorageServiceEnabled]) {
-        NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/file/url",KBASE_FILE_URL];
-        NSString * blobParamString = [@"" stringByAppendingFormat:@"key=%@",message.fileMeta.thumbnailBlobKey];
-        urlRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:blobParamString];
-        completion(urlRequest,nil);
-        return;
-    }else {
-        completion(nil,message.fileMeta.thumbnailUrl);
-        return;
+-(NSMutableURLRequest *) getURLRequestForThumbnail: (NSString *)blobKey {
+    if (blobKey == nil) {
+        return nil;
     }
-    
+    if ([ALApplozicSettings isGoogleCloudServiceEnabled]) {
+        NSString * theUrlString = [NSString stringWithFormat:@"%@/files/url",KBASE_FILE_URL];
+        NSString * blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
+        return [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:blobParamString];
+    } else if([ALApplozicSettings isS3StorageServiceEnabled]) {
+        NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/file/url",KBASE_FILE_URL];
+        NSString * blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
+        return [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:blobParamString];
+    }
+    return nil;
+}
+
+- (void)downloadImageThumbnailUrl:(NSString *)url blobKey:(NSString *)blobKey completion:(void (^)(NSString *, NSError *))completion {
+    NSMutableURLRequest * urlRequest = [self getURLRequestForThumbnail:blobKey];
+    if (urlRequest) {
+        [ALResponseHandler processRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+            if (theError)
+            {
+                completion(nil,theError);
+                return;
+            }
+            NSString * imageDownloadURL = (NSString *)theJson;
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_IMG_URL :: %@",imageDownloadURL);
+            completion(imageDownloadURL, nil);
+        }];
+    } else {
+        completion(url, nil);
+    }
 }
 
 -(void) downloadImageThumbnailUrl: (ALMessage *) message withCompletion:(void(^)(NSString * fileURL, NSError *error)) completion{
-    [self getNSMutableURLRequestForThumbnail:message withCompletion:^(NSMutableURLRequest *urlRequest, NSString *fileUrl) {
-        NSMutableURLRequest * nsMutableURLRequest = urlRequest;
-        if(nsMutableURLRequest){
-            [ALResponseHandler processRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
-                
-                if (theError)
-                {
-                    completion(nil,theError);
-                    return;
-                }
-                NSString * imageDownloadURL = (NSString *)theJson;
-                ALSLog(ALLoggerSeverityInfo, @"RESPONSE_IMG_URL :: %@",imageDownloadURL);
-                completion(imageDownloadURL, nil);
-                
-            }];
-        }else{
-            completion(fileUrl,nil);
-            return;
-        }
-        
+    [self downloadImageThumbnailUrl:message.fileMeta.thumbnailUrl blobKey:message.fileMeta.thumbnailBlobKey completion:^(NSString *fileURL, NSError *error) {
+        completion(fileURL, error);
     }];
-   
 }
 
 -(void) downloadImageUrlAndSet: (NSString *) blobKey imageView:(UIImageView *) imageView defaultImage:(NSString *) defaultImage {

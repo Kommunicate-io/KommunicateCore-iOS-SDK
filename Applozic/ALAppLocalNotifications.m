@@ -178,8 +178,10 @@
             ALSLog(ALLoggerSeverityInfo, @"========== IF internetConnectionReach ============");
             [self proactivelyConnectMQTT];
             [ALMessageService syncMessages];
-            [ALMessageService processPendingMessages];
-            
+
+            ALMessageService *messageService = [[ALMessageService alloc]init];
+            [messageService processPendingMessages];
+
             ALUserService *userService = [ALUserService new]; 
             [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
 

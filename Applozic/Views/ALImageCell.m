@@ -25,7 +25,6 @@
 #import "UIImage+MultiFormat.h"
 #import "ALShowImageViewController.h"
 #import "ALMessageClientService.h"
-#import "ALConnection.h"
 #import "ALConnectionQueueHandler.h"
 #import "UIImage+animatedGIF.h"
 
@@ -78,67 +77,67 @@ UIViewController * modalCon;
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    
+
     if(self)
     {
-        
+
         self.mDowloadRetryButton.frame = CGRectMake(self.mBubleImageView.frame.origin.x
                                                     + self.mBubleImageView.frame.size.width/2.0 - 50,
                                                     self.mBubleImageView.frame.origin.y +
                                                     self.mBubleImageView.frame.size.height/2.0 - 50 ,
                                                     100, 40);
-        
+
         UITapGestureRecognizer * tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageFullScreen:)];
         tapper.numberOfTapsRequired = 1;
         [self.mImageView addGestureRecognizer:tapper];
         [self.contentView addSubview:self.mImageView];
-        
+
         [self.mDowloadRetryButton addTarget:self action:@selector(dowloadRetryButtonAction) forControlEvents:UIControlEventTouchUpInside];
         if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
             self.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mImageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         }
-        
+
         UITapGestureRecognizer * menuTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
         [self.contentView addGestureRecognizer:menuTapGesture];
-        
+
     }
-    
+
     return self;
 }
 
 -(instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize
 {
     [super populateCell:alMessage viewSize:viewSize];
-    
+
     self.mUserProfileImageView.alpha = 1;
     self.progresLabel.alpha = 0;
     [self.replyParentView setHidden:YES];
-    
+
     [self.mDowloadRetryButton setHidden:NO];
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
-    
+
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[alMessage.createdAtTime doubleValue]/1000]];
     NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
-    
+
     ALContactDBService *theContactDBService = [[ALContactDBService alloc] init];
     ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
-    
+
     NSString *receiverName = [alContact getDisplayName];
-    
+
     self.mMessage = alMessage;
-    
+
     CGSize theDateSize = [ALUtilityClass getSizeForText:theDate maxWidth:MAX_WIDTH
                                                    font:self.mDateLabel.font.fontName
                                                fontSize:self.mDateLabel.font.pointSize];
-    
+
     CGSize theTextSize = [ALUtilityClass getSizeForText:alMessage.message
                                                maxWidth:viewSize.width - MAX_WIDTH_DATE
                                                    font:self.imageWithText.font.fontName
                                                fontSize:self.imageWithText.font.pointSize];
-    
-    
-    
+
+
+
     [self.mChannelMemberName setHidden:YES];
     [self.mNameLabel setHidden:YES];
     [self.imageWithText setHidden:YES];
@@ -148,11 +147,11 @@ UIViewController * modalCon;
     tapForOpenChat.numberOfTapsRequired = 1;
     [self.mUserProfileImageView setUserInteractionEnabled:YES];
     [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
-    
+
     if ([alMessage isReceivedMessage]) { //@"4" //Recieved Message
-        
+
         [self.contentView bringSubviewToFront:self.mChannelMemberName];
-        
+
         if([ALApplozicSettings isUserProfileHidden])
         {
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0, 0,
@@ -163,53 +162,53 @@ UIViewController * modalCon;
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0,
                                                           45,45);
         }
-        
+
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getReceiveMsgColor];
-        
+
         self.mNameLabel.frame = self.mUserProfileImageView.frame;
-        
+
         [self.mNameLabel setText:[ALColorUtility getAlphabetForProfileImage:receiverName]];
-        
+
         //Shift for message reply and channel name..
-        
+
         CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
         CGFloat imageViewHeight = requiredHeight -IMAGE_VIEW_PADDING_HEIGHT;
-        
+
         CGFloat imageViewY = self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y;
-        
+
         self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
                                                 0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight);
-        
+
         self.mBubleImageView.layer.shadowOpacity = 0.3;
         self.mBubleImageView.layer.shadowOffset = CGSizeMake(0, 2);
         self.mBubleImageView.layer.shadowRadius = 1;
         self.mBubleImageView.layer.masksToBounds = NO;
-        
-      
+
+
         if(alMessage.getGroupId)
         {
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setText:receiverName];
-           
+
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary]];
-            
-              
+
+
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width, CHANNEL_PADDING_HEIGHT);
-            
+
             requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;
             imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;
         }
-        
-        
+
+
         if(alMessage.isAReplyMessage)
         {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
-            
+
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
             imageViewY = imageViewY +  self.replyParentView.frame.size.height;
-            
+
         }
         self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
                                                 0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight);
@@ -217,27 +216,27 @@ UIViewController * modalCon;
                                            imageViewY,
                                            self.mBubleImageView.frame.size.width - IMAGE_VIEW_PADDING_WIDTH ,
                                            imageViewHeight);
-        
-        
+
+
         [self setupProgress];
-        
+
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
-        
+
         if(alMessage.message.length > 0)
         {
             self.imageWithText.textColor = [ALApplozicSettings getReceiveMsgTextColor];
-            
+
             self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
                                                     0, viewSize.width - BUBBLE_PADDING_Y,
                                                     (viewSize.width - BUBBLE_PADDING_HEIGHT)
                                                     + theTextSize.height + BUBBLE_PADDING_HEIGHT_TEXT);
-            
+
             self.imageWithText.frame = CGRectMake(self.mImageView.frame.origin.x,
                                                   self.mImageView.frame.origin.y + self.mImageView.frame.size.height + 5,
                                                   self.mImageView.frame.size.width, theTextSize.height);
-            
+
             [self.imageWithText setHidden:NO];
-            
+
             [self.contentView bringSubviewToFront:self.mDateLabel];
             [self.contentView bringSubviewToFront:self.mMessageStatusImageView];
         }
@@ -246,24 +245,24 @@ UIViewController * modalCon;
             self.mDowloadRetryButton.alpha = 1;
             [self.imageWithText setHidden:YES];
         }
-        
+
         self.mDateLabel.frame = CGRectMake(self.mBubleImageView.frame.origin.x,
                                            self.mBubleImageView.frame.origin.y +
                                            self.mBubleImageView.frame.size.height,
                                            theDateSize.width,
                                            DATE_HEIGHT);
-        
+
         self.mMessageStatusImageView.frame = CGRectMake(self.mDateLabel.frame.origin.x + self.mDateLabel.frame.size.width,
                                                         self.mDateLabel.frame.origin.y,
                                                         MSG_STATUS_WIDTH, MSG_STATUS_HEIGHT);
-        
+
         if (alMessage.imageFilePath == NULL)
         {
             ALSLog(ALLoggerSeverityInfo, @" file path not found making download button visible ....ALImageCell");
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
             [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
-            
+
         }
         else
         {
@@ -279,7 +278,7 @@ UIViewController * modalCon;
         {
             self.progresLabel.alpha = 0;
         }
-        
+
         if(alContact.contactImageUrl)
         {
             ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
@@ -292,53 +291,53 @@ UIViewController * modalCon;
             self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary];
         }
 
-        
+
     }
     else
     { //Sent Message
-        
+
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getSendMsgColor];
-        
+
         self.mUserProfileImageView.frame = CGRectMake(viewSize.width - USER_PROFILE_PADDING_X_OUTBOX,
                                                       0, 0, USER_PROFILE_HEIGHT);
-        
+
         self.mBubleImageView.frame = CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX),
                                                 0, viewSize.width - BUBBLE_PADDING_WIDTH, viewSize.width - BUBBLE_PADDING_HEIGHT);
-        
+
         self.mBubleImageView.layer.shadowOpacity = 0.3;
         self.mBubleImageView.layer.shadowOffset = CGSizeMake(0, 2);
         self.mBubleImageView.layer.shadowRadius = 1;
         self.mBubleImageView.layer.masksToBounds = NO;
-        
+
         CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
         CGFloat imageViewHeight = requiredHeight -IMAGE_VIEW_PADDING_HEIGHT;
-        
+
         CGFloat imageViewY = self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y;
-        
+
         [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + 60),
                                                   0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
-        
+
         if(alMessage.isAReplyMessage)
         {
             [self processReplyOfChat:alMessage andViewSize:viewSize ];
-            
+
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
             imageViewY = imageViewY +  self.replyParentView.frame.size.height;
-            
+
         }
-        
+
         [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + 60),
                                                   0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
-        
-        
-        
+
+
+
         self.mImageView.frame = CGRectMake(self.mBubleImageView.frame.origin.x + IMAGE_VIEW_PADDING_X,
                                            imageViewY,
                                            self.mBubleImageView.frame.size.width - IMAGE_VIEW_PADDING_WIDTH,
                                            imageViewHeight);
-        
+
         [self.mMessageStatusImageView setHidden:NO];
-        
+
         if(alMessage.message.length > 0)
         {
             [self.imageWithText setHidden:NO];
@@ -348,38 +347,38 @@ UIViewController * modalCon;
                                                     0, viewSize.width - BUBBLE_PADDING_WIDTH,
                                                     viewSize.width - BUBBLE_PADDING_HEIGHT
                                                     + theTextSize.height + BUBBLE_PADDING_HEIGHT_TEXT);
-            
+
             self.imageWithText.frame = CGRectMake(self.mBubleImageView.frame.origin.x + IMAGE_VIEW_PADDING_X,
                                                   self.mImageView.frame.origin.y + self.mImageView.frame.size.height + IMAGE_VIEW_WITHTEXT_PADDING_Y,
                                                   self.mImageView.frame.size.width, theTextSize.height);
-            
+
             [self.contentView bringSubviewToFront:self.mDateLabel];
             [self.contentView bringSubviewToFront:self.mMessageStatusImageView];
-            
+
         }
         else
         {
             [self.imageWithText setHidden:YES];
         }
-        
+
         msgFrameHeight = self.mBubleImageView.frame.size.height;
-        
+
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
-        
+
         self.mDateLabel.frame = CGRectMake((self.mBubleImageView.frame.origin.x +
                                             self.mBubleImageView.frame.size.width) - theDateSize.width - DATE_PADDING_X,
                                            self.mBubleImageView.frame.origin.y + self.mBubleImageView.frame.size.height,
                                            theDateSize.width, DATE_HEIGHT);
-        
+
         self.mMessageStatusImageView.frame = CGRectMake(self.mDateLabel.frame.origin.x + self.mDateLabel.frame.size.width,
                                                         self.mDateLabel.frame.origin.y,
                                                         MSG_STATUS_WIDTH, MSG_STATUS_HEIGHT);
-        
+
         [self setupProgress];
-        
+
         self.progresLabel.alpha = 0;
         self.mDowloadRetryButton.alpha = 0;
-        
+
         if (alMessage.inProgress == YES)
         {
             self.progresLabel.alpha = 1;
@@ -390,7 +389,7 @@ UIViewController * modalCon;
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
             [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
-            
+
         }
         else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)
         {
@@ -398,19 +397,19 @@ UIViewController * modalCon;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
             [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
         }
-        
+
     }
-    
+
     self.mDowloadRetryButton.frame = CGRectMake(self.mImageView.frame.origin.x + self.mImageView.frame.size.width/2.0 - DOWNLOAD_RETRY_PADDING_X,
                                                 self.mImageView.frame.origin.y + self.mImageView.frame.size.height/2.0 - DOWNLOAD_RETRY_PADDING_Y,
                                                 90, 40);
-    
+
     if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || self.contact))
     {
-        
+
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName;
-        
+
         switch (alMessage.status.intValue) {
             case DELIVERED_AND_READ :{
                 imageName = @"ic_action_read.png";
@@ -426,12 +425,12 @@ UIViewController * modalCon;
             }break;
         }
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
-        
+
     }
-    
+
     self.imageWithText.text = alMessage.message;
     self.mDateLabel.text = theDate;
-    
+
     theUrl = nil;
 
     if (alMessage.imageFilePath != NULL)
@@ -443,31 +442,23 @@ UIViewController * modalCon;
     else
     {
         if(alMessage.fileMeta.thumbnailFilePath == nil){
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageThumbnailUrl:alMessage withCompletion:^(NSString *fileURL, NSError *error) {
-             
-                ALSLog(ALLoggerSeverityInfo, @"ATTACHMENT DOWNLOAD URL : %@", fileURL);
-                if(error == nil){
-                    [self.delegate thumbnailDownload:alMessage.key withThumbnailUrl:fileURL];
-                }
-            
-            }];
+            [self.delegate thumbnailDownload:alMessage.key];
         }else{
-            
+
             NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.fileMeta.thumbnailFilePath];
+            NSString * filePath = [docDir  stringByAppendingPathComponent:alMessage.fileMeta.thumbnailFilePath];
             [self setInImageView:[NSURL fileURLWithPath:filePath]];
         }
-        
+
     }
-    
+
     return self;
-    
+
 }
 
 -(void) setInImageView:(NSURL*)url{
     NSString *stringUrl = url.absoluteString;
-    if (stringUrl != nil && [stringUrl localizedCaseInsensitiveContainsString:@"gif"]) { 
+    if (stringUrl != nil && [stringUrl localizedCaseInsensitiveContainsString:@"gif"]) {
         UIImage *image = [UIImage animatedImageWithAnimatedGIFURL:url];
         [self.mImageView setImage: image];
         return;
@@ -541,7 +532,7 @@ UIViewController * modalCon;
     {
         [super.mMessage.fileMeta removeObserver:self forKeyPath:@"progressValue" context:nil];
     }
-    
+
     super.mMessage = mMessage;
     [super.mMessage.fileMeta addObserver:self forKeyPath:@"progressValue" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
 }
@@ -558,16 +549,16 @@ UIViewController * modalCon;
 -(void)imageFullScreen:(UITapGestureRecognizer*)sender
 {
     UIStoryboard * applozicStoryboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
-    
+
     ALShowImageViewController * alShowImageViewController = [applozicStoryboard instantiateViewControllerWithIdentifier:@"showImageViewController"];
     alShowImageViewController.view.backgroundColor = [UIColor lightGrayColor];
     alShowImageViewController.view.userInteractionEnabled = YES;
-    
+
     [alShowImageViewController setImage:self.mImageView.image];
     [alShowImageViewController setAlMessage:self.mMessage];
-    
+
     [self.delegate showFullScreen:alShowImageViewController];
-    
+
     return;
 }
 
@@ -584,7 +575,7 @@ UIViewController * modalCon;
     self.progresLabel.trackColor = [UIColor colorWithRed:104.0/255 green:95.0/255 blue:250.0/255 alpha:1];
     self.progresLabel.progressColor = [UIColor whiteColor];
     [self.contentView addSubview:self.progresLabel];
-    
+
 }
 
 -(void)dismissModalView:(UITapGestureRecognizer*)gesture
@@ -595,7 +586,7 @@ UIViewController * modalCon;
 -(BOOL) canPerformAction:(SEL)action withSender:(id)sender
 {
     ALSLog(ALLoggerSeverityInfo, @"Action: %@", NSStringFromSelector(action));
-    
+
     if(self.mMessage.groupId){
         ALChannelService *channelService = [[ALChannelService alloc] init];
         ALChannel *channel =  [channelService getChannelByKey:self.mMessage.groupId];
@@ -603,12 +594,12 @@ UIViewController * modalCon;
             return NO;
         }
     }
-    
+
     if([self.mMessage isSentMessage] && self.mMessage.groupId)
     {
         return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) || [self isMessageReplyMenuEnabled:action] || (action == @selector(copy:))));
     }
-    
+
     return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)|| [self isForwardMenuEnabled:action] || [self isMessageReplyMenuEnabled:action] || (action == @selector(copy:))));
 }
 
@@ -642,10 +633,10 @@ UIViewController * modalCon;
     //UI
     ALSLog(ALLoggerSeverityInfo, @"message to deleteUI %@",self.mMessage.message);
     [self.delegate deleteMessageFromView:self.mMessage];
-    
+
     //serverCall
     [ALMessageService deleteMessage:self.mMessage.key andContactId:self.mMessage.contactIds withCompletion:^(NSString *string, NSError *error) {
-        
+
         ALSLog(ALLoggerSeverityError, @"DELETE MESSAGE ERROR :: %@", error.description);
     }];
 }
@@ -654,7 +645,7 @@ UIViewController * modalCon;
 {
     ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processForwardMessage:self.mMessage];
-    
+
 }
 
 
@@ -662,7 +653,7 @@ UIViewController * modalCon;
 {
     ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processMessageReply:self.mMessage];
-    
+
 }
 
 -(void)openUserChatVC
@@ -675,12 +666,12 @@ UIViewController * modalCon;
     [self.delegate showAnimationForMsgInfo:YES];
     UIStoryboard *storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALMessageInfoViewController *msgInfoVC = (ALMessageInfoViewController *)[storyboardM instantiateViewControllerWithIdentifier:@"ALMessageInfoView"];
-    
+
     msgInfoVC.contentURL = theUrl;
-    
+
     __weak typeof(ALMessageInfoViewController *) weakObj = msgInfoVC;
     [msgInfoVC setMessage:self.mMessage andHeaderHeight:msgFrameHeight withCompletionHandler:^(NSError *error) {
-        
+
         if(!error)
         {
             [self.delegate loadViewForMedia:weakObj];
@@ -706,7 +697,7 @@ UIViewController * modalCon;
 {
 
     return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
-    
+
 }
 
 -(void)processOpenChat

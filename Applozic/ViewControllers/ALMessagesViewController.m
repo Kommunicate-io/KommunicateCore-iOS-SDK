@@ -247,6 +247,8 @@
 // Channel details update notification
 -(void)updateChannelSync:(NSNotification*)notification {
     ALChannel *channel =  notification.object;
+    ALChannelService * channelService = [[ALChannelService alloc]init];
+    channel =  [channelService getChannelByKey:channel.key];
     if(channel){
         ALContactCell *contactCell = [self getCellForGroup:channel.key];
         if(contactCell){
@@ -279,10 +281,9 @@
 {
     [super viewDidAppear:animated];
     
-    self.detailChatViewController.contactIds = nil;
-    self.detailChatViewController.channelKey = nil;
-    self.detailChatViewController.conversationId = nil;
-    
+    self.userIdToLaunch = nil;
+    self.channelKey = nil;
+
     if([self.mActivityIndicator isAnimating])
     {
         [self.emptyConversationText setHidden:YES];
@@ -986,6 +987,7 @@
     }
     else
     {
+        self.detailChatViewController.channelKey = nil;
         self.detailChatViewController.contactIds = message.contactIds;
     }
     
@@ -1042,8 +1044,6 @@
         
         if([channelService isChannelLeft:[alMessageobj getGroupId]])
         {
-            NSArray * filteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
-                                       [NSPredicate predicateWithFormat:@"groupId = %@",[alMessageobj getGroupId]]];
             
             [self.dBService deleteAllMessagesByContact:nil orChannelKey:[alMessageobj getGroupId]];
             [ALChannelService setUnreadCountZeroForGroupID:[alMessageobj getGroupId]];

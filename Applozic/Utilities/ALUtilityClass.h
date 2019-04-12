@@ -61,5 +61,6 @@
 +(void)setImageFromURL:(NSString *)urlString andImageView:(UIImageView *)imageView;
 +(NSString *)stringFromTimeInterval:(NSTimeInterval)interval;
 +(UIImage *)getVOIPMessageImage:(ALMessage *)alMessage;
-
++(NSString *)getFileExtensionWithFileName:(NSString *)fileName;
++(NSString *)getDocumentDirectory;
 @end

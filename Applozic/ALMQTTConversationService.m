@@ -99,14 +99,14 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             if (![ALUserDefaultsHandler isLoggedIn]) {
                 return;
             }
-            if(self.session && (self.session.status == MQTTSessionEventConnected || self.session.status == MQTTSessionStatusConnecting)) {
+            if(self.session && (self.session.status == MQTTSessionEventConnected || self.session.status == MQTTSessionStatusConnecting || self.session.status == MQTTSessionStatusConnected)) {
                 ALSLog(ALLoggerSeverityInfo, @"MQTT : IGNORING REQUEST, ALREADY CONNECTED");
                 return;
             }
             ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTING_MQTT_SERVER");
-            
-            self.session = [[MQTTSession alloc] initWithClientId:[NSString stringWithFormat:@"%@-%f",
-                                                                  [ALUserDefaultsHandler getUserKeyString],fmod([[NSDate date] timeIntervalSince1970], 10.0)]];
+            self.session =   [[MQTTSession alloc]init];
+            self.session.clientId = [NSString stringWithFormat:@"%@-%f",
+                                                                  [ALUserDefaultsHandler getUserKeyString],fmod([[NSDate date] timeIntervalSince1970], 10.0)];
             
             NSString * willMsg = [NSString stringWithFormat:@"%@,%@,%@",[ALUserDefaultsHandler getUserKeyString],[ALUserDefaultsHandler getDeviceKeyString],@"0"];
             
@@ -115,19 +115,22 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             self.session.willMsg = [willMsg dataUsingEncoding:NSUTF8StringEncoding];
             self.session.willQoS = MQTTQosLevelAtMostOnce;
             [self.session setDelegate:self];
+
+            MQTTCFSocketTransport *transport = [[MQTTCFSocketTransport alloc] init];
+            transport.host = MQTT_URL;
+            transport.port = [MQTT_PORT intValue];
+            self.session.transport = transport;
             ALSLog(ALLoggerSeverityInfo, @"MQTT : WAITING_FOR_CONNECT...");
-            
-            [self.session connectToHost:MQTT_URL port:[MQTT_PORT intValue] withConnectionHandler:^(MQTTSessionEvent event) {
-                
-                if (event == MQTTSessionEventConnected)
+
+
+            [self.session connectWithConnectHandler:^(NSError *error) {
+                if (error == nil)
                 {
                     ALSLog(ALLoggerSeverityInfo, @"MQTT : CONNECTED");
                     NSString * publishString = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString],@"1"];
-                    [self.session publishAndWaitData:[publishString dataUsingEncoding:NSUTF8StringEncoding]
-                                             onTopic:MQTT_TOPIC_STATUS
-                                              retain:NO
-                                                 qos:MQTTQosLevelAtMostOnce];
-                    
+
+                    [self.session publishAndWaitData:[publishString dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
+
                     ALSLog(ALLoggerSeverityInfo, @"MQTT : SUBSCRIBING TO CONVERSATION TOPICS");
                     if([ALUserDefaultsHandler getEnableEncryption] && [ALUserDefaultsHandler getUserEncryptionKey] ){
                         [self.session subscribeToTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic] atLevel:MQTTQosLevelAtMostOnce];
@@ -140,13 +143,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                         [self.realTimeUpdate onMqttConnected];
                     }
                 }
-            } messageHandler:^(NSData *data, NSString *topic) {
-                
             }];
-            
-            /*if (session.status == MQTTSessionStatusConnected) {
-             [session subscribeToTopic:[ALUserDefaultsHandler getUserKeyString] atLevel:MQTTQosLevelAtMostOnce];
-             }*/
         }
         @catch (NSException * e) {
             ALSLog(ALLoggerSeverityError, @"MQTT : EXCEPTION_IN_SUBSCRIBE :: %@", e.description);
@@ -583,8 +580,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
     ALSLog(ALLoggerSeverityInfo, @"MQTT_PUBLISH :: %@",topicString);
 
     NSData * data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
-    [self.session publishDataAtMostOnce:data onTopic:topicString];
-
+    [self.session publishData:data onTopic:topicString retain:NO qos:MQTTQosLevelAtMostOnce];
 }
 
 -(void) unsubscribeToConversation {
@@ -606,17 +602,20 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
     if (self.session == nil) {
         return NO;
     }
-    [self.session publishAndWaitData:[[NSString stringWithFormat:@"%@,%@,%@",userKey, [ALUserDefaultsHandler getDeviceKeyString], @"0"] dataUsingEncoding:NSUTF8StringEncoding]
-                             onTopic:MQTT_TOPIC_STATUS
-                              retain:NO
-                                 qos:MQTTQosLevelAtMostOnce];
+
+    [self.session publishAndWaitData:[[NSString stringWithFormat:@"%@,%@,%@",userKey, [ALUserDefaultsHandler getDeviceKeyString], @"0"] dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
+
     if([ALUserDefaultsHandler getEnableEncryption] && [ALUserDefaultsHandler getUserEncryptionKey] ){
         [self.session unsubscribeTopic:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
     }else{
         [self.session unsubscribeTopic: topic];
     }
-    [self.session close];
-    ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
+    [self.session closeWithDisconnectHandler:^(NSError *error) {
+        if(error){
+         ALSLog(ALLoggerSeverityError, @"MQTT : ERROR WHIlE DISCONNECTING FROM MQTT %@", error);
+        }
+         ALSLog(ALLoggerSeverityInfo, @"MQTT : DISCONNECTED FROM MQTT");
+    }];
     return YES;
 }
 

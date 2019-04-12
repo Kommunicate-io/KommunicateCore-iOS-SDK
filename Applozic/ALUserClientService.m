@@ -115,7 +115,7 @@
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/read/conversation",KBASE_URL];
     NSString * theParamString;
-    theParamString = [NSString stringWithFormat:@"userId=%@",[contactId urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+    theParamString = [NSString stringWithFormat:@"userId=%@",[contactId urlEncodeUsingNSUTF8StringEncoding]];
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
     
     [ALResponseHandler processRequest:theRequest andTag:@"MARK_CONVERSATION_AS_READ" WithCompletionHandler:^(id theJson, NSError *theError) {
@@ -430,7 +430,7 @@
     [ALResponseHandler processRequest:theRequest andTag:@"USERS_DETAILS_FOR_ONLINE_CONTACT_LIMIT_POST" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALSLog(ALLoggerSeverityInfo, @"SERVER_RESPONSE_POST_CONTACT : %@", (NSString *)theJson);
-        if (theError)
+        if ((NSString *)theJson == nil || theError)
         {
             completionMark(nil, theError);
             ALSLog(ALLoggerSeverityError, @"ERROR_SERVER_RESPONSE_POST_CONTACT : %@", theError);

@@ -22,7 +22,6 @@
 #import "ALMessageService.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
-#import "ALVCFClass.h"
 #import "ALVCardClass.h"
 #import "ALMessageClientService.h"
 
@@ -76,7 +75,6 @@
 {
     NSURL *theUrl;
     CGFloat msgFrameHeight;
-    ALVCFClass *vcfClass;
     ALVCardClass *vCardClass;
 }
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -377,21 +375,8 @@
         NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.imageFilePath];
         theUrl = [NSURL fileURLWithPath:filePath];
 
-        if(IS_OS_EARLIER_THAN_10)
-        {
-            vcfClass = [[ALVCFClass alloc] init];
-            [vcfClass parseVCFData:filePath];
-
-            [self.contactPerson setText:vcfClass.fullName];
-            if(vcfClass.retrievedImage)
-            {
-                [self.contactProfileImage setImage:vcfClass.retrievedImage];
-            }
-            [self.emailId setText:vcfClass.emailID];
-            [self.userContact setText:vcfClass.phoneNumber];
-        }
-        else
-        {
+    
+    
             vCardClass = [[ALVCardClass alloc] init];
             [vCardClass vCardParser:filePath];
 
@@ -402,8 +387,6 @@
             }
             [self.emailId setText:vCardClass.userEMAIL_ID];
             [self.userContact setText:vCardClass.userPHONE_NO];
-
-        }
 
         [self.addContactButton setEnabled:YES];
 
@@ -449,16 +432,9 @@
 {
     @try
     {
-        if(IS_OS_EARLIER_THAN_10)
-        {
-            [vcfClass showOptionForContact];
-        }
-        else
-        {
-            [vCardClass addContact:vCardClass];
-        }
+        [vCardClass addContact:vCardClass];
     } @catch (NSException *exception) {
-
+        
         ALSLog(ALLoggerSeverityInfo, @"CONTACT_EXCEPTION :: %@", exception.description);
     }
 }
@@ -547,7 +523,6 @@
     UIStoryboard *storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALMessageInfoViewController *msgInfoVC = (ALMessageInfoViewController *)[storyboardM instantiateViewControllerWithIdentifier:@"ALMessageInfoView"];
 
-    msgInfoVC.VCFObject = vcfClass;
     msgInfoVC.VCardClass = vCardClass;
 
     __weak typeof(ALMessageInfoViewController *) weakObj = msgInfoVC;

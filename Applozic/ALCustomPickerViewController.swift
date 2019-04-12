@@ -244,7 +244,7 @@ public class ALBaseNavigationViewController: UINavigationController {
         for image in selectedImages.values {
             dispatchGroup.enter()
             PHCachingImageManager.default().requestImageData(for: image, options:nil) { (imageData, _, _, _) in
-                if let image = UIImage(data: imageData!) {
+                if let imageData = imageData, let image = UIImage(data: imageData) {
                     images.append(image)
                 }
                 dispatchGroup.leave()

@@ -432,22 +432,29 @@
 
 +(void)showAlertMessage:(NSString *)text andTitle:(NSString *)title
 {
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:title
-                                                         message:text
-                                                        delegate:self
-                                               cancelButtonTitle:nil
-                                               otherButtonTitles:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK" , @""), nil];
-    
-    [alertView show];
-    
+
+    UIAlertController * uiAlertController = [UIAlertController
+                                 alertControllerWithTitle:title
+                                 message:text
+                                 preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* okButton = [UIAlertAction
+                                actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK" , @"")
+                                style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction * action) {
+
+                                }];
+
+    [uiAlertController addAction:okButton];
+    ALPushAssist *pushAssist = [[ALPushAssist alloc]init];
+    [pushAssist.topViewController.navigationController presentViewController:uiAlertController animated:NO completion:nil];
+
+
 }
 
 +(UIView *)setStatusBarStyle
 {
     UIApplication * app = [UIApplication sharedApplication];
-    [app setStatusBarHidden:NO];
-    [app setStatusBarStyle:[ALApplozicSettings getStatusBarStyle]];
-    
     CGFloat height = app.statusBarFrame.size.height;
     CGFloat width = app.statusBarFrame.size.width;
     UIView *statusBarView = [[UIView alloc] initWithFrame:CGRectMake(0, -height, width, height)];
@@ -651,6 +658,13 @@
     return coordinate;
 }
 
++(NSString *)getFileExtensionWithFileName:(NSString *)fileName{
+    NSArray *componentsArray = [fileName componentsSeparatedByString:@"."];
+    return componentsArray.count  > 0 ? [componentsArray lastObject]:nil;
+}
 
++(NSString *)getDocumentDirectory{
+    return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES) objectAtIndex:0];
+}
 
 @end

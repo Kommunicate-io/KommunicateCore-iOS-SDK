@@ -8,10 +8,11 @@
 
 #import "ALVideoCell.h"
 #import "UIImageView+WebCache.h"
-#import <MediaPlayer/MediaPlayer.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
+#import <AVKit/AVKit.h>
+
 
 // Constants
 #define MT_INBOX_CONSTANT "4"
@@ -463,11 +464,9 @@
 
 -(void)videoFullScreen:(UITapGestureRecognizer *)sender
 {
-    MPMoviePlayerViewController * videoViewController = [[MPMoviePlayerViewController alloc] initWithContentURL:self.videoFileURL];
-    [videoViewController.moviePlayer setFullscreen:YES];
-    [videoViewController.moviePlayer setScalingMode: MPMovieScalingModeAspectFit];
-    
-    [self.delegate showVideoFullScreen:videoViewController];
+    AVPlayerViewController * avPlayerViewController = [[AVPlayerViewController alloc] init];
+    avPlayerViewController.player = [AVPlayer playerWithURL:self.videoFileURL];
+    [self.delegate showVideoFullScreen:avPlayerViewController];
 }
 
 -(void) cancelAction
