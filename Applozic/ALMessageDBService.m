@@ -637,36 +637,43 @@
 
 
 
--(NSMutableArray *)getMessageListForContactWithCreatedAt:(NSString *)contactId
-                                           withCreatedAt:(NSNumber*)createdAt
-                                        andChannelKey:(NSNumber *)channelKey
-                                          conversationId:(NSNumber*)conversationId
+-(NSMutableArray *)getMessageListForContactWithCreatedAt:(MessageListRequest *)messageListRequest
 {
     ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate1;
 
-    if([ALApplozicSettings getContextualChatOption]){
-        if(channelKey){
-            predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@ && conversationId = %i",channelKey,conversationId];
+    if([ALApplozicSettings getContextualChatOption] && messageListRequest.conversationId && messageListRequest.conversationId != 0){
+        if(messageListRequest.channelKey){
+            predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@ && conversationId = %i",messageListRequest.channelKey,messageListRequest.conversationId];
         }
         else{
-            predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && conversationId = %i",contactId,conversationId];
+            predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && conversationId = %i",messageListRequest.userId,messageListRequest.conversationId];
         }
-    }
-    else if(channelKey){
-        predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@",channelKey];
-    }
-    else{
-        predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@",contactId];
+    }else if(messageListRequest.channelKey){
+        predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@",messageListRequest.channelKey];
+    } else{
+        predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@",messageListRequest.userId];
     }
 
     NSPredicate* predicateDeletedCheck=[NSPredicate predicateWithFormat:@"deletedFlag == NO"];
-    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"createdAt < %lu",createdAt];
+
     NSPredicate *predicateForHiddenMessages = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
-    theRequest.predicate =[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicate2, predicateDeletedCheck,predicateForHiddenMessages]];
+
+    NSCompoundPredicate * compoundPredicate;
+
+    if(messageListRequest.endTimeStamp){
+        NSPredicate *predicateForEndTimeStamp= [NSPredicate predicateWithFormat:@"createdAt < %@",messageListRequest.endTimeStamp];
+        compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicateForEndTimeStamp, predicateDeletedCheck,predicateForHiddenMessages]];
+    }
+
+    if(messageListRequest.startTimeStamp){
+        NSPredicate *predicateCreatedAtForStartTime  = [NSPredicate predicateWithFormat:@"createdAt >= %@",messageListRequest.startTimeStamp];
+      compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicateCreatedAtForStartTime, predicateDeletedCheck,predicateForHiddenMessages]];
+    }
 
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+    theRequest.fetchLimit = 200;
     NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
     NSMutableArray * msgArray =  [[NSMutableArray alloc]init];
     for (DB_Message * theEntity in theArray) {

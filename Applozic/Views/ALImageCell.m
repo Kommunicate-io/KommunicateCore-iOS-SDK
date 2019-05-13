@@ -435,9 +435,18 @@ UIViewController * modalCon;
 
     if (alMessage.imageFilePath != NULL)
     {
-        NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.imageFilePath];
-        [self setInImageView:[NSURL fileURLWithPath:filePath]];
+
+        NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:alMessage.imageFilePath];
+        NSString *filePath = documentDirectory.path;
+
+        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+            [self setInImageView:[NSURL fileURLWithPath:filePath]];
+        }else{
+            NSURL *appGroupDirectory =  [ALUtilityClass getAppsGroupDirectoryWithFilePath:alMessage.imageFilePath];
+            if(appGroupDirectory){
+                [self setInImageView:[NSURL fileURLWithPath:appGroupDirectory.path]];
+            }
+        }
     }
     else
     {
@@ -445,9 +454,19 @@ UIViewController * modalCon;
             [self.delegate thumbnailDownload:alMessage.key];
         }else{
 
-            NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            NSString * filePath = [docDir  stringByAppendingPathComponent:alMessage.fileMeta.thumbnailFilePath];
-            [self setInImageView:[NSURL fileURLWithPath:filePath]];
+            NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:alMessage.fileMeta.thumbnailFilePath];
+            NSString *filePath = documentDirectory.path;
+
+            if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                [self setInImageView:[NSURL fileURLWithPath:filePath]];
+            }else{
+
+                NSURL *appGroupDirectory =  [ALUtilityClass getAppsGroupDirectoryWithFilePath:alMessage.fileMeta.thumbnailFilePath];
+
+                if(appGroupDirectory){
+                    [self setInImageView:[NSURL fileURLWithPath:appGroupDirectory.path]];
+                }
+            }
         }
 
     }

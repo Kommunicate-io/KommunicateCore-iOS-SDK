@@ -256,4 +256,5 @@ static NSString *const NOTIFICATION_TITLE_KEY = @"NOTIFICATION_TITLE";
 
 +(void)setLastSyncTimeForMetaData :( NSNumber *) metaDataLastSyncTime;
 +(NSNumber *)getLastSyncTimeForMetaData;
+
 @end

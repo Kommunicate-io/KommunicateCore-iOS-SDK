@@ -9,6 +9,8 @@
 #import "ALDBHandler.h"
 #import "DB_CONTACT.h"
 #import "ALContact.h"
+#import "ALUtilityClass.h"
+#import "ALApplozicSettings.h"
 
 @implementation ALDBHandler
 
@@ -55,13 +57,6 @@
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
-- (NSURL *)applicationDocumentsDirectory {
-    
-    // The directory the application uses to store the Core Data store file. This code uses a directory named "tricon-infotech.coredata_demo" in the application's documents directory.
-    
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-}
-
 - (NSManagedObjectModel *)managedObjectModel {
     
     // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
@@ -90,33 +85,44 @@
         }
 
         // Create the coordinator and store
-
         _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
 
-        NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AppLozic.sqlite"];
+        NSURL *storeURL =  [ALUtilityClass getApplicationDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
+
+        NSURL *groupURL = [ALUtilityClass getAppsGroupDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
 
         NSError *error = nil;
+        NSPersistentStore  *sourceStore  = nil;
+        NSPersistentStore  *destinationStore  = nil;
+        NSDictionary *options =   @{NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES],NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES]};
 
-        NSString *failureReason = @"There was an error creating or loading the application's saved data.";
+        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]){
+            ALSLog(ALLoggerSeverityError, @"Failed to setup the persistentStoreCoordinator %@, %@", error, [error userInfo]);
+        } else {
+            sourceStore = [_persistentStoreCoordinator persistentStoreForURL:storeURL];
+            if (sourceStore != nil && groupURL){
+                // Perform the migration
 
-        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:@{NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES],NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES]} error:&error]) {
+                destinationStore = [_persistentStoreCoordinator migratePersistentStore:sourceStore toURL:groupURL options:options withType:NSSQLiteStoreType error:&error];
+                if (destinationStore == nil){
+                    ALSLog(ALLoggerSeverityError, @"Failed to migratePersistentStore");
+                } else {
 
-            // Report any error we got.
+                    NSFileCoordinator *coord = [[NSFileCoordinator alloc]initWithFilePresenter:nil];
+                    [coord coordinateWritingItemAtURL:storeURL options:0 error:nil byAccessor:^(NSURL *url)
+                     {
+                         NSError *error;
+                         [[NSFileManager defaultManager] removeItemAtURL:url error:&error];
+                         if(error){
+                             ALSLog(ALLoggerSeverityError, @"Failed to Delete the data base file %@, %@", error, [error userInfo]);
+                         }
 
-            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+                     }];
 
-            dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
-
-            dict[NSLocalizedFailureReasonErrorKey] = failureReason;
-
-            dict[NSUnderlyingErrorKey] = error;
-
-            error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
-
-
-            ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
-
+                }
+            }
         }
+
     }
 
     return _persistentStoreCoordinator;

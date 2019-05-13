@@ -316,7 +316,10 @@
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.directContactVCLaunch = YES;
     contactVC.alMessage = alMessage;
-    UINavigationController *conversationViewNavController = [[UINavigationController alloc] initWithRootViewController:contactVC];
+    contactVC.forGroup = [NSNumber numberWithInt:REGULAR_CONTACTS];
+
+    UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:contactVC];
+    conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
 }
 

@@ -663,8 +663,35 @@
     return componentsArray.count  > 0 ? [componentsArray lastObject]:nil;
 }
 
-+(NSString *)getDocumentDirectory{
-    return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES) objectAtIndex:0];
++(NSURL *)getDocumentDirectory{
+
+    return  [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
++(NSURL *)getAppsGroupDirectory{
+
+    NSURL * urlForDocumentsDirectory;
+    NSString * shareExtentionGroupName =  [ALApplozicSettings getShareExtentionGroup];
+    if(shareExtentionGroupName){
+        urlForDocumentsDirectory =  [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:shareExtentionGroupName];
+    }
+    return urlForDocumentsDirectory;
+}
+
++(NSURL *)getApplicationDirectoryWithFilePath:(NSString*) path {
+
+    NSURL * directory  =   [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    directory = [directory URLByAppendingPathComponent:path];
+    return directory;
+}
+
++(NSURL *)getAppsGroupDirectoryWithFilePath:(NSString*) path {
+
+    NSURL * urlForDocumentsDirectory = self. getAppsGroupDirectory;
+    if(urlForDocumentsDirectory){
+        urlForDocumentsDirectory = [urlForDocumentsDirectory URLByAppendingPathComponent:path];
+    }
+    return urlForDocumentsDirectory;
 }
 
 @end

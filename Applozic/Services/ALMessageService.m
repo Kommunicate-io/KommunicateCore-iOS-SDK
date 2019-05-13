@@ -164,7 +164,7 @@ static ALMessageClientService *alMsgClientService;
 {
     //On Message List Cell Tap
     ALMessageDBService *almessageDBService =  [[ALMessageDBService alloc] init];
-    NSMutableArray * messageList = [almessageDBService getMessageListForContactWithCreatedAt:messageListRequest.userId withCreatedAt:messageListRequest.endTimeStamp andChannelKey:messageListRequest.channelKey conversationId:messageListRequest.conversationId];
+    NSMutableArray * messageList = [almessageDBService getMessageListForContactWithCreatedAt:messageListRequest];
 
     //Found Record in DB itself ...if not make call to server
     if(messageList.count > 0 && ![ALUserDefaultsHandler isServerCallDoneForMSGList:messageListRequest.userId])
@@ -204,7 +204,7 @@ static ALMessageClientService *alMsgClientService;
                        ALContactService *contactService = [ALContactService new];
                        NSMutableArray * userNotPresentIds = [NSMutableArray new];
 
-                       for (int i=0; i<messages.count; i++) {
+                       for (int i = messages.count - 1; i >= 0; i--) {
                            ALMessage * message = messages[i];
                            if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
                                [messages removeObjectAtIndex:i];
