@@ -740,6 +740,7 @@
             ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
             [channelDBService createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_METADATA" object:nil];
         }
         if(!error){
             [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];

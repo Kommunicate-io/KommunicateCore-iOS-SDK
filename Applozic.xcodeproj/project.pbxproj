@@ -30,6 +30,10 @@
 		1881CEC621527ABA00325270 /* ALMultimediaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1881CEC421527AB900325270 /* ALMultimediaData.m */; };
 		1885ADA821AD982600FF06A7 /* ALLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1885ADA621AD982600FF06A7 /* ALLinkCell.m */; };
 		1885ADA921AD982600FF06A7 /* ALLinkCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1885ADA721AD982600FF06A7 /* ALLinkCell.h */; };
+		18A2B2B3228A12C600CE93BC /* ALInternalSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A2B2B1228A12C500CE93BC /* ALInternalSettings.h */; };
+		18A2B2B4228A12C600CE93BC /* ALInternalSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A2B2B2228A12C600CE93BC /* ALInternalSettings.m */; };
+		18A2B2B7228A14B100CE93BC /* ALTabViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A2B2B5228A14B000CE93BC /* ALTabViewController.h */; };
+		18A2B2B8228A14B100CE93BC /* ALTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A2B2B6228A14B100CE93BC /* ALTabViewController.m */; };
 		18D29D4722610DBE009C4D39 /* ForegroundReconnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 18D29D3C22610DBD009C4D39 /* ForegroundReconnection.h */; };
 		18D29D4822610DBE009C4D39 /* MQTTLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D29D3D22610DBD009C4D39 /* MQTTLog.m */; };
 		18D29D4922610DBE009C4D39 /* ForegroundReconnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D29D3E22610DBD009C4D39 /* ForegroundReconnection.m */; };
@@ -432,6 +436,10 @@
 		1881CEC421527AB900325270 /* ALMultimediaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALMultimediaData.m; sourceTree = "<group>"; };
 		1885ADA621AD982600FF06A7 /* ALLinkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALLinkCell.m; path = Applozic/Views/ALLinkCell.m; sourceTree = "<group>"; };
 		1885ADA721AD982600FF06A7 /* ALLinkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALLinkCell.h; path = Applozic/Views/ALLinkCell.h; sourceTree = "<group>"; };
+		18A2B2B1228A12C500CE93BC /* ALInternalSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALInternalSettings.h; path = Applozic/ALInternalSettings.h; sourceTree = "<group>"; };
+		18A2B2B2228A12C600CE93BC /* ALInternalSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALInternalSettings.m; path = Applozic/ALInternalSettings.m; sourceTree = "<group>"; };
+		18A2B2B5228A14B000CE93BC /* ALTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALTabViewController.h; path = Applozic/ViewControllers/ALTabViewController.h; sourceTree = "<group>"; };
+		18A2B2B6228A14B100CE93BC /* ALTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALTabViewController.m; path = Applozic/ViewControllers/ALTabViewController.m; sourceTree = "<group>"; };
 		18D29D3C22610DBD009C4D39 /* ForegroundReconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForegroundReconnection.h; path = Applozic/MQTT/ForegroundReconnection.h; sourceTree = "<group>"; };
 		18D29D3D22610DBD009C4D39 /* MQTTLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MQTTLog.m; path = Applozic/MQTT/MQTTLog.m; sourceTree = "<group>"; };
 		18D29D3E22610DBD009C4D39 /* ForegroundReconnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForegroundReconnection.m; path = Applozic/MQTT/ForegroundReconnection.m; sourceTree = "<group>"; };
@@ -1192,6 +1200,8 @@
 		6D6DF1DB1BC5371200EBA00F /* ApplozicUIWidget */ = {
 			isa = PBXGroup;
 			children = (
+				18A2B2B5228A14B000CE93BC /* ALTabViewController.h */,
+				18A2B2B6228A14B100CE93BC /* ALTabViewController.m */,
 				181F69C022007B720018FC13 /* ALDocumentPickerHandler.h */,
 				181F69C122007B720018FC13 /* ALDocumentPickerHandler.m */,
 				1821DDE52167D42600CB24A5 /* ALVideoCoder.swift */,
@@ -1377,6 +1387,8 @@
 		6D6DF1E61BC53C0C00EBA00F /* prefrence */ = {
 			isa = PBXGroup;
 			children = (
+				18A2B2B1228A12C500CE93BC /* ALInternalSettings.h */,
+				18A2B2B2228A12C600CE93BC /* ALInternalSettings.m */,
 				6D7756F71D5B82CA0025560B /* ALLogs.h */,
 				6D7756F81D5B82CA0025560B /* ALLogs.m */,
 				6D6DF09C1BC5364C00EBA00F /* ALUserDefaultsHandler.m */,
@@ -1648,6 +1660,7 @@
 				6D7757011D5B82ED0025560B /* DB_CHANNEL.h in Headers */,
 				18D29D4C22610DBE009C4D39 /* ReconnectTimer.h in Headers */,
 				6D7757391D5B84D60025560B /* ALMediaBaseCell.h in Headers */,
+				18A2B2B7228A14B100CE93BC /* ALTabViewController.h in Headers */,
 				6D7757451D5B85100025560B /* ALDocumentsCell.h in Headers */,
 				6D7756B71D5B80DF0025560B /* ALChannelSyncResponse.h in Headers */,
 				6D7756DD1D5B82000025560B /* ALUserClientService.h in Headers */,
@@ -1778,6 +1791,7 @@
 				6D6DF1C91BC5364C00EBA00F /* UIImage+MultiFormat.h in Headers */,
 				6D6DF1C51BC5364C00EBA00F /* UIButton+WebCache.h in Headers */,
 				6D6DF1C71BC5364C00EBA00F /* UIImage+GIF.h in Headers */,
+				18A2B2B3228A12C600CE93BC /* ALInternalSettings.h in Headers */,
 				6D6DF1B41BC5364C00EBA00F /* NSData+ImageContentType.h in Headers */,
 				6D6DF1CB1BC5364C00EBA00F /* UIImage+WebP.h in Headers */,
 				6D6DF1C31BC5364C00EBA00F /* SDWebImagePrefetcher.h in Headers */,
@@ -1836,6 +1850,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1925,6 +1940,7 @@
 				293446161D4F426F007BD1B4 /* ALShowImageViewController.m in Sources */,
 				6D4FE4901D7411F70044A7E6 /* NSData+AES.m in Sources */,
 				4612E9021E13882D0022DB23 /* MQTTInMemoryPersistence.m in Sources */,
+				18A2B2B4228A12C600CE93BC /* ALInternalSettings.m in Sources */,
 				6D6DF1C81BC5364C00EBA00F /* UIImage+GIF.m in Sources */,
 				8B1635CD2119C6BF0008191A /* ALChannelOfTwoMetaData.m in Sources */,
 				18D29D4822610DBE009C4D39 /* MQTTLog.m in Sources */,
@@ -2100,6 +2116,7 @@
 				6D77570F1D5B83660025560B /* ALPushAssist.m in Sources */,
 				6DBA7D0E1C943BFF001263F4 /* ALContactMessageCell.m in Sources */,
 				4612E9121E13882D0022DB23 /* MQTTSSLSecurityPolicyDecoder.m in Sources */,
+				18A2B2B8228A14B100CE93BC /* ALTabViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

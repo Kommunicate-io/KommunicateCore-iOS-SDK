@@ -141,11 +141,19 @@ static NSString *const AL_CHANNEL_ACTION_MESSAGE_BG_COLOR = @"com.applozic.AL_CH
 static NSString *const AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR = @"com.applozic.AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR";
 static NSString *const AL_ALPHABETIC_COLOR_CODES = @"com.applozic.AL_ALPHABETIC_COLOR_CODES";
 static NSString *const DISABLE_UNBLOCK_FROM_CHAT = @"com.applozic.DISABLE_UNBLOCK_FROM_CHAT";
+static NSString *const AL_SHARE_EXTENSION = @"com.applozic.AL_SHARE_EXTENSION";
+static NSString *const AL_USER_DEFAULTS_GROUP_MIGRATION = @"com.applozic.AL_USER_DEFAULTS_GROUP_MIGRATION";
+static NSString *const AL_USER_DEFAULTS_MIGRATION = @"com.applozic.AL_USER_DEFAULTS_MIGRATION";
+static NSString *const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
+
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 @interface ALApplozicSettings : NSObject
+
+@property (strong, nonatomic) NSUserDefaults * userDefaults;
+
 
 +(void)setFontFace:(NSString *)fontFace;
 +(NSString *)getFontFace;
@@ -569,5 +577,8 @@ static NSString *const DISABLE_UNBLOCK_FROM_CHAT = @"com.applozic.DISABLE_UNBLOC
 // Enable/Disable unblock users from sendMessageTextView
 +(void) setIsUnblockInChatDisabled:(BOOL)flag;
 +(BOOL) isUnblockInChatDisabled;
+
++(void)setupSuiteAndMigrate;
++(NSString *)getShareExtentionGroup;
 
 @end
