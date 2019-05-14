@@ -20,6 +20,7 @@
 #import "ALMQTTConversationService.h"
 #import "ALGroupDetailViewController.h"
 #import "ALConversationService.h"
+#import "ALApplozicSettings.h"
 
 @implementation ALAppLocalNotifications
 
@@ -49,6 +50,8 @@
 
 -(void)dataConnectionHandler
 {
+    [ALApplozicSettings setupSuiteAndMigrate];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:)
                                                  name:AL_kReachabilityChangedNotification object:nil];
     
