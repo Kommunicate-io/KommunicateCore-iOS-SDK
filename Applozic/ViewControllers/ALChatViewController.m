@@ -61,7 +61,6 @@
 #import "PSPDFTextView.h"
 #import "ALChannelMsgCell.h"
 #include <tgmath.h>
-@import AddressBookUI;
 #import "ALAudioVideoBaseVC.h"
 #import "ALVOIPNotificationHandler.h"
 #import "ALChannelService.h"
@@ -240,6 +239,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    self.isVisible = YES;
 
     [[NSNotificationCenter defaultCenter]
      addObserver:self selector:@selector(newMessageHandler:) name:NEW_MESSAGE_NOTIFICATION  object:nil];
@@ -2486,47 +2486,43 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
 
 -(void)downloadRetryButtonActionDelegate:(int)index andMessage:(ALMessage *)message
 {
-    ALMediaBaseCell *imageCell = (ALMediaBaseCell *)[self.mTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    imageCell.progresLabel.alpha = 1;
-    imageCell.mMessage.fileMeta.progressValue = 0;
-    imageCell.mDowloadRetryButton.alpha = 0;
-    imageCell.downloadRetryView.alpha = 0;
-    imageCell.sizeLabel.alpha = 0;
-    message.inProgress = YES;
 
-    NSMutableArray * sessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    if(message.msgDBObjectId){
+        ALMediaBaseCell *imageCell = (ALMediaBaseCell *)[self.mTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        imageCell.progresLabel.alpha = 1;
+        imageCell.mMessage.fileMeta.progressValue = 0;
+        imageCell.mDowloadRetryButton.alpha = 0;
+        imageCell.downloadRetryView.alpha = 0;
+        imageCell.sizeLabel.alpha = 0;
+        message.inProgress = YES;
 
-    for(NSURLSession *session in sessionArray){
-        NSURLSessionConfiguration *config =  session.configuration;
-        NSArray *array =  [config.identifier componentsSeparatedByString:@","];
-        if(array && array.count>1){
-            //Check if message key are same and first argumnent is not THUMBNAIL
-            if(![array[0] isEqual: @"THUMBNAIL"] && array[1] == message.key){
-                ALSLog(ALLoggerSeverityInfo, @"Already task in proccess ignoring download retry for the key %@",message.key);
-                return;
+        NSMutableArray * sessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+
+        for(NSURLSession *session in sessionArray){
+            NSURLSessionConfiguration *config =  session.configuration;
+            NSArray *array =  [config.identifier componentsSeparatedByString:@","];
+            if(array && array.count>1){
+                //Check if message key are same and first argumnent is not THUMBNAIL
+                if(![array[0] isEqual: @"THUMBNAIL"] && array[1] == message.key){
+                    ALSLog(ALLoggerSeverityInfo, @"Already task in proccess ignoring download retry for the key %@",message.key);
+                    return;
+                }
             }
         }
-    }
 
-    message.isUploadFailed = NO;
-
-    NSError *error = nil;
-    DB_Message *dbMessage = (DB_Message*)[dbService getMeesageById:message.msgDBObjectId error:&error];
-    dbMessage.inProgress = [NSNumber numberWithBool:YES];
-    dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
-
-    [[ALDBHandler sharedInstance].managedObjectContext save:nil];
-    if ([message.type isEqualToString:@"5"]&& !message.fileMeta.key) // upload
-    {
-        [self uploadImage:message];
+        if ([message.type isEqualToString:@"5"]&& !message.fileMeta.key) // upload
+        {
+            [self uploadImage:message];
+        }
+        else    //download
+        {
+            ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
+            manager.attachmentProgressDelegate = self;
+            [manager processDownloadForMessage:message isAttachmentDownload:YES];
+        }
+    }else{
+        ALSLog(ALLoggerSeverityInfo, @"Message is not in db ");
     }
-    else    //download
-    {
-        ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
-        manager.attachmentProgressDelegate = self;
-        [manager processDownloadForMessage:message isAttachmentDownload:YES];
-    }
-    ALSLog(ALLoggerSeverityInfo, @"starting thread for..%@", message.key);
 
 }
 
@@ -2552,7 +2548,7 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
             //Check if message key are same and first argumnent is not THUMBNAIL
             if(![array[0] isEqual: @"THUMBNAIL"] && array[1] == message.key){
                 ALSLog(ALLoggerSeverityInfo, @"Already task in proccess cancel current task with key %@",message.key);
-                session.invalidateAndCancel;
+                [session invalidateAndCancel];
                 [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:session];
                 break;
             }
@@ -2718,9 +2714,8 @@ NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVC
         {
            [imageCell hidePlayButtonOnUploading];
         }
-        NSError *error = nil;
         ALMessageDBService  * msgdbService = [[ALMessageDBService alloc] init];
-        DB_Message *dbMessage = (DB_Message*)[msgdbService getMeesageById:theMessage.msgDBObjectId error:&error];
+        DB_Message *dbMessage = (DB_Message*)[msgdbService getMessageByKey:@"key" value:theMessage.key];
         dbMessage.inProgress = [NSNumber numberWithBool:YES];
         dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
         [[ALDBHandler sharedInstance].managedObjectContext save:nil];

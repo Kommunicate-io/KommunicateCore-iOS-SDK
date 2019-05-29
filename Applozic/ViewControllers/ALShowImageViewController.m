@@ -72,29 +72,30 @@
     
     //Image iteself
     UIImage *imagetoshare = self.image;
-    
-    // Message if associated with image
-    ALMessage * alMessage = self.alMessage;
-    NSString * messageString = alMessage.message;
-    ALSLog(ALLoggerSeverityInfo, @"MSG_STRING :: %@",messageString);
-    
-    NSArray *activityItems = @[imagetoshare];
-    
-    //Custom Activity for Applozic Sharing
-    // set "uiActivityArray" for "applicationActivities:nil" instead of nill to add this fuctionality
-    //    NSArray *uiActivityArray = @[self.alImageActivity];
-    
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc]
-                                            initWithActivityItems:activityItems
-                                            applicationActivities:nil];
-    
-    activityVC.excludedActivityTypes = @[UIActivityTypeAssignToContact,
-                                         UIActivityTypePrint,
-                                         UIActivityTypePostToTwitter,
-                                         UIActivityTypePostToWeibo,
-                                         UIActivityTypeMail];
-    
-    [self presentViewController:activityVC animated:TRUE completion:nil];
+    if(self.image){
+        // Message if associated with image
+        ALMessage * alMessage = self.alMessage;
+        NSString * messageString = alMessage.message;
+        ALSLog(ALLoggerSeverityInfo, @"MSG_STRING :: %@",messageString);
+
+        NSArray *activityItems = @[imagetoshare];
+
+        //Custom Activity for Applozic Sharing
+        // set "uiActivityArray" for "applicationActivities:nil" instead of nill to add this fuctionality
+        //    NSArray *uiActivityArray = @[self.alImageActivity];
+
+        UIActivityViewController *activityVC = [[UIActivityViewController alloc]
+                                                initWithActivityItems:activityItems
+                                                applicationActivities:nil];
+
+        activityVC.excludedActivityTypes = @[UIActivityTypeAssignToContact,
+                                             UIActivityTypePrint,
+                                             UIActivityTypePostToTwitter,
+                                             UIActivityTypePostToWeibo,
+                                             UIActivityTypeMail];
+
+        [self presentViewController:activityVC animated:TRUE completion:nil];
+    }
 }
 
 -(void)showContactsToShareImage

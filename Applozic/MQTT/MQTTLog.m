@@ -12,7 +12,7 @@
 
 #ifdef DEBUG
 
-DDLogLevel ddLogLevel = DDLogLevelVerbose;
+DDLogLevel ddLogLevel = DDLogLevelWarning;
 
 #else
 

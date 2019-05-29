@@ -1135,7 +1135,20 @@
 
 +(BOOL) isDocumentOptionHidden{
 
-    return ([[self getHideAttachmentsOption] containsObject:@":document"]);
+    return ([[self getHideAttachmentsOption] containsObject:@":document"] || !self.isDocumentOptionEnabled);
+}
+
++(BOOL)isDocumentOptionEnabled
+{
+    NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    return [userDefaults boolForKey:AL_DOCUMENT_OPTION];
+}
+
++(void)enableDocumentOption:(BOOL)flag
+{
+    NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    [userDefaults setBool:flag forKey:AL_DOCUMENT_OPTION];
+    [userDefaults synchronize];
 }
 
 +(BOOL)isS3StorageServiceEnabled

@@ -247,6 +247,7 @@
         
         if (alMessage.imageFilePath == nil)
         {
+            self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setHidden:NO];
             [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"DownloadiOS.png"] forState:UIControlStateNormal];
         }

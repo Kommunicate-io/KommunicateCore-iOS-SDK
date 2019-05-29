@@ -283,7 +283,9 @@
     
     self.userIdToLaunch = nil;
     self.channelKey = nil;
-
+    if(self.detailChatViewController){
+        self.detailChatViewController.isVisible = NO;
+    }
     if([self.mActivityIndicator isAnimating])
     {
         [self.emptyConversationText setHidden:YES];
@@ -958,12 +960,9 @@
     {
         self.detailChatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     }
-    
-    if(message.conversationId)
-    {
-        self.detailChatViewController.conversationId = message.conversationId;
-    }
-    
+
+    self.detailChatViewController.conversationId = message.conversationId;
+
     if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
     {
         [ALApplozicSettings setContactsGroupId:_contactsGroupId];
@@ -1206,7 +1205,7 @@
     ALPushAssist* top = [[ALPushAssist alloc] init];
     [self.detailChatViewController setRefresh: YES];
     
-    if ([self.detailChatViewController contactIds] != nil || [self.detailChatViewController channelKey] != nil)
+    if ([self.detailChatViewController isVisible])
     {
         [self.detailChatViewController syncCall:alMessage updateUI:[NSNumber numberWithInt:APP_STATE_ACTIVE] alertValue:alMessage.message];
     }

@@ -398,6 +398,11 @@ static ALMessageClientService *alMsgClientService;
                             }
 
                             if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
+                                if ([message.metadata[@"action"] isEqual: @"4"]) {
+                                    [[NSNotificationCenter defaultCenter]
+                                     postNotificationName:@"CONVERSATION_DELETION"
+                                     object:message.groupId];
+                                }
                                 [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
                             }
 
@@ -413,16 +418,18 @@ static ALMessageClientService *alMsgClientService;
 
                         [[NSNotificationCenter defaultCenter] postNotificationName:NEW_MESSAGE_NOTIFICATION object:messageArray userInfo:nil];
 
+                        [ALUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
+                        ALMessageClientService *messageClientService = [[ALMessageClientService alloc] init];
+                        [messageClientService updateDeliveryReports:syncResponse.messagesList];
+
+                        completion(messageArray,error);
+
                     }];
 
+                }else{
+                    [ALUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
+                    completion(messageArray,error);
                 }
-
-                [ALUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
-                ALMessageClientService *messageClientService = [[ALMessageClientService alloc] init];
-                [messageClientService updateDeliveryReports:syncResponse.messagesList];
-
-                completion(messageArray,error);
-
             }
             else
             {
@@ -620,9 +627,7 @@ static ALMessageClientService *alMsgClientService;
         else if(msg.contentType == ALMESSAGE_CONTENT_VCARD)
         {
             ALSLog(ALLoggerSeverityInfo, @"REACH_PRESENT");
-            NSError *THE_ERROR;
-            DB_Message *dbMessage = (DB_Message*)[dbService getMeesageById:msg.msgDBObjectId error:&THE_ERROR];
-            ALSLog(ALLoggerSeverityError, @"ERROR_IF_ANY : %@", THE_ERROR);
+            DB_Message *dbMessage = (DB_Message*)[dbService getMessageByKey:@"key" value:msg.key];
             dbMessage.inProgress = [NSNumber numberWithBool:YES];
             dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
             [[ALDBHandler sharedInstance].managedObjectContext save:nil];

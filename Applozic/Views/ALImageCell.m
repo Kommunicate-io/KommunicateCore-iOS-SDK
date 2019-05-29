@@ -567,18 +567,22 @@ UIViewController * modalCon;
 
 -(void)imageFullScreen:(UITapGestureRecognizer*)sender
 {
-    UIStoryboard * applozicStoryboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
 
-    ALShowImageViewController * alShowImageViewController = [applozicStoryboard instantiateViewControllerWithIdentifier:@"showImageViewController"];
-    alShowImageViewController.view.backgroundColor = [UIColor lightGrayColor];
-    alShowImageViewController.view.userInteractionEnabled = YES;
+    if(self.mImageView.image && self.mMessage.imageFilePath){
+        UIStoryboard * applozicStoryboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
 
-    [alShowImageViewController setImage:self.mImageView.image];
-    [alShowImageViewController setAlMessage:self.mMessage];
+        ALShowImageViewController * alShowImageViewController = [applozicStoryboard instantiateViewControllerWithIdentifier:@"showImageViewController"];
+        alShowImageViewController.view.backgroundColor = [UIColor lightGrayColor];
+        alShowImageViewController.view.userInteractionEnabled = YES;
 
-    [self.delegate showFullScreen:alShowImageViewController];
+        [alShowImageViewController setImage:self.mImageView.image];
+        [alShowImageViewController setAlMessage:self.mMessage];
 
-    return;
+        [self.delegate showFullScreen:alShowImageViewController];
+    }else{
+        ALSLog(ALLoggerSeverityWarn, @"Image is not downloaded");
+    }
+
 }
 
 -(void)setupProgress
