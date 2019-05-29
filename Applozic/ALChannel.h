@@ -81,4 +81,6 @@ typedef enum {
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
 -(BOOL)isPartOfCategory:(NSString*)category;
 
++(CONVERSATION_CATEGORY)getConversationCategory:(NSDictionary *)metadata;
+
 @end

@@ -653,7 +653,7 @@
     }else if(messageListRequest.channelKey){
         predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@",messageListRequest.channelKey];
     } else{
-        predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@",messageListRequest.userId];
+        predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil ",messageListRequest.userId];
     }
 
     NSPredicate* predicateDeletedCheck=[NSPredicate predicateWithFormat:@"deletedFlag == NO"];
@@ -1174,9 +1174,7 @@ FETCH LATEST MESSSAGE FOR SUB GROUPS
     message.inProgress = NO;
     message.isUploadFailed = YES;
     message.sentToServer = NO;
-    NSError *error = nil;
-
-    DB_Message *dbMessage = (DB_Message*)[self getMeesageById:message.msgDBObjectId error:&error];
+    DB_Message *dbMessage = (DB_Message*)[self getMessageByKey:@"key" value:message.key];
     dbMessage.inProgress = [NSNumber numberWithBool:NO];
     dbMessage.isUploadFailed = [NSNumber numberWithBool:YES];
     dbMessage.sentToServer= [NSNumber numberWithBool:NO];;

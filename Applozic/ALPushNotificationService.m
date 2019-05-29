@@ -108,11 +108,13 @@
             [ALUserDefaultsHandler setMsgSyncRequired:YES];
             [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
                                        withCompletion:^(NSMutableArray *message, NSError *error) {
+
+
+                                               ALSLog(ALLoggerSeverityInfo, @"ALPushNotificationService's SYNC CALL");
+                                               [dict setObject:(alertValue ? alertValue : @"") forKey:@"alertValue"];
+                                               [self assitingNotificationMessage:notificationMsg andDictionary:dict withMetadata:metadataDictionary];
                                        }];
 
-             ALSLog(ALLoggerSeverityInfo, @"ALPushNotificationService's SYNC CALL");
-            [dict setObject:(alertValue ? alertValue : @"") forKey:@"alertValue"];
-             [self assitingNotificationMessage:notificationMsg andDictionary:dict withMetadata:metadataDictionary];
 
         }
         else if ([type isEqualToString:@"MESSAGE_SENT"]||[type isEqualToString:@"APPLOZIC_02"])

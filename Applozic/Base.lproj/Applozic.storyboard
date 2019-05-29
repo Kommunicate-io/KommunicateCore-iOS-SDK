@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nQk-LM-enC">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nQk-LM-enC">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -510,7 +510,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="GroupMemberCell" rowHeight="46" id="EXb-Ck-yJS" customClass="ALGroupDetailsMemberCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GroupMemberCell" rowHeight="46" id="EXb-Ck-yJS" customClass="ALGroupDetailsMemberCell">
                                         <rect key="frame" x="0.0" y="28" width="600" height="46"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EXb-Ck-yJS" id="Mmn-Dj-eGq">
@@ -518,25 +518,25 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="101" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b0D-o3-Tj0">
-                                                    <rect key="frame" x="15" y="11" width="470" height="0.0"/>
+                                                    <rect key="frame" x="15" y="11" width="695" height="0.0"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" tag="102" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PNI-xz-0tV">
-                                                    <rect key="frame" x="544" y="6" width="40" height="33.5"/>
+                                                    <rect key="frame" x="769" y="6" width="40" height="33.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="zTe-Js-ldx"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="103" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MBK-3V-a7T">
-                                                    <rect key="frame" x="544" y="6" width="40" height="33.5"/>
+                                                    <rect key="frame" x="769" y="6" width="40" height="33.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="104" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tsi-AT-Efm">
-                                                    <rect key="frame" x="490" y="14" width="46" height="17.5"/>
+                                                    <rect key="frame" x="715" y="14" width="46" height="17.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="46" id="GUc-0k-RnN"/>
                                                     </constraints>
@@ -1664,7 +1664,7 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
                             <constraint firstItem="0xS-bv-Pt0" firstAttribute="trailing" secondItem="7hP-XV-XAh" secondAttribute="trailing" id="WCc-wV-1vp"/>
                             <constraint firstItem="kdb-Qh-QnJ" firstAttribute="trailing" secondItem="7hP-XV-XAh" secondAttribute="trailing" id="YJb-hx-EhJ"/>
                             <constraint firstItem="0xS-bv-Pt0" firstAttribute="bottom" secondItem="tAb-CJ-iIc" secondAttribute="top" id="fGH-EV-6fA"/>
-                            <constraint firstItem="7hP-XV-XAh" firstAttribute="top" secondItem="Pj8-GV-oaw" secondAttribute="top" constant="20" id="mDg-06-LOK"/>
+                            <constraint firstItem="7hP-XV-XAh" firstAttribute="top" secondItem="lAz-Ny-JCO" secondAttribute="bottom" id="mDg-06-LOK"/>
                             <constraint firstItem="0xS-bv-Pt0" firstAttribute="leading" secondItem="7hP-XV-XAh" secondAttribute="leading" id="v8q-S7-A8E"/>
                             <constraint firstItem="kdb-Qh-QnJ" firstAttribute="leading" secondItem="7hP-XV-XAh" secondAttribute="leading" id="wcb-2I-dPE"/>
                             <constraint firstAttribute="trailing" secondItem="0xS-bv-Pt0" secondAttribute="trailing" id="xKa-Mb-xXS"/>
@@ -1959,11 +1959,11 @@ Upload Image Button.centerX = scd_profile_BG.centerX + 50</string>
         <image name="applozic_edit" width="18" height="18"/>
         <image name="applozic_group_icon" width="100" height="100"/>
         <image name="applozic_uploadCamera" width="20" height="16"/>
-        <image name="attachments" width="56" height="26"/>
+        <image name="attachments" width="28" height="13"/>
         <image name="audio_mic" width="462" height="726"/>
         <image name="ic_action_camera" width="64" height="64"/>
         <image name="ic_phone_gray" width="30" height="32"/>
-        <image name="online_show" width="100" height="100"/>
+        <image name="online_show" width="200" height="200"/>
     </resources>
     <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

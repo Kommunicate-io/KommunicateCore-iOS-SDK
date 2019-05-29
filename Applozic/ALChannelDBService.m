@@ -811,13 +811,7 @@ dispatch_queue_t syncSerialBackgroundQueue;
             dbChannel.metadata = newMetaData.description;
             
             // Update conversation status from metadata
-            if ([newMetaData objectForKey:CHANNEL_CONVERSATION_STATUS] != nil && ([[newMetaData valueForKey:CHANNEL_CONVERSATION_STATUS] isEqualToString:@"2"])) {
-                dbChannel.category = CLOSED_CONVERSATION;
-            } else if ([newMetaData objectForKey:CONVERSATION_ASSIGNEE] != nil && ([[newMetaData valueForKey:CONVERSATION_ASSIGNEE] isEqualToString:[ALUserDefaultsHandler getUserId]])) {
-                dbChannel.category = ASSIGNED_CONVERSATION;
-            } else {
-                dbChannel.category = ALL_CONVERSATION;
-            }
+            dbChannel.category = [ALChannel getConversationCategory:newMetaData];
         }
         
         [dbHandler.managedObjectContext save:nil];

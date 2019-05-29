@@ -145,7 +145,7 @@ static NSString *const AL_SHARE_EXTENSION = @"com.applozic.AL_SHARE_EXTENSION";
 static NSString *const AL_USER_DEFAULTS_GROUP_MIGRATION = @"com.applozic.AL_USER_DEFAULTS_GROUP_MIGRATION";
 static NSString *const AL_USER_DEFAULTS_MIGRATION = @"com.applozic.AL_USER_DEFAULTS_MIGRATION";
 static NSString *const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
-
+static NSString *const AL_DOCUMENT_OPTION = @"com.applozic.AL_DOCUMENT_OPTION";
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -580,5 +580,8 @@ static NSString *const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
 
 +(void)setupSuiteAndMigrate;
 +(NSString *)getShareExtentionGroup;
+
++(BOOL)isDocumentOptionEnabled;
++(void)enableDocumentOption:(BOOL)flag;
 
 @end
