@@ -338,8 +338,13 @@
           andNewName:(NSString *)newName andImageURL:(NSString *)imageURL metadata:(NSMutableDictionary *)metaData
          orChildKeys:(NSMutableArray *)childKeysList  orChannelUsers:(NSMutableArray *)channelUsers  andCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion
 {
-    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, UPDATE_CHANNEL_URL];
-    
+    NSString * theUrlString;
+    if(imageURL && [imageURL isEqualToString:@""]){
+     theUrlString =   [NSString stringWithFormat:@"%@%@?resetGroupImageUrl=true", KBASE_URL, UPDATE_CHANNEL_URL];
+    }else{
+        theUrlString =  [NSString stringWithFormat:@"%@%@", KBASE_URL, UPDATE_CHANNEL_URL];
+    }
+
     NSMutableDictionary *dictionary = [NSMutableDictionary new];
     
     if(newName.length)

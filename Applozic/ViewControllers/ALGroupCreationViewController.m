@@ -176,7 +176,6 @@
     }
     [self.loadingIndicator startAnimating];
     
-    self.groupImageURL = self.groupImageURL ? self.groupImageURL : @"";
     ALChannelService *channelService = [ALChannelService new];
     
     NSString* changedName;
@@ -187,13 +186,14 @@
         changedName = self.groupNameInput.text;
     }
     ALChannel *oldChannel =  [channelService getChannelByKey:self.channelKey ];
-
+    BOOL isIngoreUpdating = NO;
     if(oldChannel != nil && oldChannel.channelImageURL != NULL && [oldChannel.channelImageURL isEqualToString:self.groupImageURL]){
         self.groupImageURL = nil;
+        isIngoreUpdating = YES;
     }
     
     [channelService updateChannel:self.channelKey andNewName:changedName
-                      andImageURL:self.groupImageURL orClientChannelKey:nil isUpdatingMetaData:NO
+                      andImageURL:self.groupImageURL orClientChannelKey:nil isUpdatingMetaData:isIngoreUpdating
                          metadata:nil orChildKeys:nil orChannelUsers:nil  withCompletion:^(NSError *error) {
         
           if(!error)
@@ -338,11 +338,14 @@
     }];
     
     UIAlertAction* upload = [UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"upload", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Upload!", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-        
+
+        [self.activityIndicator startAnimating];
+
         if(![ALDataNetworkConnection checkDataNetworkAvailable])
         {
             ALNotificationView * notification = [ALNotificationView new];
-            [notification noDataConnectionNotificationView];;
+            [notification noDataConnectionNotificationView];
+            [self.activityIndicator stopAnimating];
             return;
         }
         
