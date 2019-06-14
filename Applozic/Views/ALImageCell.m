@@ -475,7 +475,7 @@ UIViewController * modalCon;
 
 }
 
--(void) setInImageView:(NSURL*)url{
+-(void) setInImageView:(NSURL*)url {
     NSString *stringUrl = url.absoluteString;
     if (stringUrl != nil && [stringUrl localizedCaseInsensitiveContainsString:@"gif"]) {
         UIImage *image = [UIImage animatedImageWithAnimatedGIFURL:url];
