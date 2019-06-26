@@ -1011,22 +1011,23 @@
 
 -(NSDictionary *)metadataToTurnOffActionMessagesNotificationsAndhideMessages:(BOOL)hideMessages {
 
-    // In case of just turning off the notifications, only 'Alert' key needs to be false.
-    if(!hideMessages) {
-        return @{@"Alert":@"false"};
-    }
+    // In case of just turning off the notifications, only 'Alert' key needs to be false and empty string for action messages.
+
     NSDictionary *basicMetadata = @{@"CREATE_GROUP_MESSAGE":@"",
-                               @"REMOVE_MEMBER_MESSAGE":@"",
-                               @"ADD_MEMBER_MESSAGE":@"",
-                               @"JOIN_MEMBER_MESSAGE":@"",
-                               @"GROUP_NAME_CHANGE_MESSAGE":@"",
-                               @"GROUP_ICON_CHANGE_MESSAGE":@"",
-                               @"GROUP_LEFT_MESSAGE":@"",
-                               @"DELETED_GROUP_MESSAGE":@"",
-                               };
+                                    @"REMOVE_MEMBER_MESSAGE":@"",
+                                    @"ADD_MEMBER_MESSAGE":@"",
+                                    @"JOIN_MEMBER_MESSAGE":@"",
+                                    @"GROUP_NAME_CHANGE_MESSAGE":@"",
+                                    @"GROUP_ICON_CHANGE_MESSAGE":@"",
+                                    @"GROUP_LEFT_MESSAGE":@"",
+                                    @"DELETED_GROUP_MESSAGE":@"",
+                                    @"Alert":@"false"
+                                    };
     NSMutableDictionary *metadata = [[NSMutableDictionary alloc] initWithDictionary:basicMetadata];
+    if(!hideMessages) {
+        return metadata;
+    }
     metadata[@"hide"] = @"true";
-    metadata[@"Alert"] = @"false";
     return metadata;
 }
 

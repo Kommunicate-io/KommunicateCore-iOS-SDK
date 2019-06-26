@@ -74,7 +74,7 @@
 #import "ALHTTPManager.h"
 #import "ALUploadTask.h"
 #import "ALDownloadTask.h"
-
+#import "ALMyContactMessageCell.h"
 
 #define MQTT_MAX_RETRY 3
 #define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
@@ -377,7 +377,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }else{
         self.typingMessageView.hidden = NO;
     }
-    
+
     [self setCallButtonInNavigationBar];
     [self checkUserBlockStatus];
     if(self.contactIds ){
@@ -1038,6 +1038,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     [self.mTableView registerClass:[ALCustomCell class] forCellReuseIdentifier:@"CustomCell"];
     [self.mTableView registerClass:[ALVOIPCell class] forCellReuseIdentifier:@"VOIPCell"];
     [self.mTableView registerClass:[ALChannelMsgCell class] forCellReuseIdentifier:@"ALChannelMsgCell"];
+
+    [self.mTableView registerClass:[ALMyContactMessageCell class] forCellReuseIdentifier:@"MyContactMessageCell"];
 
     if([ALApplozicSettings getContextualChatOption])
     {
@@ -1812,15 +1814,29 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }
     else if (theMessage.contentType == ALMESSAGE_CONTENT_VCARD)
     {
-        ALContactMessageCell *theCell = (ALContactMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"ContactMessageCell"];
-        theCell.tag = indexPath.row;
-        theCell.delegate = self;
-        theCell.channel = self.alChannel;
-        theCell.contact = self.alContact;
-        theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
-        [theCell populateCell:theMessage viewSize:self.view.frame.size];
-        [self.view layoutIfNeeded];
-        return theCell;
+        
+        if([theMessage isSentMessage]){
+            ALMyContactMessageCell *theCell = (ALMyContactMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"MyContactMessageCell"];
+            theCell.tag = indexPath.row;
+            theCell.delegate = self;
+            theCell.channel = self.alChannel;
+            theCell.contact = self.alContact;
+            theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
+            [theCell populateCell:theMessage viewSize:self.view.frame.size];
+            [self.view layoutIfNeeded];
+            return theCell;
+        }else{
+            ALContactMessageCell *theCell = (ALContactMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"ContactMessageCell"];
+            theCell.tag = indexPath.row;
+            theCell.delegate = self;
+            theCell.channel = self.alChannel;
+            theCell.contact = self.alContact;
+            theCell.alphabetiColorCodesDictionary = self.alphabetiColorCodesDictionary;
+            [theCell populateCell:theMessage viewSize:self.view.frame.size];
+            [self.view layoutIfNeeded];
+            return theCell;
+        }
+
     }
     else
     {
@@ -2504,7 +2520,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
             NSArray *array =  [config.identifier componentsSeparatedByString:@","];
             if(array && array.count>1){
                 //Check if message key are same and first argumnent is not THUMBNAIL
-                if(![array[0] isEqual: @"THUMBNAIL"] && array[1] == message.key){
+                if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqualToString: message.key]){
                     ALSLog(ALLoggerSeverityInfo, @"Already task in proccess ignoring download retry for the key %@",message.key);
                     return;
                 }
@@ -2546,8 +2562,9 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         NSArray *array =  [config.identifier componentsSeparatedByString:@","];
 
         if(array && array.count>1){
+
             //Check if message key are same and first argumnent is not THUMBNAIL
-            if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqual: message.key]){
+            if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqualToString:message.key]){
                 ALSLog(ALLoggerSeverityInfo, @"Already task in proccess cancel current task with key %@",message.key);
                 [session invalidateAndCancel];
                 [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:session];
@@ -4731,18 +4748,19 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 }
 
 - (void)onDownloadFailed:(ALMessage *)alMessage {
+    dispatch_async(dispatch_get_main_queue(), ^{
+
     ALMediaBaseCell * imageCell=  [self getCell:alMessage.key];
     imageCell.progresLabel.alpha = 0;
     imageCell.mDowloadRetryButton.alpha = 1;
     imageCell.downloadRetryView.alpha = 1;
     imageCell.sizeLabel.alpha = 1;
+            });
 }
 
 - (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(ALMessage *)alMessage {
-
     ALMediaBaseCell*  cell=  [self getCell:alMessage.key];
     cell.progresLabel.endDegree = [self bytesConvertsToDegree:[alMessage.fileMeta.size floatValue] comingBytes:(CGFloat)bytesReceived];
-
 }
 
 - (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(ALMessage *)alMessage {
@@ -4750,25 +4768,21 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     ALMediaBaseCell*  cell =  [self getCell:alMessage.key];
 
     NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-     NSString * filePath = [docDir  stringByAppendingPathComponent:alMessage.imageFilePath];
+    NSString * filePath = [docDir  stringByAppendingPathComponent:alMessage.imageFilePath];
 
-      unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileSize];
-     cell.progresLabel.endDegree = [self bytesConvertsToDegree:(CGFloat)fileSize comingBytes:(CGFloat)bytesSent];
-
+    unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileSize];
+    cell.progresLabel.endDegree = [self bytesConvertsToDegree:(CGFloat)fileSize comingBytes:(CGFloat)bytesSent];
 }
 
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey{
 
     if(alMessage != nil){
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-
            NSIndexPath * path = [self getIndexPathForMessage:oldMessageKey];
             if(path.row < [self.alMessageWrapper getUpdatedMessageArray].count){
             [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
             [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
           }
-        });
     }
 }
 

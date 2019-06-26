@@ -594,4 +594,13 @@
     
 }
 
+
+-(void)reportUserWithMessageKey:(NSString *) messageKey  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
+
+    ALUserClientService *userClientService = [[ALUserClientService alloc] init];
+    [userClientService reportUserWithMessageKey:messageKey withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+        completion(apiResponse,error);
+    }];
+}
+
 @end

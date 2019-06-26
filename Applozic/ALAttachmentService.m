@@ -60,7 +60,9 @@
         if (error)
         {
 
-            [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:attachmentMessage]];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:attachmentMessage]];
+            });
             return;
         }
 

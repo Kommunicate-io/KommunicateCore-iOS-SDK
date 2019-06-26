@@ -17,7 +17,11 @@
 #import "ALUserDetailListFeed.h"
 #import "AlApplicationInfoFeed.h"
 
+NSString * const ApplozicDomain = @"Applozic";
 
+typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
+    MessageKeyNotPresent = 2
+};
 
 @implementation ALUserClientService
 
@@ -570,6 +574,38 @@
         
     }];
     
+}
+
+
+-(void)reportUserWithMessageKey:(NSString *) messageKey  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
+
+    if(messageKey == nil){
+       NSError * error =  [NSError errorWithDomain:ApplozicDomain
+                            code:MessageKeyNotPresent
+                        userInfo:@{NSLocalizedDescriptionKey : @"Message key is nil"}];
+        completion(nil,error);
+        return;
+    }
+
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/report?messageKey=%@", KBASE_URL, messageKey];
+
+    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:nil];
+
+    [ALResponseHandler processRequest:theRequest andTag:@"REPORT_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
+        if(theError){
+            ALSLog(ALLoggerSeverityError, @"Error in reporting  user  : %@", theError);
+            completion(nil, theError);
+            return;
+        }
+
+        NSString *responseString  = (NSString *)theJson;
+
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REPORT_USER : %@",responseString);
+
+        ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
+        completion(apiResponse, theError);
+    }];
+
 }
 
 @end

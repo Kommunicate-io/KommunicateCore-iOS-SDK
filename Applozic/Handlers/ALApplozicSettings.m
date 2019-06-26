@@ -1718,19 +1718,19 @@
 
 +(void)setupSuiteAndMigrate {
     [ALApplozicSettings migrateUserDefaultsToAppGroups];
-    NSUserDefaults *userDefaults = [[NSUserDefaults standardUserDefaults] initWithSuiteName:AL_DEFAULT_APP_GROUP];
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
     [userDefaults setValue:AL_DEFAULT_APP_GROUP forKey:AL_SHARE_EXTENSION];
     [userDefaults synchronize];
 }
 
 +(NSString *)getShareExtentionGroup {
 
-    NSUserDefaults *userDefaults = [[NSUserDefaults standardUserDefaults] initWithSuiteName:AL_DEFAULT_APP_GROUP];
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
     return  [userDefaults valueForKey:AL_SHARE_EXTENSION];
 }
 
 +(NSUserDefaults *)getUserDefaults {
-    return [[NSUserDefaults standardUserDefaults] initWithSuiteName:AL_DEFAULT_APP_GROUP];
+    return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
 }
 
 +(void) setUserDefaultsMigratedFlag:(BOOL)flag {
@@ -1744,10 +1744,58 @@
     return  [userDefaults boolForKey:AL_USER_DEFAULTS_MIGRATION];
 }
 
++(BOOL)isAddContactButtonForSenderDisabled
+{
+    NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    return  [userDefaults boolForKey:AL_SENT_MESSAGE_CONTACT_BUTTON];
+}
+
++(void)disableAddContactButtonForSender
+{
+    NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    [userDefaults setBool:YES forKey:AL_SENT_MESSAGE_CONTACT_BUTTON];
+    [userDefaults synchronize];
+}
+
++(void)setColorForSentContactMsgLabel:(UIColor *)sentContactLabelMsgColor
+{   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    NSData *sendColorData = [NSKeyedArchiver archivedDataWithRootObject:sentContactLabelMsgColor];
+    [userDefaults setObject:sendColorData forKey:AL_SENT_CONTACT_MSG_LABEL_COLOR];
+    [userDefaults synchronize];
+}
+
++(void)setColorForReceivedContactMsgLabel:(UIColor *)receivedMsgColor
+{   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:receivedMsgColor];
+    [userDefaults setObject:receiveColorData forKey:AL_RECEIVED_CONTACT_MSG_LABEL_COLOR];
+    [userDefaults synchronize];
+}
+
++(UIColor *)getSentContactMsgLabelColor
+{   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    NSData *sentColorData = [userDefaults objectForKey:AL_SENT_CONTACT_MSG_LABEL_COLOR];
+    UIColor *sentContactMsgLabelColor = [NSKeyedUnarchiver unarchiveObjectWithData:sentColorData];
+    if(sentContactMsgLabelColor)
+    {
+        return sentContactMsgLabelColor;
+    }
+    return [UIColor whiteColor];
+}
+
++(UIColor *)getReceivedContactMsgLabelColor
+{   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    NSData *receivedColorData = [userDefaults objectForKey:AL_RECEIVED_CONTACT_MSG_LABEL_COLOR];
+    UIColor *recivedContactMsgLabelColor = [NSKeyedUnarchiver unarchiveObjectWithData:receivedColorData];
+    if(recivedContactMsgLabelColor)
+    {
+        return recivedContactMsgLabelColor;
+    }
+    return [UIColor blackColor];
+}
 
 +(void)migrateUserDefaultsToAppGroups{
     //Old NSUserDefaults
-    NSUserDefaults * oldUserDefaults =  [[NSUserDefaults standardUserDefaults]init];
+    NSUserDefaults * oldUserDefaults =  [NSUserDefaults standardUserDefaults];
     NSDictionary *dictionary = [oldUserDefaults dictionaryRepresentation];
 
     NSArray * keyArray = [dictionary allKeys];
@@ -1762,7 +1810,7 @@
     }
 
     //Will use the deafault group for access and other places as well
-    NSUserDefaults * groupUserDefaults = [[NSUserDefaults standardUserDefaults] initWithSuiteName:AL_DEFAULT_APP_GROUP];
+    NSUserDefaults * groupUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
     if(groupUserDefaults != nil && ![ALApplozicSettings isUserDefaultsMigrated] ){
         for(NSString * key in dictionary.allKeys){
             [groupUserDefaults setObject:dictionary[key] forKey:key];

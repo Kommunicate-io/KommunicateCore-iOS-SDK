@@ -1635,24 +1635,19 @@
 }
 
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.uiAlertController dismissViewControllerAnimated:NO completion:nil];
 
-        if(self.directContactVCLaunch){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DISMISS_SHARE_EXTENSION" object:nil];
-        }
-    });
+    [self.uiAlertController dismissViewControllerAnimated:NO completion:nil];
+    if(self.directContactVCLaunch){
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DISMISS_SHARE_EXTENSION" object:nil];
+    }
 }
 
 - (void)onUploadFailed:(ALMessage *)alMessage {
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.uiAlertController dismissViewControllerAnimated:NO completion:nil];
-        if(self.directContactVCLaunch){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DISMISS_SHARE_EXTENSION" object:nil];
-        }
-    });
-
+    [self.uiAlertController dismissViewControllerAnimated:NO completion:nil];
+    if(self.directContactVCLaunch){
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DISMISS_SHARE_EXTENSION" object:nil];
+    }
 }
 
 @end
