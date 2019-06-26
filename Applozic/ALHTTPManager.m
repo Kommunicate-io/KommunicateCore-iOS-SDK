@@ -212,7 +212,7 @@ static dispatch_semaphore_t semaphore;
                 NSArray *array =  [config.identifier componentsSeparatedByString:@","];
                 if(array && array.count>1){
                     //Check if message key are same and first argumnent is not THUMBNAIL
-                    if(![array[0] isEqual: @"THUMBNAIL"] && array[1] == message.key){
+                    if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqualToString: message.key]){
                         ALSLog(ALLoggerSeverityInfo, @"Already present in upload file Queue returing for key %@",message.key);
                         return;
                     }
@@ -231,7 +231,10 @@ static dispatch_semaphore_t semaphore;
     }else{
         ALSLog(ALLoggerSeverityError, @"<<< ERROR >>> :: FILE DO NOT EXIT AT GIVEN PATH");
         if(self.attachmentProgressDelegate){
-            [self.attachmentProgressDelegate onUploadFailed:message];
+
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [self.attachmentProgressDelegate onUploadFailed:message];
+            });
         }
     }
 
@@ -253,10 +256,11 @@ static dispatch_semaphore_t semaphore;
         NSArray *array =  [config.identifier componentsSeparatedByString:@","];
         if(array && array.count>1){
             //Check if the currently  its called for file download or THUMBNAIL with messageKey
-            if(attachmentDownloadFlag && [array[0] isEqualToString:@"FILE"] && array[1] == alMessage.key){
-                ALSLog(ALLoggerSeverityInfo, @"Already present in Download Thumbnail download Queue returing for  key %@",alMessage.key);
+            if(attachmentDownloadFlag && [array[0] isEqualToString:@"FILE"] &&
+               [array[1] isEqualToString:alMessage.key]){
+                ALSLog(ALLoggerSeverityInfo, @"Already present in file Download Queue returing for  key %@",alMessage.key);
                 return;
-            }else if (!attachmentDownloadFlag &&  [array[0] isEqualToString:@"THUMBNAIL"] && array[1] == alMessage.key){
+            }else if (!attachmentDownloadFlag &&  [array[0] isEqualToString:@"THUMBNAIL"] && [array[1] isEqualToString:alMessage.key]){
                 ALSLog(ALLoggerSeverityInfo, @"Already present in Download Thumbnail download Queue returing for  key %@",alMessage.key);
                 return;
             }
@@ -292,7 +296,9 @@ static dispatch_semaphore_t semaphore;
         [[ALDBHandler sharedInstance].managedObjectContext save:nil];
         alMessage =  [messageDatabase createMessageEntity:messageEntity];
         if(self.attachmentProgressDelegate){
-            [self.attachmentProgressDelegate onDownloadCompleted:alMessage];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [self.attachmentProgressDelegate onDownloadCompleted:alMessage];
+            });
         }
     }else{
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {

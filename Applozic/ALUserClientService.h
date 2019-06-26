@@ -62,4 +62,7 @@
 -(void)getMutedUserListWithCompletion:(void(^)(id theJson, NSError * error))completion;
 
 -(void) muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion;
+
+-(void)reportUserWithMessageKey:(NSString *) messageKey  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
+
 @end

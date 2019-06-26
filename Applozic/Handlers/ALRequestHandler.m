@@ -95,12 +95,7 @@
 +(void) addGlobalHeader: (NSMutableURLRequest*) request
 {
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    
-    if(APPLOZIC == [ALUserDefaultsHandler getUserAuthenticationTypeId])
-    {
-        [request setValue:[ALUserDefaultsHandler getPassword] forHTTPHeaderField:@"Access-Token"];
-    }
-    
+    [request setValue:[ALUserDefaultsHandler getPassword] forHTTPHeaderField:@"Access-Token"];
     [request addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
     [request addValue:@"true" forHTTPHeaderField:@"UserId-Enabled"];
     [request addValue:[ALUserDefaultsHandler getDeviceKeyString] forHTTPHeaderField:@"Device-Key"];
@@ -112,8 +107,8 @@
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *authString = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
     [request setValue:authString forHTTPHeaderField:@"Authorization"];
-    //Add header for device key ....
-    
+    [request setValue:authString forHTTPHeaderField:@"Application-User"];
+
     ALSLog(ALLoggerSeverityInfo, @"Basic string...%@",authString);
 }
 @end
