@@ -562,7 +562,7 @@
     fileMetaInfo.size = fileInfo.size;
     fileMetaInfo.suUserKeyString = fileInfo.userKey;
     fileMetaInfo.thumbnailUrl = fileInfo.thumbnailUrl;
-
+    fileMetaInfo.url = fileInfo.url;
     return fileMetaInfo;
 }
 
@@ -612,6 +612,7 @@
         theFileMeta.userKey = theEntity.fileMetaInfo.suUserKeyString;
         theFileMeta.thumbnailUrl = theEntity.fileMetaInfo.thumbnailUrl;
         theFileMeta.thumbnailFilePath = theEntity.fileMetaInfo.thumbnailFilePath;
+        theFileMeta.url = theEntity.fileMetaInfo.url;
         theMessage.fileMeta = theFileMeta;
     }
     return theMessage;
@@ -631,6 +632,7 @@
     db_Message.fileMetaInfo.name = almessage.fileMeta.name;
     db_Message.fileMetaInfo.size = almessage.fileMeta.size;
     db_Message.fileMetaInfo.suUserKeyString = almessage.fileMeta.userKey;
+    db_Message.fileMetaInfo.url = almessage.fileMeta.url;
     [[ALDBHandler sharedInstance].managedObjectContext save:nil];
 
 }

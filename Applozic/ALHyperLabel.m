@@ -91,12 +91,15 @@ static UIColor *ALHyperLabelLinkColorHighlight;
 }
 
 - (void)setLinkForSubstring:(NSString *)substring withAttribute:(NSDictionary *)attribute andLinkHandler:(void(^)(ALHyperLabel *label, NSString *substring))handler {
-	NSRange range = [self.attributedText.string rangeOfString:substring];
-	if (range.length){
+    NSRange range = [self.attributedText.string rangeOfString:substring];
+    if (range.length){
         [self setLinkForRange:range withAttributes:attribute andLinkHandler:^(ALHyperLabel *label, NSRange range){
-			handler(label, [label.attributedText.string substringWithRange:range]);
-		}];
-	}
+            if (NSMaxRange(range) > label.attributedText.length) {
+                return;
+            }
+            handler(label, [label.attributedText.string substringWithRange:range]);
+        }];
+    }
 }
 
 - (void)setLinkForSubstring:(NSString *)substring withLinkHandler:(void(^)(ALHyperLabel *label, NSString *substring))handler {
