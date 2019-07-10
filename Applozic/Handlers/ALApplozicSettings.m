@@ -1820,5 +1820,18 @@
     }
 }
 
++ (void)setImagePreviewBackgroundColor:(UIColor *)color {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject: color];
+    [userDefaults setObject:colorData forKey:AL_IMAGE_PREVIEW_BACKGROUND_COLOR];
+    [userDefaults synchronize];
+}
+
++ (UIColor *)getImagePreviewBackgroundColor {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    NSData *receivedColorData = [userDefaults objectForKey: AL_IMAGE_PREVIEW_BACKGROUND_COLOR];
+    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData: receivedColorData];
+    return (color != nil) ? color : [UIColor lightGrayColor];
+}
 
 @end

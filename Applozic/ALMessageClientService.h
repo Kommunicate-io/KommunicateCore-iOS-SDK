@@ -17,10 +17,6 @@
 
 @interface ALMessageClientService : NSObject
 
--(void)updateDeliveryReports:(NSMutableArray *)messages;
-
--(void)updateDeliveryReport:(NSString *)key;
-
 -(void)addWelcomeMessage:(NSNumber *)channelKey;
 
 -(void)getLatestMessageGroupByContact:(NSUInteger)mainPageSize startTime:(NSNumber *)startTime
@@ -55,5 +51,11 @@
 -(void) getLatestMessageForUser:(NSString *)deviceKeyString withMetaDataSync :(BOOL) isMetaDataUpdate withCompletion:(void (^)( ALSyncMessageFeed *, NSError *))completion;
 
 -(void)updateMessageMetadataOfKey:(NSString*) messageKey withMetadata: (NSMutableDictionary *) metadata withCompletion:(void(^)(id theJson, NSError *theError))completion;
+
+-(void)getMessageListForUser: (MessageListRequest *)messageListRequest
+                    isSearch: (BOOL)flag
+              withCompletion: (void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
+
+-(void)searchMessage: (NSString *)key withCompletion: (void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
 
 @end

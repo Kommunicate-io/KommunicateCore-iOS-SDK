@@ -697,7 +697,6 @@
                  
                  contactCell.mUserImageView.layer.cornerRadius = contactCell.mUserImageView.frame.size.width/2;
                  contactCell.mUserImageView.layer.masksToBounds = YES;
-                 contactCell.mUserImageView.contentMode = UIViewContentModeScaleAspectFit;
              });
 
             [contactCell.onlineImageMarker setBackgroundColor:[UIColor clearColor]];
@@ -1483,13 +1482,67 @@
 
 -(void)newMessageHandler:(NSNotification *)notification
 {
-    NSMutableArray * messageArray = notification.object;
-    NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:YES];
-    NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
-    [messageArray sortUsingDescriptors:descriptors];
-    [self updateMessageList:messageArray];
-}
 
+    NSMutableArray * messageArray = notification.object;
+
+    NSMutableArray * allMessagesArray = [[NSMutableArray alloc]init];
+
+    allMessagesArray = self.mContactsMessageListArray;
+    ALChannelService *channelService = [[ALChannelService alloc]init];
+
+
+    for(ALMessage *message in messageArray){
+
+        NSArray * theFilteredArray;
+        if([message getGroupId])
+        {
+
+            theFilteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
+                                [NSPredicate predicateWithFormat:@"groupId = %@",[message getGroupId]]];
+        }
+        else
+        {
+            theFilteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
+                                [NSPredicate predicateWithFormat:@"contactIds = %@ AND groupId = %@",message.contactIds,nil]];
+        }
+
+
+        if(message.groupId){
+
+            ALChannel *channel =  [channelService getChannelByKey:message.groupId];
+
+            BOOL channelFlag = ([ALApplozicSettings getSubGroupLaunchFlag] && [channel.parentKey isEqualToNumber:self.parentGroupKey]);
+            BOOL categoryFlag =  [ALApplozicSettings getCategoryName] && [channel isPartOfCategory:[ALApplozicSettings getCategoryName]];
+
+            BOOL ignoreMessageAddingFlag =  (channelFlag || categoryFlag || !([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getCategoryName]));
+
+            if (!ignoreMessageAddingFlag)
+            {
+                continue;
+            }
+        }
+
+
+        NSUInteger index = 0;
+        if(theFilteredArray.count){
+            ALMessage * firstMessage = theFilteredArray.firstObject;
+            index = [allMessagesArray indexOfObject:firstMessage];
+            if(index != NSNotFound ){
+                allMessagesArray[index] = message;
+            }
+        }else{
+            [allMessagesArray addObject:message];
+        }
+
+    }
+    NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:NO];
+    NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
+    [allMessagesArray sortUsingDescriptors:descriptors];
+
+    self.mContactsMessageListArray = allMessagesArray;
+
+    [self.mTableView reloadData];
+}
 //==============================================================================================================================================
 #pragma mark - CREATE GROUP METHOD
 //==============================================================================================================================================

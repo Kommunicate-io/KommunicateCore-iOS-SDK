@@ -13,6 +13,7 @@
 #import "ALContactDBService.h"
 #import "ALContact.h"
 #import "ALChannelUser.h"
+#import "SearchResultCache.h"
 
 @interface ALChannelDBService ()
 
@@ -287,6 +288,10 @@ dispatch_queue_t syncSerialBackgroundQueue;
 
 -(ALChannel *)loadChannelByKey:(NSNumber *)key
 {
+    ALChannel *cachedChannel = [[SearchResultCache shared] getChannelWithId: key];
+    if (cachedChannel != nil) {
+        return cachedChannel;
+    }
     DB_CHANNEL *dbChannel = [self getChannelByKey:key];
     ALChannel *alChannel = [[ALChannel alloc] init];
 

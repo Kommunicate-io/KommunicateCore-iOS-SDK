@@ -58,6 +58,8 @@
 		18D29D752261111E009C4D39 /* ALDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D29D6F2261111D009C4D39 /* ALDownloadTask.m */; };
 		18D29D762261111E009C4D39 /* ALHTTPManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 18D29D702261111D009C4D39 /* ALHTTPManager.h */; };
 		18D29D772261111E009C4D39 /* ALHTTPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D29D712261111D009C4D39 /* ALHTTPManager.m */; };
+		18FB8A4E22D658C9000D3481 /* SearchResultCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 18FB8A4C22D658C9000D3481 /* SearchResultCache.h */; };
+		18FB8A4F22D658C9000D3481 /* SearchResultCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FB8A4D22D658C9000D3481 /* SearchResultCache.m */; };
 		18FFE96B21519AD300E88C91 /* ALAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FFE96921519AD300E88C91 /* ALAudioSession.m */; };
 		18FFE96C21519AD300E88C91 /* ALAudioSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 18FFE96A21519AD300E88C91 /* ALAudioSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1A113F0021C00AE10000A7CC /* ALAudioRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A113EFE21C00AE10000A7CC /* ALAudioRecordButton.swift */; };
@@ -475,6 +477,8 @@
 		18D29D6F2261111D009C4D39 /* ALDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALDownloadTask.m; path = Applozic/ALDownloadTask.m; sourceTree = "<group>"; };
 		18D29D702261111D009C4D39 /* ALHTTPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALHTTPManager.h; path = Applozic/ALHTTPManager.h; sourceTree = "<group>"; };
 		18D29D712261111D009C4D39 /* ALHTTPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALHTTPManager.m; path = Applozic/ALHTTPManager.m; sourceTree = "<group>"; };
+		18FB8A4C22D658C9000D3481 /* SearchResultCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultCache.h; sourceTree = "<group>"; };
+		18FB8A4D22D658C9000D3481 /* SearchResultCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultCache.m; sourceTree = "<group>"; };
 		18FFE96921519AD300E88C91 /* ALAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAudioSession.m; path = Applozic/ALAudioSession.m; sourceTree = "<group>"; };
 		18FFE96A21519AD300E88C91 /* ALAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAudioSession.h; path = Applozic/ALAudioSession.h; sourceTree = "<group>"; };
 		1A113EFE21C00AE10000A7CC /* ALAudioRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALAudioRecordButton.swift; path = Applozic/ALAudioRecordButton.swift; sourceTree = "<group>"; };
@@ -1033,6 +1037,8 @@
 		6D6DF0A21BC5364C00EBA00F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				18FB8A4C22D658C9000D3481 /* SearchResultCache.h */,
+				18FB8A4D22D658C9000D3481 /* SearchResultCache.m */,
 				1866E32B218749BD00667018 /* UIColor+Extension.swift */,
 				1881CEC321527AB900325270 /* ALMultimediaData.h */,
 				1881CEC421527AB900325270 /* ALMultimediaData.m */,
@@ -1776,6 +1782,7 @@
 				8B170C2721232545003A14B3 /* UIImage+animatedGIF.h in Headers */,
 				C76D314B1F0AAFCE0087291F /* ALAudioVideoBaseVC.h in Headers */,
 				C76D31451F0AAFB30087291F /* ALVOIPCell.h in Headers */,
+				18FB8A4E22D658C9000D3481 /* SearchResultCache.h in Headers */,
 				8B7864231FE2329F004B9E64 /* MessageReplyView.h in Headers */,
 				C70983071E0177E900FC93A1 /* ALMessageServiceWrapper.h in Headers */,
 				6D95476B1BE38DFF00776652 /* ALContactService.h in Headers */,
@@ -2105,6 +2112,7 @@
 				294637B71C6F16050025ED76 /* ALGroupCreationViewController.m in Sources */,
 				6D95476C1BE38DFF00776652 /* ALContactService.m in Sources */,
 				6D7756961D5B80110025560B /* ALMediaPlayer.m in Sources */,
+				18FB8A4F22D658C9000D3481 /* SearchResultCache.m in Sources */,
 				18D29D5022610DBE009C4D39 /* GCDTimer.m in Sources */,
 				18D29D4922610DBE009C4D39 /* ForegroundReconnection.m in Sources */,
 				6D6DF1591BC5364C00EBA00F /* ALChatViewController.m in Sources */,
