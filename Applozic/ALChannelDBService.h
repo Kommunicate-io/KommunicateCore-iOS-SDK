@@ -107,4 +107,6 @@
 
 -(void)fetchChannelMembersAsyncWithChannelKey:(NSNumber*)channelKey witCompletion:(void(^)(NSMutableArray *membersArray))completion;
 
+-(void) getUserInSupportGroup:(NSNumber *) channelKey withCompletion:(void(^)(NSString *userId)) completion;
+
 @end

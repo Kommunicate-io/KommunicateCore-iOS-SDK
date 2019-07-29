@@ -13,9 +13,9 @@
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
-	<string>APPL</string>
+	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>6.13.0</string>
+	<string>6.14.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>

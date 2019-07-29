@@ -66,4 +66,5 @@
 +(NSURL *)getAppsGroupDirectory;
 +(NSURL *)getAppsGroupDirectoryWithFilePath:(NSString *) path;
 +(NSURL *)getApplicationDirectoryWithFilePath:(NSString*) path;
++(NSData *)compressImage:(NSData *) data;
 @end

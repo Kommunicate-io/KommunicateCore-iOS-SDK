@@ -244,7 +244,9 @@ public class ALBaseNavigationViewController: UINavigationController {
         for image in selectedImages.values {
             dispatchGroup.enter()
             PHCachingImageManager.default().requestImageData(for: image, options:nil) { (imageData, _, _, _) in
-                if let imageData = imageData, let image = UIImage(data: imageData) {
+                if let imageData = imageData,
+                    let data = ALUtilityClass.compressImage(imageData),
+                    let image = UIImage(data: data) {
                     images.append(image)
                 }
                 dispatchGroup.leave()
@@ -271,7 +273,7 @@ public class ALBaseNavigationViewController: UINavigationController {
             if let list = self?.selectedMultimediaList(images: images, videos: videoPaths, gifs: gifsData) {
                 self?.delegate?.multimediaSelected(list)
             }
-            self?.navigationController?.presentingViewController?.dismiss(animated: false, completion: nil)
+            self?.dismiss(animated: false, completion: nil)
         }
     }
     @IBAction func dismissAction(_ sender: UIBarButtonItem) {

@@ -44,7 +44,7 @@
     self.metadata = [JSONString valueForKey:@"metadata"];
     self.roleType = [JSONString valueForKey:@"roleType"];
     self.notificationAfterTime = [JSONString valueForKey:@"notificationAfterTime"];
-    
+    self.email = [JSONString valueForKey:@"email"];
 }
 
 -(void)userDetail
@@ -71,6 +71,7 @@
     self.metadata = [[NSMutableDictionary  alloc] initWithDictionary:json[@"metadata"]];
     self.roleType = [self getNSNumberFromJsonValue:json[@"roleType"]];
     self.notificationAfterTime = [self getNSNumberFromJsonValue:json[@"notificationAfterTime"]];
+    self.email = [self getStringFromJsonValue: json[@"email"]];
 
 }
 

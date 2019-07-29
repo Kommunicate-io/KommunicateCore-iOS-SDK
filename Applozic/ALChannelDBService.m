@@ -1202,4 +1202,27 @@ dispatch_queue_t syncSerialBackgroundQueue;
     }];
 }
 
+-(void) getUserInSupportGroup:(NSNumber *) channelKey withCompletion:(void(^)(NSString *userId)) completion {
+
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"DB_CHANNEL_USER_X"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@ AND role = %@", channelKey, @3];
+    [fetchRequest setPredicate:predicate];
+
+    NSAsynchronousFetchRequest *asynchronousFetchRequest = [[NSAsynchronousFetchRequest alloc] initWithFetchRequest:fetchRequest completionBlock:^(NSAsynchronousFetchResult *result) {
+        NSArray *resultArray =   result.finalResult;
+        if (resultArray && resultArray.count) {
+            DB_CHANNEL_USER_X *user = resultArray[0];
+            completion(user.userId);
+        } else {
+            ALSLog(ALLoggerSeverityWarn, @"NO MEMBER FOUND");
+            completion(nil);
+        }
+    }];
+
+    NSManagedObjectContext *managedObjectContext = [[ALDBHandler sharedInstance] managedObjectContext];
+    [managedObjectContext performBlock:^{
+        [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
+    }];
+}
+
 @end
