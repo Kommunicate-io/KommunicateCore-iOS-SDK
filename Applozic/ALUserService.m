@@ -131,6 +131,30 @@
     }];
 }
 
+- (void)updateUser:(NSString *)phoneNumber email:(NSString *)email ofUser:(NSString *)userId withCompletion:(void (^)(BOOL))completion {
+    ALUserClientService *userClientService =  [[ALUserClientService alloc] init];
+    [userClientService updateUser:phoneNumber email:email ofUser:userId withCompletion:^(id theJson, NSError *theError) {
+        if (theJson) {
+            /// Updation success.
+            ALContact *contact = [[[ALContactService alloc] init] loadContactByKey:@"userId" value:userId];
+            if (!contact) {
+                completion(NO);
+                return;
+            }
+            if (email) {
+                [contact setEmail:email];
+            }
+            if (phoneNumber) {
+                [contact setContactNumber:phoneNumber];
+            }
+            [[[ALContactDBService alloc] init] updateContact:contact];
+            completion(YES);
+            return;
+        }
+        completion(NO);
+    }];
+}
+
 +(void)updateUserDisplayName:(ALContact *)alContact
 {
     if(alContact.userId && alContact.displayName)

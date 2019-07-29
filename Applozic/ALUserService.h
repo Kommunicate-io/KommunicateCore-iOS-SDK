@@ -60,6 +60,11 @@
 
 +(void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
 
+-(void)updateUser:(NSString *)phoneNumber
+            email:(NSString *)email
+           ofUser:(NSString *)userId
+   withCompletion:(void (^)(BOOL))completion;
+
 -(void) fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray * array, NSError *error))completion;
 
 -(void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion;

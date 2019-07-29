@@ -417,6 +417,43 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     }];
 }
 
+- (void)updateUser:(NSString *)phoneNumber email:(NSString *)email ofUser:(NSString *)userId withCompletion:(void (^)(id, NSError *))completion {
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/update", KBASE_URL];
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+    if (phoneNumber) {
+        [dictionary setObject:phoneNumber forKey:@"phoneNumber"];
+    }
+    if (email) {
+        [dictionary setObject:email forKey:@"email"];
+    }
+
+    NSError *error;
+    NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+    NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
+
+    NSMutableURLRequest * theRequest = [ALRequestHandler
+                                        createPOSTRequestWithUrlString:theUrlString
+                                        paramString:theParamString
+                                        ofUserId:userId];
+
+    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE_PHONE_AND_EMAIL" WithCompletionHandler:^(id theJson, NSError *theError) {
+        ALSLog(ALLoggerSeverityInfo, @"Update user phone/email :: %@",(NSString *)theJson);
+        ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
+        if([apiResponse.status isEqualToString:@"error"])
+        {
+            NSError * reponseError =
+            [NSError errorWithDomain:@"Applozic"
+                                code:1
+                            userInfo: [NSDictionary
+                                       dictionaryWithObject:@"error updating user"
+                                       forKey:NSLocalizedDescriptionKey]];
+            completion(nil, reponseError);
+            return;
+        }
+        completion(apiResponse.response, theError);
+    }];
+}
+
 // POST CALL
 
 -(void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)ob withCompletion:(void(^)(NSMutableArray * userDetailArray, NSError * theError))completionMark

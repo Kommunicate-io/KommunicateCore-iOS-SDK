@@ -694,4 +694,55 @@
     return urlForDocumentsDirectory;
 }
 
++ (NSData *)compressImage:(NSData *) data {
+    float compressRatio;
+    switch (data.length) {
+        case 0 ...  10 * 1024 * 1024:
+            return data;
+        case (10 * 1024 * 1024 + 1) ... 50 * 1024 * 1024:
+            compressRatio = 0.5; //50%
+            break;
+        default:
+            compressRatio = 0.1; //10%;
+    }
+    UIImage *image = [[UIImage alloc] initWithData: data];
+    float actualHeight = image.size.height;
+    float actualWidth = image.size.width;
+    float maxHeight = 300.0;
+    float maxWidth = 400.0;
+    float imgRatio = actualWidth / actualHeight;
+    float maxRatio = maxWidth / maxHeight;
+
+    if (actualHeight > maxHeight || actualWidth > maxWidth)
+    {
+        if(imgRatio < maxRatio)
+        {
+            //adjust width according to maxHeight
+            imgRatio = maxHeight / actualHeight;
+            actualWidth = imgRatio * actualWidth;
+            actualHeight = maxHeight;
+        }
+        else if(imgRatio > maxRatio)
+        {
+            //adjust height according to maxWidth
+            imgRatio = maxWidth / actualWidth;
+            actualHeight = imgRatio * actualHeight;
+            actualWidth = maxWidth;
+        }
+        else
+        {
+            actualHeight = maxHeight;
+            actualWidth = maxWidth;
+        }
+    }
+
+    CGRect rect = CGRectMake(0.0, 0.0, actualWidth, actualHeight);
+    UIGraphicsBeginImageContext(rect.size);
+    [image drawInRect:rect];
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    NSData *imageData = UIImageJPEGRepresentation(img, compressRatio);
+    UIGraphicsEndImageContext();
+    return imageData;
+}
+
 @end
