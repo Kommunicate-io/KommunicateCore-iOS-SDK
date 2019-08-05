@@ -503,7 +503,7 @@
 - (void)searchMessage: (NSString *)key withCompletion: (void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {
     ALSLog(ALLoggerSeverityInfo, @"Search messages with %@", key);
     NSString *urlString = [NSString stringWithFormat:@"%@/rest/ws/group/support", KBASE_URL];
-    NSString *paramString = [NSString stringWithFormat:@"search=%@", key];
+    NSString *paramString = [NSString stringWithFormat:@"search=%@", [key urlEncodeUsingNSUTF8StringEncoding]];
     NSMutableURLRequest *urlRequest = [ALRequestHandler
                                        createGETRequestWithUrlString: urlString
                                        paramString: paramString];
