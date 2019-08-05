@@ -48,6 +48,14 @@ extension AVAsset: AssetSource {
     }
 }
 
+extension AVURLAsset {
+    var fileSize: Int? {
+        let keys: Set<URLResourceKey> = [.totalFileSizeKey, .fileSizeKey]
+        let resourceValues = try? url.resourceValues(forKeys: keys)
+        return resourceValues?.fileSize ?? resourceValues?.totalFileSize
+    }
+}
+
 @objc public class ALVideoCoder: NSObject {
     
     private let koef = 100.0
@@ -117,27 +125,23 @@ extension ALVideoCoder {
             })
         }))
         var mainProgress: Progress?
-        if #available(iOS 9.0, *) {
             
-            let totalDuration = progressItems.reduce(0) { $0 + $1.durationSeconds }
-            mainProgress = Progress(totalUnitCount: Int64(totalDuration * koef))
-            
-            for item in progressItems {
-                mainProgress?.addChild(item.convertProgress, withPendingUnitCount: Int64(item.durationSeconds*koef*0.85))
-                mainProgress?.addChild(item.trimProgress, withPendingUnitCount: Int64(item.durationSeconds*koef*0.15))
-            }
-            self.mainProgress = mainProgress
+        let totalDuration = progressItems.reduce(0) { $0 + $1.durationSeconds }
+        mainProgress = Progress(totalUnitCount: Int64(totalDuration * koef))
+
+        for item in progressItems {
+            mainProgress?.addChild(item.convertProgress, withPendingUnitCount: Int64(item.durationSeconds*koef*0.85))
+            mainProgress?.addChild(item.trimProgress, withPendingUnitCount: Int64(item.durationSeconds*koef*0.15))
         }
+        self.mainProgress = mainProgress
         
         vc.present(alertView, animated: true, completion: {
-            if #available(iOS 9.0, *) {
-                let margin: CGFloat = 8.0
-                let rect = CGRect(x: margin, y: 62.0, width: alertView.view.frame.width - margin * 2.0, height: 2.0)
-                let progressView = UIProgressView(frame: rect)
-                progressView.observedProgress = mainProgress
-                progressView.tintColor = UIColor.blue
-                alertView.view.addSubview(progressView)
-            }
+            let margin: CGFloat = 8.0
+            let rect = CGRect(x: margin, y: 62.0, width: alertView.view.frame.width - margin * 2.0, height: 2.0)
+            let progressView = UIProgressView(frame: rect)
+            progressView.observedProgress = mainProgress
+            progressView.tintColor = UIColor.blue
+            alertView.view.addSubview(progressView)
         })
     }
     
@@ -202,20 +206,27 @@ extension ALVideoCoder {
                     completion(nil)
                     return
                 }
+
+                /// Converting video to low quality takes too much memory
+                /// which gets worse when the video size is large.
+                if let size = newAsset.fileSize, size >= (5 * 1024 * 1024) {
+                    completion(trimmedURL.path)
+                    return
+                }
                 
                 let filename = String(format: "VID-%f.mp4", Date().timeIntervalSince1970*1000)
                 let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                 let filePath = documentsUrl.absoluteString.appending(filename)
-                
+
                 guard var fileurl = URL(string: filePath) else {
                     completion(nil)
                     return
                 }
                 fileurl = fileurl.standardizedFileURL
-                
+
                 // remove any existing file at that location
                 try? FileManager.default.removeItem(at: fileurl)
-                
+
                 ALVideoCoder.convertVideoToLowQuailtyWithInputURL(videoAsset: newAsset, outputURL: fileurl, progress: convertProgress, started: { writer in
                     self?.exportingVideoSessions.append(writer)
                 }, completed: {
