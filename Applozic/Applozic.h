@@ -89,7 +89,6 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALMultipleAttachmentView.h>
 #import <Applozic/ALPushAssist.h>
 #import <Applozic/ALSendMessageResponse.h>
-#import <Applozic/ALShowImageViewController.h>
 #import <Applozic/ALVideoCell.h>
 #import <Applozic/TSMessage.h>
 #import <Applozic/TSMessageView.h>

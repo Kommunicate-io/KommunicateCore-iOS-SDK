@@ -854,10 +854,19 @@
     return [userDefaults valueForKey:LAST_SYNC_TIME_FOR_META_DATA];
 }
 
++ (void)disableChat:(BOOL)disable {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    [userDefaults setBool: disable forKey: DISABLE_USER_CHAT];
+    [userDefaults synchronize];
+}
+
++ (BOOL)isChatDisabled {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    return [userDefaults boolForKey: DISABLE_USER_CHAT];
+}
+
 +(NSUserDefaults *)getUserDefaults{
     return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
 }
-
-
 
 @end

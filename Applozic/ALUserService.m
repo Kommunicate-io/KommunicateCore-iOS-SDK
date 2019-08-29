@@ -28,6 +28,7 @@
 #import "ALUserDefaultsHandler.h"
 #import "ALApplozicSettings.h"
 #import "NSString+Encode.h"
+#import "ALUser.h"
 
 @implementation ALUserService
 {
@@ -421,7 +422,7 @@
               withCompletion:(void (^)(id theJson, NSError * error))completion
 {
     ALUserClientService *clientService = [ALUserClientService new];
-    [clientService updateUserDisplayName:displayName andUserImageLink:imageLink userStatus:status withCompletion:^(id theJson, NSError *error) {
+    [clientService updateUserDisplayName:displayName andUserImageLink:imageLink userStatus:status metadata: nil withCompletion:^(id theJson, NSError *error) {
 
         completion(theJson, error);
 
@@ -624,6 +625,40 @@
     ALUserClientService *userClientService = [[ALUserClientService alloc] init];
     [userClientService reportUserWithMessageKey:messageKey withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
         completion(apiResponse,error);
+    }];
+}
+
+- (void)disableChat:(BOOL)disable withCompletion:(void (^)(BOOL, NSError *))completion {
+    ALContactDBService *dbService = [[ALContactDBService alloc] init];
+    ALContact *alContact = [dbService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
+    if (!alContact) {
+        ALSLog(ALLoggerSeverityError, @"Contact details of logged-in user not present");
+        NSError * error = [NSError
+                           errorWithDomain:@"Applozic"
+                           code:1
+                           userInfo:[NSDictionary dictionaryWithObject:@"Contact not present" forKey:NSLocalizedDescriptionKey]];
+        completion(NO, error);
+        return;
+    }
+    NSMutableDictionary *metadata;
+    if (alContact != nil && alContact.metadata != nil) {
+        metadata = alContact.metadata;
+    } else {
+        metadata = [[NSMutableDictionary alloc] init];
+    }
+    [metadata setObject:[NSNumber numberWithBool:disable] forKey: DISABLE_USER_CHAT];
+    ALUser *user = [[ALUser alloc] init];
+    [user setMetadata: metadata];
+    ALUserClientService *clientService = [[ALUserClientService alloc] init];
+    [clientService updateUserDisplayName:nil andUserImageLink:nil userStatus:nil metadata:metadata withCompletion:^(id theJson, NSError *error) {
+        if (!error) {
+            [dbService updateContact: alContact];
+            [ALUserDefaultsHandler disableChat: disable];
+            completion(YES, nil);
+        } else {
+            ALSLog(ALLoggerSeverityError, @"Error while disabling chat for user");
+            completion(NO, error);
+        }
     }];
 }
 

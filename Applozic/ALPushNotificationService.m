@@ -272,7 +272,7 @@
         {
             ALSLog(ALLoggerSeverityInfo, @"Process Push Notification APPLOZIC_20");
         }
-        else if ([type isEqualToString:@"APPLOZIC_30"])
+        else if ([type isEqualToString:@"APPLOZIC_30"] || [type isEqualToString:@"APPLOZIC_34"])
         {
             NSString * userId = notificationMsg;
             if(![userId isEqualToString:[ALUserDefaultsHandler getUserId]])

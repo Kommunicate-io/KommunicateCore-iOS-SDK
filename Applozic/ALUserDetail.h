@@ -43,4 +43,6 @@
 
 -(BOOL)isNotificationMuted;
 
+-(BOOL)isChatDisabled;
+
 @end

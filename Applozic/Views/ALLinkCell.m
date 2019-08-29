@@ -22,7 +22,6 @@
 #import "ALChatViewController.h"
 #import "ALDataNetworkConnection.h"
 #import "UIImage+MultiFormat.h"
-#import "ALShowImageViewController.h"
 #import "ALMessageClientService.h"
 #import "ALConnectionQueueHandler.h"
 #import "UIImage+animatedGIF.h"

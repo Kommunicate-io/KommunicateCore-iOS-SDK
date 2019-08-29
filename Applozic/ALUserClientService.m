@@ -383,16 +383,28 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 #pragma mark UPDATE USER Display Name/Status/Profile Image
 //========================================================================================================================
 
--(void)updateUserDisplayName:(NSString *)displayName andUserImageLink:(NSString *)imageLink userStatus:(NSString *)status
+-(void)updateUserDisplayName:(NSString *)displayName
+            andUserImageLink:(NSString *)imageLink
+                  userStatus:(NSString *)status
+                    metadata:(NSMutableDictionary *)metadata
               withCompletion:(void (^)(id theJson, NSError * error))completionHandler
 {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/user/update",KBASE_URL];
     
     NSMutableDictionary *dictionary = [NSMutableDictionary new];
-    [dictionary setObject:displayName forKey:@"displayName"];
-    [dictionary setObject:imageLink forKey:@"imageLink"];
-    [dictionary setObject:status forKey:@"statusMessage"];
+    if (displayName) {
+        [dictionary setObject:displayName forKey:@"displayName"];
+    }
+    if (imageLink) {
+        [dictionary setObject:imageLink forKey:@"imageLink"];
+    }
+    if (status) {
+        [dictionary setObject:status forKey:@"statusMessage"];
+    }
+    if (metadata) {
+        [dictionary setObject:metadata forKey:@"metadata"];
+    }
     
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];

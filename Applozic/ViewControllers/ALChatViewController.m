@@ -348,7 +348,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         }
     }
 
-    [self serverCallForLastSeen];
     [self handleAttachmentButtonVisibility];
 
     [self setTitle];
@@ -395,6 +394,13 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     [self loadMessagesForOpenChannel];
 
+    if (![self isGroup]) {
+        ALContact *contact = [[[ALContactService alloc] init] loadContactByKey:@"userId" value:self.contactIds];
+        [self enableOrDisableChat:contact.isChatDisabled];
+    } else {
+        [self disableChatViewInteraction:NO withPlaceholder:nil];
+    }
+    [self serverCallForLastSeen];
 
 }
 
@@ -1487,6 +1493,28 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
             return YES;
         }
     }
+
+    NSString * restrictedMessageRegexPattern =   [ALApplozicSettings getRestrictedMessageRegexPattern];
+
+    if(restrictedMessageRegexPattern){
+        @try {
+            NSError *error = nil;
+            NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern: restrictedMessageRegexPattern options:NSRegularExpressionCaseInsensitive error:&error];
+
+            NSArray* matches = [regex matchesInString:msgText options:0 range: NSMakeRange(0, msgText.length)];
+
+            for (NSTextCheckingResult* match in matches) {
+                NSString* matchText = [msgText substringWithRange:[match range]];
+                if(matchText != nil && matchText.length > 0 ){
+                    return YES;
+                }
+            }
+
+        }
+        @catch (NSException *exception) {
+            ALSLog(ALLoggerSeverityError, @"Exception in matching string %@",exception.description);
+        }
+    }
     return NO;
 }
 
@@ -2360,6 +2388,16 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 #pragma mark - VIEW HELPER METHODS
 //==============================================================================================================================================
 
+-(void) enableLoadMoreOption:(BOOL) enable {
+    NSString *chatId;
+    if (self.conversationId && [ALApplozicSettings getContextualChatOption]) {
+        chatId = [self.conversationId stringValue];
+    } else {
+        chatId = self.channelKey ? [self.channelKey stringValue] : self.contactIds;
+    }
+    [ALUserDefaultsHandler setShowLoadEarlierOption:enable forContactId:chatId];
+}
+
 -(void)loadChatView
 {
     [self setTitle];
@@ -2392,6 +2430,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
 
     NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
+    [self enableLoadMoreOption: !(theArray.count < 50)];
     ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
 
     NSMutableArray *tempArray = [[NSMutableArray alloc] init];
@@ -2574,9 +2613,13 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }
 }
 
--(void)showFullScreen:(UIViewController*)uiController
+-(void)showImagePreviewWithFilePath:(NSString *)filePath
 {
-    [self presentViewController:uiController animated:YES completion:nil];
+    UIImage *image =   [ALUtilityClass getImageFromFilePath:filePath];
+    if(image){
+        ALPreviewPhotoViewController * contrller = [[ALPreviewPhotoViewController alloc] initWithImage:image pathExtension:filePath.pathExtension];
+        [self.navigationController pushViewController:contrller animated:NO];
+    }
 }
 
 -(void) thumbnailDownload:(NSString *) key{
@@ -3492,18 +3535,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         if(!error)
         {
             self.loadEarlierAction.hidden = YES;
-            if(messages.count < 50)
-            {
-                if(self.conversationId && [ALApplozicSettings getContextualChatOption])
-                {
-                    [ALUserDefaultsHandler setShowLoadEarlierOption:NO forContactId:[self.conversationId stringValue]];
-                }
-                else
-                {
-                    NSString * IDs = (self.channelKey ? [self.channelKey stringValue] : self.contactIds);
-                    [ALUserDefaultsHandler setShowLoadEarlierOption:NO forContactId:IDs];
-                }
-            }
+            [self enableLoadMoreOption:(messages.count > 0)];
 
             if(messages.count == 0)
             {
@@ -3590,6 +3622,37 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     }];
 }
 
+-(void) enableOrDisableChat:(BOOL)disable {
+    if (ALUserDefaultsHandler.isChatDisabled) {
+        /// User has disabled chat.
+        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"YouDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You have disabled chat", @"");
+        [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
+    } else if (disable) {
+        /// Chat is disabled for this user.
+        NSString *disableMessage = NSLocalizedStringWithDefaultValue(@"UserDisabledChat", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has disabled his/her chat", @"");
+        [self disableChatViewInteraction: YES withPlaceholder: disableMessage];
+    } else {
+        [self disableChatViewInteraction:NO withPlaceholder:nil];
+    }
+}
+
+-(void) disableChatViewInteraction:(BOOL) disable withPlaceholder: (NSString *) text{
+    if (text) {
+        self.placeHolderTxt = text;
+        [self.sendMessageTextView setText:self.placeHolderTxt];
+        [self.sendMessageTextView setTextColor:self.placeHolderColor];
+    } else if (![self.sendMessageTextView isFirstResponder]) {
+        self.placeHolderTxt = NSLocalizedStringWithDefaultValue(@"placeHolderText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Write a Message...", @"");
+        [self.sendMessageTextView setText:self.placeHolderTxt];
+        [self.sendMessageTextView setTextColor:self.placeHolderColor];
+    }
+
+    [self.sendMessageTextView setUserInteractionEnabled:!disable];
+    [self.sendButton setUserInteractionEnabled:!disable];
+    [micButton setUserInteractionEnabled:!disable];
+    [self.attachmentOutlet setUserInteractionEnabled:!disable];
+}
+
 -(void)serverCallForLastSeen
 {
     if([self isGroup] && self.alChannel.type != GROUP_OF_TWO)
@@ -3608,6 +3671,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [self updateLastSeenAtStatus:alUserDetail];
             [self setCallButtonInNavigationBar];
             [self checkUserDeleted];
+            [self enableOrDisableChat: alUserDetail.isChatDisabled];
         }
         else
         {
@@ -4058,7 +4122,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     {
         ALContactService *contactService = [ALContactService new];
         self.alContact = [contactService loadContactByKey:@"userId" value:userDetail.userId];
+        BOOL isUserDeleted = self.alContact.deletedAtTime ? YES : NO;
+        [self freezeView:isUserDeleted];
+        [self.label setHidden:isUserDeleted];
         [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
+        [self enableOrDisableChat:self.alContact.isChatDisabled];
     }
     [self.mTableView reloadData];
 }
