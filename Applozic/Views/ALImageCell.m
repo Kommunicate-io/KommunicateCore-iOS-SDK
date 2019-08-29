@@ -23,7 +23,6 @@
 #import "ALChatViewController.h"
 #import "ALDataNetworkConnection.h"
 #import "UIImage+MultiFormat.h"
-#import "ALShowImageViewController.h"
 #import "ALMessageClientService.h"
 #import "ALConnectionQueueHandler.h"
 #import "UIImage+animatedGIF.h"
@@ -567,22 +566,11 @@ UIViewController * modalCon;
 
 -(void)imageFullScreen:(UITapGestureRecognizer*)sender
 {
-
     if(self.mImageView.image && self.mMessage.imageFilePath){
-        UIStoryboard * applozicStoryboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
-
-        ALShowImageViewController * alShowImageViewController = [applozicStoryboard instantiateViewControllerWithIdentifier:@"showImageViewController"];
-        alShowImageViewController.view.backgroundColor = [UIColor lightGrayColor];
-        alShowImageViewController.view.userInteractionEnabled = YES;
-
-        [alShowImageViewController setImage:self.mImageView.image];
-        [alShowImageViewController setAlMessage:self.mMessage];
-
-        [self.delegate showFullScreen:alShowImageViewController];
+        [self.delegate showImagePreviewWithFilePath:self.mMessage.imageFilePath];
     }else{
         ALSLog(ALLoggerSeverityWarn, @"Image is not downloaded");
     }
-
 }
 
 -(void)setupProgress

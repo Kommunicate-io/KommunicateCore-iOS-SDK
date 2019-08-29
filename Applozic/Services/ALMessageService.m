@@ -166,8 +166,14 @@ static ALMessageClientService *alMsgClientService;
     ALMessageDBService *almessageDBService =  [[ALMessageDBService alloc] init];
     NSMutableArray * messageList = [almessageDBService getMessageListForContactWithCreatedAt:messageListRequest];
 
+    NSString *chatId;
+    if (messageListRequest.conversationId) {
+        chatId = [messageListRequest.conversationId stringValue];
+    } else {
+        chatId = messageListRequest.channelKey ? [messageListRequest.channelKey stringValue] : messageListRequest.userId;
+    }
     //Found Record in DB itself ...if not make call to server
-    if(messageList.count > 0 && ![ALUserDefaultsHandler isServerCallDoneForMSGList:messageListRequest.userId])
+    if(messageList.count > 0 && [ALUserDefaultsHandler isServerCallDoneForMSGList:chatId])
     {
         // NSLog(@"the Message List::%@",messageList);
         completion(messageList, nil, nil);

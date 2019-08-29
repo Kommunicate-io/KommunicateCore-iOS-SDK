@@ -37,7 +37,7 @@
 -(void) downloadRetryButtonActionDelegate:(int) index andMessage:(ALMessage *) message;
 -(void) thumbnailDownload:(NSString *) key;
 -(void) stopDownloadForIndex:(int)index andMessage:(ALMessage *)message;
--(void) showFullScreen:(UIViewController *) fullView;
+-(void) showImagePreviewWithFilePath:(NSString *) filePath;
 -(void) deleteMessageFromView:(ALMessage *)message;
 -(void) loadViewForMedia:(UIViewController *)launch;
 -(void) showVideoFullScreen:(AVPlayerViewController *)fullView;

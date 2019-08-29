@@ -150,6 +150,7 @@ static NSString *const AL_SENT_MESSAGE_CONTACT_BUTTON = @"com.applozic.AL_SENT_M
 static NSString *const AL_SENT_CONTACT_MSG_LABEL_COLOR = @"com.applozic.AL_SENT_CONTACT_MSG_LABEL_COLOR";
 static NSString *const AL_RECEIVED_CONTACT_MSG_LABEL_COLOR = @"com.applozic.AL_RECEIVED_CONTACT_MSG_LABEL_COLOR";
 static NSString *const AL_IMAGE_PREVIEW_BACKGROUND_COLOR = @"com.applozic.AL_IMAGE_PREVIEW_BACKGROUND_COLOR";
+static NSString *const AL_RESTRICTED_MESSAGE_PATTERN  = @"com.applozic.AL_RESTRICTED_MESSAGE_PATTERN";
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -599,5 +600,8 @@ static NSString *const AL_IMAGE_PREVIEW_BACKGROUND_COLOR = @"com.applozic.AL_IMA
 
 +(void)setImagePreviewBackgroundColor:(UIColor *)color;
 +(UIColor *)getImagePreviewBackgroundColor;
+
++(void)restrictedMessageRegexPattern:(NSString *)pattern;
++(NSString *)getRestrictedMessageRegexPattern;
 
 @end

@@ -405,7 +405,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
         {
             [self processUserBlockNotification:theMessageDict andUserBlockFlag:NO];
         }
-        else if ([type isEqualToString:@"APPLOZIC_30"])
+        else if ([type isEqualToString:@"APPLOZIC_30"] || [type isEqualToString:@"APPLOZIC_34"])
         {
             //          FETCH USER DETAILS and UPDATE DB AND REAL-TIME
             NSString * userId = [theMessageDict objectForKey:@"message"];

@@ -96,4 +96,6 @@
  */
 -(void)reportUserWithMessageKey:(NSString *) messageKey  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
+-(void)disableChat:(BOOL) disable withCompletion: (void(^)(BOOL response, NSError *error)) completion;
+
 @end

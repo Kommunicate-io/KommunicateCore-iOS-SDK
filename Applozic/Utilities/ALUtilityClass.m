@@ -19,6 +19,7 @@
 #import "ALContactDBService.h"
 #import "ALContact.h"
 #import "UIImageView+WebCache.h"
+#import "UIImage+animatedGIF.h"
 
 @implementation ALUtilityClass
 
@@ -301,8 +302,8 @@
     [[TSMessageView appearance] setContentTextColor:[UIColor whiteColor]];
 
     [TSMessage showNotificationInViewController:top.topViewController
-                                          title:toastMessage
-                                       subtitle:nil
+                                          title:title
+                                       subtitle:toastMessage
                                           image:appIcon
                                            type:TSMessageNotificationTypeMessage
                                        duration:1.75
@@ -692,6 +693,37 @@
         urlForDocumentsDirectory = [urlForDocumentsDirectory URLByAppendingPathComponent:path];
     }
     return urlForDocumentsDirectory;
+}
+
++(UIImage *)getImageFromFilePath:(NSString *)filePath{
+
+    UIImage *image;
+    if (filePath != NULL)
+    {
+        NSURL *documentDirectory =  [self getApplicationDirectoryWithFilePath:filePath];
+        NSString *filePath = documentDirectory.path;
+        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+            image =  [self getImageFromNSURL:documentDirectory];
+        }else{
+            NSURL *appGroupDirectory =  [self getAppsGroupDirectoryWithFilePath:filePath];
+            if(appGroupDirectory){
+                image =   [self getImageFromNSURL:appGroupDirectory];
+            }
+        }
+    }
+    return image;
+
+}
+
++(UIImage*)getImageFromNSURL:(NSURL *)url{
+    UIImage *image;
+    NSString * pathExtenion = url.pathExtension;
+    if(pathExtenion != nil && [pathExtenion isEqualToString:@"gif"]){
+        image  = [UIImage animatedImageWithAnimatedGIFURL:url];
+    }else{
+        image =   [[UIImage alloc] initWithContentsOfFile:url.path];
+    }
+    return image;
 }
 
 + (NSData *)compressImage:(NSData *) data {

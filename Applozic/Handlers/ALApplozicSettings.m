@@ -1831,7 +1831,18 @@
     NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
     NSData *receivedColorData = [userDefaults objectForKey: AL_IMAGE_PREVIEW_BACKGROUND_COLOR];
     UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData: receivedColorData];
-    return (color != nil) ? color : [UIColor lightGrayColor];
+    return (color != nil) ? color : [UIColor whiteColor];
+}
+
++(void)restrictedMessageRegexPattern:(NSString *)pattern {
+    NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    [userDefaults setValue:pattern forKey:AL_RESTRICTED_MESSAGE_PATTERN];
+    [userDefaults synchronize];
+}
+
++(NSString *)getRestrictedMessageRegexPattern {
+    NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
+    return [userDefaults valueForKey:AL_RESTRICTED_MESSAGE_PATTERN];
 }
 
 @end

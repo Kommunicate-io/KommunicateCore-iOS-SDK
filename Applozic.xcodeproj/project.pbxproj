@@ -30,6 +30,8 @@
 		1821DDEA2167D47B00CB24A5 /* ALAttachmentService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */; };
 		1866E32C218749BD00667018 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32B218749BD00667018 /* UIColor+Extension.swift */; };
 		1866E32E218749CA00667018 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32D218749C900667018 /* ALImagePreviewController.m */; };
+		187EEAA923182396008012BC /* ALPreviewPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */; };
+		187EEAAA23182396008012BC /* ALImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 187EEAA823182396008012BC /* ALImagePreviewController.h */; };
 		1881CEBF2152794E00325270 /* ALCustomPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */; };
 		1881CEC02152794E00325270 /* CustomPicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1881CEBE2152794E00325270 /* CustomPicker.storyboard */; };
 		1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1881CEC321527AB900325270 /* ALMultimediaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -68,8 +70,6 @@
 		2932B9F41C7C875F0017911D /* ALGroupDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2932B9F21C7C875F0017911D /* ALGroupDetailViewController.m */; };
 		293446131D4F426F007BD1B4 /* ALImageActivity.h in Headers */ = {isa = PBXBuildFile; fileRef = 2934460F1D4F426F007BD1B4 /* ALImageActivity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		293446141D4F426F007BD1B4 /* ALImageActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 293446101D4F426F007BD1B4 /* ALImageActivity.m */; };
-		293446151D4F426F007BD1B4 /* ALShowImageViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 293446111D4F426F007BD1B4 /* ALShowImageViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		293446161D4F426F007BD1B4 /* ALShowImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 293446121D4F426F007BD1B4 /* ALShowImageViewController.m */; };
 		294637B61C6F16050025ED76 /* ALGroupCreationViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 294637B41C6F16050025ED76 /* ALGroupCreationViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		294637B71C6F16050025ED76 /* ALGroupCreationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 294637B51C6F16050025ED76 /* ALGroupCreationViewController.m */; };
 		29C849A21CC932050042643C /* NSString+Encode.h in Headers */ = {isa = PBXBuildFile; fileRef = 29C849A01CC932050042643C /* NSString+Encode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -438,6 +438,8 @@
 		1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAttachmentService.m; path = Applozic/ALAttachmentService.m; sourceTree = "<group>"; };
 		1866E32B218749BD00667018 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		1866E32D218749C900667018 /* ALImagePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
+		187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALPreviewPhotoViewController.swift; sourceTree = "<group>"; };
+		187EEAA823182396008012BC /* ALImagePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALImagePreviewController.h; sourceTree = "<group>"; };
 		1881CEBD2152794E00325270 /* ALCustomPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALCustomPickerViewController.swift; path = Applozic/ALCustomPickerViewController.swift; sourceTree = "<group>"; };
 		1881CEBE2152794E00325270 /* CustomPicker.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = CustomPicker.storyboard; path = Applozic/CustomPicker.storyboard; sourceTree = "<group>"; };
 		1881CEC321527AB900325270 /* ALMultimediaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALMultimediaData.h; sourceTree = "<group>"; };
@@ -487,8 +489,6 @@
 		2932B9F21C7C875F0017911D /* ALGroupDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALGroupDetailViewController.m; sourceTree = "<group>"; };
 		2934460F1D4F426F007BD1B4 /* ALImageActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALImageActivity.h; sourceTree = "<group>"; };
 		293446101D4F426F007BD1B4 /* ALImageActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALImageActivity.m; sourceTree = "<group>"; };
-		293446111D4F426F007BD1B4 /* ALShowImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALShowImageViewController.h; sourceTree = "<group>"; };
-		293446121D4F426F007BD1B4 /* ALShowImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALShowImageViewController.m; sourceTree = "<group>"; };
 		294637B41C6F16050025ED76 /* ALGroupCreationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALGroupCreationViewController.h; sourceTree = "<group>"; };
 		294637B51C6F16050025ED76 /* ALGroupCreationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALGroupCreationViewController.m; sourceTree = "<group>"; };
 		29C849A01CC932050042643C /* NSString+Encode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Encode.h"; sourceTree = "<group>"; };
@@ -866,8 +866,6 @@
 			children = (
 				2934460F1D4F426F007BD1B4 /* ALImageActivity.h */,
 				293446101D4F426F007BD1B4 /* ALImageActivity.m */,
-				293446111D4F426F007BD1B4 /* ALShowImageViewController.h */,
-				293446121D4F426F007BD1B4 /* ALShowImageViewController.m */,
 			);
 			name = "Share Image";
 			sourceTree = "<group>";
@@ -1067,6 +1065,8 @@
 		6D6DF0A71BC5364C00EBA00F /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				187EEAA823182396008012BC /* ALImagePreviewController.h */,
+				187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */,
 				1866E32D218749C900667018 /* ALImagePreviewController.m */,
 				C76D31471F0AAFCE0087291F /* ALAudioVideoBaseVC.h */,
 				C76D31481F0AAFCE0087291F /* ALVOIPNotificationHandler.h */,
@@ -1627,6 +1627,7 @@
 				1804732222C3FA640062CC52 /* ALContactMessageCell.h in Headers */,
 				6D6DF1701BC5364C00EBA00F /* ALContact.h in Headers */,
 				180FE81321BFD01E00A38447 /* ALGroupDetailsMemberCell.h in Headers */,
+				187EEAAA23182396008012BC /* ALImagePreviewController.h in Headers */,
 				6D6DF17A1BC5364C00EBA00F /* ALRegistrationResponse.h in Headers */,
 				6D6DF16D1BC5364C00EBA00F /* ALPushNotificationService.h in Headers */,
 				6D6DF1581BC5364C00EBA00F /* ALChatViewController.h in Headers */,
@@ -1674,7 +1675,6 @@
 				8B1635CE2119C6BF0008191A /* ALChannelOfTwoMetaData.h in Headers */,
 				6D77572D1D5B84940025560B /* ALCustomCell.h in Headers */,
 				6D7757491D5B85100025560B /* ALVideoCell.h in Headers */,
-				293446151D4F426F007BD1B4 /* ALShowImageViewController.h in Headers */,
 				6D77568D1D5B7FBE0025560B /* ALConversationService.h in Headers */,
 				6D7756B91D5B80DF0025560B /* ALChannelUserX.h in Headers */,
 				6D7756F11D5B82A70025560B /* ALDataNetworkConnection.h in Headers */,
@@ -1943,7 +1943,6 @@
 				6D6DF1651BC5364C00EBA00F /* ALNewContactCell.m in Sources */,
 				6D7756BA1D5B80DF0025560B /* ALChannelUserX.m in Sources */,
 				6D6DF14D1BC5364C00EBA00F /* ALUserDefaultsHandler.m in Sources */,
-				293446161D4F426F007BD1B4 /* ALShowImageViewController.m in Sources */,
 				6D4FE4901D7411F70044A7E6 /* NSData+AES.m in Sources */,
 				4612E9021E13882D0022DB23 /* MQTTInMemoryPersistence.m in Sources */,
 				18A2B2B4228A12C600CE93BC /* ALInternalSettings.m in Sources */,
@@ -2055,6 +2054,7 @@
 				18D29D752261111E009C4D39 /* ALDownloadTask.m in Sources */,
 				6D6DF14B1BC5364C00EBA00F /* ALResponseHandler.m in Sources */,
 				8BE0F6F32063D57E00361DD9 /* SoundRecordingView.swift in Sources */,
+				187EEAA923182396008012BC /* ALPreviewPhotoViewController.swift in Sources */,
 				6D6DF1B31BC5364C00EBA00F /* MKAnnotationView+WebCache.m in Sources */,
 				6D6DF1431BC5364C00EBA00F /* ALDBHandler.m in Sources */,
 				6D6DF1571BC5364C00EBA00F /* ALBaseViewController.m in Sources */,

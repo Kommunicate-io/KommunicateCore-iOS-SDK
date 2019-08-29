@@ -51,6 +51,7 @@
 @property (nonatomic,retain) NSNumber * roleType;
 @property (nonatomic, strong) NSNumber * notificationAfterTime;
 -(BOOL)isNotificationMuted;
+-(BOOL)isChatDisabled;
 
 
 @end

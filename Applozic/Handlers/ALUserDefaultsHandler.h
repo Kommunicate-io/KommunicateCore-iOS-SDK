@@ -63,6 +63,7 @@
 #define USER_MQTT_ENCRYPTION_KEY @"com.applozic.userdefault.USER_MQTT_ENCRYPTION_KEY"
 #define LAST_SYNC_TIME_FOR_META_DATA @"com.applozic.userdefault.LAST_SYNC_TIME_FOR_META_DATA"
 static NSString *const NOTIFICATION_TITLE_KEY = @"NOTIFICATION_TITLE";
+static NSString *const DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
 
 #import <Foundation/Foundation.h>
 #import "ALApplozicSettings.h"
@@ -256,5 +257,8 @@ static NSString *const NOTIFICATION_TITLE_KEY = @"NOTIFICATION_TITLE";
 
 +(void)setLastSyncTimeForMetaData :( NSNumber *) metaDataLastSyncTime;
 +(NSNumber *)getLastSyncTimeForMetaData;
+
++(void)disableChat: (BOOL) disable;
++(BOOL)isChatDisabled;
 
 @end
