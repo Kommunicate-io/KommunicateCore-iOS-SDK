@@ -72,12 +72,11 @@ andWithStatusDelegate:(id)statusDelegate
     if(alMessage.contactIds){
         theMessage.fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",alMessage.contactIds, attachmentLocalPath.lastPathComponent];
     }
-    
-    CFStringRef pathExtension = (__bridge_retained CFStringRef)[attachmentLocalPath pathExtension];
-    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
-    CFRelease(pathExtension);
-    NSString *mimeType = (__bridge_transfer NSString *)UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
-    
+    NSString *mimeType = [ALUtilityClass fileMIMEType:attachmentLocalPath];
+    if(!mimeType) {
+        return;
+    }
+
     theMessage.fileMeta.contentType = mimeType;
     if( theMessage.contentType == ALMESSAGE_CONTENT_VCARD){
         theMessage.fileMeta.contentType = @"text/x-vcard";

@@ -658,7 +658,6 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
         [memberCell.profileImageView setHidden:YES];
         [memberCell.nameLabel setTextColor:[UIColor blackColor]];
         [memberCell.nameLabel  setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:15]];
-        [memberCell.nameLabel setTextAlignment:NSTextAlignmentCenter];
         [memberCell.adminLabel setHidden:YES];
         [memberCell.lastSeenTimeLabel setHidden:YES];
 
@@ -669,18 +668,21 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                 memberCell.nameLeftConstraint.constant = 0;
                 if(indexPath.row == 0)
                 {
+                    [memberCell.nameLabel setTextAlignment:NSTextAlignmentCenter];
                     [memberCell.nameLabel setFont:[UIFont boldSystemFontOfSize:18]];
                     memberCell.nameLabel.text = [NSString stringWithFormat:@"%@", self.groupName];
                 }
                 else if(indexPath.row==1)
                 {
 
+                    [memberCell.nameLabel setTextAlignment:NSTextAlignmentCenter];
                     memberCell.nameLabel.text = [self.alChannel isNotificationMuted]
                     ? [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"unMuteGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unmute Group", @"")]
                     : [NSString stringWithFormat: NSLocalizedStringWithDefaultValue(@"muteGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Mute Group", @"") ];
                 }
                 else
                 {
+                    [memberCell.nameLabel setTextAlignment:NSTextAlignmentCenter];
                     memberCell.nameLabel.textColor = self.view.tintColor;
                     memberCell.nameLabel.text = NSLocalizedStringWithDefaultValue(@"addNewMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Add New Member", @"");
 
@@ -692,6 +694,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
             }break;
             case 2:
             {
+                [memberCell.nameLabel setTextAlignment:NSTextAlignmentNatural];
                 [memberCell.nameLabel setTextColor:[UIColor redColor]];
 
                 ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];

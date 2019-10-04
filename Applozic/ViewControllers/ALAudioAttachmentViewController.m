@@ -118,8 +118,8 @@
 
 -(IBAction)sendButtonAction:(id)sender
 {
-    self.outputFilePath = [recorder.url path];
-    [self.audioAttchmentDelegate audioAttachment: self.outputFilePath];
+    NSString * path = [recorder.url path];
+    [self.audioAttchmentDelegate audioAttachment: path];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

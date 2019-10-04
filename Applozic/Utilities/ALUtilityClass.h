@@ -22,7 +22,7 @@
 
 + (BOOL)isToday:(NSDate *)todayDate;
 
-+ (NSString*) fileMIMEType:(NSString*) file;
++ (NSString*) fileMIMEType:(NSString*) filePath;
 
 +(CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize;
 
