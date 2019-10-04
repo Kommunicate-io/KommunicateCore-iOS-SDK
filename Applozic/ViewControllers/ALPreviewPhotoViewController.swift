@@ -171,7 +171,7 @@ import UIKit
         let heightScale = size.height / imageView.bounds.height
         let minScale = min(widthScale, heightScale)
 
-        if(!(minScale > 0 && minScale <= 7.0 )){
+        if(!(minScale  > 0 &&  minScale <= 7.0 )){
             return
         }
 

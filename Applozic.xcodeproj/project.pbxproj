@@ -28,6 +28,8 @@
 		1821DDE62167D42700CB24A5 /* ALVideoCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1821DDE52167D42600CB24A5 /* ALVideoCoder.swift */; };
 		1821DDE92167D47B00CB24A5 /* ALAttachmentService.h in Headers */ = {isa = PBXBuildFile; fileRef = 1821DDE72167D47A00CB24A5 /* ALAttachmentService.h */; };
 		1821DDEA2167D47B00CB24A5 /* ALAttachmentService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */; };
+		1829B22C2347C4AE00472008 /* ALSearchRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1829B22A2347C4AD00472008 /* ALSearchRequest.m */; };
+		1829B22D2347C4AE00472008 /* ALSearchRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1829B22B2347C4AE00472008 /* ALSearchRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1866E32C218749BD00667018 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32B218749BD00667018 /* UIColor+Extension.swift */; };
 		1866E32E218749CA00667018 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32D218749C900667018 /* ALImagePreviewController.m */; };
 		187EEAA923182396008012BC /* ALPreviewPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */; };
@@ -436,6 +438,8 @@
 		1821DDE52167D42600CB24A5 /* ALVideoCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALVideoCoder.swift; path = Applozic/ALVideoCoder.swift; sourceTree = "<group>"; };
 		1821DDE72167D47A00CB24A5 /* ALAttachmentService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAttachmentService.h; path = Applozic/ALAttachmentService.h; sourceTree = "<group>"; };
 		1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAttachmentService.m; path = Applozic/ALAttachmentService.m; sourceTree = "<group>"; };
+		1829B22A2347C4AD00472008 /* ALSearchRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALSearchRequest.m; path = Applozic/ALSearchRequest.m; sourceTree = "<group>"; };
+		1829B22B2347C4AE00472008 /* ALSearchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALSearchRequest.h; path = Applozic/ALSearchRequest.h; sourceTree = "<group>"; };
 		1866E32B218749BD00667018 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		1866E32D218749C900667018 /* ALImagePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
 		187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALPreviewPhotoViewController.swift; sourceTree = "<group>"; };
@@ -1268,6 +1272,8 @@
 		6D6DF1DF1BC5379300EBA00F /* message */ = {
 			isa = PBXGroup;
 			children = (
+				1829B22B2347C4AE00472008 /* ALSearchRequest.h */,
+				1829B22A2347C4AD00472008 /* ALSearchRequest.m */,
 				181F69C422007C4A0018FC13 /* ALMessageBuilder.h */,
 				181F69C522007C4A0018FC13 /* ALMessageBuilder.m */,
 				6D7757191D5B838A0025560B /* ALSendMessageResponse.h */,
@@ -1636,6 +1642,7 @@
 				6D6DF1741BC5364C00EBA00F /* ALJson.h in Headers */,
 				6D6DF15A1BC5364C00EBA00F /* ALMessagesViewController.h in Headers */,
 				6D6DF1881BC5364C00EBA00F /* ALConstant.h in Headers */,
+				1829B22D2347C4AE00472008 /* ALSearchRequest.h in Headers */,
 				6D6DF1D31BC5364C00EBA00F /* KAProgressLabel.h in Headers */,
 				6D6DF16A1BC5364C00EBA00F /* ALMessageClientService.h in Headers */,
 				6D6DF1421BC5364C00EBA00F /* ALDBHandler.h in Headers */,
@@ -2110,6 +2117,7 @@
 				6DEAEE8D1D4CDBC700360060 /* ALUserProfileVC.m in Sources */,
 				6D6DF1531BC5364C00EBA00F /* ALUtilityClass.m in Sources */,
 				294637B71C6F16050025ED76 /* ALGroupCreationViewController.m in Sources */,
+				1829B22C2347C4AE00472008 /* ALSearchRequest.m in Sources */,
 				6D95476C1BE38DFF00776652 /* ALContactService.m in Sources */,
 				6D7756961D5B80110025560B /* ALMediaPlayer.m in Sources */,
 				18FB8A4F22D658C9000D3481 /* SearchResultCache.m in Sources */,

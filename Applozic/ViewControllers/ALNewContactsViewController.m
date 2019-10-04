@@ -88,7 +88,8 @@
     
     self.contactList = [NSMutableArray new];
     [self handleFrameForOrientation];
-    
+    [self.contactsTableView setBackgroundColor:[UIColor whiteColor]];
+
     //    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"< Back" style:UIBarButtonItemStyleBordered target:self action:@selector(back:)];
     //    [self.navigationItem setLeftBarButtonItem:barButtonItem];
     

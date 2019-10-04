@@ -2714,12 +2714,12 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         theMessage.fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",self.contactIds, filePath.lastPathComponent];
     }
 
-    CFStringRef pathExtension = (__bridge_retained CFStringRef)[filePath pathExtension];
-    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
-    CFRelease(pathExtension);
-    NSString *mimeType = (__bridge_transfer NSString *)UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
-
+    NSString *mimeType = [ALUtilityClass fileMIMEType:filePath];
+    if(!mimeType) {
+        return;
+    }
     theMessage.fileMeta.contentType = mimeType;
+
     if( theMessage.contentType == ALMESSAGE_CONTENT_VCARD)
     {
         theMessage.fileMeta.contentType = @"text/x-vcard";
@@ -2963,6 +2963,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
                 [self.navigationController pushViewController:launchChat animated:YES];
             } else {
                 ALBaseNavigationViewController *controller = [ALCustomPickerViewController makeInstanceWithDelegate:self];
+                controller.modalPresentationStyle = UIModalPresentationFullScreen;
                 [self presentViewController:controller animated:NO completion:nil];
             }
         }]];
@@ -3082,6 +3083,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 ALAudioAttachmentViewController *audioVC = (ALAudioAttachmentViewController *)[storyboard
                                                                                                instantiateViewControllerWithIdentifier:@"AudioAttachment"];
                 audioVC.audioAttchmentDelegate = self;
+                audioVC.modalPresentationStyle = UIModalPresentationFullScreen;
                 [self.navigationController pushViewController:audioVC animated:YES];
             }
             else

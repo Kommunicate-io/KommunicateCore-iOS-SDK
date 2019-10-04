@@ -67,6 +67,7 @@
         ALSLog(ALLoggerSeverityInfo, @"CALLED_VIA_NOTIFICATION");
         
         UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:chatView];
+        conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
         conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
     }
@@ -96,6 +97,7 @@
         ALSLog(ALLoggerSeverityInfo, @"CALLED_VIA_NOTIFICATION");
         
         UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:chatView];
+        conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
         conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
     }
@@ -121,7 +123,8 @@
         chatView.displayName = displayName;
         chatView.chatViewDelegate = self;
         
-        UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];;
+        UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];
+        conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
         conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve ;
         [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
     }
@@ -151,7 +154,8 @@
        chatView.displayName = displayName;
        chatView.chatViewDelegate = self;
        
-       UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];;
+       UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];
+        conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
        conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve ;
        [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
        
@@ -181,7 +185,8 @@
     {
         [tabBAR.tabBar setUnselectedItemTintColor:[ALApplozicSettings getTabBarUnSelectedItemColour]];
     }
-    
+
+    theTabBar.modalPresentationStyle = UIModalPresentationFullScreen;
     [viewController presentViewController:theTabBar animated:YES completion:nil];
     
 }
@@ -193,6 +198,7 @@
     ALNewContactsViewController *contcatVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contcatVC.directContactVCLaunch = YES;
     UINavigationController *conversationViewNavController = [[UINavigationController alloc] initWithRootViewController:contcatVC];
+    conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
     [uiViewController presentViewController:conversationViewNavController animated:YES completion:nil];
 }
 
@@ -221,6 +227,7 @@
     contextChatView.individualLaunch = YES;
     
     UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:contextChatView];
+    conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
     conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
 }
@@ -234,7 +241,7 @@
     chatListView.userIdToLaunch = userId;
     chatListView.channelKey = channelKey;
     chatListView.messagesViewDelegate = self;
-    
+    conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
     [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
     
 }
@@ -264,6 +271,7 @@
     if (![className isKindOfClass:[NSString class]]) className = @"UINavigationController";
     
     UINavigationController * navC = [(UINavigationController *)[NSClassFromString(className) alloc] initWithRootViewController:chatListView];
+    navC.modalPresentationStyle = UIModalPresentationFullScreen;
     [viewController presentViewController:navC animated:YES completion:nil];
     
 }
@@ -287,6 +295,7 @@
         
         msgVC.parentGroupKey = parentKey;
         [msgVC intializeSubgroupMessages];
+        theTabBar.modalPresentationStyle = UIModalPresentationFullScreen;
         [viewController presentViewController:theTabBar animated:YES completion:nil];
     }];
 }
@@ -320,6 +329,7 @@
 
     UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:contactVC];
     conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
     [viewController presentViewController:conversationViewNavController animated:YES completion:nil];
 }
 

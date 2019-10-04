@@ -549,6 +549,65 @@
      }];
 }
 
+- (void)searchMessageWith: (ALSearchRequest *)request withCompletion: (void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {
+
+    if(!request.searchText || request.searchText.length == 0 ) {
+        NSError *error = [NSError
+                          errorWithDomain:@"Applozic"
+                          code:1
+                          userInfo:[NSDictionary
+                                    dictionaryWithObject:@"Search text is empty or nil"
+                                    forKey:NSLocalizedDescriptionKey]];
+        completion(nil, error);
+        return;
+    }
+
+    NSString *urlString = [NSString stringWithFormat:@"%@/rest/ws/message/search", KBASE_URL];
+    NSString *paramString = [request getParamString];
+    NSMutableURLRequest *urlRequest = [ALRequestHandler
+                                       createGETRequestWithUrlString: urlString
+                                       paramString: paramString];
+    [ALResponseHandler
+     processRequest: urlRequest
+     andTag: @"Search messages"
+     WithCompletionHandler: ^(id theJson, NSError *theError) {
+         if (theError) {
+             ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",theError.description);
+             completion(nil, theError);
+             return;
+         }
+         if (![[theJson valueForKey:@"status"] isEqualToString:@"success"]) {
+             ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",theError.description);
+             NSError *error = [NSError
+                               errorWithDomain:@"Applozic"
+                               code:1
+                               userInfo:[NSDictionary
+                                         dictionaryWithObject:@"Status fail in response"
+                                         forKey:NSLocalizedDescriptionKey]];
+             completion(nil, error);
+             return;
+         }
+         NSDictionary *response = [theJson valueForKey: @"response"];
+         if (response == nil) {
+             ALSLog(ALLoggerSeverityError, @"Search messages RESPONSE is nil");
+             NSError *error = [NSError errorWithDomain:@"response is nil" code:0 userInfo:nil];
+             completion(nil, error);
+             return;
+         }
+         ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)theJson);
+         NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
+         NSDictionary *messageDict = [response valueForKey: @"message"];
+         for (NSDictionary *dict in messageDict) {
+             ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
+             [messages addObject: message];
+         }
+         ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
+         [[SearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
+         completion(messages, nil);
+         return;
+     }];
+}
+
 - (void)getMessageListForUser: (MessageListRequest *)messageListRequest
                      isSearch: (BOOL)flag
                withCompletion: (void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {

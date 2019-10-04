@@ -152,18 +152,13 @@
     return result;
 }
 
-+ (NSString*) fileMIMEType:(NSString*) file {
++ (NSString*) fileMIMEType:(NSString*) filePath {
     NSString *mimeType = nil;
-    if([[NSFileManager defaultManager] fileExistsAtPath:file] && [file pathExtension]){
-        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)[file pathExtension], NULL);
-        CFStringRef MIMEType = UTTypeCopyPreferredTagWithClass (UTI, kUTTagClassMIMEType);
-        CFRelease(UTI);
-        if(MIMEType){
-            mimeType = [NSString stringWithString:(__bridge NSString *)(MIMEType)];
-            CFRelease(MIMEType);
-        }
+    if(filePath) {
+        NSString *fileExtension = [filePath pathExtension];
+        NSString *uti = (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)fileExtension, NULL);
+        mimeType = (__bridge_transfer NSString *)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)uti, kUTTagClassMIMEType);
     }
-    
     return mimeType;
 }
 

@@ -34,10 +34,10 @@
     self.delegate = delegate;
     self.attachmentProgressDelegate = attachmentProgressDelegate;
 
-    CFStringRef pathExtension = (__bridge_retained CFStringRef)[attachmentMessage.imageFilePath pathExtension];
-    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
-    CFRelease(pathExtension);
-    NSString *mimeType = (__bridge_transfer NSString *)UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
+    NSString *mimeType = [ALUtilityClass fileMIMEType:attachmentMessage.imageFilePath];
+    if(!mimeType) {
+        return;
+    }
 
     attachmentMessage.fileMeta.contentType = mimeType;
     if( attachmentMessage.contentType == ALMESSAGE_CONTENT_VCARD){
