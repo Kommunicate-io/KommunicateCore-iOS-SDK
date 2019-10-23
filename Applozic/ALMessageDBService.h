@@ -86,7 +86,7 @@
 -(ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
 
 +(void)addBroadcastMessageToDB:(ALMessage *)alMessage;
--(void) updateMessageReplyType:(NSString*)messageKeyString replyType : (NSNumber *) type ;
+-(void) updateMessageReplyType:(NSString*)messageKeyString replyType : (NSNumber *) type hideFlag:(BOOL)flag;
 
 -(void) updateMessageSentDetails:(NSString*)messageKeyString withCreatedAtTime : (NSNumber *) createdAtTime withDbMessage:(DB_Message *) dbMessage ;
 

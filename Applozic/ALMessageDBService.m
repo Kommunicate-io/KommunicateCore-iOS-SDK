@@ -43,6 +43,12 @@
 
             [messageArray addObject:theMessage];
 
+        } else if (message != nil) {
+            DB_Message* dbMessage = message;
+            if (dbMessage && [dbMessage.replyMessageType intValue] == AL_REPLY_BUT_HIDDEN) {
+                int replyType = (dbMessage.metadata && [dbMessage.metadata containsString:AL_MESSAGE_REPLY_KEY]) ? AL_A_REPLY : AL_NOT_A_REPLY;
+                [self updateMessageReplyType:dbMessage.key replyType: [NSNumber numberWithInt:replyType] hideFlag:NO];
+            }
         }
     }
     NSError * error;
@@ -938,13 +944,14 @@ FETCH LATEST MESSSAGE FOR SUB GROUPS
 }
 
 
--(void) updateMessageReplyType:(NSString*)messageKeyString replyType : (NSNumber *) type {
+-(void) updateMessageReplyType:(NSString*)messageKeyString replyType : (NSNumber *) type hideFlag:(BOOL)flag {
 
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
 
     DB_Message * replyMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKeyString];
 
     replyMessage.replyMessageType = type;
+    replyMessage.msgHidden = [NSNumber numberWithBool:flag];
 
     NSError *Error = nil;
 

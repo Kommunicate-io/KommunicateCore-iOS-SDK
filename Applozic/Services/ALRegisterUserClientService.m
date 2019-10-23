@@ -40,8 +40,13 @@
     [ALUserDefaultsHandler setPassword:user.password];
     [ALUserDefaultsHandler setDisplayName:user.displayName];
     [ALUserDefaultsHandler setEmailId:user.email];
-    
-    [ALUserDefaultsHandler setApplicationKey: user.applicationId];
+
+    NSString *applicationId = [ALUserDefaultsHandler getApplicationKey];
+    if (applicationId) {
+        [user setApplicationId: applicationId];
+    } else { // For backward compatibility
+        [ALUserDefaultsHandler setApplicationKey: user.applicationId];
+    }
     [user setPrefContactAPI:2];
     [user setEmailVerified:true];
     [user setDeviceType:4];
