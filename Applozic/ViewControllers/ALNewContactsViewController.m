@@ -232,7 +232,7 @@
     }
     
     if(![ALApplozicSettings getGroupOption]){
-        [self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"contactsTitile", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Contacts" , @"")];
+        [self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"contactsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Contacts" , @"")];
         [self.segmentControl setSelectedSegmentIndex:0];
         [self.segmentControl setHidden:YES];
     }

@@ -645,4 +645,28 @@
     }];
 }
 
+- (void)getMessagesWithkeys:(NSMutableArray<NSString *> *)keys withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
+    NSString *urlString = [NSString stringWithFormat:@"%@/rest/ws/message/detail", KBASE_URL];
+    NSMutableString *paramString = [[NSMutableString alloc] init];
+    for (NSString* key in keys) {
+        [paramString appendString: [NSString stringWithFormat:@"keys=%@&", key]];
+    }
+
+    if (keys.count > 0) {
+        /// We have an extra ampersand.
+        [paramString deleteCharactersInRange:NSMakeRange([paramString length] - 1, 1)];
+    }
+    NSMutableURLRequest* request = [ALRequestHandler createGETRequestWithUrlString: urlString paramString: paramString];
+    [ALResponseHandler processRequest:request andTag:@"Get hidden messages" WithCompletionHandler:^(id theJson, NSError *theError) {
+        if (theError) {
+            ALSLog(ALLoggerSeverityError, @"Fetching message error", (NSString *)theJson);
+            completion(nil, theError);
+            return;
+        }
+        ALAPIResponse* response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        ALSLog(ALLoggerSeverityInfo, @"Messages fetched successfully", (NSString *)theJson);
+        completion(response, nil);
+    }];
+}
+
 @end
