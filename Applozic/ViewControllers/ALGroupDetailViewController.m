@@ -866,7 +866,9 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     }
     else{
-        return nil;
+        UIView * view = [[UIView alloc]init];
+        view.backgroundColor = [UIColor colorWithRed:245.0/255 green:245.0/255 blue:245.0/255 alpha:1];
+        return view;
     }
 }
 

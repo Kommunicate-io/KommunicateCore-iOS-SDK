@@ -80,15 +80,16 @@ extension AVURLAsset {
         let exportVideo = { [weak self] in
             self?.exportMultipleVideos(videoAssets, range: range, exportStarted: { [weak self] in
                 self?.showProgressAlert(on: baseVC)
-            }, completion: { [weak vc = baseVC] paths in
-                
-                if paths != nil {
-                    // preventing crash for short video, with the controller that would attempt to dismiss while being presented
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(400)) {
-                        vc?.dismiss(animated: true)
+                }, completion: { [weak vc = baseVC] paths in
+
+                    if paths != nil {
+                        // preventing crash for short video, with the controller that would attempt to dismiss while being presented
+                        // and prevent from Optimization popup being hung because video was optimized faster than Alert VC appearance animation duration
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                            vc?.dismiss(animated: true)
+                        }
                     }
-                }
-                completion(paths)
+                    completion(paths)
             })
         }
         
