@@ -6,6 +6,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="HelveticaNeue.ttc">
+            <string>HelveticaNeue-Bold</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Messages View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -432,6 +437,7 @@
                                         <accessibility key="accessibilityConfiguration">
                                             <accessibilityTraits key="traits" selected="YES"/>
                                         </accessibility>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                                     </textField>
@@ -552,6 +558,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstItem="PNI-xz-0tV" firstAttribute="leading" secondItem="Tsi-AT-Efm" secondAttribute="trailing" constant="8" symbolic="YES" id="1vq-WT-pfa"/>
                                                 <constraint firstItem="6e7-cr-Zrj" firstAttribute="firstBaseline" secondItem="MBK-3V-a7T" secondAttribute="baseline" constant="2" id="9LK-MA-KIG"/>

@@ -56,9 +56,10 @@
         self.groupNameInput.textAlignment = NSTextAlignmentRight;
     }
     
-    
-    self.groupNameInput.placeholder = NSLocalizedStringWithDefaultValue(@"groupNameTextField", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Type your group name", @"");
-    
+    NSDictionary *attrs = @{ NSForegroundColorAttributeName : UIColor.grayColor};
+    self.groupNameInput.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedStringWithDefaultValue(@"groupNameTextField", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Type your group name", @"") attributes:attrs];
+
+
     [self.descriptionTextView setText: NSLocalizedStringWithDefaultValue(@"descriptionTextForGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Please provide group name", @"")];
     
     if(self.isViewForUpdatingGroup)
