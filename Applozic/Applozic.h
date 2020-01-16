@@ -121,3 +121,4 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALMultimediaData.h>
 #import <Applozic/UIImage+animatedGIF.h>
 #import <Applozic/ALAudioSession.h>
+#import <Applozic/ALChannelOfTwoMetaData.h>

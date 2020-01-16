@@ -250,6 +250,11 @@
     return (self.contentType == AV_CALL_CONTENT_THREE);
 }
 
+-(BOOL)isResetUnreadCountMessage {
+    return (self.groupId && self.isChannelContentTypeMessage &&
+            self.metadata && [self.metadata  valueForKey:AL_RESET_UNREAD_COUNT]
+            && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:ALUserDefaultsHandler.getUserId]);
+}
 
 -(NSString*)getNotificationText
 {
@@ -352,13 +357,13 @@
 -(BOOL)isPushNotificationMessage
 {
   return (self.metadata && [self.metadata valueForKey:@"category"] &&
-   [ [self.metadata valueForKey:@"category"] isEqualToString:CATEGORY_PUSHNNOTIFICATION]);
+   [ [self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_PUSHNNOTIFICATION]);
 }
 
 -(BOOL)isMessageCategoryHidden
 {
     return (self.metadata && [self.metadata valueForKey:@"category"] &&
-            [ [self.metadata valueForKey:@"category"] isEqualToString:CATEGORY_HIDDEN]);
+            [ [self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_HIDDEN]);
 }
 
 
@@ -369,11 +374,11 @@
 
 -(BOOL)isSentMessage
 {
-    return [self.type isEqualToString:OUT_BOX];
+    return [self.type isEqualToString:AL_OUT_BOX];
 }
 -(BOOL)isReceivedMessage
 {
-    return [self.type isEqualToString:IN_BOX];
+    return [self.type isEqualToString:AL_IN_BOX];
 
 }
 
@@ -450,7 +455,7 @@
         _delivered = NO;
         _fileMetaKey = nil;
         _groupId = builder.groupId;
-        _source = SOURCE_IOS;
+        _source = AL_SOURCE_IOS;
         _metadata = builder.metadata; // EXAMPLE FOR META DATA
         if(builder.imageFilePath){
         _imageFilePath = builder.imageFilePath.lastPathComponent;
@@ -509,7 +514,7 @@
         
     }
     
-    return (([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE)
+    return (([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE)
             
             || (_metadata && ([self isSilentNotification]
                               

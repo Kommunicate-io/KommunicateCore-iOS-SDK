@@ -18,6 +18,8 @@
 #import "ALMessagesViewController.h"
 #import "ALUserService.h"
 
+const int REGULAR_CONTACTS = 0;
+
 @interface ALChatLauncher ()<ALChatViewControllerDelegate, ALMessagesViewDelegate>
 
 @end

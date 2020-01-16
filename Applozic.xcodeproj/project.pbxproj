@@ -30,6 +30,8 @@
 		1821DDEA2167D47B00CB24A5 /* ALAttachmentService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */; };
 		1829B22C2347C4AE00472008 /* ALSearchRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1829B22A2347C4AD00472008 /* ALSearchRequest.m */; };
 		1829B22D2347C4AE00472008 /* ALSearchRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1829B22B2347C4AE00472008 /* ALSearchRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18413E1F23D0695D00696FA6 /* ALNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18413E1D23D0695C00696FA6 /* ALNotificationHelper.m */; };
+		18413E2023D0695D00696FA6 /* ALNotificationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18413E1E23D0695D00696FA6 /* ALNotificationHelper.h */; };
 		1866E32C218749BD00667018 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32B218749BD00667018 /* UIColor+Extension.swift */; };
 		1866E32E218749CA00667018 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32D218749C900667018 /* ALImagePreviewController.m */; };
 		187EEAA923182396008012BC /* ALPreviewPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */; };
@@ -440,6 +442,8 @@
 		1821DDE82167D47A00CB24A5 /* ALAttachmentService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAttachmentService.m; path = Applozic/ALAttachmentService.m; sourceTree = "<group>"; };
 		1829B22A2347C4AD00472008 /* ALSearchRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALSearchRequest.m; path = Applozic/ALSearchRequest.m; sourceTree = "<group>"; };
 		1829B22B2347C4AE00472008 /* ALSearchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALSearchRequest.h; path = Applozic/ALSearchRequest.h; sourceTree = "<group>"; };
+		18413E1D23D0695C00696FA6 /* ALNotificationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALNotificationHelper.m; path = Applozic/ALNotificationHelper.m; sourceTree = "<group>"; };
+		18413E1E23D0695D00696FA6 /* ALNotificationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALNotificationHelper.h; path = Applozic/ALNotificationHelper.h; sourceTree = "<group>"; };
 		1866E32B218749BD00667018 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		1866E32D218749C900667018 /* ALImagePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALImagePreviewController.m; sourceTree = "<group>"; };
 		187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALPreviewPhotoViewController.swift; sourceTree = "<group>"; };
@@ -1303,6 +1307,8 @@
 		6D6DF1E01BC5379C00EBA00F /* push */ = {
 			isa = PBXGroup;
 			children = (
+				18413E1E23D0695D00696FA6 /* ALNotificationHelper.h */,
+				18413E1D23D0695C00696FA6 /* ALNotificationHelper.m */,
 				6D7757031D5B83660025560B /* ALPushAssist.h */,
 				6D7757041D5B83660025560B /* ALPushAssist.m */,
 				6D7757051D5B83660025560B /* HexColors.h */,
@@ -1777,6 +1783,7 @@
 				8B24FFD2204EB1000097A46A /* ALGroupUser.h in Headers */,
 				6D6DF1841BC5364C00EBA00F /* DB_Message.h in Headers */,
 				463E49201DB7B45D00CDFFE6 /* ALVCardClass.h in Headers */,
+				18413E2023D0695D00696FA6 /* ALNotificationHelper.h in Headers */,
 				C70273CB1DED445E00BA2C8A /* ALUserDetailListFeed.h in Headers */,
 				C76366081DF82B500087221C /* ALNavigationController.h in Headers */,
 				465EBAF11E9624C100E7B79B /* ALSubViewController.h in Headers */,
@@ -2035,6 +2042,7 @@
 				4612E9001E13882D0022DB23 /* MQTTDecoder.m in Sources */,
 				8B22F0D520DE393C00A4AF4A /* ALTemplateMessagesView.swift in Sources */,
 				6D7757021D5B82ED0025560B /* DB_CHANNEL.m in Sources */,
+				18413E1F23D0695D00696FA6 /* ALNotificationHelper.m in Sources */,
 				4612E9051E13882D0022DB23 /* MQTTMessage.m in Sources */,
 				6D6DF1CC1BC5364C00EBA00F /* UIImage+WebP.m in Sources */,
 				6D6DF1C11BC5364C00EBA00F /* SDWebImageManager.m in Sources */,
@@ -2274,7 +2282,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -2306,7 +2314,7 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

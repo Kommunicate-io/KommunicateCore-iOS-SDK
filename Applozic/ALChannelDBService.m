@@ -14,85 +14,13 @@
 #import "ALContact.h"
 #import "ALChannelUser.h"
 #import "SearchResultCache.h"
+#import "ALChannelService.h"
 
 @interface ALChannelDBService ()
 
 @end
 
 @implementation ALChannelDBService
-
-
-dispatch_queue_t syncSerialBackgroundQueue;
-
-
--(void)createChannel:(ALChannel *)channel
-{
-    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-    [self createChannelEntity:channel];
-    [theDBHandler.managedObjectContext save:nil];
-
-
-    if(channel.membersName == nil){
-        channel.membersName = channel.membersId;
-    }
-
-    [self deleteMembers:channel.key];
-
-    [self saveDataInBackgroundWithContext:theDBHandler.privateContext withChannel:channel];
-    [self addedMembersArray:channel.membersName andChannelKey:channel.key];
-    [self removedMembersArray:channel.removeMembers andChannelKey:channel.key];
-
-}
-
-- (void)saveDataInBackgroundWithContext:(NSManagedObjectContext *) nsContext withChannel:(ALChannel *)channel
-{
-
-    if (syncSerialBackgroundQueue == NULL) {
-        syncSerialBackgroundQueue = dispatch_queue_create("ApplozicSyncSerialBackgroundQueue", 0);
-    }
-    // As saveGroupUsersOfChannel:channel withContext:nsContext is running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
-    if(!ALUserDefaultsHandler.isLoggedIn){
-        return;
-    }
-
-    dispatch_async(syncSerialBackgroundQueue, ^{
-        [self saveGroupUsersOfChannel:channel withContext:nsContext];
-    });
-
-}
-
-
--(void)saveGroupUsersOfChannel:(ALChannel *)channel withContext:(NSManagedObjectContext *)context {
-    [context performBlock:^{
-
-        int count = 0;
-        for(ALChannelUser * channelUser  in  channel.groupUsers)
-        {
-            ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
-            newChannelUserX.key = channel.key;
-            if(channelUser.userId != nil){
-                newChannelUserX.userKey = channelUser.userId;
-            }
-            if(channelUser.parentGroupKey != nil){
-                newChannelUserX.parentKey = channelUser.parentGroupKey;
-            }
-            if(channelUser.role != nil){
-                newChannelUserX.role = channelUser.role;
-            }
-            if(ALUserDefaultsHandler.isLoggedIn){
-                [self createChannelUserXEntity:newChannelUserX  withContext:context];
-            }
-            count++;
-            if(count % 300 == 0){
-                [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
-            }
-        }
-        [[ALDBHandler sharedInstance] savePrivateAndMainContext:context];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"Updated_Group_Members" object:channel];
-
-    }];
-}
-
 
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey
 {
@@ -169,7 +97,6 @@ dispatch_queue_t syncSerialBackgroundQueue;
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X" inManagedObjectContext:theDBHandler.managedObjectContext];
     [fetchRequest setEntity:entity];
-    
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@", key];
     [fetchRequest setPredicate:predicate];
     
@@ -926,8 +853,8 @@ dispatch_queue_t syncSerialBackgroundQueue;
     ALChannel *channel = [ALChannel new];
     NSMutableDictionary *metadata =   [channel getMetaDataDictionary:dbChannel.metadata];
     
-    if( metadata && [metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] ){
-        return ([[metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
+    if( metadata && [metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] ){
+        return ([[metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
     }
     return NO;
 }
@@ -940,21 +867,6 @@ dispatch_queue_t syncSerialBackgroundQueue;
     
     return (metadata && [[metadata valueForKey:@"AL_ADMIN_BROADCAST"] isEqualToString:@"true"]);
 }
-
-
--(void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate{
-   
-    for(ALChannel *channelObject in channelArray)
-    {
-        [self createChannel:channelObject];
-        if(delegate){
-            [delegate onChannelUpdated:channelObject];
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_channel_Info" object:channelObject];
-    }
-
-}
-
 
 //------------------------------------------
 #pragma mark AFTER LEAVE LOGOUT and LOGIN
@@ -1188,7 +1100,9 @@ dispatch_queue_t syncSerialBackgroundQueue;
         {
             for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
             {
-                [memberList addObject:dbChannelUserX.userId];
+                if (dbChannelUserX.userId) {
+                    [memberList addObject:dbChannelUserX.userId];
+                }
             }
         }else{
             ALSLog(ALLoggerSeverityWarn, @"NO MEMBER FOUND");

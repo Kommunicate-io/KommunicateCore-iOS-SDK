@@ -13,27 +13,27 @@
 +(void) setConversationContactImageVisibility:(BOOL)visibility
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:visibility forKey:CONVERSATION_CONTACT_IMAGE_VISIBILITY];
+    [userDefaults setBool:visibility forKey:AL_CONVERSATION_CONTACT_IMAGE_VISIBILITY];
     [userDefaults synchronize];
 }
 
 +(BOOL) isConversationContactImageVisible
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:CONVERSATION_CONTACT_IMAGE_VISIBILITY];
+    return [userDefaults boolForKey:AL_CONVERSATION_CONTACT_IMAGE_VISIBILITY];
 }
 
 +(void) setBottomTabBarHidden:(BOOL)visibleStatus
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:visibleStatus forKey:BOTTOM_TAB_BAR_VISIBLITY];
+    [userDefaults setBool:visibleStatus forKey:AL_BOTTOM_TAB_BAR_VISIBLITY];
     [userDefaults synchronize];
 }
 
 +(BOOL) isBottomTabBarHidden
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    BOOL flag = [userDefaults boolForKey:BOTTOM_TAB_BAR_VISIBLITY];
+    BOOL flag = [userDefaults boolForKey:AL_BOTTOM_TAB_BAR_VISIBLITY];
     if(flag)
     {
         return YES;
@@ -47,40 +47,40 @@
 +(void) setNavigationRightButtonHidden:(BOOL)flagValue
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flagValue forKey:LOGOUT_BUTTON_VISIBLITY];
+    [userDefaults setBool:flagValue forKey:AL_LOGOUT_BUTTON_VISIBLITY];
     [userDefaults synchronize];
 }
 
 +(BOOL) isNavigationRightButtonHidden
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:LOGOUT_BUTTON_VISIBLITY];
+    return [userDefaults boolForKey:AL_LOGOUT_BUTTON_VISIBLITY];
 }
 
 +(void) setBackButtonHidden:(BOOL)flagValue
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flagValue forKey:BACK_BTN_VISIBILITY_ON_CON_LIST];
+    [userDefaults setBool:flagValue forKey:AL_BACK_BTN_VISIBILITY_ON_CON_LIST];
     [userDefaults synchronize];
 }
 
 +(BOOL) isBackButtonHidden
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:BACK_BTN_VISIBILITY_ON_CON_LIST];
+    return [userDefaults boolForKey:AL_BACK_BTN_VISIBILITY_ON_CON_LIST];
 }
 
 +(void) setApplicationKey:(NSString *)applicationKey
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:applicationKey forKey:APPLICATION_KEY];
+    [userDefaults setValue:applicationKey forKey:AL_APPLICATION_KEY];
     [userDefaults synchronize];
 }
 
 +(NSString *) getApplicationKey
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:APPLICATION_KEY];
+    return [userDefaults valueForKey:AL_APPLICATION_KEY];
 }
 
 +(BOOL) isLoggedIn
@@ -96,7 +96,7 @@
     NSArray * keyArray = [dictionary allKeys];
     for(NSString * defaultKeyString in keyArray)
     {
-        if([defaultKeyString hasPrefix:KEY_PREFIX] && ![defaultKeyString isEqualToString:APN_DEVICE_TOKEN])
+        if([defaultKeyString hasPrefix:AL_KEY_PREFIX] && ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN])
         {
             [userDefaults removeObjectForKey:defaultKeyString];
             [userDefaults synchronize];
@@ -107,27 +107,27 @@
 +(void) setApnDeviceToken:(NSString *)apnDeviceToken
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:apnDeviceToken forKey:APN_DEVICE_TOKEN];
+    [userDefaults setValue:apnDeviceToken forKey:AL_APN_DEVICE_TOKEN];
     [userDefaults synchronize];
 }
 
 +(NSString*) getApnDeviceToken
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:APN_DEVICE_TOKEN];
+    return [userDefaults valueForKey:AL_APN_DEVICE_TOKEN];
 }
 
 +(void) setEmailVerified:(BOOL)value
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:value forKey:EMAIL_VERIFIED];
+    [userDefaults setBool:value forKey:AL_EMAIL_VERIFIED];
     [userDefaults synchronize];
 }
 
 +(void) getEmailVerified
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults boolForKey: EMAIL_VERIFIED];
+    [userDefaults boolForKey: AL_EMAIL_VERIFIED];
 }
 
 // isConversationDbSynced
@@ -135,95 +135,95 @@
 +(void)setBoolForKey_isConversationDbSynced:(BOOL)value
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:value forKey:CONVERSATION_DB_SYNCED];
+    [userDefaults setBool:value forKey:AL_CONVERSATION_DB_SYNCED];
     [userDefaults synchronize];
 }
 
 +(BOOL)getBoolForKey_isConversationDbSynced
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:CONVERSATION_DB_SYNCED];
+    return [userDefaults boolForKey:AL_CONVERSATION_DB_SYNCED];
 }
 
 +(void)setEmailId:(NSString *)emailId
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:emailId forKey:EMAIL_ID];
+    [userDefaults setValue:emailId forKey:AL_EMAIL_ID];
     [userDefaults synchronize];
 }
 
 +(NSString *)getEmailId
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:EMAIL_ID];
+    return [userDefaults valueForKey:AL_EMAIL_ID];
 }
     
 
 +(void)setDisplayName:(NSString *)displayName
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:displayName forKey:DISPLAY_NAME];
+    [userDefaults setValue:displayName forKey:AL_DISPLAY_NAME];
     [userDefaults synchronize];
 }
 
 +(NSString *)getDisplayName
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:DISPLAY_NAME];
+    return [userDefaults valueForKey:AL_DISPLAY_NAME];
 }
 
 //deviceKey String
 +(void)setDeviceKeyString:(NSString *)deviceKeyString
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:deviceKeyString forKey:DEVICE_KEY_STRING];
+    [userDefaults setValue:deviceKeyString forKey:AL_DEVICE_KEY_STRING];
     [userDefaults synchronize];
 }
 
 +(NSString *)getDeviceKeyString{
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:DEVICE_KEY_STRING];
+    return [userDefaults valueForKey:AL_DEVICE_KEY_STRING];
 }
 
 +(void)setUserKeyString:(NSString *)suUserKeyString
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:suUserKeyString forKey:USER_KEY_STRING];
+    [userDefaults setValue:suUserKeyString forKey:AL_USER_KEY_STRING];
     [userDefaults synchronize];
 }
 
 +(NSString *)getUserKeyString
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:USER_KEY_STRING];
+    return [userDefaults valueForKey:AL_USER_KEY_STRING];
 }
 
 //LOGIN USER ID
 +(void)setUserId:(NSString *)userId
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:userId forKey:USER_ID];
+    [userDefaults setValue:userId forKey:AL_USER_ID];
     [userDefaults synchronize];
 }
 
 +(NSString *)getUserId
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:USER_ID];
+    return [userDefaults valueForKey:AL_USER_ID];
 }
 
 //LOGIN USER PASSWORD
 +(void)setPassword:(NSString *)password
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:password forKey:USER_PASSWORD];
+    [userDefaults setValue:password forKey:AL_USER_PASSWORD];
     [userDefaults synchronize];
 }
 
 +(NSString *)getPassword
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:USER_PASSWORD];
+    return [userDefaults valueForKey:AL_USER_PASSWORD];
 }
 
 //last sync time
@@ -233,7 +233,7 @@
     lstSyncTime = @([lstSyncTime doubleValue] + 1);
     ALSLog(ALLoggerSeverityInfo, @"saving last Sync time in the preference ...%@" ,lstSyncTime);
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setDouble:[lstSyncTime doubleValue] forKey:LAST_SYNC_TIME];
+    [userDefaults setDouble:[lstSyncTime doubleValue] forKey:AL_LAST_SYNC_TIME];
     [userDefaults synchronize];
 }
 
@@ -241,7 +241,7 @@
 {
    // NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:LAST_SYNC_TIME];
+    return [userDefaults valueForKey:AL_LAST_SYNC_TIME];
 }
 
 
@@ -252,7 +252,7 @@
         return;
     }
     
-    NSString * key = [MSG_LIST_CALL_SUFIX stringByAppendingString: contactId];
+    NSString * key = [AL_MSG_LIST_CALL_SUFIX stringByAppendingString: contactId];
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
     [userDefaults setBool:true forKey:key];
     [userDefaults synchronize];
@@ -264,7 +264,7 @@
     {
         return true;
     }
-    NSString * key = [MSG_LIST_CALL_SUFIX stringByAppendingString: contactId];
+    NSString * key = [AL_MSG_LIST_CALL_SUFIX stringByAppendingString: contactId];
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
     return [userDefaults boolForKey:key];
 }
@@ -272,13 +272,13 @@
 +(void) setProcessedNotificationIds:(NSMutableArray*)arrayWithIds
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setObject:arrayWithIds forKey:PROCESSED_NOTIFICATION_IDS];
+    [userDefaults setObject:arrayWithIds forKey:AL_PROCESSED_NOTIFICATION_IDS];
 }
 
 +(NSMutableArray*) getProcessedNotificationIds
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [[userDefaults objectForKey:PROCESSED_NOTIFICATION_IDS] mutableCopy];
+    return [[userDefaults objectForKey:AL_PROCESSED_NOTIFICATION_IDS] mutableCopy];
 }
 
 +(BOOL)isNotificationProcessd:(NSString*)withNotificationId
@@ -311,14 +311,14 @@
 {
     ALSLog(ALLoggerSeverityInfo, @"saving last seen time in the preference ...%@" ,lastSeenTime);
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setDouble:[lastSeenTime doubleValue] forKey:LAST_SEEN_SYNC_TIME];
+    [userDefaults setDouble:[lastSeenTime doubleValue] forKey:AL_LAST_SEEN_SYNC_TIME];
     [userDefaults synchronize];
 }
 
 +(NSNumber *) getLastSeenSyncTime
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSNumber * timeStamp = [userDefaults objectForKey:LAST_SEEN_SYNC_TIME];
+    NSNumber * timeStamp = [userDefaults objectForKey:AL_LAST_SEEN_SYNC_TIME];
     return timeStamp ? timeStamp : [NSNumber numberWithInt:0];
 }
 
@@ -329,7 +329,7 @@
         return;
     }
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSString *key = [SHOW_LOAD_ERLIER_MESSAGE stringByAppendingString:contactId];
+    NSString *key = [AL_SHOW_LOAD_ERLIER_MESSAGE stringByAppendingString:contactId];
     [userDefaults setBool:value forKey:key];
     [userDefaults synchronize];
 }
@@ -341,7 +341,7 @@
         return NO;
     }
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSString *key = [SHOW_LOAD_ERLIER_MESSAGE stringByAppendingString:contactId];
+    NSString *key = [AL_SHOW_LOAD_ERLIER_MESSAGE stringByAppendingString:contactId];
     if ([userDefaults valueForKey:key])
     {
         return [userDefaults boolForKey:key];
@@ -357,42 +357,42 @@
 +(void)setNotificationTitle:(NSString *)notificationTitle
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:notificationTitle forKey:NOTIFICATION_TITLE_KEY];
+    [userDefaults setValue:notificationTitle forKey:AL_NOTIFICATION_TITLE_KEY];
     [userDefaults synchronize];
 }
 
 +(NSString *)getNotificationTitle
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:NOTIFICATION_TITLE_KEY];
+    return [userDefaults valueForKey:AL_NOTIFICATION_TITLE_KEY];
 }
 
 +(void)setLastSyncChannelTime:(NSNumber *)lastSyncChannelTime
 {
     lastSyncChannelTime = @([lastSyncChannelTime doubleValue] + 1);
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setDouble:[lastSyncChannelTime doubleValue] forKey:LAST_SYNC_CHANNEL_TIME];
+    [userDefaults setDouble:[lastSyncChannelTime doubleValue] forKey:AL_LAST_SYNC_CHANNEL_TIME];
     [userDefaults synchronize];
 }
 
 +(NSNumber *)getLastSyncChannelTime
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:LAST_SYNC_CHANNEL_TIME];
+    return [userDefaults valueForKey:AL_LAST_SYNC_CHANNEL_TIME];
 }
 
 +(void)setUserBlockLastTimeStamp:(NSNumber *)lastTimeStamp
 {
     lastTimeStamp = @([lastTimeStamp doubleValue] + 1);
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setDouble:[lastTimeStamp doubleValue] forKey:USER_BLOCK_LAST_TIMESTAMP];
+    [userDefaults setDouble:[lastTimeStamp doubleValue] forKey:AL_USER_BLOCK_LAST_TIMESTAMP];
     [userDefaults synchronize];
 }
 
 +(NSNumber *)getUserBlockLastTimeStamp
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSNumber * lastSyncTimeStamp = [userDefaults valueForKey:USER_BLOCK_LAST_TIMESTAMP];
+    NSNumber * lastSyncTimeStamp = [userDefaults valueForKey:AL_USER_BLOCK_LAST_TIMESTAMP];
     if(!lastSyncTimeStamp)                      //FOR FIRST TIME USER
     {
         lastSyncTimeStamp = [NSNumber numberWithInt:1000];
@@ -405,27 +405,27 @@
 +(void )setAppModuleName:(NSString *)appModuleName
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:appModuleName forKey:APP_MODULE_NAME_ID];
+    [userDefaults setValue:appModuleName forKey:AL_APP_MODULE_NAME_ID];
     [userDefaults synchronize];
 }
 
 +(NSString *)getAppModuleName
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:APP_MODULE_NAME_ID];
+    return [userDefaults valueForKey:AL_APP_MODULE_NAME_ID];
 }
 
 +(void) setContactViewLoadStatus:(BOOL)status
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:status forKey:CONTACT_VIEW_LOADED];
+    [userDefaults setBool:status forKey:AL_CONTACT_VIEW_LOADED];
     [userDefaults synchronize];
 }
 
 +(BOOL) getContactViewLoaded
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:CONTACT_VIEW_LOADED];
+    return [userDefaults boolForKey:AL_CONTACT_VIEW_LOADED];
 }
 
 +(void)setServerCallDoneForUserInfo:(BOOL)value ForContact:(NSString *)contactId
@@ -435,7 +435,7 @@
         return;
     }
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSString * key = [USER_INFO_API_CALLED_SUFFIX stringByAppendingString:contactId];
+    NSString * key = [AL_USER_INFO_API_CALLED_SUFFIX stringByAppendingString:contactId];
     [userDefaults setBool:value forKey:key];
     [userDefaults synchronize];
 }
@@ -448,7 +448,7 @@
     }
 
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSString * key = [USER_INFO_API_CALLED_SUFFIX stringByAppendingString:contactId];
+    NSString * key = [AL_USER_INFO_API_CALLED_SUFFIX stringByAppendingString:contactId];
     return [userDefaults boolForKey:key];
 }
 
@@ -516,251 +516,251 @@
 +(void)setUserTypeId:(short)type
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setInteger:type forKey:USER_TYPE_ID];
+    [userDefaults setInteger:type forKey:AL_USER_TYPE_ID];
     [userDefaults synchronize];
 }
 
 +(short)getUserTypeId{
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults integerForKey:USER_TYPE_ID];
+    return [userDefaults integerForKey:AL_USER_TYPE_ID];
 }
 
 +(void)setLastMessageListTime:(NSNumber *)lastTime
 {
     lastTime = @([lastTime doubleValue] + 1);
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setDouble:[lastTime doubleValue] forKey:MESSSAGE_LIST_LAST_TIME];
+    [userDefaults setDouble:[lastTime doubleValue] forKey:AL_MESSSAGE_LIST_LAST_TIME];
     [userDefaults synchronize];
 }
 
 +(NSNumber *)getLastMessageListTime
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:MESSSAGE_LIST_LAST_TIME];
+    return [userDefaults valueForKey:AL_MESSSAGE_LIST_LAST_TIME];
 }
 
 +(void)setFlagForAllConversationFetched:(BOOL)flag
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flag forKey:ALL_CONVERSATION_FETCHED];
+    [userDefaults setBool:flag forKey:AL_ALL_CONVERSATION_FETCHED];
     [userDefaults synchronize];
 }
 
 +(BOOL)getFlagForAllConversationFetched
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:ALL_CONVERSATION_FETCHED];
+    return [userDefaults boolForKey:AL_ALL_CONVERSATION_FETCHED];
 }
 
 +(void)setFetchConversationPageSize:(NSInteger)limit
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setInteger:limit forKey:CONVERSATION_FETCH_PAGE_SIZE];
+    [userDefaults setInteger:limit forKey:AL_CONVERSATION_FETCH_PAGE_SIZE];
     [userDefaults synchronize];
 }
 
 +(NSInteger)getFetchConversationPageSize
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    NSInteger maxLimit = [userDefaults integerForKey:CONVERSATION_FETCH_PAGE_SIZE];
+    NSInteger maxLimit = [userDefaults integerForKey:AL_CONVERSATION_FETCH_PAGE_SIZE];
     return maxLimit ? maxLimit : 60;
 }
 
 +(void)setNotificationMode:(short)mode
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setInteger:mode forKey:NOTIFICATION_MODE];
+    [userDefaults setInteger:mode forKey:AL_NOTIFICATION_MODE];
     [userDefaults synchronize];
 }
 
 +(short)getNotificationMode
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults integerForKey:NOTIFICATION_MODE];
+    return [userDefaults integerForKey:AL_NOTIFICATION_MODE];
 }
 
 +(void)setUserAuthenticationTypeId:(short)type
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setInteger:type forKey:USER_AUTHENTICATION_TYPE_ID];
+    [userDefaults setInteger:type forKey:AL_USER_AUTHENTICATION_TYPE_ID];
     [userDefaults synchronize];
 }
 
 +(short)getUserAuthenticationTypeId
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    short type = [userDefaults integerForKey:USER_AUTHENTICATION_TYPE_ID];
+    short type = [userDefaults integerForKey:AL_USER_AUTHENTICATION_TYPE_ID];
     return type ? type : 0;
 }
 
 +(void)setUnreadCountType:(short)mode
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setInteger:mode forKey:UNREAD_COUNT_TYPE];
+    [userDefaults setInteger:mode forKey:AL_UNREAD_COUNT_TYPE];
     [userDefaults synchronize];
 }
 
 +(short)getUnreadCountType
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    short type = [userDefaults integerForKey:UNREAD_COUNT_TYPE];
+    short type = [userDefaults integerForKey:AL_UNREAD_COUNT_TYPE];
     return type ? type : 0;
 }
 
 +(void)setMsgSyncRequired:(BOOL)flag
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flag forKey:MSG_SYN_CALL];
+    [userDefaults setBool:flag forKey:AL_MSG_SYN_CALL];
     [userDefaults synchronize];
 }
 
 +(BOOL)isMsgSyncRequired
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:MSG_SYN_CALL];
+    return [userDefaults boolForKey:AL_MSG_SYN_CALL];
 }
 
 +(void)setDebugLogsRequire:(BOOL)flag
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flag forKey:DEBUG_LOG_FLAG];
+    [userDefaults setBool:flag forKey:AL_DEBUG_LOG_FLAG];
     [userDefaults synchronize];
 }
 
 +(BOOL)isDebugLogsRequire
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:DEBUG_LOG_FLAG];
+    return [userDefaults boolForKey:AL_DEBUG_LOG_FLAG];
 }
 
 +(void)setLoginUserConatactVisibility:(BOOL)flag
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flag forKey:LOGIN_USER_CONTACT];
+    [userDefaults setBool:flag forKey:AL_LOGIN_USER_CONTACT];
     [userDefaults synchronize];
 }
 
 +(BOOL)getLoginUserConatactVisibility
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:LOGIN_USER_CONTACT];
+    return [userDefaults boolForKey:AL_LOGIN_USER_CONTACT];
 }
 
 +(void)setProfileImageLink:(NSString *)imageLink
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:imageLink forKey:LOGIN_USER_PROFILE_IMAGE];
+    [userDefaults setValue:imageLink forKey:AL_LOGIN_USER_PROFILE_IMAGE];
     [userDefaults synchronize];
 }
 
 +(NSString *)getProfileImageLink
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:LOGIN_USER_PROFILE_IMAGE];
+    return [userDefaults valueForKey:AL_LOGIN_USER_PROFILE_IMAGE];
 }
 
 +(void)setProfileImageLinkFromServer:(NSString *)imageLink
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:imageLink forKey:LOGIN_USER_PROFILE_IMAGE_SERVER];
+    [userDefaults setValue:imageLink forKey:AL_LOGIN_USER_PROFILE_IMAGE_SERVER];
     [userDefaults synchronize];
 }
 
 +(NSString *)getProfileImageLinkFromServer
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:LOGIN_USER_PROFILE_IMAGE_SERVER];
+    return [userDefaults valueForKey:AL_LOGIN_USER_PROFILE_IMAGE_SERVER];
 }
 
 +(void)setLoggedInUserStatus:(NSString *)status
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:status forKey:LOGGEDIN_USER_STATUS];
+    [userDefaults setValue:status forKey:AL_LOGGEDIN_USER_STATUS];
     [userDefaults synchronize];
 }
 
 +(NSString *)getLoggedInUserStatus
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:LOGGEDIN_USER_STATUS];
+    return [userDefaults valueForKey:AL_LOGGEDIN_USER_STATUS];
 }
 
 +(BOOL)isUserLoggedInUserSubscribedMQTT
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-     return [userDefaults boolForKey:LOGIN_USER_SUBSCRIBED_MQTT];
+     return [userDefaults boolForKey:AL_LOGIN_USER_SUBSCRIBED_MQTT];
 }
 
 +(void)setLoggedInUserSubscribedMQTT:(BOOL)flag
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flag forKey:LOGIN_USER_SUBSCRIBED_MQTT];
+    [userDefaults setBool:flag forKey:AL_LOGIN_USER_SUBSCRIBED_MQTT];
     [userDefaults synchronize];
 }
 
 +(NSString *)getEncryptionKey
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:USER_ENCRYPTION_KEY];
+    return [userDefaults valueForKey:AL_USER_ENCRYPTION_KEY];
 }
 
 +(void)setEncryptionKey:(NSString *)encrptionKey
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:encrptionKey forKey:USER_ENCRYPTION_KEY];
+    [userDefaults setValue:encrptionKey forKey:AL_USER_ENCRYPTION_KEY];
     [userDefaults synchronize];
 }
 
 +(void)setUserPricingPackage:(short)pricingPackage
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setInteger:pricingPackage forKey:USER_PRICING_PACKAGE];
+    [userDefaults setInteger:pricingPackage forKey:AL_USER_PRICING_PACKAGE];
     [userDefaults synchronize];
 }
 
 +(short)getUserPricingPackage
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults integerForKey:USER_PRICING_PACKAGE];
+    return [userDefaults integerForKey:AL_USER_PRICING_PACKAGE];
 }
 
 +(void)setEnableEncryption:(BOOL)flag
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool:flag forKey:DEVICE_ENCRYPTION_ENABLE];
+    [userDefaults setBool:flag forKey:AL_DEVICE_ENCRYPTION_ENABLE];
     [userDefaults synchronize];
 }
 
 +(BOOL)getEnableEncryption
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey:DEVICE_ENCRYPTION_ENABLE];
+    return [userDefaults boolForKey:AL_DEVICE_ENCRYPTION_ENABLE];
 }
 
 +(void)setGoogleMapAPIKey:(NSString *)googleMapAPIKey
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:googleMapAPIKey forKey:GOOGLE_MAP_API_KEY];
+    [userDefaults setValue:googleMapAPIKey forKey:AL_GOOGLE_MAP_API_KEY];
     [userDefaults synchronize];
 }
 
 +(NSString*)getGoogleMapAPIKey
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:GOOGLE_MAP_API_KEY];
+    return [userDefaults valueForKey:AL_GOOGLE_MAP_API_KEY];
 }
 
 +(NSString*)getNotificationSoundFileName
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:NOTIFICATION_SOUND_FILE_NAME];
+    return [userDefaults valueForKey:AL_NOTIFICATION_SOUND_FILE_NAME];
 }
 
 
 +(void)setNotificationSoundFileName:(NSString *)notificationSoundFileName
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:notificationSoundFileName forKey:NOTIFICATION_SOUND_FILE_NAME];
+    [userDefaults setValue:notificationSoundFileName forKey:AL_NOTIFICATION_SOUND_FILE_NAME];
     [userDefaults synchronize];
 }
 
@@ -793,13 +793,13 @@
 +(void) setLastGroupFilterSyncTime: (NSNumber *) lastSyncTime
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setDouble:[lastSyncTime doubleValue] forKey:GROUP_FILTER_LAST_SYNC_TIME];
+    [userDefaults setDouble:[lastSyncTime doubleValue] forKey:AL_GROUP_FILTER_LAST_SYNC_TIME];
     [userDefaults synchronize];
 }
 +(NSNumber *)getLastGroupFilterSyncTIme
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:GROUP_FILTER_LAST_SYNC_TIME];
+    return [userDefaults valueForKey:AL_GROUP_FILTER_LAST_SYNC_TIME];
 
 }
 
@@ -830,13 +830,13 @@
 
 +(void)setUserEncryption:(NSString*)encryptionKey{
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:encryptionKey forKey:USER_MQTT_ENCRYPTION_KEY];
+    [userDefaults setValue:encryptionKey forKey:AL_USER_MQTT_ENCRYPTION_KEY];
     [userDefaults synchronize];
 }
 
 +(NSString*)getUserEncryptionKey{
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:USER_MQTT_ENCRYPTION_KEY];
+    return [userDefaults valueForKey:AL_USER_MQTT_ENCRYPTION_KEY];
 }
 
 +(void)setLastSyncTimeForMetaData :( NSNumber *) metaDataLastSyncTime
@@ -844,25 +844,25 @@
     metaDataLastSyncTime = @([metaDataLastSyncTime doubleValue] + 1);
     NSLog(@"saving last Sync time for meta data in the preference ...%@" ,metaDataLastSyncTime);
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setDouble:[metaDataLastSyncTime doubleValue] forKey:LAST_SYNC_TIME_FOR_META_DATA];
+    [userDefaults setDouble:[metaDataLastSyncTime doubleValue] forKey:AL_LAST_SYNC_TIME_FOR_META_DATA];
     [userDefaults synchronize];
 }
 
 +(NSNumber *)getLastSyncTimeForMetaData
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:LAST_SYNC_TIME_FOR_META_DATA];
+    return [userDefaults valueForKey:AL_LAST_SYNC_TIME_FOR_META_DATA];
 }
 
 + (void)disableChat:(BOOL)disable {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setBool: disable forKey: DISABLE_USER_CHAT];
+    [userDefaults setBool: disable forKey:AL_DISABLE_USER_CHAT];
     [userDefaults synchronize];
 }
 
 + (BOOL)isChatDisabled {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults boolForKey: DISABLE_USER_CHAT];
+    return [userDefaults boolForKey:AL_DISABLE_USER_CHAT];
 }
 
 +(NSUserDefaults *)getUserDefaults{

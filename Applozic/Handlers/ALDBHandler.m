@@ -14,6 +14,8 @@
 
 @implementation ALDBHandler
 
+dispatch_queue_t dispatchGlobalQueue;
+
 +(ALDBHandler *) sharedInstance
 {
     static ALDBHandler *sharedMyManager = nil;
@@ -439,24 +441,30 @@
     return result;
 }
 
-- (void)savePrivateAndMainContext:(NSManagedObjectContext *)context {
-    NSError *error;
-    [context save:&error];
-    if (!error) {
-        [self saveMainContext];
-    }else{
-        ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
-    }
-}
-
-- (void)saveMainContext {
-    [self.managedObjectContext performBlock:^{
-        NSError *error = nil;
-        [self.managedObjectContext save:&error];
-        if(error){
-            ALSLog(ALLoggerSeverityError, @"DB ERROR in saveMainContext :%@",error);
+- (void) savePrivateAndMainContext:(NSManagedObjectContext*)context
+                        completion:(void (^)(NSError*error))completion {
+    
+    NSError* error;
+    if (context.hasChanges && [context save:&error]) {
+        NSManagedObjectContext* parentContext = [context parentContext];
+        [parentContext performBlock:^ {
+            NSError* parentContextError;
+            if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
+                completion(nil);
+            } else {
+                if (parentContextError) {
+                    ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
+                }
+                completion(parentContextError);
+            }
+        }];
+    } else {
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+            [context rollback];
         }
-    }];
+        completion(error);
+    }
 }
 
 - (NSManagedObjectContext *)privateContext {

@@ -27,44 +27,37 @@
 #import "UIImage+animatedGIF.h"
 
 // Constants
-#define MT_INBOX_CONSTANT "4"
-#define MT_OUTBOX_CONSTANT "5"
 
-#define DOWNLOAD_RETRY_PADDING_X 45
-#define DOWNLOAD_RETRY_PADDING_Y 20
+static CGFloat const MAX_WIDTH = 150;
+static CGFloat const MAX_WIDTH_DATE = 130;
 
-#define MAX_WIDTH 150
-#define MAX_WIDTH_DATE 130
+static CGFloat const IMAGE_VIEW_PADDING_X = 5;
+static CGFloat const IMAGE_VIEW_PADDING_Y = 5;
+static CGFloat const IMAGE_VIEW_PADDING_WIDTH = 10;
+static CGFloat const IMAGE_VIEW_PADDING_HEIGHT = 10;
 
-#define IMAGE_VIEW_PADDING_X 5
-#define IMAGE_VIEW_PADDING_Y 5
-#define IMAGE_VIEW_PADDING_WIDTH 10
-#define IMAGE_VIEW_PADDING_HEIGHT 10
-#define IMAGE_VIEW_PADDING_HEIGHT_GRP 15
+static CGFloat const DATE_HEIGHT = 20;
+static CGFloat const DATE_PADDING_X = 20;
 
-#define DATE_HEIGHT 20
-#define DATE_PADDING_X 20
+static CGFloat const MSG_STATUS_WIDTH = 20;
+static CGFloat const MSG_STATUS_HEIGHT = 20;
 
-#define MSG_STATUS_WIDTH 20
-#define MSG_STATUS_HEIGHT 20
+static CGFloat const IMAGE_VIEW_WITHTEXT_PADDING_Y = 10;
 
-#define IMAGE_VIEW_WITHTEXT_PADDING_Y 10
+static CGFloat const BUBBLE_PADDING_X = 13;
+static CGFloat const BUBBLE_PADDING_Y = 120;
+static CGFloat const BUBBLE_PADDING_WIDTH = 120;
+static CGFloat const BUBBLE_PADDING_HEIGHT = 120;
+static CGFloat const BUBBLE_PADDING_X_OUTBOX = 60;
+static CGFloat const BUBBLE_PADDING_HEIGHT_TEXT = 20;
 
-#define BUBBLE_PADDING_X 13
-#define BUBBLE_PADDING_Y 120
-#define BUBBLE_PADDING_WIDTH 120
-#define BUBBLE_PADDING_HEIGHT 120
-#define BUBBLE_PADDING_HEIGHT_GRP 100
-#define BUBBLE_PADDING_X_OUTBOX 60
-#define BUBBLE_PADDING_HEIGHT_TEXT 20
+static CGFloat const CHANNEL_PADDING_X = 5;
+static CGFloat const CHANNEL_PADDING_Y = 5;
+static CGFloat const CHANNEL_PADDING_HEIGHT = 20;
 
-#define CHANNEL_PADDING_X 5
-#define CHANNEL_PADDING_Y 5
-#define CHANNEL_PADDING_WIDTH 30
-#define CHANNEL_PADDING_HEIGHT 20
-#define CHANNEL_PADDING_GRP 3
-
-
+static CGFloat const USER_PROFILE_PADDING_X = 5;
+static CGFloat const USER_PROFILE_PADDING_X_OUTBOX = 50;
+static CGFloat const USER_PROFILE_HEIGHT = 45;
 
 @implementation ALLinkCell
 {

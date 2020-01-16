@@ -19,9 +19,10 @@
 #import "ALUserService.h"
 #import "NSData+AES.h"
 #import "ALDataNetworkConnection.h"
+#import "ALPushNotificationService.h"
 
-#define MQTT_TOPIC_STATUS @"status-v2"
-#define MQTT_ENCRYPTION_SUB_KEY @"encr-"
+static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
+static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
 static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessage";
 
 @implementation ALMQTTConversationService
@@ -163,6 +164,8 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
         return;
     }
 
+    ALPushNotificationService * pushNotificationService = [[ALPushNotificationService alloc]init];
+
     NSString *fullMessage = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
     if([ALUserDefaultsHandler getEnableEncryption] && [ALUserDefaultsHandler getUserEncryptionKey] && [topic hasPrefix:MQTT_ENCRYPTION_SUB_KEY]){
@@ -213,7 +216,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
     }
     else
     {
-        if ([type isEqualToString: @"MESSAGE_RECEIVED"] || [type isEqualToString:@"APPLOZIC_01"])
+        if ([type isEqualToString: @"MESSAGE_RECEIVED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_SYNC)]])
         {
 
             ALPushAssist* assistant = [[ALPushAssist alloc] init];
@@ -222,7 +225,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
 
             if([alMessage isHiddenMessage])
             {
-              ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");
+                ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");
                 [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
                                            withCompletion:^(NSMutableArray *message, NSError *error) { }];
             }
@@ -245,8 +248,8 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                             [ALMessageService addOpenGroupMessage:alMessage withDelegate:self.realTimeUpdate];
                             if(!assistant.isOurViewOnTop)
                             {
-                                [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:dict ofUser:alMessage.contactIds];
                                 [dict setObject:@"mqtt" forKey:@"Calledfrom"];
+                                [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:dict ofUser:alMessage.contactIds];
                             }
                             else
                             {
@@ -265,7 +268,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 }
             }
         }
-        else if ([type isEqualToString:@"MESSAGE_SENT"] || [type isEqualToString:@"APPLOZIC_02"])
+        else if ([type isEqualToString:@"MESSAGE_SENT"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_SENT)]])
         {
             NSDictionary * message = [theMessageDict objectForKey:@"message"];
             ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:message];
@@ -293,7 +296,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             [self.mqttConversationDelegate delivered:key contactId:contactID withStatus:SENT];
 
         }
-        else if ([type isEqualToString:@"MESSAGE_DELIVERED"] || [type isEqualToString:@"APPLOZIC_04"]) {
+        else if ([type isEqualToString:@"MESSAGE_DELIVERED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_DELIVERED)]]) {
 
             NSArray *deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * pairedKey = deliveryParts[0];
@@ -308,7 +311,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onMessageDelivered:message];
             }
         }
-        else if([type isEqualToString:@"MESSAGE_DELETED"] || [type isEqualToString:@"APPLOZIC_05"])
+        else if([type isEqualToString:@"MESSAGE_DELETED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_DELETE_MESSAGE)]])
         {
             NSString * messageKey = [[theMessageDict valueForKey:@"message"] componentsSeparatedByString:@","][0];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NOTIFY_MESSAGE_DELETED" object:messageKey];
@@ -316,7 +319,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onMessageDeleted:messageKey];
             }
         }
-        else if ([type isEqualToString:@"MESSAGE_DELIVERED_READ"] || [type isEqualToString:@"APPLOZIC_08"])
+        else if ([type isEqualToString:@"MESSAGE_DELIVERED_READ"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_DELIVERED_AND_READ)]])
         {
             NSArray  * deliveryParts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * pairedKey = deliveryParts[0];
@@ -332,7 +335,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 }
             }
         }
-        else if ([type isEqualToString:@"CONVERSATION_DELIVERED_AND_READ"] || [type isEqualToString:@"APPLOZIC_10"])
+        else if ([type isEqualToString:@"CONVERSATION_DELIVERED_AND_READ"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_DELIVERED_AND_READ)]])
         {
             NSString *contactId = [theMessageDict objectForKey:@"message"];
             [self.alSyncCallService updateDeliveryStatusForContact: contactId withStatus:DELIVERED_AND_READ];
@@ -341,7 +344,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onAllMessagesRead:contactId];
             }
         }
-        else if ([type isEqualToString:@"USER_CONNECTED"]||[type isEqualToString: @"APPLOZIC_11"])
+        else if ([type isEqualToString:@"USER_CONNECTED"]||[type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_CONNECTED)]])
         {
             ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
             alUserDetail.userId = [theMessageDict objectForKey:@"message"];
@@ -353,7 +356,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onUpdateLastSeenAtStatus: alUserDetail];
             }
         }
-        else if ([type isEqualToString:@"APPLOZIC_12"])
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DISCONNECTED)]])
         {
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
 
@@ -373,7 +376,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             [channelService syncCallForChannel];
             // TODO HANDLE
         }
-        else if ([type isEqualToString:@"APPLOZIC_27"] || [type isEqualToString:@"CONVERSATION_DELETED"]){
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_DELETED_NEW)]] || [type isEqualToString:@"CONVERSATION_DELETED"]){
 
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
             NSString * contactID = parts[0];
@@ -387,7 +390,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             }
 
         }
-        else if ( [type isEqualToString:@"GROUP_CONVERSATION_DELETED"] || [type isEqualToString:@"APPLOZIC_23"]){
+        else if ([type isEqualToString:@"GROUP_CONVERSATION_DELETED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_CONVERSATION_DELETED)]]){
 
             NSNumber * groupID = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
             [self.alSyncCallService updateTableAtConversationDeleteForContact:nil
@@ -397,15 +400,15 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 [self.realTimeUpdate onConversationDelete:nil withGroupId:groupID];
             }
         }
-        else if ([type isEqualToString:@"APPLOZIC_16"])
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_BLOCK)]])
         {
             [self processUserBlockNotification:theMessageDict andUserBlockFlag:YES];
         }
-        else if ([type isEqualToString:@"APPLOZIC_17"])
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_UNBLOCK)]])
         {
             [self processUserBlockNotification:theMessageDict andUserBlockFlag:NO];
         }
-        else if ([type isEqualToString:@"APPLOZIC_30"] || [type isEqualToString:@"APPLOZIC_34"])
+        else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DETAIL_CHANGED)]] || [type isEqualToString: pushNotificationService.notificationTypes[@(AL_USER_DELETE_NOTIFICATION)]])
         {
             //          FETCH USER DETAILS and UPDATE DB AND REAL-TIME
             NSString * userId = [theMessageDict objectForKey:@"message"];
@@ -427,7 +430,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
         {
             // BROADCAST MESSAGE : MESSAGE_DELIVERED_AND_READ
         }
-        else if( [type isEqualToString:@"APPLOZIC_33"]){ // MESSAGE_METADATA_UPDATE
+        else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]){ // MESSAGE_METADATA_UPDATE
             NSString* keyString;
             NSString* deviceKey;
             @try
@@ -459,21 +462,21 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
                 ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
             }];
         }
-        else if([type isEqualToString:@"APPLOZIC_09"]){
+        else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_READ)]]){
             //Conversation read for user
             ALUserService *channelService = [[ALUserService alloc]init];
             NSString * userId = [theMessageDict objectForKey:@"message"];
             [channelService updateConversationReadWithUserId:userId withDelegate:self.realTimeUpdate];
             
         }
-        else if([type isEqualToString:@"APPLOZIC_21"]){
+        else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_CONVERSATION_READ)]]){
             //Conversation read for channel
-             ALChannelService *channelService = [[ALChannelService alloc]init];
-             NSNumber * channelKey  = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
+            ALChannelService *channelService = [[ALChannelService alloc]init];
+            NSNumber * channelKey  = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
         }
         
-        else if([type isEqualToString:@"APPLOZIC_37"]){
+        else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]){
             
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
             NSString * userId = parts[0];
@@ -725,8 +728,8 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
         ALSLog(ALLoggerSeverityInfo, @"ALMQTTConversationService SYNC CALL");
         if(!assistant.isOurViewOnTop)
         {
-            [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:nsMutableDictionary ofUser:alMessage.contactIds];
             [nsMutableDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
+            [assistant assist:[self getNotificationObjectFromMessage:alMessage] and:nsMutableDictionary ofUser:alMessage.contactIds];
         }
         else
         {

@@ -7,9 +7,6 @@
 //
 
 // Constants
-#define MT_INBOX_CONSTANT "4"
-#define MT_OUTBOX_CONSTANT "5"
-#define DATE_LABEL_SIZE 12
 
 #import "ALDocumentsCell.h"
 #import "ALMessage.h"
@@ -23,52 +20,45 @@
 #import "ALChatViewController.h"
 #import "ALMessageClientService.h"
 
-#define BUBBLE_PADDING_X 13
-#define BUBBLE_PADDING_X_OUTBOX 60
-#define BUBBLE_PADDING_Y 27
-#define BUBBLE_HEIGHT 80
-#define BUBBLE_HEIGHT_GRP 110
-#define BUBBLE_PADDING_WIDTH 120
+static CGFloat const BUBBLE_PADDING_X  = 13;
+static CGFloat const BUBBLE_PADDING_X_OUTBOX  = 60;
+static CGFloat const BUBBLE_HEIGHT = 80;
+static CGFloat const BUBBLE_PADDING_WIDTH = 120;
 
-#define MESSAGE_PADDING_X 10
-#define MESSAGE_PADDING_Y 10
-#define MESSAGE_PADDING_WIDTH 20
-#define MESSAGE_PADDING_HEIGHT 20
+static CGFloat const CHANNEL_PADDING_X = 5;
+static CGFloat const CHANNEL_PADDING_Y = 2;
+static CGFloat const CHANNEL_PADDING_HEIGHT = 20;
 
-#define CHANNEL_PADDING_X 5
-#define CHANNEL_PADDING_Y 2
-#define CHANNEL_PADDING_WIDTH 30
-#define CHANNEL_PADDING_HEIGHT 20
+static CGFloat const IMAGE_VIEW_PADDING_Y = 10;
+static CGFloat const IMAGE_VIEW_WIDTH = 60;
+static CGFloat const IMAGE_VIEW_HEIGHT = 60;
 
-#define IMAGE_VIEW_PADDING_X 00
-#define IMAGE_VIEW_PADDING_Y 10
-#define IMAGE_VIEW_WIDTH 60
-#define IMAGE_VIEW_HEIGHT 60
+static CGFloat const DATE_PADDING_WIDTH = 20;
+static CGFloat const DATE_HEIGHT = 20;
+static CGFloat const DATE_WIDTH = 80;
 
-#define DATE_PADDING_X 20
-#define DATE_PADDING_WIDTH 20
-#define DATE_HEIGHT 20
-#define DATE_WIDTH 80
+static CGFloat const MSG_STATUS_WIDTH = 20;
+static CGFloat const MSG_STATUS_HEIGHT = 20;
+static CGFloat const SIZE_HEIGHT = 20;
 
-#define MSG_STATUS_WIDTH 20
-#define MSG_STATUS_HEIGHT 20
-#define SIZE_HEIGHT 20
-
-#define DOC_NAME_PADDING_X 5
-#define DOC_NAME_PADDING_Y 0
-#define DOC_NAME_PADDING_WIDTH 20
-#define DOC_NAME_HEIGHT 60
+static CGFloat const DOC_NAME_PADDING_WIDTH = 20;
+static CGFloat const DOC_NAME_HEIGHT = 60;
 
 //VIEW
-#define DOWNLOAD_RETRY_PADDING_X 5
-#define DOWNLOAD_RETRY_PADDING_Y -2
-#define DOWNLOAD_RETRY_PADDING_WIDTH 70
-#define DOWNLOAD_RETRY_PADDING_HEIGHT 70
+static CGFloat const DOWNLOAD_RETRY_PADDING_X = 5;
+static CGFloat const DOWNLOAD_RETRY_PADDING_Y = -2;
+static CGFloat const DOWNLOAD_RETRY_PADDING_WIDTH = 70;
+static CGFloat const DOWNLOAD_RETRY_PADDING_HEIGHT = 70;
 //BUTTON
-#define DOWNLOAD_RETRY_BUTTON_PADDING_X 15
-#define DOWNLOAD_RETRY_BUTTON_PADDING_Y 0
-#define DOWNLOAD_RETRY_BUTTON_PADDING_WIDTH 40
-#define DOWNLOAD_RETRY_BUTTON_PADDING_HEIGHT 40
+static CGFloat const DOWNLOAD_RETRY_BUTTON_PADDING_X = 15;
+static CGFloat const DOWNLOAD_RETRY_BUTTON_PADDING_Y = 0;
+static CGFloat const DOWNLOAD_RETRY_BUTTON_PADDING_WIDTH = 40;
+static CGFloat const DOWNLOAD_RETRY_BUTTON_PADDING_HEIGHT = 40;
+
+static CGFloat const USER_PROFILE_PADDING_X = 5;
+static CGFloat const USER_PROFILE_PADDING_X_OUTBOX = 50;
+static CGFloat const USER_PROFILE_WIDTH = 45;
+static CGFloat const USER_PROFILE_HEIGHT = 45;
 
 @implementation ALDocumentsCell
 {
@@ -442,11 +432,11 @@
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
 
-    if ([self.mMessage.type isEqualToString:@MT_INBOX_CONSTANT]){
+    if ([self.mMessage.type isEqualToString:AL_IN_BOX]){
 
         [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
 
-    }else if ([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT]){
+    }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
 
 
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];

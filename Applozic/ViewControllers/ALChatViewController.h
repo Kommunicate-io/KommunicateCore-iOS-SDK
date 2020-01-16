@@ -63,6 +63,7 @@ extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
 
 -(void)fetchAndRefresh;
 -(void)fetchAndRefresh:(BOOL)flag;
+-(void)refreshViewOnNotificationTap:(NSString *)userId withChannelKey:(NSNumber *)channelKey withConversationId:(NSNumber *)conversationId;
 
 -(void)updateDeliveryReport:(NSString*)key withStatus:(int)status;
 -(void)updateStatusReportForConversation:(int)status;
@@ -100,5 +101,4 @@ extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
 -(void)unSubscrbingChannel;
 
 -(void)postMessage;
-
 @end

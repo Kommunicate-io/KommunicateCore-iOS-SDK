@@ -11,8 +11,8 @@
 #import "NSString+Encode.h"
 
 
-#define DEFAULT_PAGE_SIZE @"50";
-#define DEFAULT_START_INDEX @"0"
+static NSString *const DEFAULT_PAGE_SIZE = @"50";
+static NSString *const DEFAULT_START_INDEX = @"0";
 
 @implementation MessageListRequest
 

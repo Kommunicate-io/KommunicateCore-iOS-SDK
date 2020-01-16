@@ -145,9 +145,9 @@
 
 -(BOOL)isGroupMutedByDefault{
     
-    if( _metadata && [_metadata  valueForKey:CHANNEL_DEFAULT_MUTE] ){
+    if( _metadata && [_metadata  valueForKey:AL_CHANNEL_DEFAULT_MUTE] ){
         
-        return ([ [_metadata  valueForKey:CHANNEL_DEFAULT_MUTE] isEqualToString:@"true"]);
+        return ([ [_metadata  valueForKey:AL_CHANNEL_DEFAULT_MUTE] isEqualToString:@"true"]);
     }
     return NO;
 }
@@ -155,9 +155,9 @@
 
 -(BOOL)isConversationClosed{
 
-    if( _metadata && [_metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] ){
+    if( _metadata && [_metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] ){
 
-        return ([ [_metadata  valueForKey:CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
+        return ([ [_metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
     }
     return NO;
 }
@@ -184,8 +184,8 @@
 
 + (CONVERSATION_CATEGORY)getConversationCategory:(NSDictionary *)metadata
 {
-    NSString *status = [metadata objectForKey:CHANNEL_CONVERSATION_STATUS];
-    NSString *assignee = [metadata valueForKey:CONVERSATION_ASSIGNEE];
+    NSString *status = [metadata objectForKey:AL_CHANNEL_CONVERSATION_STATUS];
+    NSString *assignee = [metadata valueForKey:AL_CONVERSATION_ASSIGNEE];
 
     if (status != nil && ([status isEqualToString:@"2"] || [status isEqualToString:@"3"])) {
         return CLOSED_CONVERSATION;

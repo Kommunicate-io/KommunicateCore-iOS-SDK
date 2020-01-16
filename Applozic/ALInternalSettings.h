@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-static NSString *const REGISTRATION_STATUS_MESSAGE = @"com.applozic.userdefault.REGISTRATION_STATUS_MESSAGE";
+static NSString *const AL_REGISTRATION_STATUS_MESSAGE = @"com.applozic.userdefault.REGISTRATION_STATUS_MESSAGE";
 
 static NSString *const AL_REGISTERED = @"AL_REGISTERED";
 

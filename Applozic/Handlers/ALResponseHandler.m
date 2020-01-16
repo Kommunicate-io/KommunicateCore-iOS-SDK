@@ -11,7 +11,7 @@
 
 @implementation ALResponseHandler
 
-#define message_SomethingWentWrong @"SomethingWentWrong"
+static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
 +(void)processRequest:(NSMutableURLRequest *)theRequest andTag:(NSString *)tag WithCompletionHandler:(void (^)(id, NSError *))reponseCompletion
 {

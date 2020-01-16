@@ -20,6 +20,36 @@
 #import "ALVCardClass.h"
 #import "ALMessageClientService.h"
 
+static CGFloat const USER_PROFILE_PADDING_X_OUTBOX = 50;
+static CGFloat const USER_PROFILE_HEIGHT = 45;
+static CGFloat const BUBBLE_PADDING_X_OUTBOX = 60;
+static CGFloat const BUBBLE_PADDING_WIDTH = 120;
+static CGFloat const BUBBLE_PADDING_HEIGHT_OUTBOX = 180;
+
+static CGFloat const DATE_PADDING_X = 20;
+static CGFloat const DATE_HEIGHT = 20;
+
+static CGFloat const MSG_STATUS_WIDTH = 20;
+static CGFloat const MSG_STATUS_HEIGHT = 20;
+
+static CGFloat const CNT_PROFILE_X = 10;
+static CGFloat const CNT_PROFILE_Y = 10;
+static CGFloat const CNT_PROFILE_HEIGHT = 50;
+static CGFloat const CNT_PROFILE_WIDTH = 50;
+static CGFloat const CNT_PERSON_X = 10;
+static CGFloat const CNT_PERSON_HEIGHT = 20;
+
+static CGFloat const USER_CNT_Y = 5;
+static CGFloat const USER_CNT_HEIGHT = 50;
+
+static CGFloat const EMAIL_Y = 5;
+static CGFloat const EMAIL_HEIGHT = 50;
+
+static CGFloat const BUTTON_Y = 50;
+static CGFloat const BUTTON_WIDTH = 20;
+static CGFloat const BUTTON_HEIGHT = 40;
+static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
+
 @interface ALMyContactMessageCell ()
 
 @end

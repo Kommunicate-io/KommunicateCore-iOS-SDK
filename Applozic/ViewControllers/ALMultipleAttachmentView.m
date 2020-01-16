@@ -17,7 +17,7 @@
 #import "UIImage+animatedGIF.h"
 #import "ALMultimediaData.h"
 
-#define NAVIGATION_TEXT_SIZE 20
+static CGFloat NAVIGATION_TEXT_SIZE = 20;
 
 @interface ALMultipleAttachmentView () <UITextFieldDelegate>
 

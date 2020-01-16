@@ -287,7 +287,7 @@ NSString * const ApplozicClientDomain = @"ApplozicClient";
 /**
  This method is used for sending a text messages to group or one to one chat
 
- @param message it accept ALMessage object
+ @param alMessage it accept ALMessage object
  @param completion it has resonse where the messagekey is updated and it as createdAtTime of message which is created in our server else it as NSError
  */
 

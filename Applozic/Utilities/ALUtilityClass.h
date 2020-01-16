@@ -36,6 +36,8 @@
 
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID completionHandler:(void (^)(BOOL))handler;
 
++(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate notificationTapActionDisable:(BOOL) isTapActionDisabled;
+
 +(UIView *)setStatusBarStyle;
 
 +(NSString *)getNameAlphabets:(NSString *)actualName;

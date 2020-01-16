@@ -12,7 +12,7 @@
 #import "ALUser.h"
 #import "NSData+AES.h"
 
-#define REGISTER_USER_STRING @"rest/ws/register/client"
+static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
 
 @implementation ALRequestHandler
 
