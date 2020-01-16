@@ -10,6 +10,7 @@
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
 
+static CGFloat const DATE_LABEL_SIZE = 12;
 
 @implementation ALMediaBaseCell
 {

@@ -214,10 +214,10 @@
 
 
 
-+(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate
++(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate notificationTapActionDisable:(BOOL) isTapActionDisabled
 {
     
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE ){
+    if([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE ){
         return;
     }
     //3rd Party View is Opened.........
@@ -256,7 +256,7 @@
                                        callback:^(void){
         
                                            
-                                           [delegate thirdPartyNotificationTap1:contactId withGroupId:groupID withConversationId: conversationId];
+                                           [delegate thirdPartyNotificationTap1:contactId withGroupId:groupID withConversationId: conversationId notificationTapActionDisable:isTapActionDisabled];
 
         
     }buttonTitle:nil buttonCallback:nil atPosition:TSMessageNotificationPositionTop canBeDismissedByUser:YES];
@@ -266,7 +266,7 @@
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID completionHandler:(void (^)(BOOL))handler
 {
 
-    if([ALUserDefaultsHandler getNotificationMode] == NOTIFICATION_DISABLE){
+    if([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE){
         return;
     }
     //3rd Party View is Opened.........

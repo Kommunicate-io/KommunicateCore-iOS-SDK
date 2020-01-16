@@ -23,8 +23,6 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 @property (strong, nonatomic) NSPersistentContainer *persistentContainer;
 
-- (void)savePrivateAndMainContext:(NSManagedObjectContext *)context;
-
 - (NSManagedObjectContext *)privateContext;
 
 - (void)saveContext;
@@ -49,4 +47,6 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 - (ALContact *)loadContactByKey:(NSString *) key value:(NSString*) value;
 
+- (void)savePrivateAndMainContext:(NSManagedObjectContext*)context
+                        completion:(void (^)(NSError*error))completion;
 @end

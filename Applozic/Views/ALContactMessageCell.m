@@ -22,6 +22,37 @@
 #import "ALVCardClass.h"
 #import "ALMessageClientService.h"
 
+static CGFloat const USER_PROFILE_PADDING_X = 5;
+static CGFloat const USER_PROFILE_WIDTH = 45;
+static CGFloat const USER_PROFILE_HEIGHT = 45;
+static CGFloat const BUBBLE_PADDING_X = 13;
+static CGFloat const BUBBLE_PADDING_WIDTH = 120;
+static CGFloat const BUBBLE_PADDING_HEIGHT = 190;
+static CGFloat const DATE_HEIGHT = 20;
+
+static CGFloat const CNT_PROFILE_X = 10;
+static CGFloat const CNT_PROFILE_Y = 10;
+static CGFloat const CNT_PROFILE_HEIGHT = 50;
+static CGFloat const CNT_PROFILE_WIDTH = 50;
+static CGFloat const CNT_PERSON_X = 10;
+static CGFloat const CNT_PERSON_HEIGHT = 20;
+
+static CGFloat const USER_CNT_Y = 5;
+static CGFloat const USER_CNT_HEIGHT = 50;
+
+static CGFloat const EMAIL_Y = 5;
+static CGFloat const EMAIL_HEIGHT = 50;
+
+static CGFloat const BUTTON_Y = 50;
+static CGFloat const BUTTON_WIDTH = 20;
+static CGFloat const BUTTON_HEIGHT = 40;
+
+static CGFloat const CHANNEL_PADDING_X = 5;
+static CGFloat const CHANNEL_PADDING_Y = 2;
+static CGFloat const CHANNEL_PADDING_WIDTH = 5;
+static CGFloat const CHANNEL_PADDING_HEIGHT = 20;
+static CGFloat const AL_CONTACT_PADDING_Y = 20;
+
 @interface ALContactMessageCell ()
 
 @end

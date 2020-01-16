@@ -6,7 +6,7 @@
 //  Copyright © 2015 applozic Inc. All rights reserved.
 //
 
-#define CONTACT_PAGE_SIZE 100
+static int CONTACT_PAGE_SIZE = 100;
 
 #import "ALUserService.h"
 #import "ALRequestHandler.h"
@@ -49,46 +49,29 @@
 //1. call this when each message comes
 + (void)processContactFromMessages:(NSArray *) messagesArr withCompletion:(void(^)(void))completionMark
 {
-
-    NSMutableOrderedSet* contactIdsArr=[[NSMutableOrderedSet alloc] init ];
-
-    NSMutableString * repString=[[NSMutableString alloc] init];
-
+    
+    NSMutableOrderedSet* contactIdsArr = [[NSMutableOrderedSet alloc] init ];
+    ALContactService * contactService =  [[ALContactService alloc]init];
+    
     for(ALMessage* msg in messagesArr) {
-        if(![ALUserDefaultsHandler isServerCallDoneForUserInfoForContact:msg.contactIds]) {
-            [contactIdsArr addObject:[NSString stringWithFormat:@"&userIds=%@",[msg.contactIds urlEncodeUsingNSUTF8StringEncoding]]];
+        if (![contactService isContactExist:msg.contactIds]) {
+            [contactIdsArr addObject:msg.contactIds];
         }
     }
-
+    
     if ([contactIdsArr count] == 0) {
         completionMark();
         return;
     }
-
-    for(NSString *strr in contactIdsArr){
-        [repString appendString:strr];
-    }
-
-    ALSLog(ALLoggerSeverityInfo, @"USER_ID_STRING :: %@",repString);
-
-    ALUserClientService * client = [ALUserClientService new];
-    [client subProcessUserDetailServerCall:repString withCompletion:^(NSMutableArray * userDetailArray, NSError * error) {
-
-        if(error || !userDetailArray)
-        {
+    
+    NSMutableArray *userIdArray = [NSMutableArray arrayWithArray:[contactIdsArr array]];
+    ALUserService * userService = [ALUserService new];
+    [userService fetchAndupdateUserDetails:userIdArray withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
+        if(error || !userDetailArray){
             completionMark();
             return;
         }
-        ALContactDBService * contactDB = [ALContactDBService new];
-        for(ALUserDetail * userDetail in userDetailArray)
-        {
-            [contactDB updateUserDetail: userDetail];
-            ALContact * contact = [contactDB loadContactByKey:@"userId" value:userDetail.userId];
-            [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:contact.userId];
-        }
-
         completionMark();
-
     }];
 }
 
@@ -429,18 +412,14 @@
     }];
 }
 
--(void) fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray * array, NSError *error))completion
-
-{
+-(void) fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray * array, NSError *error))completion {
 
     ALUserDetailListFeed *ob = [ALUserDetailListFeed new];
     [ob setArray:userArray];
-    ob.contactSync = YES;
     ALUserClientService *clientService = [ALUserClientService new];
     ALContactDBService *dbService = [ALContactDBService new];
 
     [clientService subProcessUserDetailServerCallPOST:ob withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-
 
         if(userDetailArray && userDetailArray.count)
         {
@@ -448,7 +427,6 @@
         }
         completion(userDetailArray,theError);
     }];
-
 }
 
 -(void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion
@@ -646,7 +624,7 @@
     } else {
         metadata = [[NSMutableDictionary alloc] init];
     }
-    [metadata setObject:[NSNumber numberWithBool:disable] forKey: DISABLE_USER_CHAT];
+    [metadata setObject:[NSNumber numberWithBool:disable] forKey: AL_DISABLE_USER_CHAT];
     ALUser *user = [[ALUser alloc] init];
     [user setMetadata: metadata];
     ALUserClientService *clientService = [[ALUserClientService alloc] init];

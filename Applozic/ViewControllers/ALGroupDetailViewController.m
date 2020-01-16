@@ -19,6 +19,9 @@
 #import "ALPushAssist.h"
 #import "ALChannelUser.h"
 #import "ALMessageClientService.h"
+#import "ALNotificationHelper.h"
+
+const int GROUP_ADDITION = 2;
 
 @interface ALGroupDetailViewController () <ALGroupInfoDelegate>
 {
@@ -79,7 +82,14 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     {
         ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
-        [alNotification nativeNotification:self];
+
+        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+            ALNotificationHelper * helper = [[ALNotificationHelper alloc] init];
+
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+        }];
+        
     }
 }
 
@@ -126,7 +136,13 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
         ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
-        [alNotification nativeNotification:self];
+
+        [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show)  {
+
+            ALNotificationHelper * helper = [[ALNotificationHelper alloc] init];
+
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+        }];
     }
     else if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
     {

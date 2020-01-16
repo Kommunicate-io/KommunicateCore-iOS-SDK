@@ -111,11 +111,15 @@ public class ALBaseNavigationViewController: UINavigationController {
         }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(image: backImage, style: .plain, target: self , action: #selector(dismissAction(_:)))
         self.navigationController?.navigationBar.barTintColor = ALApplozicSettings.getColorForNavigation()
-        self.navigationController?.navigationBar.tintColor = ALApplozicSettings.getColorForNavigationItem()
+
+        let navigationItemColor = ALApplozicSettings.getColorForNavigationItem() ?? UIColor.white
+
+        self.navigationController?.navigationBar.tintColor = navigationItemColor
+
         if let aSize = UIFont(name: "Helvetica-Bold", size: 18) {
-            self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: ALApplozicSettings.getColorForNavigationItem(),
-                                                                            NSAttributedString.Key.font: aSize]
+            self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: navigationItemColor, NSAttributedString.Key.font: aSize]
         }
+
     }
 
     private func checkPhotoLibraryPermission() {
@@ -148,6 +152,9 @@ public class ALBaseNavigationViewController: UINavigationController {
                     //whatever
                 }
             }
+      @unknown default:
+            print("Unknown permission state in PhotoLibrary")
+            break
         }
     }
 

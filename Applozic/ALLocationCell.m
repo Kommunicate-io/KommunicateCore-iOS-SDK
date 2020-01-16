@@ -6,10 +6,6 @@
 //  Copyright © 2016 applozic Inc. All rights reserved.
 //
 
-#define MT_INBOX_CONSTANT "4"
-#define MT_OUTBOX_CONSTANT "5"
-#define DATE_LABEL_SIZE 12
-
 #import "ALLocationCell.h"
 #import "Applozic.h"
 #import "UIImageView+WebCache.h"
@@ -287,11 +283,11 @@
     UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
     UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
 
-    if ([self.mMessage.type isEqualToString:@MT_INBOX_CONSTANT]){
+    if ([self.mMessage.type isEqualToString:AL_IN_BOX]){
 
         [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
 
-    }else if ([self.mMessage.type isEqualToString:@MT_OUTBOX_CONSTANT]){
+    }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
 
 
         UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];

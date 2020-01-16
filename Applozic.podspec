@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "6.17.1"
+  s.version      = "7.0.0"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -92,7 +92,7 @@ Pod::Spec.new do |s|
 
   s.source_files  = "Applozic", "Applozic/**/*.{h,m,swift}"
   s.exclude_files = "Classes/Exclude"
-  s.swift_version = '4.2'
+  s.swift_version = '5.0'
   s.prefix_header_file = 'Applozic/Applozic_Prefix.pch'
   # s.public_header_files = "Classes/**/*.h"
 

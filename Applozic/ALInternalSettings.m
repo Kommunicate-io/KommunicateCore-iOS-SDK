@@ -12,14 +12,14 @@
 
 +(void)setRegistrationStatusMessage:(NSString*)message{
     NSUserDefaults * userDefaults = ALInternalSettings.getUserDefaults;
-    [userDefaults setValue:message forKey:REGISTRATION_STATUS_MESSAGE];
+    [userDefaults setValue:message forKey:AL_REGISTRATION_STATUS_MESSAGE];
     [userDefaults synchronize];
 }
 
 +(NSString*)getRegistrationStatusMessage{
 
     NSUserDefaults * userDefaults = ALInternalSettings.getUserDefaults;
-    NSString *pushRegistrationStatusMessage  =  [userDefaults valueForKey:REGISTRATION_STATUS_MESSAGE];
+    NSString *pushRegistrationStatusMessage  =  [userDefaults valueForKey:AL_REGISTRATION_STATUS_MESSAGE];
     return pushRegistrationStatusMessage  != nil ? pushRegistrationStatusMessage : AL_REGISTERED;
 }
 

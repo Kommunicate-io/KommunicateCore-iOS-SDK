@@ -19,9 +19,9 @@
 #import "ALRealTimeUpdate.h"
 #import "ALConversationProxy.h"
 
-#define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
-#define CONVERSATION_CALL_COMPLETED @"conversationCallCompleted"
-#define MESSAGE_META_DATA_UPDATE @"messageMetaDataUpdateNotification"
+static NSString *const NEW_MESSAGE_NOTIFICATION = @"newMessageNotification";
+static NSString *const CONVERSATION_CALL_COMPLETED = @"conversationCallCompleted";
+static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNotification";
 
 @interface ALMessageService : NSObject 
 
@@ -97,4 +97,5 @@
 -(void)updateMessageMetadataOfKey:(NSString*) messageKey withMetadata: (NSMutableDictionary *) metadata withCompletion:(void(^)(ALAPIResponse* theJson, NSError *theError)) completion;
 
 - (void) fetchReplyMessages:(NSMutableArray<NSString *> *) keys withCompletion: (void(^)(NSMutableArray<ALMessage *>* messages))completion;
+
 @end

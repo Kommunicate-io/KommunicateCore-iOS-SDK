@@ -106,7 +106,7 @@
 }
 
 - (BOOL)isChatDisabled {
-    return _metadata && [_metadata[DISABLE_USER_CHAT] boolValue];
+    return _metadata && [_metadata[AL_DISABLE_USER_CHAT] boolValue];
 }
 
 @end

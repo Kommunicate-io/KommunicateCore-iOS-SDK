@@ -75,10 +75,10 @@
 #import "ALUploadTask.h"
 #import "ALDownloadTask.h"
 #import "ALMyContactMessageCell.h"
+#import "ALNotificationHelper.h"
 
-#define MQTT_MAX_RETRY 3
-#define NEW_MESSAGE_NOTIFICATION @"newMessageNotification"
-
+static int const MQTT_MAX_RETRY = 3;
+static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
 NSString * const ThirdPartyDetailVCNotification = @"ThirdPartyDetailVCNotification";
 NSString * const ThirdPartyDetailVCNotificationNavigationVC = @"ThirdPartyDetailVCNotificationNavigationVC";
 NSString * const ThirdPartyDetailVCNotificationALContact = @"ThirdPartyDetailVCNotificationALContact";
@@ -189,10 +189,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     // Setup quick recording if it's enabled in the settings
     if([ALApplozicSettings isQuickAudioRecordingEnabled]) {
-        if (@available(iOS 9.0, *) && [ALApplozicSettings isNewAudioDesignEnabled]) {
+        if ([ALApplozicSettings isNewAudioDesignEnabled]) {
             isNewAudioDesignEnabled = YES;
-        } else {
-            isNewAudioDesignEnabled = NO;
         }
         [self setUpSoundRecordingView];
         [self showMicButton];
@@ -2344,7 +2342,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     theMessage.contentType = ALMESSAGE_CONTENT_DEFAULT;
     theMessage.groupId = self.channelKey;
     theMessage.conversationId  = self.conversationId;
-    theMessage.source = SOURCE_IOS;
+    theMessage.source = AL_SOURCE_IOS;
 //    theMessage.metadata = [self getNewMetaDataDictionary]; // EXAMPLE FOR META DATA
 
     if(self.messageReplyId){
@@ -3412,8 +3410,19 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     {
         return;
     }
+
+
     ALNotificationView * alnotification = [[ALNotificationView alloc] initWithAlMessage:alMessage withAlertMessage:alertValue];
-    [alnotification nativeNotification:self];
+    [alnotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+
+        ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
+
+        if ([helper isApplozicViewControllerOnTop]) {
+
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+        }
+
+    }];
 }
 
 //===============================================================================================================================================
@@ -3470,6 +3479,39 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     [self loadChatView];
     [self setCallButtonInNavigationBar];
     [self showNoConversationLabel];
+}
+
+-(void)refreshViewOnNotificationTap:(NSString *)userId withChannelKey:(NSNumber *)channelKey withConversationId:(NSNumber *)conversationId {
+    
+    [self unSubscrbingChannel];
+    self.alChannel = nil;
+    self.alContact = nil;
+    self.contactIds = userId;
+    self.conversationId = conversationId;
+    self.channelKey = channelKey;
+    [self subscrbingChannel];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        [self.mTableView setUserInteractionEnabled:NO];
+        [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
+        [self.mTableView reloadData];
+        [self.mTableView setUserInteractionEnabled:YES];
+        [self setCallButtonInNavigationBar];
+        self.startIndex = 0;
+
+        NSString *chatId = self.channelKey != nil ? self.channelKey.stringValue : self.contactIds;
+
+        if ([ALUserDefaultsHandler isServerCallDoneForMSGList:chatId]) {
+            [self fetchMessageFromDB];
+            [self loadChatView];
+        } else {
+            [self showNoConversationLabel];
+            [self setTitle];
+            [self processLoadEarlierMessages:YES];
+        }
+        [self markConversationRead];;
+    });
 }
 
 -(void)reloadViewfor3rdParty
@@ -4205,6 +4247,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     {
         ALSLog(ALLoggerSeverityInfo, @"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
         [self.mqttObject subscribeToConversation];
+        self.mqttObject.mqttConversationDelegate = self;
         [self subscrbingChannel];
         self.mqttRetryCount++;
     }
@@ -4461,7 +4504,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
     }else{
 
-        if([message.type isEqualToString:OUT_BOX]){
+        if([message.type isEqualToString:AL_OUT_BOX]){
             self.replyUserName.text = @"You";
         }else{
             ALContactDBService  *aLContactDBService = [ALContactDBService new];

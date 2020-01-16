@@ -6,10 +6,9 @@
 //  Copyright (c) 2015 AppLogic. All rights reserved.
 //
 
-#define NAVIGATION_TEXT_SIZE 20
-#define LAST_SEEN_LABEL_SIZE 10
-#define TYPING_LABEL_SIZE 12.5
-
+static CGFloat NAVIGATION_TEXT_SIZE = 20;
+static CGFloat LAST_SEEN_LABEL_SIZE = 10;
+static CGFloat TYPING_LABEL_SIZE = 12.5;
 
 #import "ALBaseViewController.h"
 #import "ALUtilityClass.h"
@@ -21,8 +20,6 @@
 #import "ALNavigationController.h"
 
 static CGFloat const sendTextViewCornerRadius = 15.0f;
-
-#define KEYBOARD_PADDING 85
 
 @interface ALBaseViewController ()
 
@@ -279,13 +276,13 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 -(void)checkPricingPackage
 {
     BOOL debugflag = [ALUtilityClass isThisDebugBuild];
-    BOOL pricingFlag = ([ALUserDefaultsHandler getUserPricingPackage] == BETA);
+    BOOL pricingFlag = ([ALUserDefaultsHandler getUserPricingPackage] == AL_BETA);
    
     if(debugflag)
     {
         return;
     }
-    if([ALUserDefaultsHandler getUserPricingPackage] == CLOSED)
+    if([ALUserDefaultsHandler getUserPricingPackage] == AL_CLOSED)
     {
         [self back:self];
         [ALUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];

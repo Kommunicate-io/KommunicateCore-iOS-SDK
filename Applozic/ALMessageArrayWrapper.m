@@ -70,7 +70,7 @@
     else
     {
         int x = (int)[self.messageArray indexOfObject:almessage];
-        int length = [self.messageArray count];
+        int length = (int)self.messageArray.count;
         if (x >= 1 && x <= length - 2) {
             ALMessage *prev = [self.messageArray objectAtIndex:x - 1];
             ALMessage *next = [self.messageArray objectAtIndex:x + 1];

@@ -5,11 +5,14 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#define NAVIGATION_TEXT_SIZE 20
-#define USER_NAME_LABEL_SIZE 18
-#define MESSAGE_LABEL_SIZE 14
-#define TIME_LABEL_SIZE 12
-#define IMAGE_NAME_LABEL_SIZE 14
+static const CGFloat NAVIGATION_TEXT_SIZE = 20;
+static const CGFloat USER_NAME_LABEL_SIZE = 18;
+static const CGFloat MESSAGE_LABEL_SIZE = 14;
+static const CGFloat TIME_LABEL_SIZE = 12;
+static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
+static const int LAUNCH_GROUP_OF_TWO = 4;
+static const int REGULAR_CONTACTS = 0;
+static const int BROADCAST_GROUP_CREATION = 5;
 
 #import "UIView+Toast.h"
 #import "TSMessageView.h"
@@ -45,11 +48,12 @@
 #import "ALGroupCreationViewController.h"
 #import "ALMessageClientService.h"
 #import "ALLogger.h"
+#import "ALNotificationHelper.h"
 
 // Constants
-#define DEFAULT_TOP_LANDSCAPE_CONSTANT -34
-#define DEFAULT_TOP_PORTRAIT_CONSTANT -64
-#define MQTT_MAX_RETRY 3
+static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
+static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
+static int const MQTT_MAX_RETRY = 3;
 
 //==============================================================================================================================================
 // Private interface
@@ -210,7 +214,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateBroadCastMessages) name:@"BROADCAST_MSG_UPDATE" object:nil];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationUnreadCount:) name:@"Update_unread_count" object:nil];
     
-    
     [self.navigationController.navigationBar setTitleTextAttributes: @{
                                                                        NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -312,6 +315,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BROADCAST_MSG_UPDATE" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"Update_unread_count" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
 
 //==============================================================================================================================================
@@ -954,27 +958,32 @@
 }
 
 -(void)createDetailChatViewControllerWithMessage:(ALMessage *)message
-{   
+{
+    [self createDetailChatViewControllerWithUserId:message.contactIds withGroupId:message.groupId withConversationId:message.conversationId];
+}
+
+-(void)createDetailChatViewControllerWithUserId:(NSString *)contactId withGroupId:(NSNumber *)groupId withConversationId:(NSNumber *)conversationId {
+
     if(!(self.detailChatViewController))
     {
         self.detailChatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     }
 
-    self.detailChatViewController.conversationId = message.conversationId;
+    self.detailChatViewController.conversationId = conversationId;
 
     if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
     {
         [ALApplozicSettings setContactsGroupId:_contactsGroupId];
     }
-    
-    if(message.groupId)
+
+    if(groupId)
     {
-        self.detailChatViewController.channelKey = message.groupId;
+        self.detailChatViewController.channelKey = groupId;
         self.detailChatViewController.contactIds = nil;
-        
+
         ALChannelService *channelService = [[ALChannelService alloc] init];
-        ALChannel *alChannel = [channelService getChannelByKey:message.groupId];
-       
+        ALChannel *alChannel = [channelService getChannelByKey:groupId];
+
         if(alChannel.type == GROUP_OF_TWO)
         {
             NSString* contactId = [alChannel getReceiverIdInGroupOfTwo];
@@ -986,11 +995,17 @@
     else
     {
         self.detailChatViewController.channelKey = nil;
-        self.detailChatViewController.contactIds = message.contactIds;
+        self.detailChatViewController.contactIds = contactId;
     }
-    
+
     self.detailChatViewController.chatViewDelegate = self;
-    [self.navigationController pushViewController:self.detailChatViewController animated:YES];
+
+    ALPushAssist * pushAssist = [[ALPushAssist alloc]init];
+
+    if(![pushAssist.topViewController isKindOfClass:ALChatViewController.class]){
+        [self.navigationController pushViewController:self.detailChatViewController animated:YES];
+    }
+
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -1121,11 +1136,11 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone &&
         (toOrientation == UIInterfaceOrientationLandscapeLeft || toOrientation == UIInterfaceOrientationLandscapeRight))
     {
-        self.mTableViewTopConstraint.constant = DEFAULT_TOP_LANDSCAPE_CONSTANT;
+        self.mTableViewTopConstraint.constant = - DEFAULT_TOP_LANDSCAPE_CONSTANT;
     }
     else
     {
-        self.mTableViewTopConstraint.constant = DEFAULT_TOP_PORTRAIT_CONSTANT;
+        self.mTableViewTopConstraint.constant = - DEFAULT_TOP_PORTRAIT_CONSTANT;
     }
     [self.view layoutIfNeeded];
 }
@@ -1202,26 +1217,30 @@
 -(void)syncCall:(ALMessage *)alMessage andMessageList:(NSMutableArray *)messageArray
 {
     ALPushAssist* top = [[ALPushAssist alloc] init];
+    ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
+
     [self.detailChatViewController setRefresh: YES];
     
-    if ([self.detailChatViewController isVisible])
-    {
+    if ([self.detailChatViewController isVisible]) {
         [self.detailChatViewController syncCall:alMessage updateUI:[NSNumber numberWithInt:APP_STATE_ACTIVE] alertValue:alMessage.message];
-    }
-    else if (top.isMessageViewOnTop && (![alMessage.type isEqualToString:@"5"]))
-    {
-        [self updateMessageList:messageArray];
-        
-        if ((alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]) || [alMessage isMsgHidden])
-        {
+    } else if ([helper isApplozicViewControllerOnTop]) {
+
+        if (top.isMessageViewOnTop) {
+            [self updateMessageList:messageArray];
+        }
+
+        if ([alMessage isSentMessage] || (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]) || [alMessage isMsgHidden]) {
             return;
         }
-        
+
         ALNotificationView * alnotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
                                                                            withAlertMessage:alMessage.message];
-        
-        [alnotification nativeNotification:self];
+
+        [alnotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
+            [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
+        }];
     }
+
 }
 
 -(void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status
