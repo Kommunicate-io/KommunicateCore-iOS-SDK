@@ -214,7 +214,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         self.callback = callback;
         self.buttonCallback = buttonCallback;
 
-        CGFloat screenWidth = self.viewController.view.bounds.size.width;
+        CGSize screenSize = [UIScreen mainScreen].bounds.size;
+        CGFloat screenWidth = screenSize.width;
         CGFloat padding = [self padding];
 
         NSDictionary *current;
@@ -467,7 +468,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
 - (CGFloat)updateHeightOfMessageView
 {
     CGFloat currentHeight;
-    CGFloat screenWidth = self.viewController.view.bounds.size.width;
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGFloat screenWidth = screenSize.width;
     CGFloat padding = [self padding];
     CGFloat topPadding = padding;
 

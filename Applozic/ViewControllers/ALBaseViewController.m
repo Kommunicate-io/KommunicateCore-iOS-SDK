@@ -18,6 +18,8 @@ static CGFloat TYPING_LABEL_SIZE = 12.5;
 #import "ALChatLauncher.h"
 #import "ALMessagesViewController.h"
 #import "ALNavigationController.h"
+#import "ALApplicationInfo.h"
+#import "ALRegisterUserClientService.h"
 
 static CGFloat const sendTextViewCornerRadius = 15.0f;
 
@@ -36,6 +38,8 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     CGRect keyboardEndFrame;
     CGFloat navigationWidth;
     int paddingForTextMessageViewHeight;
+    ALApplicationInfo * applicationInfo;
+    ALRegisterUserClientService * registerUserClientService;
 }
 - (void)viewDidLoad
 {
@@ -82,6 +86,15 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     }
     
     [self parseRestrictedWordFile];
+    applicationInfo = [[ALApplicationInfo alloc] init];
+    if ([applicationInfo isChatSuspended]) {
+        registerUserClientService = [[ALRegisterUserClientService alloc] init];
+        [registerUserClientService syncAccountStatusWithCompletion:^(ALRegistrationResponse *response, NSError *error) {
+            if(error || !response.isRegisteredSuccessfully) {
+                ALSLog(ALLoggerSeverityError, @"Failed to sync the account status");
+            }
+        }];
+    }
 }
 
 -(void)parseRestrictedWordFile
@@ -270,41 +283,15 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [self updateSubViews];
     
     /*  CHECK PRICING PACKAGE */
-    [self checkPricingPackage];
+    [self checkPricingPackageAndShowMessage];
 }
 
--(void)checkPricingPackage
+-(void)checkPricingPackageAndShowMessage
 {
-    BOOL debugflag = [ALUtilityClass isThisDebugBuild];
-    BOOL pricingFlag = ([ALUserDefaultsHandler getUserPricingPackage] == AL_BETA);
-   
-    if(debugflag)
-    {
-        return;
-    }
-    if([ALUserDefaultsHandler getUserPricingPackage] == AL_CLOSED)
-    {
-        [self back:self];
+    if([applicationInfo isChatSuspended]) {
         [ALUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];
-        return;
     }
-    if(!debugflag && pricingFlag)
-    {
-        UIToolbar * accessoryView = [[UIToolbar alloc] init];
-        [accessoryView setBackgroundColor:[UIColor lightGrayColor]];
-        [accessoryView sizeToFit];
-        
-        NSString *titleText = @"  Please Contact Applozic to activate chat in your app";
-        UILabel *customLabel = [[UILabel alloc] initWithFrame:accessoryView.frame];
-        [customLabel setFont:[UIFont fontWithName:@"Helvetica" size:14]];
-        [customLabel setText:titleText];
-        [customLabel setTextColor:[UIColor blueColor]];
-        
-        UIBarButtonItem * barButton = [[UIBarButtonItem alloc] initWithCustomView:customLabel];
-        [accessoryView setItems:[NSArray arrayWithObjects:barButton, nil] animated:YES];
-        [accessoryView setUserInteractionEnabled:NO];
-        [self.sendMessageTextView setInputAccessoryView:accessoryView];
-    }
+    
 }
 
 -(void)updateSubViews

@@ -1063,6 +1063,9 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 -(void)createChannelEntry:(ALChannel*)channel fromMessageList:(BOOL) isFromMessageList
 {
+    if (!channel) {
+        return;
+    }
     ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     [channelDBService createChannelEntity:channel];
