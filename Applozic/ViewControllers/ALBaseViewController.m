@@ -244,9 +244,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 {
     [super viewWillAppear:animated];
     [self registerForKeyboardNotifications];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSubViews) name:@"APP_ENTER_IN_FOREGROUND" object:nil];
-    
+
     [self.navigationController.navigationBar setTitleTextAttributes: @{
                                                                        NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -280,8 +278,6 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self updateSubViews];
-    
     /*  CHECK PRICING PACKAGE */
     [self checkPricingPackageAndShowMessage];
 }
@@ -293,13 +289,6 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     }
     
 }
-
--(void)updateSubViews
-{
-//    CGFloat typingLabelY = self.view.frame.size.height - typingIndicatorHeight - self.typingMessageView.frame.size.height + paddingForTextMessageViewHeight;
-//    [self.typingLabel setFrame:CGRectMake(0, typingLabelY, self.view.frame.size.width, typingIndicatorHeight)];
-}
-
 
 -(void)sendButtonUI
 {
@@ -317,9 +306,6 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"APP_ENTER_IN_FOREGROUND" object:nil];
-    //self.navigationController.navigationBar.barTintColor = self.navColor;
-    
     [self removeRegisteredKeyboardNotifications];
 }
 

@@ -208,7 +208,7 @@ static int const MQTT_MAX_RETRY = 3;
                                                  name:@"Update_channel_Info" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLastSeenAtStatusPUSH:) name:@"update_USER_STATUS" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appEntersForegroundIntoListView:) name:@"appCameInForeground" object:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessages:) name:@"CONVERSATION_DELETION" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCallForUser:) name:@"USER_DETAILS_UPDATE_CALL" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateBroadCastMessages) name:@"BROADCAST_MSG_UPDATE" object:nil];
@@ -314,8 +314,7 @@ static int const MQTT_MAX_RETRY = 3;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_MESSAGE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"BROADCAST_MSG_UPDATE" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"Update_unread_count" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 //==============================================================================================================================================
@@ -328,15 +327,6 @@ static int const MQTT_MAX_RETRY = 3;
     self.navigationController.navigationBar.layer.shadowOffset = CGSizeMake(0, 0);
     self.navigationController.navigationBar.layer.shadowRadius = 10;
     self.navigationController.navigationBar.layer.masksToBounds = NO;
-}
-
-//==============================================================================================================================================
-#pragma mark - END
-//==============================================================================================================================================
-
--(void)appEntersForegroundIntoListView:(id)sender
-{
-    [self callLastSeenStatusUpdate];
 }
 
 -(void)emptyConversationAlertLabel
@@ -1490,13 +1480,6 @@ static int const MQTT_MAX_RETRY = 3;
     {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
-}
-
--(void)appWillEnterForeground:(NSNotification *)notification
-{
-    ALSLog(ALLoggerSeverityInfo, @"will enter foreground notification");
-   // [self syncCall:nil];
-    //[self callLastSeenStatusUpdate];
 }
 
 -(void)newMessageHandler:(NSNotification *)notification

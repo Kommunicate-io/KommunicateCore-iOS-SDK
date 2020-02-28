@@ -31,7 +31,7 @@
 		1829B22C2347C4AE00472008 /* ALSearchRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1829B22A2347C4AD00472008 /* ALSearchRequest.m */; };
 		1829B22D2347C4AE00472008 /* ALSearchRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1829B22B2347C4AE00472008 /* ALSearchRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18413E1F23D0695D00696FA6 /* ALNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18413E1D23D0695C00696FA6 /* ALNotificationHelper.m */; };
-		18413E2023D0695D00696FA6 /* ALNotificationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18413E1E23D0695D00696FA6 /* ALNotificationHelper.h */; };
+		18413E2023D0695D00696FA6 /* ALNotificationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18413E1E23D0695D00696FA6 /* ALNotificationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1866E32C218749BD00667018 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32B218749BD00667018 /* UIColor+Extension.swift */; };
 		1866E32E218749CA00667018 /* ALImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1866E32D218749C900667018 /* ALImagePreviewController.m */; };
 		187EEAA923182396008012BC /* ALPreviewPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */; };
@@ -2275,7 +2275,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.1.0;
+				MARKETING_VERSION = 7.2.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2309,7 +2309,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.1.0;
+				MARKETING_VERSION = 7.2.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";

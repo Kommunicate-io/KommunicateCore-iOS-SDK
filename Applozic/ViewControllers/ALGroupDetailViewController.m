@@ -340,13 +340,9 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
             break;
         case 1:
         {
-            ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-            ALChannelUserX *alChannelUserX =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
 
-            if(alChannelUserX.role.intValue != MEMBER
-               && ![self isThisChannelLeft:self.channelKeyID]
-               &&  [ALApplozicSettings getGroupMemberRemoveOption]){
-                [self removeMember:indexPath.row];
+            if([ALApplozicSettings getGroupMemberRemoveOption]){
+                [self channelMemberAction:indexPath.row];
             }
         }break;
         case 2:{
@@ -520,108 +516,94 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
 #pragma mark - Remove Memember (for admin)
 //=======================================
--(void)removeMember:(NSInteger)row
+-(void)channelMemberAction:(NSInteger)row
 {
+    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+    ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
 
-    NSString* removeMemberID = [NSString stringWithFormat:@"%@",memberIds[row]];
+    UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil
+                                                                            message:nil
+                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
 
-    if([removeMemberID isEqualToString:[ALUserDefaultsHandler getUserId]])
-    {
-        return;
+    [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
+
+    [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
+
+    NSString* channelMemberID = [NSString stringWithFormat:@"%@",memberIds[row]];
+
+    if ([channelMemberID isEqualToString:[ALUserDefaultsHandler getUserId]]) { return; }
+
+    ALContact * alContact = [alContactDBService loadContactByKey:@"userId" value:channelMemberID];
+
+    if ([ALApplozicSettings isChatOnTapUserProfile]) {
+        [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"messageText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Message", @"") stringByAppendingString: @" %@"], [alContact getDisplayName]]
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction *action) {
+
+            [self openChatThreadFor:channelMemberID];
+        }]];
     }
-    else
-    {
 
-        ALContactDBService *alContactDBService = [[ALContactDBService alloc]init];
-        ALContact * alContact = [alContactDBService loadContactByKey:@"userId" value:removeMemberID];
+    ALChannelUserX *alChannelUserXLoggedInUser =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
 
+    BOOL isLoginUserLeftChannel =  [self isThisChannelLeft:self.channelKeyID];
 
-        UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil
-                                                                                message:nil
-                                                                         preferredStyle:UIAlertControllerStyleActionSheet];
+    if (alChannelUserXLoggedInUser.isAdminUser && !isLoginUserLeftChannel) {
 
-        [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
+        UIAlertAction *removeAction = [UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"removeText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Remove", @"") stringByAppendingString: @" %@"], [alContact getDisplayName]]
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:^(UIAlertAction *action) {
 
-        [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
+            [self turnUserInteractivityForNavigationAndTableView:NO];
+            ALChannelService * alchannelService = [[ALChannelService alloc] init];
+            [alchannelService removeMemberFromChannel:channelMemberID andChannelKey:self.channelKeyID
+                                   orClientChannelKey:nil withCompletion:^(NSError *error, ALAPIResponse *response) {
 
-        if ([ALApplozicSettings isChatOnTapUserProfile])
-        {
-            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"messageText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Message", @"") stringByAppendingString: @" %@"], [alContact getDisplayName]]
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:^(UIAlertAction *action) {
+                if (!error) {
+                    [self->memberIds removeObjectAtIndex:row];
+                    [self setupView];
+                    [self.tableView reloadData];
+                }
+                [self turnUserInteractivityForNavigationAndTableView:YES];
+            }];
 
-                                                                [self openChatThreadFor:removeMemberID];
-            }]];
+        }];
 
-        }
+        [removeAction setValue:[UIColor redColor] forKey:@"titleTextColor"];
+        [theController addAction:removeAction];
+    }
 
+    ALChannel *channel = [channelDBService loadChannelByKey:self.channelKeyID];
+    ALChannelUserX *alChannelUserX =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
 
-        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-        ALChannelUserX *alChannelUserX =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:memberIds[row]];
+    if (!alChannelUserX.isAdminUser  && !channel.isBroadcastGroup && !isLoginUserLeftChannel && alChannelUserXLoggedInUser.isAdminUser) {
 
-        ALChannelUserX *alChannelUserXLoggedInUser =  [channelDBService loadChannelUserXByUserId:self.channelKeyID andUserId:[ALUserDefaultsHandler getUserId]];
+        [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"makeAdminText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Make admin", @"") stringByAppendingString: @" %@"]
+                                                                 , [alContact getDisplayName]]
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction *action) {
 
-        if(alChannelUserXLoggedInUser.isAdminUser){
+            ALChannelService *channelService = [ALChannelService new];
+            ALChannelUser * alChannelUsers = [ALChannelUser new];
+            alChannelUsers.role = [NSNumber numberWithInt:1];
+            alChannelUsers.userId = self->memberIds[row];
+            NSMutableArray * channelUsers = [NSMutableArray new];
+            [channelUsers addObject:alChannelUsers.dictionary];
 
-            UIAlertAction *removeAction = [UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"removeText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Remove", @"") stringByAppendingString: @" %@"], [alContact getDisplayName]]
-                                                                   style:UIAlertActionStyleDefault
-                                                                 handler:^(UIAlertAction *action) {
+            [channelService updateChannel:self.channelKeyID andNewName:nil
+                              andImageURL:nil orClientChannelKey:nil isUpdatingMetaData:NO metadata:nil orChildKeys:nil orChannelUsers: channelUsers withCompletion:^(NSError *error) {
 
-                                                                     [self turnUserInteractivityForNavigationAndTableView:NO];
-                                                                     ALChannelService * alchannelService = [[ALChannelService alloc] init];
-                                                                     [alchannelService removeMemberFromChannel:removeMemberID andChannelKey:self.channelKeyID
-                                                                                            orClientChannelKey:nil withCompletion:^(NSError *error, ALAPIResponse *response) {
+                if (!error) {
 
-                                                                                                if(!error)
-                                                                                                {
-                                                                                                    [self->memberIds removeObjectAtIndex:row];
-                                                                                                    [self setupView];
-                                                                                                    [self.tableView reloadData];
-                                                                                                }
+                    [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"groupSuccessFullyUpdateInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group information successfully updated", @"") andTitle:NSLocalizedStringWithDefaultValue(@"responseText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Reponse", @"")];
+                    [self setupView];
+                    [self.tableView reloadData];
+                }
+            }];
+        }]];
+    }
 
-                                                                                                [self turnUserInteractivityForNavigationAndTableView:YES];
-                                                                                            }];
-
-                                                                 }];
-
-
-            [removeAction setValue:[UIColor redColor] forKey:@"titleTextColor"];
-            [theController addAction:removeAction];
-
-        }
-
-            ALChannel *channel = [channelDBService loadChannelByKey:self.channelKeyID];
-
-            if(!alChannelUserX.isAdminUser  && !channel.isBroadcastGroup){
-
-            [theController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:[NSLocalizedStringWithDefaultValue(@"makeAdminText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Make admin", @"") stringByAppendingString: @" %@"]
-                                                                     , [alContact getDisplayName]]
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:^(UIAlertAction *action) {
-
-                                                                ALChannelService *channelService = [ALChannelService new];
-                                                                ALChannelUser * alChannelUsers = [ALChannelUser new];
-                                                                alChannelUsers.role = [NSNumber numberWithInt:1];
-                                                                alChannelUsers.userId = self->memberIds[row];
-                                                                NSMutableArray * channelUsers = [NSMutableArray new];
-                                                                [channelUsers addObject:alChannelUsers.dictionary];
-
-                                                                [channelService updateChannel:self.channelKeyID andNewName:nil
-                                                                                  andImageURL:nil orClientChannelKey:nil isUpdatingMetaData:NO metadata:nil orChildKeys:nil orChannelUsers: channelUsers withCompletion:^(NSError *error) {
-
-                                                                                      if(!error)
-                                                                                      {
-
-                                                                                          [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"groupSuccessFullyUpdateInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group information successfully updated", @"") andTitle:NSLocalizedStringWithDefaultValue(@"responseText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Reponse", @"")];
-                                                                                          [self setupView];
-                                                                                          [self.tableView reloadData];
-                                                                                      }
-                                                                                  }];
-                                                            }]];
-        }
-
-
-
+    if (theController.actions.count > 1) {
         [self presentViewController:theController animated:YES completion:nil];
     }
 }

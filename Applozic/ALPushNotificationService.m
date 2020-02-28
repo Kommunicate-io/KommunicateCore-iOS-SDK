@@ -11,7 +11,6 @@
 #import "ALUserDetail.h"
 #import "ALUserDefaultsHandler.h"
 #import "ALChatViewController.h"
-//#import "LaunchChatFromSimpleViewController.h"
 #import "ALMessagesViewController.h"
 #import "ALPushAssist.h"
 #import "ALUserService.h"
@@ -40,6 +39,8 @@
     ALSLog(ALLoggerSeverityInfo, @"APNS_DICTIONARY :: %@",dictionary.description);
     ALSLog(ALLoggerSeverityInfo, @"UPDATE UI VALUE :: %@",updateUI);
     ALSLog(ALLoggerSeverityInfo, @"UPDATE UI :: %@", ([updateUI isEqualToNumber:[NSNumber numberWithInt:1]]) ? @"ACTIVE" : @"BACKGROUND/INACTIVE");
+
+    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
 
     if ([self isApplozicNotification:dictionary])
     {
@@ -99,41 +100,44 @@
 
         if ([type isEqualToString:self.notificationTypes[@(AL_SYNC)]]) // APPLOZIC_01 //
         {
-            [ALUserDefaultsHandler setMsgSyncRequired:YES];
-            [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
-                                       withCompletion:^(NSMutableArray *message, NSError *error) {
 
+            ALSLog(ALLoggerSeverityInfo, @"ALPushNotificationService's SYNC CALL");
+            [dict setObject:(alertValue ? alertValue : @"") forKey:@"alertValue"];
+            [self assitingNotificationMessage:notificationMsg andDictionary:dict withMetadata:metadataDictionary];
+            if (state == UIApplicationStateActive) {
+                [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
+                                           withCompletion:^(NSMutableArray *message, NSError *error) {
 
-                ALSLog(ALLoggerSeverityInfo, @"ALPushNotificationService's SYNC CALL");
-                [dict setObject:(alertValue ? alertValue : @"") forKey:@"alertValue"];
-                [self assitingNotificationMessage:notificationMsg andDictionary:dict withMetadata:metadataDictionary];
-            }];
-
-
+                }];
+            }
         }
         else if ([type isEqualToString:@"MESSAGE_SENT"]||[type isEqualToString:self.notificationTypes[@(AL_MESSAGE_SENT)]])
         {
 
-            ALSLog(ALLoggerSeverityInfo, @"APNS: APPLOZIC_02 ARRIVED");
+            if (state == UIApplicationStateActive) {
 
-            NSString *alValueJson = (NSString *)[dictionary valueForKey:@"AL_VALUE"];
-            NSData* data = [alValueJson dataUsingEncoding:NSUTF8StringEncoding];
+                ALSLog(ALLoggerSeverityInfo, @"APNS: APPLOZIC_02 ARRIVED");
 
-            NSError *error = nil;
-            NSDictionary *theMessageDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-            NSString*  notificationMsg = [theMessageDict valueForKey:@"message"];
-            ALSLog(ALLoggerSeverityInfo, @"\nNotification Message:%@\n\nDeviceString:%@\n",notificationMsg,
-                   [ALUserDefaultsHandler getDeviceKeyString]);
+                NSString *alValueJson = (NSString *)[dictionary valueForKey:@"AL_VALUE"];
+                NSData* data = [alValueJson dataUsingEncoding:NSUTF8StringEncoding];
 
-            if(([[notificationMsg componentsSeparatedByString:@":"][1] isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]))
-            {
-                ALSLog(ALLoggerSeverityInfo, @"APNS: Sent by self-device");
-                return YES;
+                NSError *error = nil;
+                NSDictionary *theMessageDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                NSString*  notificationMsg = [theMessageDict valueForKey:@"message"];
+                ALSLog(ALLoggerSeverityInfo, @"\nNotification Message:%@\n\nDeviceString:%@\n",notificationMsg,
+                       [ALUserDefaultsHandler getDeviceKeyString]);
+
+                if(([[notificationMsg componentsSeparatedByString:@":"][1] isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]))
+                {
+                    ALSLog(ALLoggerSeverityInfo, @"APNS: Sent by self-device");
+                    return YES;
+                }
+
+                [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate  withCompletion:^(NSMutableArray *message, NSError *error) {
+                    ALSLog(ALLoggerSeverityInfo, @"APPLOZIC_02 Sync Call Completed");
+                }];
+
             }
-
-            [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate  withCompletion:^(NSMutableArray *message, NSError *error) {
-                ALSLog(ALLoggerSeverityInfo, @"APPLOZIC_02 Sync Call Completed");
-            }];
         }
         else if ([type isEqualToString:@"MT_MESSAGE_DELIVERED"]||[type isEqualToString:self.notificationTypes[@(AL_DELIVERED)]]){
 
@@ -467,10 +471,7 @@
     }
 }
 
-+(void)applicationEntersForeground
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"appCameInForeground" object:nil];
-}
++(void)applicationEntersForeground {}
 
 +(void)userSync
 {
