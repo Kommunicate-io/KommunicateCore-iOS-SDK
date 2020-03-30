@@ -177,7 +177,9 @@
         }
         
         userContact.roleType = contact.roleType;
-        userContact.metadata = contact.metadata.description;
+
+        userContact.metadata =  [contact appendMetadataIn:userContact.metadata].description;
+
         if(contact.notificationAfterTime && [contact.notificationAfterTime longValue]>0){
             userContact.notificationAfterTime = contact.notificationAfterTime;
         }
@@ -439,7 +441,7 @@
         dbContact.contactNumber = userDetail.contactNumber;
         dbContact.userStatus = userDetail.userStatus;
         dbContact.deletedAtTime = userDetail.deletedAtTime;
-        dbContact.metadata = userDetail.metadata.description;
+        dbContact.metadata =  [userDetail appendMetadataIn:dbContact.metadata].description;
         dbContact.roleType = userDetail.roleType;
         
         if(userDetail.notificationAfterTime && [userDetail.notificationAfterTime longValue]>0){
@@ -792,5 +794,56 @@
     return userDetail;
 }
 
+-(BOOL)addOrUpdateMetadataWithUserId:(NSString *) userId withMetadataKey:(NSString *) key withMetadataValue:(NSString *) value {
+
+    BOOL isSuccess = NO;
+    if ([userId length] == 0) {
+        return isSuccess;
+    }
+
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CONTACT" inManagedObjectContext:dbHandler.managedObjectContext];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId = %@",userId];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+
+    NSError *fetchError = nil;
+
+    NSArray *result = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
+
+    if(result.count > 0) {
+        DB_CONTACT * dbContact = [result objectAtIndex:0];
+
+        NSString * metadataString = dbContact.metadata;
+        if (!metadataString) {
+            NSMutableDictionary *metadata = [[NSMutableDictionary alloc]init];
+            [metadata setObject:value forKey:key];
+            dbContact.metadata = metadata.description;
+            NSError *error = nil;
+            isSuccess = [dbHandler.managedObjectContext save:&error];
+            if (!isSuccess) {
+                ALSLog(ALLoggerSeverityError, @"DB ERROR in Add meta data :%@",error);
+            }
+            return isSuccess;
+        }
+
+        ALContact * contact = [[ALContact alloc] init];
+        NSMutableDictionary * existingMetadata = [contact getMetaDataDictionary:metadataString];
+
+        if (existingMetadata) {
+            [existingMetadata setObject:value forKey:key];
+            dbContact.metadata = existingMetadata.description;
+            NSError *error = nil;
+            isSuccess = [dbHandler.managedObjectContext save:&error];
+            if (!isSuccess) {
+                ALSLog(ALLoggerSeverityError, @"DB ERROR in update meta data :%@",error);
+            }
+        }
+    }
+    return isSuccess;
+}
 
 @end

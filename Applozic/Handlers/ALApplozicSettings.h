@@ -151,6 +151,7 @@ static NSString *const AL_RECEIVED_CONTACT_MSG_LABEL_COLOR = @"com.applozic.AL_R
 static NSString *const AL_IMAGE_PREVIEW_BACKGROUND_COLOR = @"com.applozic.AL_IMAGE_PREVIEW_BACKGROUND_COLOR";
 static NSString *const AL_RESTRICTED_MESSAGE_PATTERN  = @"com.applozic.AL_RESTRICTED_MESSAGE_PATTERN";
 static NSString *const AL_DISABLE_NOTIFICATION_TAP = @"com.applozic.AL_DISABLE_NOTIFICATION_TAP";
+static NSString *const AL_GROUPS_LIST_TAB = @"com.applozic.AL_GROUPS_LIST_TAB";
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -606,4 +607,8 @@ static NSString *const AL_DISABLE_NOTIFICATION_TAP = @"com.applozic.AL_DISABLE_N
 
 +(void)disableInAppNotificationTap:(BOOL)flag;
 +(BOOL)isInAppNotificationTapDisabled;
+
++(void)disableGroupListingTab:(BOOL)flag;
++(BOOL)isGroupListingTabDisabled;
+
 @end

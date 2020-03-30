@@ -230,8 +230,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     }];
     if(self.alMessage){
+        self.displayName = nil;
         [self handleMessageForward:self.alMessage];
-
     }
 }
 
@@ -547,7 +547,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     // save msg to db
     theMessage.msgDBObjectId = [self saveMessageToDatabase:theMessage];
 
-    [self sendMessage:theMessage ];
+    [self sendMessage:theMessage withUserDisplayName:self.displayName];
     [self.mTableView reloadData];
     [self setRefreshMainView:TRUE];
     [self scrollTableViewToBottomWithAnimation:YES];
@@ -1285,7 +1285,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     //SEND MESSAGE
     [[self.alMessageWrapper getUpdatedMessageArray] addObject:message];
     [self showNoConversationLabel];
-    [self sendMessage:message];
+    [self sendMessage:message withUserDisplayName:nil];
     [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
     [self setRefreshMainView:TRUE];
     [self scrollTableViewToBottomWithAnimation:YES];
@@ -1308,6 +1308,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     message.sentToServer = FALSE;
     message.status = @1;
 
+    self.displayName = nil;
+
     if(message.isAReplyMessage){
         message.metadata = nil;
     }
@@ -1324,8 +1326,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     self.mTotalCount = self.mTotalCount+1;
     self.startIndex = self.startIndex + 1;
 
-    [self sendMessage:message messageAtIndex: [[self.alMessageWrapper getUpdatedMessageArray] count]];
-
+    [self sendMessage:message messageAtIndex: [[self.alMessageWrapper getUpdatedMessageArray] count] withUserDisplayName:nil];
 
     [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
     [self setRefreshMainView:TRUE];
@@ -1370,6 +1371,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
             [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
             return;
         }
+        [self updateUserDisplayNameWithMessage:theMessage withDisplayName:self.displayName];
         completion(message, error);
         [self.mTableView reloadData];
         [self setRefreshMainView:TRUE];
@@ -1386,7 +1388,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     {
         ALMessage * locationMessage = [self formLocationMessage:latLongString];
         [[self.alMessageWrapper getUpdatedMessageArray] addObject:locationMessage];
-        [self sendMessage:locationMessage];
+        [self sendMessage:locationMessage withUserDisplayName:self.displayName];
         [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
         [self setRefreshMainView:TRUE];
         [self scrollTableViewToBottomWithAnimation:YES];
@@ -1575,7 +1577,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     [self.sendMessageTextView setText:nil];
     self.mTotalCount = self.mTotalCount + 1;
     self.startIndex = self.startIndex + 1;
-    [self sendMessage:theMessage];
+    [self sendMessage:theMessage withUserDisplayName:self.displayName];
 
     if(isAudioRecordingEnabled) {
         [self showMicButton];
@@ -3203,11 +3205,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 }
 
 
--(void)sendMessage:(ALMessage *)theMessage{
-    [self sendMessage:theMessage messageAtIndex:0];
+-(void)sendMessage:(ALMessage *)theMessage withUserDisplayName:(NSString *) displayName {
+    [self sendMessage:theMessage messageAtIndex:0 withUserDisplayName:displayName];
 }
 
--(void)sendMessage:(ALMessage *)theMessage messageAtIndex:(NSUInteger) messageIndex{
+-(void)sendMessage:(ALMessage *)theMessage messageAtIndex:(NSUInteger) messageIndex withUserDisplayName:(NSString *) displayName {
     [self resetMessageReplyView];
     [[ALMessageService sharedInstance] sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
 
@@ -3222,9 +3224,9 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [[self.alMessageWrapper getUpdatedMessageArray]replaceObjectAtIndex: messageIndex-1 withObject:theMessage];
 
         }
-
         [self.mTableView reloadData];
         [self setRefreshMainView:YES];
+        [self updateUserDisplayNameWithMessage:theMessage withDisplayName:displayName];
     }];
 }
 
@@ -3483,7 +3485,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 }
 
 -(void)refreshViewOnNotificationTap:(NSString *)userId withChannelKey:(NSNumber *)channelKey withConversationId:(NSNumber *)conversationId {
-    
+
+    if (![self isChatOpenForSameConversationWithUserId:userId withGroupId:channelKey]) {
+        self.displayName = nil;
+    }
+
     [self unSubscrbingChannel];
     self.alChannel = nil;
     self.alContact = nil;
@@ -3513,6 +3519,14 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         }
         [self markConversationRead];;
     });
+}
+
+-(BOOL)isChatOpenForSameConversationWithUserId:(NSString *) userId withGroupId:(NSNumber *) groupId{
+
+    return (self.channelKey != nil && groupId != nil &&
+            [groupId.stringValue isEqualToString:self.channelKey.stringValue]) ||
+    (self.channelKey == nil && self.contactIds != nil &&
+     userId != nil && [self.contactIds isEqualToString:userId]);
 }
 
 -(void)reloadViewfor3rdParty
@@ -4897,6 +4911,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
             [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
           }
+        [self updateUserDisplayNameWithMessage:alMessage withDisplayName:self.displayName];
     }
 }
 
@@ -4906,6 +4921,21 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     imageCell.mDowloadRetryButton.alpha = 1;
     imageCell.downloadRetryView.alpha = 1;
     imageCell.sizeLabel.alpha = 1;
+}
+
+-(void)updateUserDisplayNameWithMessage:(ALMessage *) message withDisplayName:(NSString *) displayName {
+    ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
+
+    if (displayName.length && !message.groupId) {
+        ALContact * contact =  [contactDBService loadContactByKey:@"userId" value:message.to];
+        if (contact && [contact isDisplayNameUpdateRequired] ) {
+            [[ALUserService sharedInstance] updateDisplayNameWith:message.to withDisplayName:displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+                if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                    [contactDBService addOrUpdateMetadataWithUserId:message.to withMetadataKey:AL_DISPLAY_NAME_UPDATED withMetadataValue:@"true"];
+                }
+            }];
+        }
+    }
 }
 
 @end
