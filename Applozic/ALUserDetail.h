@@ -45,4 +45,7 @@
 
 -(BOOL)isChatDisabled;
 
+-(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
+-(NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString;
+
 @end

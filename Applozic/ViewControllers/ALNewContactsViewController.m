@@ -238,7 +238,7 @@ static const int SHOW_GROUP = 102;
         [self updateView];
     }
     
-    if(![ALApplozicSettings getGroupOption]){
+    if([ALApplozicSettings isGroupListingTabDisabled]){
         [self.navigationItem setTitle:NSLocalizedStringWithDefaultValue(@"contactsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Contacts" , @"")];
         [self.segmentControl setSelectedSegmentIndex:0];
         [self.segmentControl setHidden:YES];

@@ -306,9 +306,6 @@
     }
 }
 
-
-
-
 -(ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey{
     
     DB_CHANNEL_USER_X *dbChannelUserX = [self getChannelUserX:channelKey];
@@ -400,13 +397,6 @@
     
     return alChannelUserX;
 }
-
-
-
-
-
-
-
 
 -(void)updateParentKeyInChannelUserX:(NSNumber *)channelKey andWithParentKey:(NSNumber *)parentKey addUserId :(NSString *) userId
 {

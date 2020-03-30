@@ -1856,4 +1856,15 @@
     return   [userDefaults boolForKey:AL_DISABLE_NOTIFICATION_TAP];
 }
 
++(void)disableGroupListingTab:(BOOL)flag {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    [userDefaults setBool:flag forKey:AL_GROUPS_LIST_TAB];
+    [userDefaults synchronize];
+}
+
++(BOOL)isGroupListingTabDisabled {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    return [userDefaults boolForKey:AL_GROUPS_LIST_TAB];
+}
+
 @end

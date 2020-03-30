@@ -78,7 +78,7 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALImagePickerController.h>
 #import <Applozic/ALLocationCell.h>
 #import <Applozic/ALMessageInfoViewController.h>
-#import <Applozic/ALMultipleAttachmentCell.h>
+#import <Applozic/AlMultipleAttachmentCell.h>
 #import <Applozic/ALReceiverUserProfileVC.h>
 #import <Applozic/ALUserProfileVC.h>
 #import <Applozic/ALChannelInfo.h>

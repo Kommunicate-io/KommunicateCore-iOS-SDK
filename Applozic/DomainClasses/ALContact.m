@@ -11,8 +11,6 @@
 
 @implementation ALContact
 
-
-
 -(instancetype)initWithDict:(NSDictionary * ) dictionary {
     self = [super init];
     [self populateDataFromDictonary:dictionary];
@@ -94,6 +92,30 @@
 
 - (BOOL)isChatDisabled {
     return _metadata && [_metadata[AL_DISABLE_USER_CHAT] boolValue];
+}
+
+-(BOOL)isDisplayNameUpdateRequired{
+
+    return _metadata && [_metadata count] > 0
+    && [_metadata objectForKey:AL_DISPLAY_NAME_UPDATED]
+    && [[_metadata objectForKey:AL_DISPLAY_NAME_UPDATED] isEqualToString:@"false"];
+}
+
+-(NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString {
+
+    NSMutableDictionary * existingMetadata = [self getMetaDataDictionary:metadataString];
+
+    if (existingMetadata && [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED]) {
+
+        NSString * flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
+
+        if (!_metadata) {
+            _metadata = [[NSMutableDictionary alloc]init];
+        }
+
+        [_metadata setObject:flag forKey:AL_DISPLAY_NAME_UPDATED];
+    }
+    return _metadata;
 }
 
 @end

@@ -63,6 +63,8 @@ static NSString *const AL_USER_MQTT_ENCRYPTION_KEY = @"com.applozic.userdefault.
 static NSString *const AL_LAST_SYNC_TIME_FOR_META_DATA = @"com.applozic.userdefault.LAST_SYNC_TIME_FOR_META_DATA";
 static NSString *const AL_NOTIFICATION_TITLE_KEY = @"NOTIFICATION_TITLE";
 static NSString *const AL_DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
+static NSString *const AL_USER_DISPLAY_NAME_API_CALLED_SUFFIX = @"com.applozic.userdefault.AL_USER_DISPLAY_NAME_API_CALLED:";
+
 
 #import <Foundation/Foundation.h>
 #import "ALApplozicSettings.h"

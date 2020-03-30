@@ -32,7 +32,6 @@
 #import "ALHTTPManager.h"
 #import "ALUploadTask.h"
 
-
 @interface ALMessageService  ()<ApplozicAttachmentDelegate>
 
 @end
@@ -671,6 +670,8 @@ static ALMessageClientService *alMsgClientService;
 -(void)processPendingMessages
 {
     ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
+    ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
+
     NSMutableArray * pendingMessageArray = [dbService getPendingMessages];
     ALSLog(ALLoggerSeverityInfo, @"service called....%lu",(unsigned long)pendingMessageArray.count);
 
@@ -686,6 +687,18 @@ static ALMessageClientService *alMsgClientService;
                     ALSLog(ALLoggerSeverityError, @"PENDING_MESSAGES_NO_SENT : %@", error);
                     return;
                 }
+
+                if (!msg.groupId) {
+                    ALContact * contact = [contactDBService loadContactByKey:@"userId" value:msg.to];
+                    if (contact && [contact isDisplayNameUpdateRequired] ) {
+                        [[ALUserService sharedInstance] updateDisplayNameWith:msg.to withDisplayName:contact.displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+                            if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                                [contactDBService addOrUpdateMetadataWithUserId:msg.to withMetadataKey:AL_DISPLAY_NAME_UPDATED withMetadataValue:@"true"];
+                            }
+                        }];
+                    }
+                }
+
                 ALSLog(ALLoggerSeverityInfo, @"SENT_SUCCESSFULLY....MARKED_AS_DELIVERED : %@", message);
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:msg];
             }];
@@ -1024,7 +1037,18 @@ static ALMessageClientService *alMsgClientService;
 }
 
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey {
-   [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:alMessage];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:alMessage];
+    ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
+    if (!alMessage.groupId) {
+        ALContact * contact = [contactDBService loadContactByKey:@"userId" value:alMessage.to];
+        if (contact && [contact isDisplayNameUpdateRequired] ) {
+            [[ALUserService sharedInstance] updateDisplayNameWith:alMessage.to withDisplayName:contact.displayName withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+                if (apiResponse &&  [apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                    [contactDBService addOrUpdateMetadataWithUserId:alMessage.to withMetadataKey:AL_DISPLAY_NAME_UPDATED withMetadataValue:@"true"];
+                }
+            }];
+        }
+    }
 }
 
 - (void)onUploadFailed:(ALMessage *)alMessage {

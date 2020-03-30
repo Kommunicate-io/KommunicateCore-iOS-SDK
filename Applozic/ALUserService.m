@@ -164,6 +164,37 @@ static int CONTACT_PAGE_SIZE = 100;
     }
 }
 
+- (void)updateDisplayNameWith:(NSString *) userId withDisplayName:(NSString *) displayName withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError * error)) completion {
+
+    if (!userId || !displayName) {
+        NSError * error = [NSError
+                           errorWithDomain:@"Applozic"
+                           code:1
+                           userInfo:[NSDictionary dictionaryWithObject:@"UserId or display name details is missing" forKey:NSLocalizedDescriptionKey]];
+        completion(nil, error);
+    }
+
+    ALContact * contact = [[ALContact alloc] init];
+    contact.userId = userId;
+    contact.displayName = displayName;
+
+    ALUserClientService * alUserClientService = [[ALUserClientService alloc] init];
+    [alUserClientService updateUserDisplayName:contact withCompletion:^(id theJson, NSError *theError) {
+
+        if(theError)
+        {
+            ALSLog(ALLoggerSeverityError, @"GETTING ERROR in SEVER CALL FOR DISPLAY NAME");
+            completion(nil, theError);
+        }
+        else
+        {
+            ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
+            ALSLog(ALLoggerSeverityInfo, @"RESPONSE_STATUS :: %@", apiResponse.status);
+            completion(apiResponse, nil);
+        }
+    }];
+}
+
 -(void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion{
 
     [ALUserService setUnreadCountZeroForContactId:contactId];

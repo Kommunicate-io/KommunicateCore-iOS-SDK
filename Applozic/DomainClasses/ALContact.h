@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
 
+static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 
 @interface ALContact : ALJson
 
@@ -52,6 +53,7 @@
 @property (nonatomic, strong) NSNumber * notificationAfterTime;
 -(BOOL)isNotificationMuted;
 -(BOOL)isChatDisabled;
-
+-(BOOL)isDisplayNameUpdateRequired;
+-(NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString;
 
 @end
