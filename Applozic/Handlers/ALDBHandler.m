@@ -96,7 +96,11 @@ dispatch_queue_t dispatchGlobalQueue;
         NSError *error = nil;
         NSPersistentStore  *sourceStore  = nil;
         NSPersistentStore  *destinationStore  = nil;
-        NSDictionary *options =   @{NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES],NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES]};
+        NSDictionary *options = @{
+            NSInferMappingModelAutomaticallyOption: [NSNumber numberWithBool:YES],
+            NSMigratePersistentStoresAutomaticallyOption: [NSNumber numberWithBool:YES],
+            NSPersistentStoreFileProtectionKey: NSFileProtectionComplete
+        };
 
         if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]){
             ALSLog(ALLoggerSeverityError, @"Failed to setup the persistentStoreCoordinator %@, %@", error, [error userInfo]);
