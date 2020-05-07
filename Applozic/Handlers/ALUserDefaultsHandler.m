@@ -7,6 +7,7 @@
 //
 
 #import "ALUserDefaultsHandler.h"
+#import <Applozic/Applozic-Swift.h>
 
 @implementation ALUserDefaultsHandler
 
@@ -101,6 +102,14 @@
             [userDefaults removeObjectForKey:defaultKeyString];
             [userDefaults synchronize];
         }
+    }
+
+    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    NSError *passError;
+    [store removeValueFor:AL_STORE_USER_PASSWORD error:&passError];
+    if (passError != nil) {
+        ALSLog(ALLoggerSeverityError, @"Failed to remove password from the store : %@",
+               [passError description]);
     }
 }
 
@@ -215,15 +224,33 @@
 //LOGIN USER PASSWORD
 +(void)setPassword:(NSString *)password
 {
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:password forKey:AL_USER_PASSWORD];
-    [userDefaults synchronize];
+    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    NSError *passError;
+    [store setValue:password for:AL_STORE_USER_PASSWORD error:&passError];
+    if (passError != nil) {
+        ALSLog(ALLoggerSeverityError, @"Failed to save password in the store : %@",
+               [passError description]);
+    }
 }
 
 +(NSString *)getPassword
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:AL_USER_PASSWORD];
+    NSString *passwordInDefaults = [userDefaults valueForKey:AL_USER_PASSWORD];
+    // For apps migrating from an old version
+    if (passwordInDefaults != nil) {
+        return passwordInDefaults;
+    } else {
+        SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+        NSError *passError;
+        NSString *passwordInStore = [store getValueFor:AL_STORE_USER_PASSWORD error:&passError];
+        if (passError != nil) {
+            ALSLog(ALLoggerSeverityError, @"Failed to get password from the store : %@",
+                   [passError description]);
+            return nil;
+        }
+        return passwordInStore;
+    }
 }
 
 //last sync time
@@ -869,4 +896,10 @@
     return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
 }
 
++(SecureStore *)getSecureStore {
+    PasswordQueryable *passQuery = [[PasswordQueryable alloc]
+                                           initWithService: AL_STORE];
+    SecureStore *store = [[SecureStore alloc] initWithSecureStoreQueryable:passQuery];
+    return store;
+}
 @end

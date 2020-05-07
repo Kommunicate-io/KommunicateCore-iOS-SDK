@@ -46,6 +46,7 @@
 		18A2B2B4228A12C600CE93BC /* ALInternalSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A2B2B2228A12C600CE93BC /* ALInternalSettings.m */; };
 		18A2B2B7228A14B100CE93BC /* ALTabViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A2B2B5228A14B000CE93BC /* ALTabViewController.h */; };
 		18A2B2B8228A14B100CE93BC /* ALTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A2B2B6228A14B100CE93BC /* ALTabViewController.m */; };
+		18A583C1246469C7008F2089 /* SecureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A583C0246469C7008F2089 /* SecureStore.swift */; };
 		18D29D4722610DBE009C4D39 /* ForegroundReconnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 18D29D3C22610DBD009C4D39 /* ForegroundReconnection.h */; };
 		18D29D4822610DBE009C4D39 /* MQTTLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D29D3D22610DBD009C4D39 /* MQTTLog.m */; };
 		18D29D4922610DBE009C4D39 /* ForegroundReconnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D29D3E22610DBD009C4D39 /* ForegroundReconnection.m */; };
@@ -458,6 +459,7 @@
 		18A2B2B2228A12C600CE93BC /* ALInternalSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALInternalSettings.m; path = Applozic/ALInternalSettings.m; sourceTree = "<group>"; };
 		18A2B2B5228A14B000CE93BC /* ALTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALTabViewController.h; path = Applozic/ViewControllers/ALTabViewController.h; sourceTree = "<group>"; };
 		18A2B2B6228A14B100CE93BC /* ALTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALTabViewController.m; path = Applozic/ViewControllers/ALTabViewController.m; sourceTree = "<group>"; };
+		18A583C0246469C7008F2089 /* SecureStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SecureStore.swift; path = Applozic/SecureStore.swift; sourceTree = "<group>"; };
 		18D29D3C22610DBD009C4D39 /* ForegroundReconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForegroundReconnection.h; path = Applozic/MQTT/ForegroundReconnection.h; sourceTree = "<group>"; };
 		18D29D3D22610DBD009C4D39 /* MQTTLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MQTTLog.m; path = Applozic/MQTT/MQTTLog.m; sourceTree = "<group>"; };
 		18D29D3E22610DBD009C4D39 /* ForegroundReconnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForegroundReconnection.m; path = Applozic/MQTT/ForegroundReconnection.m; sourceTree = "<group>"; };
@@ -982,6 +984,7 @@
 		6D6DF0731BC535C800EBA00F = {
 			isa = PBXGroup;
 			children = (
+				18A583C0246469C7008F2089 /* SecureStore.swift */,
 				1A113EFE21C00AE10000A7CC /* ALAudioRecordButton.swift */,
 				1A113EFF21C00AE10000A7CC /* ALAudioRecordingView.swift */,
 				8B1635CC2119C6BF0008191A /* ALChannelOfTwoMetaData.h */,
@@ -2075,6 +2078,7 @@
 				6D6DF1571BC5364C00EBA00F /* ALBaseViewController.m in Sources */,
 				C75576EF1E27A5B300358D9B /* ALMuteRequest.m in Sources */,
 				6D7757281D5B841B0025560B /* ALMessageInfoViewController.m in Sources */,
+				18A583C1246469C7008F2089 /* SecureStore.swift in Sources */,
 				6D6DF1411BC5364C00EBA00F /* ALConnectionQueueHandler.m in Sources */,
 				6D6DF1BB1BC5364C00EBA00F /* SDWebImageDecoder.m in Sources */,
 				29CBF2031C0303A700BE6A20 /* ALColorUtility.m in Sources */,
@@ -2275,7 +2279,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.4.0;
+				MARKETING_VERSION = 7.5.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2309,7 +2313,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.4.0;
+				MARKETING_VERSION = 7.5.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";

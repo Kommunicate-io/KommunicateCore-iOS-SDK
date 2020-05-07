@@ -64,6 +64,8 @@ static NSString *const AL_LAST_SYNC_TIME_FOR_META_DATA = @"com.applozic.userdefa
 static NSString *const AL_NOTIFICATION_TITLE_KEY = @"NOTIFICATION_TITLE";
 static NSString *const AL_DISABLE_USER_CHAT = @"DISABLE_CHAT_WITH_USER";
 static NSString *const AL_USER_DISPLAY_NAME_API_CALLED_SUFFIX = @"com.applozic.userdefault.AL_USER_DISPLAY_NAME_API_CALLED:";
+static NSString *const AL_STORE = @"AL_STORE";
+static NSString *const AL_STORE_USER_PASSWORD = @"AL_USER_PASSW";
 
 
 #import <Foundation/Foundation.h>
