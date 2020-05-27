@@ -50,7 +50,7 @@
     [user setPrefContactAPI:2];
     [user setEmailVerified:true];
     [user setDeviceType:4];
-    [user setAppVersionCode: AL_VERSION_CODE];
+    [user setAppVersionCode:AL_VERSION_CODE];
     [user setRegistrationId: [ALUserDefaultsHandler getApnDeviceToken]];
     [user setNotificationMode:[ALUserDefaultsHandler getNotificationMode]];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
@@ -246,8 +246,11 @@
     [user setApplicationId:[ALUserDefaultsHandler getApplicationKey]];
     [user setNotificationMode:alUser.notificationMode];
     [user setPassword:[ALUserDefaultsHandler getPassword]];
+
     if (alUser.registrationId) {
         [user setRegistrationId:alUser.registrationId];
+    } else if ([ALUserDefaultsHandler getApnDeviceToken]) {
+        [user setRegistrationId:[ALUserDefaultsHandler getApnDeviceToken]];
     }
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     [user setPrefContactAPI:2];
@@ -262,8 +265,15 @@
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     }
     [user setPushNotificationFormat:[ALUserDefaultsHandler getPushNotificationFormat]];
-    if ([ALUserDefaultsHandler getNotificationSoundFileName] != nil) {
+
+    if (alUser.notificationSoundFileName) {
+        [user setNotificationSoundFileName:alUser.notificationSoundFileName];
+    } else if ([ALUserDefaultsHandler getNotificationSoundFileName] != nil) {
         [user setNotificationSoundFileName:[ALUserDefaultsHandler getNotificationSoundFileName]];
+    }
+
+    if([ALApplozicSettings isAudioVideoEnabled]) {
+        [user setFeatures:[NSMutableArray arrayWithArray:[NSArray arrayWithObjects: @"101",@"102",nil]]];
     }
 
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
@@ -298,10 +308,14 @@
                 [ALInternalSettings setRegistrationStatusMessage:response.message];
             }
 
+            if (response.notificationSoundFileName) {
+                [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
+            }
+
             if(response.imageLink) {
                 [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
             }
-
+            
             [ALUserDefaultsHandler setUserRoleType:response.roleType];
 
         }
@@ -391,10 +405,11 @@
     
 }
 
-+(void)sendServerRequestForAppUpdate{
++(void)sendServerRequestForAppUpdate {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
-    NSString * paramString = [NSString stringWithFormat:@"?appVersionCode=%@&deviceKey%@",AL_VERSION_CODE,AL_DEVICE_KEY_STRING];
+    NSString * paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE , [ALUserDefaultsHandler getDeviceKeyString]];
+    NSLog(@"Sebdubga data to server sendServerRequestForAppUpdate ");
     NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
     [ALResponseHandler processRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
@@ -402,8 +417,6 @@
         }
         ALSLog(ALLoggerSeverityInfo, @"Response: APP UPDATED:%@",theJson);
     }];
-    
-    
 }
 
 -(void)syncAccountStatus

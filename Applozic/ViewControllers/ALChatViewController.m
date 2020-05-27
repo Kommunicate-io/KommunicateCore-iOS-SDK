@@ -330,6 +330,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCallForUser:)
                                                  name:@"USER_DETAILS_UPDATE_CALL" object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChannelMemberUpdate:)
+                                                  name:AL_Updated_Group_Members object:nil];
+
+
     self.mqttObject = [ALMQTTConversationService sharedInstance];
 
     if(self.individualLaunch)
@@ -399,6 +403,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         [self disableChatViewInteraction:NO withPlaceholder:nil];
     }
     [self serverCallForLastSeen];
+
+    [self setChannelSubTitle:self.alChannel];
 
 }
 
@@ -696,6 +702,27 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     {
         [self setButtonTitle];
         [self channelDeleted];
+    }
+}
+
+-(void)onChannelMemberUpdate:(NSNotification *)notifyObj {
+    ALChannel *channel = (ALChannel *)notifyObj.object;
+
+    if (self.alChannel && channel && channel.type != GROUP_OF_TWO
+        && channel.key.intValue == self.alChannel.key.intValue) {
+        [self setChannelSubTitle:channel];
+    }
+}
+
+-(void)setChannelSubTitle:(ALChannel *)channel {
+
+    if (self.alChannel) {
+        if ([ALApplozicSettings isChannelMembersInfoInNavigationBarEnabled]) {
+            ALChannelService * alChannelService  = [[ALChannelService alloc] init];
+            [self.label setText:[alChannelService stringFromChannelUserList:channel.key]];
+        } else {
+            [self.label setText:@""];
+        }
     }
 }
 
@@ -3772,16 +3799,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             {
                 [self.label setText:@""];
             }
-        }
-        else if (self.alChannel.type != GROUP_OF_TWO)
-        {
-            [self.label setText:@""];
-
-//            if([ALApplozicSettings isChannelMembersInfoInNavigationBarEnabled]){
-//                [self.label setText:[channelService stringFromChannelUserList:self.channelKey]];
-//            }else{
-//                [self.label setText:@""];
-//            }
         }
     }
     else if (value > 0)

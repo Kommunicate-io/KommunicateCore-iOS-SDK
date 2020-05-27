@@ -22,6 +22,8 @@
 
 @implementation ALChannelDBService
 
+static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
+
 -(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey
 {
     ALChannelUserX *newUserX = [[ALChannelUserX alloc] init];
@@ -422,37 +424,58 @@
     
 }
 
--(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key
-{
+-(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key {
+
+   return [self getListOfAllUsersInChannel:key withLimit:0];
+}
+
+
+-(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key withLimit:(NSUInteger) fetchLimit {
+
     NSMutableArray *memberList = [[NSMutableArray alloc] init];
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    if (fetchLimit > 0) {
+        fetchRequest.fetchLimit = fetchLimit;
+    }
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"DB_CHANNEL_USER_X"
                                               inManagedObjectContext:dbHandler.managedObjectContext];
-    
+
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",key];
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predicate];
-    
+
     NSError *fetchError = nil;
     NSArray *resultArray = [dbHandler.managedObjectContext executeFetchRequest:fetchRequest error:&fetchError];
-    
-    if (resultArray.count)
-    {
+
+    if (resultArray.count) {
         for(DB_CHANNEL_USER_X *dbChannelUserX in resultArray)
         {
-            [memberList addObject:dbChannelUserX.userId];
+            NSString * memberUserId = dbChannelUserX.userId;
+            if (memberUserId != nil) {
+                [memberList addObject:memberUserId];
+            }
         }
-        
         return memberList;
-    }
-    else
-    {
+    } else {
         return nil;
     }
-    
 }
 
+-(NSUInteger)getCountOfNumberOfUsers:(NSNumber *)channelKey {
+    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_CHANNEL_USER_X"];
+    [theRequest setIncludesPropertyValues:NO];
+    [theRequest setIncludesSubentities:NO];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+    [theRequest setPredicate:predicate];
+    NSError *err;
+    NSUInteger count = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:&err];
+    if (err == nil) {
+        return count;
+    }
+    return 0;
+}
 
 //------------------------------------------
 #pragma mark GET ALL USERS OF CONTACT GROUP BY CHANNEL NAME
@@ -481,7 +504,7 @@
     NSString *listString = @"";
     NSString *str = @"";
 
-    NSMutableArray * tempArray = [NSMutableArray arrayWithArray:[self getListOfAllUsersInChannel:key]];
+    NSMutableArray * tempArray = [NSMutableArray arrayWithArray:[self getListOfAllUsersInChannel:key withLimit:CHANNEL_MEMBER_FETCH_LMIT]];
 
     if(!tempArray ||  tempArray.count == 0)
     {
@@ -504,14 +527,17 @@
     }
     else if(listArray.count > 2)
     {
-        int counter = (int)listArray.count - 2;
-        str = [NSString stringWithFormat:@"+%d %@",counter, NSLocalizedStringWithDefaultValue(@"moreMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"more", @"")];
-        listString = [NSString stringWithFormat:@"%@, %@, %@", listArray[0], listArray[1], str];
+        NSInteger countOfUsers = [self getCountOfNumberOfUsers:key];
+
+        if (countOfUsers > 2) {
+            int counter = (int)countOfUsers - 2;
+            str = [NSString stringWithFormat:@"+%d %@",counter, NSLocalizedStringWithDefaultValue(@"moreMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"more", @"")];
+            listString = [NSString stringWithFormat:@"%@, %@, %@", listArray[0], listArray[1], str];
+        }
     }
 
     return listString;
 }
-
 
 -(ALChannel *)checkChannelEntity:(NSNumber *)channelKey
 {
