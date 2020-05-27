@@ -38,7 +38,7 @@ typedef enum
 @property short prefContactAPI;
 @property Boolean emailVerified;
 @property NSString *timezone;
-@property NSString *appVersionCode;
+@property short appVersionCode;
 @property NSString *roleName;
 @property short deviceType;
 @property NSString *imageLink;

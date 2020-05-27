@@ -84,6 +84,25 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     return theRequest;
 }
 
++(NSMutableURLRequest *) createPatchRequestWithUrlString:(NSString *) urlString paramString:(NSString *) paramString
+{
+    NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+
+    NSURL * theUrl = nil;
+    if (paramString != nil) {
+        theUrl =
+            [NSURL URLWithString: [NSString stringWithFormat:@"%@?%@", urlString, paramString]];
+    } else {
+        theUrl = [NSURL URLWithString: urlString];
+    }
+    [theRequest setURL:theUrl];
+    [theRequest setTimeoutInterval:600];
+    [theRequest setHTTPMethod:@"PATCH"];
+    [self addGlobalHeader:theRequest ofUserId:nil];
+    ALSLog(ALLoggerSeverityInfo, @"PATCH_URL :: %@", theUrl);
+    return theRequest;
+}
+
 
 +(void) addGlobalHeader: (NSMutableURLRequest*) request ofUserId:(NSString *)userId
 {
