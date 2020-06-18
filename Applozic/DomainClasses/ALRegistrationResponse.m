@@ -30,7 +30,7 @@
     self.metadata = [[NSMutableDictionary  alloc] initWithDictionary: [registrationResponse valueForKey:@"metadata"]];
     self.roleType = [[registrationResponse valueForKey:@"roleType"] shortValue];
     self.userEncryptionKey = [registrationResponse valueForKey:@"userEncryptionKey"];
-    
+    self.authToken = [registrationResponse valueForKey:@"authToken"];
     return self;
 }
 

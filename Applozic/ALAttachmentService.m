@@ -50,7 +50,17 @@
 
     ALMessageDBService *alMessageDbService = [[ALMessageDBService alloc]init];
 
-    DB_Message *dbMessage =   [alMessageDbService addAttachmentMessage:attachmentMessage];
+    DB_Message *dbMessage = [alMessageDbService addAttachmentMessage:attachmentMessage];
+
+    if (!dbMessage) {
+        if (attachmentProgressDelegate){
+            attachmentMessage.inProgress = NO;
+            attachmentMessage.isUploadFailed = YES;
+            attachmentMessage.sentToServer = NO;
+            [attachmentProgressDelegate onUploadFailed:attachmentMessage];
+        }
+        return;
+    }
 
     NSDictionary * userInfo = [attachmentMessage dictionary];
 

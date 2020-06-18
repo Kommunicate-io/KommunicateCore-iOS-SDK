@@ -99,7 +99,7 @@ dispatch_queue_t dispatchGlobalQueue;
         NSDictionary *options = @{
             NSInferMappingModelAutomaticallyOption: [NSNumber numberWithBool:YES],
             NSMigratePersistentStoresAutomaticallyOption: [NSNumber numberWithBool:YES],
-            NSPersistentStoreFileProtectionKey: NSFileProtectionComplete
+            NSPersistentStoreFileProtectionKey: NSFileProtectionCompleteUnlessOpen
         };
 
         if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]){
@@ -117,13 +117,13 @@ dispatch_queue_t dispatchGlobalQueue;
                     NSFileCoordinator *coord = [[NSFileCoordinator alloc]initWithFilePresenter:nil];
                     [coord coordinateWritingItemAtURL:storeURL options:0 error:nil byAccessor:^(NSURL *url)
                      {
-                         NSError *error;
-                         [[NSFileManager defaultManager] removeItemAtURL:url error:&error];
-                         if(error){
-                             ALSLog(ALLoggerSeverityError, @"Failed to Delete the data base file %@, %@", error, [error userInfo]);
-                         }
+                        NSError *error;
+                        [[NSFileManager defaultManager] removeItemAtURL:url error:&error];
+                        if(error){
+                            ALSLog(ALLoggerSeverityError, @"Failed to Delete the data base file %@, %@", error, [error userInfo]);
+                        }
 
-                     }];
+                    }];
 
                 }
             }
@@ -162,19 +162,48 @@ dispatch_queue_t dispatchGlobalQueue;
 
 #pragma mark - Core Data Saving support
 
-- (void)saveContext {
-    
+- (NSError *)saveContext {
+
+    NSError *error = nil;
+
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     
     if (managedObjectContext != nil) {
-        
-        NSError *error = nil;
-        
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            
-            ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
+        if ([self isProtectedDataAvailable]) {
+            if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+                ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
+                return error;
+            }
+        } else {
+            NSError * dataAccessError = [NSError errorWithDomain:@"Applozic"
+                                                            code:1
+                                                        userInfo:@{NSLocalizedDescriptionKey : @"Protected Data store is not accessible"}];
+            return dataAccessError;
         }
+    } else {
+        NSError * managedObjectContexterror = [NSError errorWithDomain:@"Applozic"
+                                                                  code:1
+                                                              userInfo:@{NSLocalizedDescriptionKey : @"Managed Object Context is nil"}];
+
+        return managedObjectContexterror;
     }
+    return error;
+}
+
+-(BOOL) isProtectedDataAvailable {
+    __block BOOL protectedDataAvailable = NO;
+    if ([NSThread isMainThread])
+    {
+        protectedDataAvailable = [[UIApplication sharedApplication] isProtectedDataAvailable];
+    }
+    else
+    {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+
+            protectedDataAvailable = [[UIApplication sharedApplication] isProtectedDataAvailable];
+        });
+    }
+    return protectedDataAvailable;
 }
 
 #pragma mark - Delete Contacts API -
@@ -357,24 +386,24 @@ dispatch_queue_t dispatchGlobalQueue;
     ALContact *contact = [[ALContact alloc]init];
 
     if (!dbContact) {
-         contact.userId = value;
-         contact.displayName = value;
-         return contact;
+        contact.userId = value;
+        contact.displayName = value;
+        return contact;
     }
-     contact.userId = dbContact.userId;
-     contact.fullName = dbContact.fullName;
-     contact.contactNumber = dbContact.contactNumber;
-     contact.displayName = dbContact.displayName;
-     contact.contactImageUrl = dbContact.contactImageUrl;
-     contact.email = dbContact.email;
-     contact.localImageResourceName = dbContact.localImageResourceName;
-     contact.connected = dbContact.connected;
-     contact.lastSeenAt = dbContact.lastSeenAt;
-     contact.contactType = dbContact.contactType;
-     contact.roleType = dbContact.roleType;
-     contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
+    contact.userId = dbContact.userId;
+    contact.fullName = dbContact.fullName;
+    contact.contactNumber = dbContact.contactNumber;
+    contact.displayName = dbContact.displayName;
+    contact.contactImageUrl = dbContact.contactImageUrl;
+    contact.email = dbContact.email;
+    contact.localImageResourceName = dbContact.localImageResourceName;
+    contact.connected = dbContact.connected;
+    contact.lastSeenAt = dbContact.lastSeenAt;
+    contact.contactType = dbContact.contactType;
+    contact.roleType = dbContact.roleType;
+    contact.metadata = [contact getMetaDataDictionary:dbContact.metadata];
 
-     return contact;
+    return contact;
 }
 
 
@@ -390,16 +419,6 @@ dispatch_queue_t dispatchGlobalQueue;
     
     if (result.count > 0) {
         DB_CONTACT* dbContact = [result objectAtIndex:0];
-       /* ALContact *contact = [[ALContact alloc]init];
-        contact.userId = dbContact.userId;
-        contact.fullName = dbContact.fullName;
-        contact.contactNumber = dbContact.contactNumber];
-        contact.displayName = dbContact.displayName;
-        contact.contactImageUrl = dbContact.contactImageUrl;
-        contact.email = dbContact.email;
-        contact.localImageResourceName = dbContact.localImageResourceName;
-        return contact;*/
-        
         return dbContact;
     } else {
         return nil;
@@ -449,33 +468,38 @@ dispatch_queue_t dispatchGlobalQueue;
                         completion:(void (^)(NSError*error))completion {
     
     NSError* error;
-    if (context.hasChanges && [context save:&error]) {
-        NSManagedObjectContext* parentContext = [context parentContext];
-        [parentContext performBlock:^ {
-            NSError* parentContextError;
-            if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
-                completion(nil);
-            } else {
-                if (parentContextError) {
-                    ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
+    if ([self isProtectedDataAvailable]) {
+        if (context.hasChanges && [context save:&error]) {
+            NSManagedObjectContext* parentContext = [context parentContext];
+            [parentContext performBlock:^ {
+                NSError* parentContextError;
+                if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
+                    completion(nil);
+                } else {
+                    if (parentContextError) {
+                        ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
+                    }
+                    completion(parentContextError);
                 }
-                completion(parentContextError);
+            }];
+        } else {
+            if (error) {
+                ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+                [context rollback];
             }
-        }];
-    } else {
-        if (error) {
-            ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
-            [context rollback];
+            completion(error);
         }
-        completion(error);
+    } else {
+        NSError * dataAccessError = [NSError errorWithDomain:@"Applozic"
+                                                        code:1
+                                                    userInfo:@{NSLocalizedDescriptionKey : @"Protected Data store is not accessible"}];
+        completion(dataAccessError);
     }
 }
 
 - (NSManagedObjectContext *)privateContext {
-
     NSManagedObjectContext *managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [managedObjectContext setParentContext:self.managedObjectContext];
-
     return managedObjectContext;
 }
 

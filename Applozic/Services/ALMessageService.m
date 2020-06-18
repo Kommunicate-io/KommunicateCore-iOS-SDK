@@ -575,6 +575,7 @@ static ALMessageClientService *alMsgClientService;
 +(void )deleteMessage:( NSString * ) keyString andContactId:( NSString * )contactId withCompletion:(void (^)(NSString *, NSError *))completion{
 
     //db
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     ALMessageDBService * dbService = [[ALMessageDBService alloc]init];
     DB_Message* dbMessage=(DB_Message*)[dbService getMessageByKey:@"key" value:keyString];
     [dbMessage setDeletedFlag:[NSNumber numberWithBool:YES]];
@@ -587,8 +588,8 @@ static ALMessageClientService *alMsgClientService;
 
     }
 
-    NSError *error;
-    if (![[dbMessage managedObjectContext] save:&error])
+    NSError *error = [dbHandler saveContext];
+    if (error)
     {
         ALSLog(ALLoggerSeverityInfo, @"Delete Flag Not Set");
     }
@@ -663,7 +664,11 @@ static ALMessageClientService *alMsgClientService;
     message.fileMetaKey = message.fileMeta.key;
     message.msgDBObjectId = [dbMessage objectID];
 
-    [[ALDBHandler sharedInstance].managedObjectContext save:nil];
+    NSError * error = [[ALDBHandler sharedInstance] saveContext];
+    if (error) {
+        ALSLog(ALLoggerSeverityError, @"Failed to save the file meta in db %@",error);
+        return nil;
+    }
     return message;
 }
 
@@ -709,7 +714,13 @@ static ALMessageClientService *alMsgClientService;
             DB_Message *dbMessage = (DB_Message*)[dbService getMessageByKey:@"key" value:msg.key];
             dbMessage.inProgress = [NSNumber numberWithBool:YES];
             dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
-            [[ALDBHandler sharedInstance].managedObjectContext save:nil];
+
+            NSError * error =  [[ALDBHandler sharedInstance] saveContext];
+
+            if (error) {
+                NSLog(@"Failed to save the flags for message error %@",error);
+                continue;
+            }
 
             ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
             httpManager.attachmentProgressDelegate = self;

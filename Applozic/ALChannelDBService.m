@@ -31,12 +31,13 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     newUserX.userKey = userId;
     
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
-//    DB_CHANNEL_USER_X *dbChannelUserX = [self createChannelUserXEntity: newUserX];
     [self createChannelUserXEntity: newUserX];
-    
-    [theDBHandler.managedObjectContext save:nil];
-    //channelUserX.channelDBObjectId = dbChannelUserX.objectID;
-    
+
+    NSError *error = [theDBHandler saveContext];
+
+    if(error) {
+        ALSLog(ALLoggerSeverityError, @"ERROR IN Add member to channel  %@",error);
+    }
 }
 
 -(void)insertChannel:(NSMutableArray *)channelList
@@ -46,19 +47,12 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     for(ALChannel *channel in channelList)
     {
-//        DB_CHANNEL *dbChannel = [self createChannelEntity:channel];
-         [self createChannelEntity:channel];
-        // IT MIGHT BE USED IN FUTURE
-        [theDBHandler.managedObjectContext save:nil];
-        //channel.channelDBObjectId = dbChannel.objectID;
+        [self createChannelEntity:channel];
+        NSError *error = [theDBHandler saveContext];
+        if(error) {
+            ALSLog(ALLoggerSeverityError, @"ERROR IN insertChannel METHOD %@",error);
+        }
         [channelArray addObject:channel];
-    }
-    
-    NSError *error = nil;
-    [theDBHandler.managedObjectContext save:&error];
-    if(error)
-    {
-        ALSLog(ALLoggerSeverityError, @"ERROR IN insertChannel METHOD %@",error);
     }
 }
 
@@ -112,7 +106,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             [theDBHandler.managedObjectContext deleteObject:manageOBJ];
         }
     }
-    [theDBHandler.managedObjectContext save:nil];
+    [theDBHandler saveContext];
 }
 
 -(void)insertChannelUserX:(NSMutableArray *)channelUserXList
@@ -128,21 +122,13 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     for(ALChannelUserX *channelUserX in channelUserXList)
     {
-//        DB_CHANNEL_USER_X *dbChannelUserX = [self createChannelUserXEntity:channelUserX];
-         [self createChannelUserXEntity:channelUserX];
-        // IT MIGHT BE USED IN FUTURE
-        [theDBHandler.managedObjectContext save:nil];
-        //channelUserX.channelDBObjectId = dbChannelUserX.objectID;
+        [self createChannelUserXEntity:channelUserX];
+        NSError *error = [theDBHandler saveContext];
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"ERROR IN insertChannelUserX METHOD %@",error);
+        }
         [channelUserXArray addObject:channelUserX];
     }
-
-    NSError *error = nil;
-    [theDBHandler.managedObjectContext save:&error];
-    if(error)
-    {
-        ALSLog(ALLoggerSeverityError, @"ERROR IN insertChannelUserX METHOD %@",error);
-    }
-    
 }
 
 -(DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX  withContext:(NSManagedObjectContext *) context{
@@ -407,8 +393,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     
     channelUserX.parentGroupKey = parentKey;
-    [dbHandler.managedObjectContext save:nil];
-    
+    [dbHandler saveContext];
 }
 
 -(void)updateRoleInChannelUserX:(NSNumber *)channelKey andUserId:(NSString *)userId withRoleType:(NSNumber*)role
@@ -419,14 +404,12 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
     
     channelUserX.role = role;
-    
-    [dbHandler.managedObjectContext save:nil];
-    
+    [dbHandler saveContext];
 }
 
 -(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key {
 
-   return [self getListOfAllUsersInChannel:key withLimit:0];
+    return [self getListOfAllUsersInChannel:key withLimit:0];
 }
 
 
@@ -587,7 +570,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     {
         NSManagedObject *manageOBJ = [array objectAtIndex:0];
         [theDBHandler.managedObjectContext deleteObject:manageOBJ];
-        [theDBHandler.managedObjectContext save:nil];
+        [theDBHandler saveContext];
     }
     else
     {
@@ -615,8 +598,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     {
         NSManagedObject *manageOBJ = [array objectAtIndex:0];
         [theDBHandler.managedObjectContext deleteObject:manageOBJ];
-        [theDBHandler.managedObjectContext save:nil];
-        
+        [theDBHandler saveContext];
+
         // Delete all members
         [self deleteMembers:channelKey];
         
@@ -654,7 +637,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             channel.parentClientKey = dbChannel.parentClientGroupKey;
             channel.key = dbChannel.channelKey;
             channel.clientChannelKey = dbChannel.clientChannelKey;
-            channel.name = dbChannel.channelDisplayName;            
+            channel.name = dbChannel.channelDisplayName;
             channel.adminKey = dbChannel.adminId;
             channel.type = dbChannel.type;
             channel.unreadCount = dbChannel.unreadCount;
@@ -730,8 +713,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             }
             
         }
-        
-        [dbHandler.managedObjectContext save:nil];
+
+        [dbHandler saveContext];
     }
     else
     {
@@ -761,8 +744,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             // Update conversation status from metadata
             dbChannel.category = [ALChannel getConversationCategory:newMetaData];
         }
-        
-        [dbHandler.managedObjectContext save:nil];
+
+        [dbHandler saveContext];
     }
     else
     {
@@ -786,8 +769,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         childChannel.parentGroupKey = nil;
         childChannel.parentClientGroupKey = nil;
     }
-    
-    [dbHandler.managedObjectContext save:nil];
+
+    [dbHandler saveContext];
 }
 
 -(void)updateClientChannelParentKey:(NSString *)clientChildKey andWithClientParentKey:(NSString *)clientParentKey isAdding:(BOOL)flag
@@ -807,7 +790,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         childChannel.parentClientGroupKey = nil;
     }
     
-    [dbHandler.managedObjectContext save:nil];
+    [dbHandler saveContext];
 }
 
 -(void)updateUnreadCountChannel:(NSNumber *)channelKey unreadCount:(NSNumber *)unreadCount
@@ -827,7 +810,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     {
         DB_CHANNEL *dbChannel = [result objectAtIndex:0];
         dbChannel.unreadCount = unreadCount;
-        [dbHandler.managedObjectContext save:nil];
+        [dbHandler saveContext];
     }
     else
     {
@@ -843,7 +826,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     if(dbChannel)
     {
         dbChannel.isLeft = flag;
-        [dbHandler.managedObjectContext save:nil];
+        [dbHandler saveContext];
     }
     else
     {
@@ -933,8 +916,8 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         NSBatchUpdateRequest *req= [[NSBatchUpdateRequest alloc] initWithEntityName:@"DB_Message"];
         req.predicate = [NSPredicate predicateWithFormat:@"groupId=%d",[channelKey intValue]];
         req.propertiesToUpdate = @{
-                                   @"status" : @(DELIVERED_AND_READ)
-                                   };
+            @"status" : @(DELIVERED_AND_READ)
+        };
         req.resultType = NSUpdatedObjectsCountResultType;
         ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
         NSBatchUpdateResult *res = (NSBatchUpdateResult *)[dbHandler.managedObjectContext executeRequest:req error:nil];
@@ -1065,7 +1048,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
     DB_CHANNEL *dbChannel = [self getChannelByKey:channelKey];
     dbChannel.notificationAfterTime = notificationAfterTime;
-    [dbHandler.managedObjectContext save:nil];
+    [dbHandler saveContext];
 }
 
 -(NSMutableArray *) getGroupUsersInChannel:(NSNumber *)key {

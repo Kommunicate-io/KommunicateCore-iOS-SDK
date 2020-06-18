@@ -178,7 +178,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     ALMessageDBService * dbService;
 }
 
-
 //==============================================================================================================================================
 #pragma mark - VIEW LIFECYCLE
 //==============================================================================================================================================
@@ -336,18 +335,25 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     self.mqttObject = [ALMQTTConversationService sharedInstance];
 
-    if(self.individualLaunch)
-    {
+    if (self.individualLaunch) {
         ALSLog(ALLoggerSeverityInfo, @"INDIVIDUAL_LAUNCH :: SUBSCRIBING_MQTT");
         self.mqttObject.mqttConversationDelegate = self;
-        if(self.mqttObject)
-        {
-            [self.mqttObject subscribeToConversation];
-        }
-        else
-        {
-            ALSLog(ALLoggerSeverityInfo, @"mqttObject is not found...");
-        }
+        [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+            if (!connected) {
+                [ALUtilityClass showRetryUIAlertControllerWithButtonClickCompletionHandler:^(BOOL clicked) {
+                    if (clicked){
+                        [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+                            if (!connected) {
+                                NSString * errorMessage =  NSLocalizedStringWithDefaultValue(@"RetryConnectionError", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Failed to reconnect. Please try again later.", @"");
+                                [TSMessage showNotificationWithTitle:errorMessage type:TSMessageNotificationTypeError];
+                            }
+                        }];
+                    }
+                }];
+            }
+        }];
+    } else {
+        [self subscrbingChannel];
     }
 
     [self handleAttachmentButtonVisibility];
@@ -391,9 +397,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
     maxHeight = [self getMaxSizeLines:[ALApplozicSettings getMaxTextViewLines]];
     minHeight = [self getMaxSizeLines:1]; //  Single Line Height
-
-    [self subscrbingChannel];
-
     [self loadMessagesForOpenChannel];
 
     if (![self isGroup]) {
@@ -790,6 +793,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(void)subscrbingChannel
 {
+    if (!self.mqttObject) {
+        ALSLog(ALLoggerSeverityInfo, @"MQTT object is nil");
+        return;
+    }
     ALChannelService * alChannelService  = [[ALChannelService alloc] init];
 
     ALChannel *alChannel = [alChannelService getChannelByKey:self.channelKey];
@@ -807,8 +814,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         [self.mqttObject unSubscribeToChannelConversation:nil];
     }
 }
-
-
 
 -(void)unSubscrbingChannel
 {
@@ -2807,7 +2812,17 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         DB_Message *dbMessage = (DB_Message*)[msgdbService getMessageByKey:@"key" value:theMessage.key];
         dbMessage.inProgress = [NSNumber numberWithBool:YES];
         dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
-        [[ALDBHandler sharedInstance].managedObjectContext save:nil];
+
+        NSError * error = [[ALDBHandler sharedInstance] saveContext];
+
+        if (error) {
+            imageCell.progresLabel.alpha = 0;
+            imageCell.mDowloadRetryButton.alpha = 1;
+            imageCell.downloadRetryView.alpha = 1;
+            imageCell.sizeLabel.alpha = 1;
+            [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
+            return;
+        }
 
         // post image
         ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
@@ -4275,13 +4290,35 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     UIApplication *app = [UIApplication sharedApplication];
     BOOL isBackgroundState = (app.applicationState == UIApplicationStateBackground);
 
-    if([ALDataNetworkConnection checkDataNetworkAvailable] && !isBackgroundState)
-    {
+    if ([ALDataNetworkConnection checkDataNetworkAvailable] && !isBackgroundState) {
+
         ALSLog(ALLoggerSeverityInfo, @"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
-        [self.mqttObject subscribeToConversation];
-        self.mqttObject.mqttConversationDelegate = self;
-        [self subscrbingChannel];
         self.mqttRetryCount++;
+        [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+            if (!connected) {
+                ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed to retry on mqttConnectionClosed in ALChatViewController");
+            }
+        }];
+    }
+}
+
+-(void)subscribeToConversationWithCompletionHandler:(void (^)(BOOL connected))completion  {
+
+    if([ALDataNetworkConnection checkDataNetworkAvailable]) {
+        if (self.mqttObject) {
+            self.mqttObject.mqttConversationDelegate = self;
+            [self.mqttObject subscribeToConversationWithTopic:[ALUserDefaultsHandler getUserKeyString] withCompletionHandler:^(BOOL subscribed, NSError *error) {
+                if (error) {
+                    ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed with error %@", error);
+                    completion(false);
+                    return;
+                }
+                [self subscrbingChannel];
+                completion(true);
+            }];
+        }
+    } else {
+        completion(false);
     }
 }
 

@@ -123,3 +123,4 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALAudioSession.h>
 #import <Applozic/ALChannelOfTwoMetaData.h>
 #import <Applozic/ALNotificationHelper.h>
+#import <Applozic/ALAuthService.h>

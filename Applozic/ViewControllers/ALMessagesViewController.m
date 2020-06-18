@@ -154,7 +154,20 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.alMqttConversationService subscribeToConversation];
+    [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+        if (!connected) {
+            [ALUtilityClass showRetryUIAlertControllerWithButtonClickCompletionHandler:^(BOOL clicked) {
+                if (clicked){
+                    [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+                        if (!connected) {
+                            NSString * errorMessage = NSLocalizedStringWithDefaultValue(@"RetryConnectionError", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Failed to reconnect. Please try again later.", @"");
+
+                            [TSMessage showNotificationWithTitle:errorMessage type:TSMessageNotificationTypeError];                        }
+                    }];
+                }
+            }];
+        }
+    }];
     if([ALApplozicSettings isDropShadowInNavigationBarEnabled])
     {
         [self dropShadowInNavigationBar];
@@ -1315,8 +1328,31 @@ static int const MQTT_MAX_RETRY = 3;
     {
         ALSLog(ALLoggerSeverityInfo, @"MQTT connection closed, subscribing again: %lu", (long)_mqttRetryCount);
         ALSLog(ALLoggerSeverityInfo, @"ALMessageVC subscribing channel again....");
-        [self.alMqttConversationService subscribeToConversation];
         self.mqttRetryCount++;
+        [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+
+            if (!connected) {
+                ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed to retry on mqttConnectionClosed in ALMessagesViewController");
+            }
+        }];
+    }
+}
+
+-(void)subscribeToConversationWithCompletionHandler:(void (^)(BOOL connected))completion  {
+
+    if([ALDataNetworkConnection checkDataNetworkAvailable]) {
+        if (self.alMqttConversationService) {
+            [self.alMqttConversationService subscribeToConversationWithTopic:[ALUserDefaultsHandler getUserKeyString] withCompletionHandler:^(BOOL subscribed, NSError *error) {
+                if (error) {
+                    ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed with error %@", error);
+                    completion(false);
+                    return;
+                }
+                completion(true);
+            }];
+        }
+    } else {
+        completion(false);
     }
 }
 

@@ -25,7 +25,7 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 - (NSManagedObjectContext *)privateContext;
 
-- (void)saveContext;
+- (NSError *)saveContext;
 
 +(ALDBHandler *) sharedInstance;
 

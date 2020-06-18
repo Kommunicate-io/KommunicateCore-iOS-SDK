@@ -45,6 +45,8 @@ static dispatch_semaphore_t semaphore;
         DB_Message * dbMessage = (DB_Message*)[messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
         ALMessage * message = [messageDatabaseService createMessageEntity:dbMessage];
 
+        ALFileMetaInfo * existingFileMeta = message.fileMeta;
+
         NSError * theJsonError = nil;
         NSDictionary *theJson = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&theJsonError];
 
@@ -55,7 +57,17 @@ static dispatch_semaphore_t semaphore;
                 NSDictionary *fileInfo = [theJson objectForKey:@"fileMeta"];
                 [message.fileMeta populate:fileInfo];
             }
-            ALMessage * almessage =  [ALMessageService processFileUploadSucess:message];
+            ALMessage * almessage = [ALMessageService processFileUploadSucess:message];
+
+            if (!almessage) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    if(self.attachmentProgressDelegate){
+                        message.fileMeta = existingFileMeta;
+                        [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
+                    }
+                });
+                return;
+            }
             [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
                     if(error) {
@@ -293,12 +305,20 @@ static dispatch_semaphore_t semaphore;
             messageEntity.fileMetaInfo.thumbnailFilePath = fileName;
         }
 
-        [[ALDBHandler sharedInstance].managedObjectContext save:nil];
-        alMessage =  [messageDatabase createMessageEntity:messageEntity];
-        if(self.attachmentProgressDelegate){
+        NSError * error = [[ALDBHandler sharedInstance] saveContext];
+        if (error) {
+            alMessage = [messageDatabase createMessageEntity:messageEntity];
+            alMessage.isUploadFailed = YES;
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self.attachmentProgressDelegate onDownloadCompleted:alMessage];
+                [self.attachmentProgressDelegate onDownloadFailed:alMessage];
             });
+        } else {
+            alMessage =  [messageDatabase createMessageEntity:messageEntity];
+            if(self.attachmentProgressDelegate){
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [self.attachmentProgressDelegate onDownloadCompleted:alMessage];
+                });
+            }
         }
     }else{
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {

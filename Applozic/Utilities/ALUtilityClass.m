@@ -772,4 +772,36 @@
     return imageData;
 }
 
+
++(void)showRetryUIAlertControllerWithButtonClickCompletionHandler:(void (^)(BOOL clicked)) completion {
+
+    ALPushAssist *pushAssist = [[ALPushAssist alloc]init];
+    UIViewController* topVC = pushAssist.topViewController;
+
+    if (!topVC || !topVC.navigationController) {
+        completion(false);
+        return;
+    }
+
+    NSString *alertTitle = NSLocalizedStringWithDefaultValue(@"RetryAlertTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Error connecting" , @"");
+
+    NSString *alertMessage = NSLocalizedStringWithDefaultValue(@"RetryAlertMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Failed to connect." , @"");
+
+    UIAlertController * uiAlertController = [UIAlertController
+                                             alertControllerWithTitle:alertTitle
+                                             message:alertMessage
+                                             preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* retryButton = [UIAlertAction
+                                  actionWithTitle:NSLocalizedStringWithDefaultValue(@"RetryButtonText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Retry" , @"")
+                                  style:UIAlertActionStyleDefault
+                                  handler:^(UIAlertAction * action) {
+
+        completion(true);
+    }];
+
+    [uiAlertController addAction:retryButton];
+    [topVC.navigationController presentViewController:uiAlertController animated:true completion:nil];
+}
+
 @end
