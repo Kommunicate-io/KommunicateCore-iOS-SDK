@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "Applozic"
-  s.version      = "7.6.0"
+  s.version      = "7.7.0"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -121,7 +121,7 @@ Pod::Spec.new do |s|
 
   # s.framework  = "SomeFramework"
 
-  s.frameworks = "Foundation", "UIKit", "Contacts", "ContactsUI", "AddressBook", "AddressBookUI", "MediaPlayer", "AVFoundation", "CoreLocation", "SystemConfiguration"
+  s.frameworks = "Foundation", "UIKit", "Contacts", "ContactsUI", "MediaPlayer", "AVFoundation", "CoreLocation", "SystemConfiguration"
 
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
