@@ -23,10 +23,9 @@
         
         [self createConversationProxy:proxy];
     }
-    
-    NSError *error = nil;
-    if(![theDBHandler.managedObjectContext save:&error])
-    {
+
+    NSError *error = [theDBHandler saveContext];
+    if (error) {
         ALSLog(ALLoggerSeverityError, @"ERROR: InsertConversationProxy METHOD %@",error);
     }
     
@@ -34,24 +33,21 @@
 
 -(void)insertConversationProxyTopicDetails:(NSMutableArray*)proxyArray{
     
-   
+
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     
     for(ALConversationProxy *proxy in proxyArray)
     {
         DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:proxy.Id];
         if(!dbConversationProxy){
-        dbConversationProxy.topicDetailJson = proxy.topicDetailJson;
+            dbConversationProxy.topicDetailJson = proxy.topicDetailJson;
         }
     }
     
-    NSError *error = nil;
-    [theDBHandler.managedObjectContext save:&error];
-    if(error)
-    {
+    NSError *error = [theDBHandler saveContext];
+    if (error) {
         ALSLog(ALLoggerSeverityError, @"ERROR: TopicDetails Insert METHOD %@",error);
-    }
-    else{
+    } else {
         ALSLog(ALLoggerSeverityInfo, @"SUCCESS: TopicDetails Insertion in DB ");
     }
 

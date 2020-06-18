@@ -32,8 +32,6 @@
 
 +(NSString*)getLocationUrl:(ALMessage*)almessage size: (CGRect) withSize;
 
-+(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate;
-
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID withConversationId:(NSNumber *)conversationId delegate:(id)delegate notificationTapActionDisable:(BOOL) isTapActionDisabled;
 
 +(void)thirdDisplayNotificationTS:(NSString *)toastMessage andForContactId:(NSString *)contactId withGroupId:(NSNumber*) groupID completionHandler:(void (^)(BOOL))handler;
@@ -70,4 +68,6 @@
 +(NSURL *)getApplicationDirectoryWithFilePath:(NSString*) path;
 +(NSData *)compressImage:(NSData *) data;
 +(UIImage *)getImageFromFilePath:(NSString *)filePath;
+
++(void)showRetryUIAlertControllerWithButtonClickCompletionHandler:(void (^)(BOOL clicked)) completion;
 @end

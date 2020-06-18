@@ -1283,7 +1283,7 @@ static const int SHOW_GROUP = 102;
     
     //db insertion..
     [messageDBService createMessageEntityForDBInsertionWithMessage:theMessage];
-    [theDBHandler.managedObjectContext save:nil];
+    [theDBHandler saveContext];
     
 }
 

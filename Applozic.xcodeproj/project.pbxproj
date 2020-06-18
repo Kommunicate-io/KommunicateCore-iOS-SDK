@@ -47,6 +47,12 @@
 		18A2B2B7228A14B100CE93BC /* ALTabViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A2B2B5228A14B000CE93BC /* ALTabViewController.h */; };
 		18A2B2B8228A14B100CE93BC /* ALTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A2B2B6228A14B100CE93BC /* ALTabViewController.m */; };
 		18A583C1246469C7008F2089 /* SecureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A583C0246469C7008F2089 /* SecureStore.swift */; };
+		18C926E2249BC3EA00232576 /* ALJWT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C926E0249BC3EA00232576 /* ALJWT.swift */; };
+		18C926E3249BC3EA00232576 /* ALJWTDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C926E1249BC3EA00232576 /* ALJWTDecode.swift */; };
+		18C926E8249BC40500232576 /* ALAuthService.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C926E4249BC40400232576 /* ALAuthService.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18C926E9249BC40500232576 /* ALAuthClientService.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C926E5249BC40400232576 /* ALAuthClientService.h */; };
+		18C926EA249BC40500232576 /* ALAuthClientService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C926E6249BC40400232576 /* ALAuthClientService.m */; };
+		18C926EB249BC40500232576 /* ALAuthService.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C926E7249BC40400232576 /* ALAuthService.m */; };
 		18D29D4722610DBE009C4D39 /* ForegroundReconnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 18D29D3C22610DBD009C4D39 /* ForegroundReconnection.h */; };
 		18D29D4822610DBE009C4D39 /* MQTTLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D29D3D22610DBD009C4D39 /* MQTTLog.m */; };
 		18D29D4922610DBE009C4D39 /* ForegroundReconnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D29D3E22610DBD009C4D39 /* ForegroundReconnection.m */; };
@@ -460,6 +466,12 @@
 		18A2B2B5228A14B000CE93BC /* ALTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALTabViewController.h; path = Applozic/ViewControllers/ALTabViewController.h; sourceTree = "<group>"; };
 		18A2B2B6228A14B100CE93BC /* ALTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALTabViewController.m; path = Applozic/ViewControllers/ALTabViewController.m; sourceTree = "<group>"; };
 		18A583C0246469C7008F2089 /* SecureStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SecureStore.swift; path = Applozic/SecureStore.swift; sourceTree = "<group>"; };
+		18C926E0249BC3EA00232576 /* ALJWT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALJWT.swift; path = Applozic/JWT/ALJWT.swift; sourceTree = "<group>"; };
+		18C926E1249BC3EA00232576 /* ALJWTDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALJWTDecode.swift; path = Applozic/JWT/ALJWTDecode.swift; sourceTree = "<group>"; };
+		18C926E4249BC40400232576 /* ALAuthService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAuthService.h; path = Applozic/Services/ALAuthService.h; sourceTree = "<group>"; };
+		18C926E5249BC40400232576 /* ALAuthClientService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALAuthClientService.h; path = Applozic/Services/ALAuthClientService.h; sourceTree = "<group>"; };
+		18C926E6249BC40400232576 /* ALAuthClientService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAuthClientService.m; path = Applozic/Services/ALAuthClientService.m; sourceTree = "<group>"; };
+		18C926E7249BC40400232576 /* ALAuthService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALAuthService.m; path = Applozic/Services/ALAuthService.m; sourceTree = "<group>"; };
 		18D29D3C22610DBD009C4D39 /* ForegroundReconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ForegroundReconnection.h; path = Applozic/MQTT/ForegroundReconnection.h; sourceTree = "<group>"; };
 		18D29D3D22610DBD009C4D39 /* MQTTLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MQTTLog.m; path = Applozic/MQTT/MQTTLog.m; sourceTree = "<group>"; };
 		18D29D3E22610DBD009C4D39 /* ForegroundReconnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ForegroundReconnection.m; path = Applozic/MQTT/ForegroundReconnection.m; sourceTree = "<group>"; };
@@ -984,6 +996,8 @@
 		6D6DF0731BC535C800EBA00F = {
 			isa = PBXGroup;
 			children = (
+				18C926E0249BC3EA00232576 /* ALJWT.swift */,
+				18C926E1249BC3EA00232576 /* ALJWTDecode.swift */,
 				18A583C0246469C7008F2089 /* SecureStore.swift */,
 				1A113EFE21C00AE10000A7CC /* ALAudioRecordButton.swift */,
 				1A113EFF21C00AE10000A7CC /* ALAudioRecordingView.swift */,
@@ -1332,6 +1346,10 @@
 		6D6DF1E11BC537A500EBA00F /* account */ = {
 			isa = PBXGroup;
 			children = (
+				18C926E5249BC40400232576 /* ALAuthClientService.h */,
+				18C926E6249BC40400232576 /* ALAuthClientService.m */,
+				18C926E4249BC40400232576 /* ALAuthService.h */,
+				18C926E7249BC40400232576 /* ALAuthService.m */,
 				6D6DF0D11BC5364C00EBA00F /* ALRegistrationResponse.h */,
 				6D6DF0D21BC5364C00EBA00F /* ALRegistrationResponse.m */,
 				6D6DF0A11BC5364C00EBA00F /* ALRegisterUserClientService.m */,
@@ -1630,6 +1648,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18C926E8249BC40500232576 /* ALAuthService.h in Headers */,
 				1881CEC521527ABA00325270 /* ALMultimediaData.h in Headers */,
 				181F69C622007C4A0018FC13 /* ALMessageBuilder.h in Headers */,
 				8B1635C72119C4CB0008191A /* ALLogger.h in Headers */,
@@ -1747,6 +1766,7 @@
 				4612E9041E13882D0022DB23 /* MQTTMessage.h in Headers */,
 				4612E9061E13882D0022DB23 /* MQTTPersistence.h in Headers */,
 				1821DDE92167D47B00CB24A5 /* ALAttachmentService.h in Headers */,
+				18C926E9249BC40500232576 /* ALAuthClientService.h in Headers */,
 				4612E9151E13882D0022DB23 /* MQTTSSLSecurityPolicyTransport.h in Headers */,
 				8B1635C22119C4B10008191A /* ALRealTimeUpdate.h in Headers */,
 				4612E9011E13882D0022DB23 /* MQTTInMemoryPersistence.h in Headers */,
@@ -1964,6 +1984,7 @@
 				4612E9021E13882D0022DB23 /* MQTTInMemoryPersistence.m in Sources */,
 				18A2B2B4228A12C600CE93BC /* ALInternalSettings.m in Sources */,
 				6D6DF1C81BC5364C00EBA00F /* UIImage+GIF.m in Sources */,
+				18C926E2249BC3EA00232576 /* ALJWT.swift in Sources */,
 				8B1635CD2119C6BF0008191A /* ALChannelOfTwoMetaData.m in Sources */,
 				18D29D4822610DBE009C4D39 /* MQTTLog.m in Sources */,
 				6D36F2091BFF3EE3003D46D3 /* ALApplozicSettings.m in Sources */,
@@ -2034,6 +2055,7 @@
 				4612E9081E13882D0022DB23 /* MQTTSession.m in Sources */,
 				6D7756901D5B7FBE0025560B /* ALTopicDetail.m in Sources */,
 				1A113F0121C00AE10000A7CC /* ALAudioRecordingView.swift in Sources */,
+				18C926EA249BC40500232576 /* ALAuthClientService.m in Sources */,
 				6D7756B81D5B80DF0025560B /* ALChannelSyncResponse.m in Sources */,
 				6D6DF1CA1BC5364C00EBA00F /* UIImage+MultiFormat.m in Sources */,
 				4612E8F71E13882D0022DB23 /* MQTTCFSocketEncoder.m in Sources */,
@@ -2105,6 +2127,7 @@
 				6D1385791CA9B83C009E6F50 /* AlMultipleAttachmentCell.m in Sources */,
 				C76D314D1F0AAFCF0087291F /* ALAudioVideoBaseVC.m in Sources */,
 				6D7756D81D5B82000025560B /* ALMessageInfoResponse.m in Sources */,
+				18C926EB249BC40500232576 /* ALAuthService.m in Sources */,
 				6D7757361D5B84BE0025560B /* ALUIConstant.m in Sources */,
 				1A113F0021C00AE10000A7CC /* ALAudioRecordButton.swift in Sources */,
 				C70273CC1DED445E00BA2C8A /* ALUserDetailListFeed.m in Sources */,
@@ -2120,6 +2143,7 @@
 				1804732622C3FA640062CC52 /* ALContactMessageCell.m in Sources */,
 				6D77572E1D5B84940025560B /* ALCustomCell.m in Sources */,
 				1881CEC621527ABA00325270 /* ALMultimediaData.m in Sources */,
+				18C926E3249BC3EA00232576 /* ALJWTDecode.swift in Sources */,
 				103CC2BE2032EDF200600D16 /* AlChannelInfoModel.m in Sources */,
 				6D7756E01D5B82000025560B /* ALUserDetail.m in Sources */,
 				6D77571E1D5B838A0025560B /* ALSendMessageResponse.m in Sources */,
@@ -2279,7 +2303,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.6.0;
+				MARKETING_VERSION = 7.7.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2313,7 +2337,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.6.0;
+				MARKETING_VERSION = 7.7.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -1069,7 +1069,8 @@ dispatch_queue_t channelUserbackgroundQueue;
     ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     [channelDBService createChannelEntity:channel];
-    [theDBHandler.managedObjectContext save:nil];
+
+    [theDBHandler saveContext];
 
     NSMutableArray <ALChannel *> *channelFeedArray = [[NSMutableArray alloc] init];
     [channelFeedArray addObject:channel];
