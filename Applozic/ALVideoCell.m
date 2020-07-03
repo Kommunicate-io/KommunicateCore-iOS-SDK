@@ -255,9 +255,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         [self.mUserProfileImageView setFrame:CGRectMake(viewSize.width - USER_PROFILE_PADDING_X_OUTBOX, 5, 0, USER_PROFILE_WIDTH)];
         
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getSendMsgColor];
-        
-        [self.mMessageStatusImageView setHidden:NO];
-        
+
         CGFloat requiredHeight = viewSize.width - BUBBLE_PADDING_HEIGHT;
         CGFloat imageViewHeight = requiredHeight -IMAGE_VIEW_HEIGHT;
         
@@ -384,22 +382,8 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
         
         self.mMessageStatusImageView.hidden = NO;
-        NSString * imageName;
-        
-        switch (alMessage.status.intValue) {
-            case DELIVERED_AND_READ :{
-                imageName = @"ic_action_read.png";
-            }break;
-            case DELIVERED:{
-                imageName = @"ic_action_message_delivered.png";
-            }break;
-            case SENT:{
-                imageName = @"ic_action_message_sent.png";
-            }break;
-            default:{
-                imageName = @"ic_action_about.png";
-            }break;
-        }
+        NSString * imageName = [self getMessageStatusIconName:self.mMessage];
+        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
     

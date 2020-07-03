@@ -98,8 +98,7 @@ dispatch_queue_t dispatchGlobalQueue;
         NSPersistentStore  *destinationStore  = nil;
         NSDictionary *options = @{
             NSInferMappingModelAutomaticallyOption: [NSNumber numberWithBool:YES],
-            NSMigratePersistentStoresAutomaticallyOption: [NSNumber numberWithBool:YES],
-            NSPersistentStoreFileProtectionKey: NSFileProtectionCompleteUnlessOpen
+            NSMigratePersistentStoresAutomaticallyOption: [NSNumber numberWithBool:YES]
         };
 
         if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]){
@@ -163,31 +162,29 @@ dispatch_queue_t dispatchGlobalQueue;
 #pragma mark - Core Data Saving support
 
 - (NSError *)saveContext {
-
     NSError *error = nil;
-
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    
-    if (managedObjectContext != nil) {
-        if ([self isProtectedDataAvailable]) {
+    @try {
+        NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+        if (managedObjectContext != nil) {
             if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
                 ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
                 return error;
             }
         } else {
-            NSError * dataAccessError = [NSError errorWithDomain:@"Applozic"
-                                                            code:1
-                                                        userInfo:@{NSLocalizedDescriptionKey : @"Protected Data store is not accessible"}];
-            return dataAccessError;
-        }
-    } else {
-        NSError * managedObjectContexterror = [NSError errorWithDomain:@"Applozic"
-                                                                  code:1
-                                                              userInfo:@{NSLocalizedDescriptionKey : @"Managed Object Context is nil"}];
+            NSError * managedObjectContexterror = [NSError errorWithDomain:@"Applozic"
+                                                                      code:1
+                                                                  userInfo:@{NSLocalizedDescriptionKey : @"Managed Object Context is nil"}];
 
-        return managedObjectContexterror;
+            return managedObjectContexterror;
+        }
+    } @catch (NSException *exception) {
+        error = [NSError errorWithDomain:@"Applozic"
+                                    code:1
+                                userInfo:@{NSLocalizedDescriptionKey : exception.reason}];
+        ALSLog(ALLoggerSeverityError, @"Unresolved NSException in db save %@, %@", exception.reason, [exception userInfo]);
+    } @finally {
+        return error;
     }
-    return error;
 }
 
 -(BOOL) isProtectedDataAvailable {
@@ -468,32 +465,25 @@ dispatch_queue_t dispatchGlobalQueue;
                         completion:(void (^)(NSError*error))completion {
     
     NSError* error;
-    if ([self isProtectedDataAvailable]) {
-        if (context.hasChanges && [context save:&error]) {
-            NSManagedObjectContext* parentContext = [context parentContext];
-            [parentContext performBlock:^ {
-                NSError* parentContextError;
-                if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
-                    completion(nil);
-                } else {
-                    if (parentContextError) {
-                        ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
-                    }
-                    completion(parentContextError);
+    if (context.hasChanges && [context save:&error]) {
+        NSManagedObjectContext* parentContext = [context parentContext];
+        [parentContext performBlock:^ {
+            NSError* parentContextError;
+            if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
+                completion(nil);
+            } else {
+                if (parentContextError) {
+                    ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
                 }
-            }];
-        } else {
-            if (error) {
-                ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
-                [context rollback];
+                completion(parentContextError);
             }
-            completion(error);
-        }
+        }];
     } else {
-        NSError * dataAccessError = [NSError errorWithDomain:@"Applozic"
-                                                        code:1
-                                                    userInfo:@{NSLocalizedDescriptionKey : @"Protected Data store is not accessible"}];
-        completion(dataAccessError);
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+            [context rollback];
+        }
+        completion(error);
     }
 }
 

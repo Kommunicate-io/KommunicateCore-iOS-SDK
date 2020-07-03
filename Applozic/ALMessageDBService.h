@@ -23,7 +23,7 @@
 
 @interface ALMessageDBService : NSObject
 //Add Message APIS
--(NSMutableArray *)addMessageList:(NSMutableArray*) messageList;
+-(NSMutableArray *)addMessageList:(NSMutableArray*) messageList skipAddingMessageInDb:(BOOL)skip;
 -(DB_Message*)addMessage:(ALMessage*) message;
 -(void)getMessages:(NSMutableArray *)subGroupList;
 -(void)fetchAndRefreshFromServer:(NSMutableArray *)subGroupList;

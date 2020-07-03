@@ -299,8 +299,6 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
                                            self.mBubleImageView.frame.size.width - IMAGE_VIEW_PADDING_WIDTH,
                                            imageViewHeight);
 
-        [self.mMessageStatusImageView setHidden:NO];
-
         if(linkText.length > 0)
         {
 
@@ -341,30 +339,13 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
     }
 
-    if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || self.contact))
-    {
+    if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
 
         self.mMessageStatusImageView.hidden = NO;
-        NSString * imageName;
-
-        switch (alMessage.status.intValue) {
-            case DELIVERED_AND_READ :{
-                imageName = @"ic_action_read.png";
-            }break;
-            case DELIVERED:{
-                imageName = @"ic_action_message_delivered.png";
-            }break;
-            case SENT:{
-                imageName = @"ic_action_message_sent.png";
-            }break;
-            default:{
-                imageName = @"ic_action_about.png";
-            }break;
-        }
+        NSString * imageName = [self getMessageStatusIconName:self.mMessage];
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
-
+        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
-
     self.mDateLabel.text = theDate;
 
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:linkText];

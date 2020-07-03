@@ -1001,6 +1001,8 @@ static int const MQTT_MAX_RETRY = 3;
         self.detailChatViewController.contactIds = contactId;
     }
 
+    self.detailChatViewController.alChannel = nil;
+    self.detailChatViewController.alContact = nil;
     self.detailChatViewController.chatViewDelegate = self;
 
     ALPushAssist * pushAssist = [[ALPushAssist alloc]init];
@@ -1013,16 +1015,18 @@ static int const MQTT_MAX_RETRY = 3;
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+
+    CGFloat height = 0;
     if(indexPath.section == 0)
     {
-        tableView.rowHeight = 40.0;
+        height = 40.0;
     }
     else
     {
-        tableView.rowHeight = 81.5;
+        height = 81.5;
     }
     
-    return tableView.rowHeight;
+    return height;
 }
 
 //==============================================================================================================================================
@@ -1120,9 +1124,11 @@ static int const MQTT_MAX_RETRY = 3;
     ALMessage * theLatestMessage = theFilteredArray.firstObject;
     if (theLatestMessage != nil && ![theMessage.createdAtTime isEqualToNumber: theLatestMessage.createdAtTime])
     {
-        [self.mContactsMessageListArray removeObject:theLatestMessage];
-        [self.mContactsMessageListArray insertObject:theMessage atIndex:0];
-        [self.mTableView reloadData];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.mContactsMessageListArray removeObject:theLatestMessage];
+            [self.mContactsMessageListArray insertObject:theMessage atIndex:0];
+            [self.mTableView reloadData];
+        });
     }
 }
 

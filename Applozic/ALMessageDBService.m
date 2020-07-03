@@ -26,12 +26,17 @@
 @implementation ALMessageDBService
 
 //Add message APIS
--(NSMutableArray *) addMessageList:(NSMutableArray*) messageList
+-(NSMutableArray *) addMessageList:(NSMutableArray*) messageList skipAddingMessageInDb:(BOOL)skip
 {
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
 
     ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
     for (ALMessage * theMessage in messageList) {
+
+        if (skip && !theMessage.fileMeta) {
+            [messageArray addObject:theMessage];
+            continue;
+        }
 
         NSManagedObject *message = [self getMessageByKey:@"key" value:theMessage.key];
         if(message==nil && ![theMessage isPushNotificationMessage] )
@@ -49,6 +54,8 @@
                 int replyType = (dbMessage.metadata && [dbMessage.metadata containsString:AL_MESSAGE_REPLY_KEY]) ? AL_A_REPLY : AL_NOT_A_REPLY;
                 [self updateMessageReplyType:dbMessage.key replyType: [NSNumber numberWithInt:replyType] hideFlag:NO];
             }
+            ALMessage* messageObject = [self createMessageEntity:dbMessage];
+            [messageArray addObject:messageObject];
         }
     }
 
@@ -338,7 +345,7 @@
 
         if (success) {
             // save data into the db
-            [self addMessageList:theArray];
+            [self addMessageList:theArray skipAddingMessageInDb:NO];
             // set yes to userdefaults
             [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
             // add default contacts
@@ -890,7 +897,7 @@
             return;
         }
 
-        [self addMessageList:theArray];
+        [self addMessageList:theArray skipAddingMessageInDb:NO];
         [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
         [self fetchConversationsGroupByContactId];
 
@@ -955,7 +962,6 @@
 -(ALMessage*) getMessageByKey:(NSString*)messageKey{
     DB_Message * dbMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKey];
     return  [self createMessageEntity:dbMessage];
-
 }
 
 -(void) updateMessageSentDetails:(NSString*)messageKeyString withCreatedAtTime : (NSNumber *) createdAtTime withDbMessage:(DB_Message *) dbMessage {
@@ -1002,7 +1008,7 @@
 
             if (!error) {
                 // save data into the db
-                [self addMessageList:theArray];
+                [self addMessageList:theArray skipAddingMessageInDb:NO];
                 // set yes to userdefaults
                 [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts
@@ -1046,7 +1052,7 @@
 
             if (!error) {
                 // save data into the db
-                [self addMessageList:theArray];
+                [self addMessageList:theArray skipAddingMessageInDb:NO];
                 // set yes to userdefaults
                 [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts

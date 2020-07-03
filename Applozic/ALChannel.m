@@ -166,6 +166,14 @@
     return  self.type == BROADCAST;
 }
 
+-(BOOL)isOpenGroup {
+    return self.type == OPEN;
+}
+
+-(BOOL)isGroupOfTwo {
+    return self.type == GROUP_OF_TWO;
+}
+
 -(BOOL)isPartOfCategory:(NSString*)category{
     
     if( _metadata && [_metadata  valueForKey:AL_CATEGORY] ){

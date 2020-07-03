@@ -74,7 +74,7 @@
 -(void)hidePlayButtonOnUploading;
 -(void)openUserChatVC;
 -(void)processReplyOfChat:(ALMessage*)almessage andViewSize:(CGSize)viewSize;
-
+-(NSString *)getMessageStatusIconName:(ALMessage *)alMessage;
 
 @property (nonatomic, strong) UILabel *sizeLabel;
 @property (nonatomic, strong) UIView *downloadRetryView;
@@ -82,5 +82,4 @@
 
 @property (nonatomic, strong) ALChannel * channel;
 @property (nonatomic, strong) ALContact * contact;
-
 @end
