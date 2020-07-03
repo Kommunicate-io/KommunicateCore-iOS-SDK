@@ -74,6 +74,8 @@ typedef enum {
 -(BOOL) isConversationClosed;
 -(BOOL) isContextBasedChat;
 -(BOOL) isBroadcastGroup;
+-(BOOL) isOpenGroup;
+-(BOOL)isGroupOfTwo;
 -(NSString*)getReceiverIdInGroupOfTwo;
 
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;

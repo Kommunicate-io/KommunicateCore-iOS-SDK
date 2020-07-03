@@ -906,9 +906,12 @@
 
 +(UIImage *)getChatListTabIcon
 {   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
-    NSString *stringtext = [userDefaults valueForKey:AL_CHAT_LIST_TAB_ICON];
+    NSString *iconName = [userDefaults valueForKey:AL_CHAT_LIST_TAB_ICON];
+    UIImage *customImg = nil;
+    if (iconName.length) {
+        customImg = [UIImage imageNamed:iconName];
+    }
     UIImage *defaultImg = [ALUtilityClass getImageFromFramworkBundle:@"chat_default.png"];
-    UIImage *customImg = [UIImage imageNamed:stringtext];
     return customImg ? customImg : defaultImg;
 }
 
@@ -932,9 +935,13 @@
 
 +(UIImage *)getProfileTabIcon
 {   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
-    NSString *stringtext = [userDefaults valueForKey:AL_USER_PROFILE_TAB_ICON];
+    NSString *iconName = [userDefaults valueForKey:AL_USER_PROFILE_TAB_ICON];
+    UIImage *customImg = nil;
+    if (iconName.length) {
+        customImg = [UIImage imageNamed:iconName];
+    }
+
     UIImage *defaultImg = [ALUtilityClass getImageFromFramworkBundle:@"contact_default.png"];
-    UIImage *customImg = [UIImage imageNamed:stringtext];
     return customImg ? customImg : defaultImg;
 }
 

@@ -9,6 +9,7 @@
 #import "MessageListRequest.h"
 #import "ALUserDefaultsHandler.h"
 #import "NSString+Encode.h"
+#import "ALChannel.h"
 
 
 static NSString *const DEFAULT_PAGE_SIZE = @"50";
@@ -71,8 +72,8 @@ static NSString *const DEFAULT_START_INDEX = @"0";
     return paramString;
 }
 
--(BOOL)isFirstCall{
-    
+-(BOOL)isFirstCall {
+
     NSString * key = self.channelKey ? [self.channelKey stringValue]: self.userId;
     return (![ALUserDefaultsHandler isServerCallDoneForMSGList:key]);
 }

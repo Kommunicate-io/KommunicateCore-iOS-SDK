@@ -176,29 +176,11 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [self.navigationController.navigationBar addSubview:self.label];
     
     typingIndicatorHeight = 30;
- 
-//    self.typingLabel = [[UILabel alloc] init];
-    
     self.typingLabel.backgroundColor = [ALApplozicSettings getBGColorForTypingLabel];
     self.typingLabel.textColor = [ALApplozicSettings getTextColorForTypingLabel];
     [self.typingLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:TYPING_LABEL_SIZE]];
     self.typingLabel.textAlignment = NSTextAlignmentLeft;
-//    [self.view addSubview:self.typingLabel];
-    
-//    CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height +
-//    [UIApplication sharedApplication].statusBarFrame.size.height;
-    
-//    self.noConversationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, (self.view.frame.size.height/2) - navigationHeight,
-//                                                                         self.view.frame.size.width, 30)];
-//    self.noConversationLabel.backgroundColor = [UIColor clearColor];
-//    self.noConversationLabel.textColor = [UIColor blackColor];
-//    self.noConversationLabel.text = @"You have no conversations";
-//    [self.noConversationLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:18]];
-//    self.noConversationLabel.textAlignment = NSTextAlignmentCenter;
-//    [self.view addSubview:self.noConversationLabel];o
-    
-//    [self.view insertSubview:self.noConversationLabel belowSubview:self.typingMessageView];
-    
+
     if([ALApplozicSettings isDropShadowInNavigationBarEnabled])
     {
         [self dropShadowInNavigationBar];
@@ -405,13 +387,13 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     self.textMessageViewHeightConstaint.constant = (self.typingMessageView.frame.size.height-self.sendMessageTextView.frame.size.height) + sizeThatFitsTextView.height + paddingForTextMessageViewHeight;
 }
 
--(void) scrollTableViewToBottomWithAnimation:(BOOL) animated
-{
-    if (self.mTableView.contentSize.height > self.mTableView.frame.size.height)
-    {
-        CGPoint offset = CGPointMake(0, self.mTableView.contentSize.height - self.mTableView.frame.size.height);
-        [self.mTableView setContentOffset:offset animated:animated];
-    }
+-(void) scrollTableViewToBottomWithAnimation:(BOOL) animated {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.mTableView.contentSize.height > self.mTableView.frame.size.height) {
+            CGPoint offset = CGPointMake(0, self.mTableView.contentSize.height - self.mTableView.frame.size.height);
+            [self.mTableView setContentOffset:offset animated:animated];
+        }
+    });
 }
 
 

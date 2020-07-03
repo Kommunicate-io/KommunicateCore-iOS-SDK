@@ -276,4 +276,25 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     return ([ALApplozicSettings isReplyOptionEnabled] && action ==@selector(processMessageReply:));
 }
 
+-(NSString *)getMessageStatusIconName:(ALMessage *)alMessage {
+
+    switch (alMessage.status.intValue) {
+        case DELIVERED_AND_READ :
+            return @"ic_action_read.png";
+            break;
+        case READ :
+            return @"ic_action_read.png";
+            break;
+        case DELIVERED:
+            return @"ic_action_message_delivered.png";
+            break;
+        case SENT:
+            return @"ic_action_message_sent.png";
+            break;
+        default:
+            return @"ic_action_about.png";
+            break;
+    }
+}
+
 @end
