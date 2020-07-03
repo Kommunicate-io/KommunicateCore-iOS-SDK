@@ -212,7 +212,6 @@
             self.mMessageStatusImageView.hidden = NO;
             NSString * imageName = [self getMessageStatusIconName:self.mMessage];
             self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
-            self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
         }
     }
 
