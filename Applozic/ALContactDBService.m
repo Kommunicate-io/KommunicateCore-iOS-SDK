@@ -231,39 +231,6 @@
     return result;
 }
 
--(void)addListOfContactsInBackground:(NSArray *)contacts completionHandler:(void(^)(BOOL))response {
-    dispatch_group_t group = dispatch_group_create();
-    for (ALContact *contact in contacts) {
-        dispatch_group_enter(group);
-        [self addContactInBackgroundThread:contact completionHandler:^void(BOOL response) {
-            dispatch_group_leave(group);
-        }];
-    }
-    dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),^{
-
-        // All group blocks have now completed
-        response(YES);
-    });
-}
-
--(void)addContactInBackgroundThread:(ALContact *)contact completionHandler:(void(^)(BOOL))response {
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
-
-    DB_CONTACT* existingContact = [self getContactByKey:@"userId" value:[contact userId]];
-    if (existingContact) {
-        [self updateContact:contact];
-        response(NO);
-    }
-
-    if (@available(iOS 10.0, *)) {
-        [dbHandler.persistentContainer performBackgroundTask:^void(NSManagedObjectContext* context) {
-            response([self insertNewContact:contact inContext:context]);
-        }];
-    } else {
-        response([self insertNewContact:contact inContext:dbHandler.managedObjectContext]);
-    }
-}
-
 - (ALContact *) loadContactByKey:(NSString *) key value:(NSString*) value
 {
     if(!value){
@@ -730,15 +697,17 @@
 
 -(BOOL)insertNewContact:(ALContact*)contact inContext:(NSManagedObjectContext*)context
 {
+    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+
     DB_CONTACT * dbContact = [NSEntityDescription insertNewObjectForEntityForName:@"DB_CONTACT" inManagedObjectContext:context];
     dbContact = [self replaceContact:dbContact with:contact];
 
-    NSError *error = nil;
-    BOOL result = [context save:&error];
-    if (!result) {
+    NSError *error = [dbHandler saveContext];
+    if (error) {
         ALSLog(ALLoggerSeverityError, @"addContact DB ERROR :%@",error);
+        return NO;
     }
-    return result;
+    return YES;
 }
 
 -(ALUserDetail *)updateMuteAfterTime:(NSNumber*)notificationAfterTime andUserId:(NSString*)userId

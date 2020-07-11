@@ -1091,15 +1091,15 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(void) setTitle
 {
+    ALContactService * contactService = [[ALContactService alloc] init];
+
     if(self.displayName)
     {
-        ALContactService * contactService = [[ALContactService alloc] init];
         self.alContact = [contactService loadOrAddContactByKeyWithDisplayName:self.contactIds value: self.displayName];
     }
     else
     {
-        ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-        self.alContact = [theDBHandler loadContactByKey:@"userId" value:self.contactIds];
+        self.alContact = [contactService loadContactByKey:@"userId" value:self.contactIds];
     }
 
     titleLabelButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -2672,7 +2672,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
     ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
     DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage: message];
-    [theDBHandler.managedObjectContext save:nil];
+    [theDBHandler saveContext];
     return [theMessageEntity objectID];
 }
 

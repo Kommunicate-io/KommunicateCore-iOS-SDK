@@ -822,9 +822,10 @@
                     dbMsgEntity.fileMetaInfo = fileInfo;
                 }
 
-                NSError * error;
-                BOOL flag = [dbHandler.managedObjectContext save:&error];
-                ALSLog(ALLoggerSeverityError, @"ERROR(IF_ANY) BROADCAST MSG : %@ and flag : %i",error.description, flag);
+                NSError * error = [dbHandler saveContext];
+                if (error) {
+                    ALSLog(ALLoggerSeverityError, @"ERROR(IF_ANY) BROADCAST MSG : %@",error.description);
+                }
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"BROADCAST_MSG_UPDATE" object:nil];
         }];
