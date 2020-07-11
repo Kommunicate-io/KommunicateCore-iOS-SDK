@@ -95,12 +95,6 @@
     return [alContactDBService addListOfContacts:contacts];
 }
 
--(void)addListOfContactsInBackground:(NSArray *)contacts completionHandler:(void(^)(BOOL))response {
-    [alContactDBService addListOfContactsInBackground:contacts completionHandler:^void(BOOL success){
-        response(success);
-    }];
-}
-
 -(BOOL)addContact:(ALContact *)userContact{
     return [alContactDBService addContact:userContact];
 

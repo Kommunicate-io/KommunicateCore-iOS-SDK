@@ -160,8 +160,8 @@
         theMessage.groupId = nil;
     }
     [messageDBService createMessageEntityForDBInsertionWithMessage:theMessage];
-    [theDBHandler.managedObjectContext save:nil];
-    
+    [theDBHandler saveContext];
+
 }
 
 

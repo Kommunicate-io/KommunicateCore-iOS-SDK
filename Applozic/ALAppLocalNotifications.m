@@ -64,18 +64,6 @@
                                                object:nil];
     
 
-    
-    if([ALUserDefaultsHandler isLoggedIn]){
-        
-        [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *messageArray, NSError *error) {
-            if (error) {
-                ALSLog(ALLoggerSeverityError, @"ERROR");
-            }
-            else{
-            }
-        }];
-    }
-
     self.googleReach = [ALReachability reachabilityWithHostname:@"www.google.com"];
     
     [self.googleReach startNotifier];

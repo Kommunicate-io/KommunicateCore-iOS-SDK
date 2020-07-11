@@ -29,24 +29,6 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 +(ALDBHandler *) sharedInstance;
 
--(BOOL)purgeListOfContacts:(NSArray *)contacts;
-
--(BOOL)purgeContact:(ALContact *)contact;
-
--(BOOL)purgeAllContact;
-
--(BOOL)updateListOfContacts:(NSArray *)contacts;
-
--(BOOL)updateContact:(ALContact *)contact;
-
--(BOOL)addListOfContacts:(NSArray *)contacts;
-
--(BOOL)addContact:(ALContact *)userContact;
-
-- (DB_CONTACT *)getContactByKey:(NSString *) key value:(NSString*) value;
-
-- (ALContact *)loadContactByKey:(NSString *) key value:(NSString*) value;
-
 - (void)savePrivateAndMainContext:(NSManagedObjectContext*)context
                         completion:(void (^)(NSError*error))completion;
 @end
