@@ -54,8 +54,9 @@ static int CONTACT_PAGE_SIZE = 100;
     ALContactService * contactService =  [[ALContactService alloc]init];
     
     for(ALMessage* msg in messagesArr) {
-        if (![contactService isContactExist:msg.contactIds]) {
-            [contactIdsArr addObject:msg.contactIds];
+        NSString* contactId = msg.contactIds;
+        if (contactId.length > 0 && ![contactService isContactExist:contactId]) {
+            [contactIdsArr addObject:contactId];
         }
     }
     
