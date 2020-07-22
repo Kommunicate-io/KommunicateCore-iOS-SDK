@@ -284,7 +284,7 @@
                                                                           andWithGroup:messageListRequest.channelKey];
         
         ALMessageDBService *almessageDBService = [[ALMessageDBService alloc] init];
-        messageListResponse.messageList = [almessageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
+        [almessageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
         ALConversationService * alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
         

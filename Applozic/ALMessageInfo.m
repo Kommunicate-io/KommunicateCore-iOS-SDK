@@ -19,9 +19,7 @@
 -(void)parseMessage:(id) messageJson
 {
     self.userId = [self getStringFromJsonValue:messageJson[@"userId"]];
-    self.messageStatus = [self getShortFromJsonValue:messageJson[@"status"]];
-    self.deliveredAtTime = [self getNSNumberFromJsonValue:messageJson[@"deliveredAtTime"]];
-    self.readAtTime = [self getNSNumberFromJsonValue:messageJson[@"readAtTime"]];
+    self.status = [self getShortFromJsonValue:messageJson[@"status"]];
 }
 
 
