@@ -54,8 +54,6 @@
                 int replyType = (dbMessage.metadata && [dbMessage.metadata containsString:AL_MESSAGE_REPLY_KEY]) ? AL_A_REPLY : AL_NOT_A_REPLY;
                 [self updateMessageReplyType:dbMessage.key replyType: [NSNumber numberWithInt:replyType] hideFlag:NO];
             }
-            ALMessage* messageObject = [self createMessageEntity:dbMessage];
-            [messageArray addObject:messageObject];
         }
     }
 

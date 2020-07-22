@@ -3515,6 +3515,10 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             }
             for (ALMessage * msg in messages)
             {
+                if([msg isHiddenMessage] )  // Filters Hidden Messages and VOIP Notifcation messages
+                {
+                    continue;
+                }
                 if([self.alMessageWrapper getUpdatedMessageArray].count > 0)
                 {
                     ALMessage *msg1 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
@@ -3522,29 +3526,28 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                     if([self.alMessageWrapper checkDateOlder:msg.createdAtTime andNewer:msg1.createdAtTime])
                     {
                         ALMessage *dateCell = [self.alMessageWrapper getDatePrototype:self.alMessageWrapper.dateCellText andAlMessageObject:msg];
+                        /// Checking if data message is already exist with same date in list
+                        NSArray * filteredDateArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = %@ AND message = %@",@"100", dateCell.message]];
+
                         ALMessage *msg3 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
-                        if(![msg3.type isEqualToString:@"100"] && ![msg3 isVOIPNotificationMessage])
+                        if(![msg3.type isEqualToString:@"100"] && ![msg3 isVOIPNotificationMessage] && !filteredDateArray.count)
                         {
                             [[self.alMessageWrapper getUpdatedMessageArray] insertObject:dateCell atIndex:0];
                         }
                     }
                 }
-
-                if( ![msg isHiddenMessage] )  // Filters Hidden Messages and VOIP Notifcation messages
-                {
-
-                    NSArray * theFilteredArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"key = %@",msg.key]];
-                    if (!theFilteredArray.count) {
-                        [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
-                    }
-                    [self.noConLabel setHidden:YES];
+                NSArray * theFilteredArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"key = %@",msg.key]];
+                if (!theFilteredArray.count) {
+                    [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
                 }
+                [self.noConLabel setHidden:YES];
+
             }
             ALMessage * message = [array firstObject];
             if(message)
             {
-                NSString * dateTxt = [self.alMessageWrapper msgAtTop:message];
-                ALMessage * lastMsg = [self.alMessageWrapper getDatePrototype:dateTxt andAlMessageObject:message];
+                NSString *dateTxt = [self.alMessageWrapper msgAtTop:message];
+                ALMessage *lastMsg = [self.alMessageWrapper getDatePrototype:dateTxt andAlMessageObject:message];
                 [[self.alMessageWrapper getUpdatedMessageArray] insertObject:lastMsg atIndex:0];
             }
 
@@ -3553,23 +3556,23 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             if (sortedArray.count) {
                 [[self.alMessageWrapper messageArray] setArray:sortedArray];
             }
-            //self.startIndex = self.startIndex + messages.count;
+
             [self.mActivityIndicator stopAnimating];
-            CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
 
             dispatch_async(dispatch_get_main_queue(), ^{
+                CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
                 [self.mTableView reloadData];
-            });
 
-            if(isScrollToBottom)
-            {
-                [self scrollTableViewToBottomWithAnimation:NO];
-            }
-            else
-            {
-                CGFloat newTableViewHeight = self.mTableView.contentSize.height;
-                self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
-            }
+                if(isScrollToBottom)
+                {
+                    [self scrollTableViewToBottomWithAnimation:NO];
+                }
+                else
+                {
+                    CGFloat newTableViewHeight = self.mTableView.contentSize.height;
+                    self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
+                }
+            });
             [self markConversationRead];
         }
         else
@@ -3586,10 +3589,19 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     NSArray *sortedArray = nil;
     if ([self.alMessageWrapper getUpdatedMessageArray].count) {
         NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:YES];
-          NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
+        NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
         sortedArray = [[self.alMessageWrapper getUpdatedMessageArray] sortedArrayUsingDescriptors:descriptors];
     }
-    return sortedArray;
+    NSMutableArray * sortedMessages = [[NSMutableArray alloc]init];
+    if (sortedArray.count) {
+        [sortedMessages addObjectsFromArray:sortedArray];
+        /// Remove the date message if added at bottom
+        ALMessage *lastMessage = sortedMessages.lastObject;
+        if (lastMessage && [lastMessage.type isEqualToString:@"100"]) {
+            [sortedMessages removeLastObject];
+        }
+    }
+    return [sortedMessages mutableCopy];
 }
 
 -(void) enableOrDisableChat:(BOOL)disable {

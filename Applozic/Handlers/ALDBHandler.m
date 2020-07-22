@@ -205,27 +205,30 @@ dispatch_queue_t dispatchGlobalQueue;
 
 - (void) savePrivateAndMainContext:(NSManagedObjectContext*)context
                         completion:(void (^)(NSError*error))completion {
-    
-    NSError* error;
-    if (context.hasChanges && [context save:&error]) {
-        NSManagedObjectContext* parentContext = [context parentContext];
-        [parentContext performBlock:^ {
-            NSError* parentContextError;
-            if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
-                completion(nil);
-            } else {
-                if (parentContextError) {
-                    ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
+    @try {
+        NSError* error;
+        if (context.hasChanges && [context save:&error]) {
+            NSManagedObjectContext* parentContext = [context parentContext];
+            [parentContext performBlock:^ {
+                NSError* parentContextError;
+                if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
+                    completion(nil);
+                } else {
+                    if (parentContextError) {
+                        ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
+                    }
+                    completion(parentContextError);
                 }
-                completion(parentContextError);
+            }];
+        } else {
+            if (error) {
+                ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
+                [context rollback];
             }
-        }];
-    } else {
-        if (error) {
-            ALSLog(ALLoggerSeverityError, @"DB ERROR in savePrivateAndMainContext :%@",error);
-            [context rollback];
+            completion(error);
         }
-        completion(error);
+    } @catch (NSException *exception) {
+        ALSLog(ALLoggerSeverityError, @"Unresolved NSException in db savePrivateAndMainContext %@, %@", exception.reason, [exception userInfo]);
     }
 }
 

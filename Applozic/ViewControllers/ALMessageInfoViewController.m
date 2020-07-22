@@ -188,12 +188,12 @@
             
             for (ALMessageInfo *info in self->arrayList)
             {
-                if(info.messageStatus == (short)READ)
+                if(info.status == (short)READ || info.status == DELIVERED_AND_READ)
                 {
                     [self->readList addObject:info];
                 }
                 
-                if(info.messageStatus == (short)DELIVERED)
+                if(info.status == (short)DELIVERED)
                 {
                     [self->deliveredList addObject:info];
                 }
@@ -209,10 +209,6 @@
     self.firstAlphabet = (UILabel *)[contactCell viewWithTag:505];
     self.userImage = (UIImageView *)[contactCell viewWithTag:504];
     self.userName = (UILabel *)[contactCell viewWithTag:503];
-    self.dateLabel = (UILabel *)[contactCell viewWithTag:502];
-    [self.dateLabel setTextColor:[UIColor grayColor]];
-    //    self.timeLabel = (UILabel *)[contactCell viewWithTag:501];
-    
     [self.firstAlphabet setTextColor:[UIColor whiteColor]];
     self.userImage.layer.cornerRadius = self.userImage.frame.size.width/2;
     self.userImage.layer.masksToBounds = YES;
@@ -265,16 +261,7 @@
         [self.userImage setBackgroundColor:[ALColorUtility getColorForAlphabet:[alContact getDisplayName] colorCodes:self.colourDictionary]];
         [self.firstAlphabet setText:[ALColorUtility getAlphabetForProfileImage:[alContact getDisplayName]]];
     }
-    
-    ALUtilityClass *utility = [ALUtilityClass new];
-    [utility getExactDate:msgInfo.readAtTime];
-    
-    if(section == 2)
-    {
-        [utility getExactDate:msgInfo.deliveredAtTime];
-    }
-    
-    [self.dateLabel setText:[NSString stringWithFormat:@"%@ %@", utility.msgdate, utility.msgtime]];
+
 }
 
 
