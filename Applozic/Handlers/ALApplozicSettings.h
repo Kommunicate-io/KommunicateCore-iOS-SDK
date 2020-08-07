@@ -152,6 +152,7 @@ static NSString *const AL_IMAGE_PREVIEW_BACKGROUND_COLOR = @"com.applozic.AL_IMA
 static NSString *const AL_RESTRICTED_MESSAGE_PATTERN  = @"com.applozic.AL_RESTRICTED_MESSAGE_PATTERN";
 static NSString *const AL_DISABLE_NOTIFICATION_TAP = @"com.applozic.AL_DISABLE_NOTIFICATION_TAP";
 static NSString *const AL_GROUPS_LIST_TAB = @"com.applozic.AL_GROUPS_LIST_TAB";
+static NSString *const AL_MESSAGE_SEARCH = @"com.applozic.AL_MESSAGE_SEARCH";
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -302,8 +303,8 @@ static NSString *const AL_GROUPS_LIST_TAB = @"com.applozic.AL_GROUPS_LIST_TAB";
 +(BOOL)getVisibilityForNoMoreConversationMsgVC;
 +(void)setVisibilityForNoMoreConversationMsgVC:(BOOL)flag;
 
-+(BOOL)getCustomNavRightButtonMsgVC;
-+(void)setCustomNavRightButtonMsgVC:(BOOL)flag;
++(BOOL)isRefreshChatButtonEnabledInMsgVc;
++(void)enableRefreshChatButtonInMsgVc:(BOOL)flag;
 
 +(UIColor *)getColorForToastText;
 +(void)setColorForToastText:(UIColor *)toastTextColor;
@@ -611,4 +612,7 @@ static NSString *const AL_GROUPS_LIST_TAB = @"com.applozic.AL_GROUPS_LIST_TAB";
 +(void)disableGroupListingTab:(BOOL)flag;
 +(BOOL)isGroupListingTabDisabled;
 
++(void)enableMessageSearch:(BOOL)flag;
+
++(BOOL)isMessageSearchEnabled;
 @end

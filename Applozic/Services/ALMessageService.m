@@ -54,16 +54,18 @@ static ALMessageClientService *alMsgClientService;
 {
     ALMessageClientService * almessageClientService = [[ALMessageClientService alloc] init];
 
+    NSNumber *startTime = [ALUserDefaultsHandler isInitialMessageListCallDone] ? [ALUserDefaultsHandler getLastMessageListTime] : nil;
+
     [almessageClientService getLatestMessageGroupByContact:[ALUserDefaultsHandler getFetchConversationPageSize]
-                                                 startTime:[ALUserDefaultsHandler getLastMessageListTime]  withCompletion:^(ALMessageList *alMessageList, NSError *error) {
+                                                 startTime:startTime withCompletion:^(ALMessageList *alMessageList, NSError *error) {
 
-                                                     [self getMessageListForUserIfLastIsHiddenMessageinMessageList:alMessageList
-                                                                                                    withCompletion:^(NSMutableArray *responseMessages, NSError *responseErrorH, NSMutableArray *userDetailArray) {
+        [self getMessageListForUserIfLastIsHiddenMessageinMessageList:alMessageList
+                                                       withCompletion:^(NSMutableArray *responseMessages, NSError *responseErrorH, NSMutableArray *userDetailArray) {
 
-                                                                                                        completion(responseMessages, responseErrorH);
+            completion(responseMessages, responseErrorH);
 
-                                                                                                    }];
-                                                 }];
+        }];
+    }];
 
 }
 
@@ -150,62 +152,62 @@ static ALMessageClientService *alMsgClientService;
     ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
 
     [alMessageClientService getMessageListForUser:messageListRequest withOpenGroup:messageListRequest.channelType == OPEN
-                   withCompletion:^(NSMutableArray *messages,
-                                    NSError *error,
-                                    NSMutableArray *userDetailArray) {
-                       [alContactDBService addUserDetails:userDetailArray];
+                                   withCompletion:^(NSMutableArray *messages,
+                                                    NSError *error,
+                                                    NSMutableArray *userDetailArray) {
+        [alContactDBService addUserDetails:userDetailArray];
 
-                       ALContactService *contactService = [ALContactService new];
-                       NSMutableArray * userNotPresentIds = [NSMutableArray new];
-                       NSMutableArray<NSString *>* replyMessageKeys = [[NSMutableArray alloc] init];
+        ALContactService *contactService = [ALContactService new];
+        NSMutableArray * userNotPresentIds = [NSMutableArray new];
+        NSMutableArray<NSString *>* replyMessageKeys = [[NSMutableArray alloc] init];
 
-                       ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
-                       for (int i = (int)messages.count - 1; i >= 0; i--) {
-                           ALMessage * message = messages[i];
+        ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
+        for (int i = (int)messages.count - 1; i >= 0; i--) {
+            ALMessage * message = messages[i];
 
-                           if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
-                               [messages removeObjectAtIndex:i];
-                           }
+            if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
+                [messages removeObjectAtIndex:i];
+            }
 
-                           if (message.to && ![contactService isContactExist:message.to]) {
-                               [userNotPresentIds addObject:message.to];
-                           }
-                           /// If its a reply message add the reply message key to array
-                           if (message.metadata) {
-                               NSString* replyKey = [message.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
-                               if (replyKey && ![dbService getMessageByKey:@"key" value: replyKey] && ![replyMessageKeys containsObject: replyKey]) {
-                                   [replyMessageKeys addObject: replyKey];
-                               }
-                           }
-                       }
-                       /// Check if the key in reply array is present in messages
-                       for (int i = 0; i < messages.count; i++) {
-                           ALMessage* message = messages[i];
-                           if ([replyMessageKeys containsObject:message.key]) {
-                               [replyMessageKeys removeObject:message.key];
-                           }
-                       }
+            if (message.to && ![contactService isContactExist:message.to]) {
+                [userNotPresentIds addObject:message.to];
+            }
+            /// If its a reply message add the reply message key to array
+            if (message.metadata) {
+                NSString* replyKey = [message.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
+                if (replyKey && ![dbService getMessageByKey:@"key" value: replyKey] && ![replyMessageKeys containsObject: replyKey]) {
+                    [replyMessageKeys addObject: replyKey];
+                }
+            }
+        }
+        /// Check if the key in reply array is present in messages
+        for (int i = 0; i < messages.count; i++) {
+            ALMessage* message = messages[i];
+            if ([replyMessageKeys containsObject:message.key]) {
+                [replyMessageKeys removeObject:message.key];
+            }
+        }
 
-                       /// Make server call for fetching reply messages
-                       [self fetchReplyMessages: replyMessageKeys withCompletion:^(NSMutableArray<ALMessage *> *replyMessages) {
-                           if (replyMessages && replyMessages.count > 0) {
-                               for (int i = 0; i < replyMessages.count; i++) {
-                                   if (replyMessages[i].to && ![contactService isContactExist:replyMessages[i].to]) {
-                                       [userNotPresentIds addObject: replyMessages[i].to];
-                                   }
-                               }
-                           }
-                           if(userNotPresentIds.count>0) {
-                               ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
-                               ALUserService *alUserService = [ALUserService new];
-                               [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-                                   ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
-                                   completion(messages, error,userDetailArray);
-                               }];
-                           } else {
-                               completion(messages, error,userDetailArray);
-                           }
-                       }];
+        /// Make server call for fetching reply messages
+        [self fetchReplyMessages: replyMessageKeys withCompletion:^(NSMutableArray<ALMessage *> *replyMessages) {
+            if (replyMessages && replyMessages.count > 0) {
+                for (int i = 0; i < replyMessages.count; i++) {
+                    if (replyMessages[i].to && ![contactService isContactExist:replyMessages[i].to]) {
+                        [userNotPresentIds addObject: replyMessages[i].to];
+                    }
+                }
+            }
+            if(userNotPresentIds.count>0) {
+                ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
+                ALUserService *alUserService = [ALUserService new];
+                [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                    ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
+                    completion(messages, error,userDetailArray);
+                }];
+            } else {
+                completion(messages, error,userDetailArray);
+            }
+        }];
     }];
 }
 
@@ -231,8 +233,6 @@ static ALMessageClientService *alMsgClientService;
         predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil", contactIds];
     }
 
-    //    NSUInteger* mTotalCount = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:nil];
-
     NSPredicate* predicate2 = [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
     NSPredicate* predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
     NSPredicate* compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2,predicate3]];
@@ -240,16 +240,17 @@ static ALMessageClientService *alMsgClientService;
     [theRequest setFetchOffset:startIndex];
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
 
-    NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
+    NSArray * theArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
 
     NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-
-    for (DB_Message * theEntity in theArray)
-    {
-        ALMessage * theMessage = [messageDBService createMessageEntity:theEntity];
-        [tempArray insertObject:theMessage atIndex:0];
-        //[self.mMessageListArrayKeyStrings insertObject:theMessage.key atIndex:0];
+    if (theArray.count) {
+        ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
+        for (DB_Message * theEntity in theArray)
+        {
+            ALMessage * theMessage = [messageDBService createMessageEntity:theEntity];
+            [tempArray insertObject:theMessage atIndex:0];
+            //[self.mMessageListArrayKeyStrings insertObject:theMessage.key atIndex:0];
+        }
     }
     completion(tempArray);
 }
@@ -260,7 +261,6 @@ static ALMessageClientService *alMsgClientService;
     //DB insert if objectID is null
     DB_Message* dbMessage;
     ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
-    NSError *theError=nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversationTableNotification" object:alMessage userInfo:nil];
 
     ALChannel *channel;
@@ -284,7 +284,7 @@ static ALMessageClientService *alMsgClientService;
     else
     {
         ALSLog(ALLoggerSeverityInfo, @"message found in DB just getting it not inserting new one...");
-        dbMessage = (DB_Message*)[dbService getMeesageById:alMessage.msgDBObjectId error:&theError];
+        dbMessage = (DB_Message*)[dbService getMeesageById:alMessage.msgDBObjectId];
     }
     //convert to dic
     NSDictionary * messageDict = [alMessage dictionary];
@@ -293,27 +293,24 @@ static ALMessageClientService *alMsgClientService;
 
         NSString *statusStr=nil;
 
-        if(!theError)
-        {
+        if (!theError) {
             ALAPIResponse  *apiResponse = [[ALAPIResponse alloc] initWithJSONString:theJson ];
             ALSendMessageResponse  *response = [[ALSendMessageResponse alloc] initWithJSONString:apiResponse.response];
 
-            if(!response.isSuccess){
+            if (!response.isSuccess) {
                 theError = [NSError errorWithDomain:@"Applozic" code:1
                                            userInfo:[NSDictionary
                                                      dictionaryWithObject:@"error sedning message"
                                                      forKey:NSLocalizedDescriptionKey]];
 
-            }else{
-
-
-                if(channel){
+            } else {
+                if (channel) {
                     if (channel.type != OPEN || (dbMessage != nil && dbMessage.fileMetaInfo != nil)) {
                         alMessage.msgDBObjectId = dbMessage.objectID;
                         [dbService updateMessageSentDetails:response.messageKey withCreatedAtTime:response.createdAt withDbMessage:dbMessage];
 
                     }
-                }else{
+                } else {
                     alMessage.msgDBObjectId = dbMessage.objectID;
                     [dbService updateMessageSentDetails:response.messageKey withCreatedAtTime:response.createdAt withDbMessage:dbMessage];
                 }
@@ -326,11 +323,11 @@ static ALMessageClientService *alMsgClientService;
 
             }
 
-            if(self.delegate){
+            if (self.delegate) {
                 [self.delegate onMessageSent:alMessage];
             }
 
-        }else{
+        } else {
             ALSLog(ALLoggerSeverityError, @" got error while sending messages");
         }
         completion(statusStr,theError);
@@ -547,15 +544,15 @@ static ALMessageClientService *alMsgClientService;
 
         [alMessageClientService deleteMessage:keyString andContactId:contactId
                                withCompletion:^(NSString * response, NSError *error) {
-                                   if(!error){
-                                       //none error then delete from DB.
-                                       if(!isUsedForReply)
-                                       {
-                                           [dbService deleteMessageByKey:keyString];
-                                       }
-                                   }
-                                   completion(response,error);
-                               }];
+            if(!error){
+                //none error then delete from DB.
+                if(!isUsedForReply)
+                {
+                    [dbService deleteMessageByKey:keyString];
+                }
+            }
+            completion(response,error);
+        }];
 
     });
 
@@ -570,22 +567,22 @@ static ALMessageClientService *alMsgClientService;
 
         if (!error)
         {
-             //delete sucessfull
-             ALSLog(ALLoggerSeverityInfo, @"sucessfully deleted !");
-             ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
-             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
+            //delete sucessfull
+            ALSLog(ALLoggerSeverityInfo, @"sucessfully deleted !");
+            ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
+            [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
 
-             if(channelKey)
-             {
-                 [ALChannelService setUnreadCountZeroForGroupID:channelKey];
-             }
-             else
-             {
-                 [ALUserService setUnreadCountZeroForContactId:contactId];
-             }
-         }
-         completion(response, error);
-         }];
+            if(channelKey)
+            {
+                [ALChannelService setUnreadCountZeroForGroupID:channelKey];
+            }
+            else
+            {
+                [ALUserService setUnreadCountZeroForContactId:contactId];
+            }
+        }
+        completion(response, error);
+    }];
 }
 
 +(ALMessage*) processFileUploadSucess: (ALMessage *) message{

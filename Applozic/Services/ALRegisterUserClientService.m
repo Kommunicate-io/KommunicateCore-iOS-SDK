@@ -24,10 +24,10 @@
 
 @implementation ALRegisterUserClientService
 
--(void) initWithCompletion:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion
-{
+-(void) initWithCompletion:(ALUser *)user
+            withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
 
-    if([ALUserDefaultsHandler isLoggedIn]){
+    if ([ALUserDefaultsHandler isLoggedIn]) {
         ALSLog(ALLoggerSeverityInfo, @"User is already login to applozic with userId %@",ALUserDefaultsHandler.getUserId);
         ALRegistrationResponse *registrationResponse = [self getLoginRegistrationResponse];
         completion(registrationResponse,nil);
@@ -59,12 +59,10 @@
     [user setDeviceApnsType:!isDevelopmentBuild()];
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
-    if([ALUserDefaultsHandler getAppModuleName] != NULL)
-    {
+    if ([ALUserDefaultsHandler getAppModuleName] != NULL) {
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     }
-    if([ALApplozicSettings isAudioVideoEnabled])
-    {
+    if ([ALApplozicSettings isAudioVideoEnabled]) {
         [user setFeatures:[NSMutableArray arrayWithArray:[NSArray arrayWithObjects: @"101",@"102",nil]]];
     }
     [user setUserTypeId:[ALUserDefaultsHandler getUserTypeId]];
@@ -78,14 +76,13 @@
     ALSLog(ALLoggerSeverityInfo, @"PARAM_STRING USER_REGISTRATION :: %@",logParamText);
 
     NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-    
+
     [ALResponseHandler processRequest:theRequest andTag:@"CREATE ACCOUNT" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         NSString *statusStr = (NSString *)theJson;
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_REGISTRATION :: %@", statusStr);
         
-        if (theError)
-        {
+        if (theError) {
             completion(nil, theError);
             return;
         }
@@ -109,44 +106,38 @@
                 [ALUserDefaultsHandler setLastSyncChannelTime:(NSNumber *)response.currentTimeStamp];
 
 
-                if(user.pushNotificationFormat){
+                if (user.pushNotificationFormat) {
                     [ALUserDefaultsHandler setPushNotificationFormat:user.pushNotificationFormat];
                 }
 
-                if(response.roleType){
+                if (response.roleType) {
                     [ALUserDefaultsHandler setUserRoleType:response.roleType];
                 }
 
-                if( response.notificationSoundFileName )
-                {
+                if (response.notificationSoundFileName ) {
                     [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
                 }
-                if(response.imageLink)
-                {
+                if (response.imageLink) {
                     [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
                 }
-                if(response.userEncryptionKey)
-                {
+                if (response.userEncryptionKey) {
                     [ALUserDefaultsHandler setUserEncryption:response.userEncryptionKey];
                 }
 
-                if(response.statusMessage)
-                {
+                if (response.statusMessage) {
                     [ALUserDefaultsHandler setLoggedInUserStatus:response.statusMessage];
                 }
-                if(response.brokerURL && ![response.brokerURL isEqualToString:@""])
-                {
+                if (response.brokerURL && ![response.brokerURL isEqualToString:@""]) {
                     NSArray * mqttURL = [response.brokerURL componentsSeparatedByString:@":"];
                     NSString * MQTTURL = [mqttURL[1] substringFromIndex:2];
                     ALSLog(ALLoggerSeverityInfo, @"MQTT_URL :: %@",MQTTURL);
                     [ALUserDefaultsHandler setMQTTURL:MQTTURL];
                 }
-                if(response.encryptionKey)
-                {
+                if (response.encryptionKey) {
                     [ALUserDefaultsHandler setEncryptionKey:response.encryptionKey];
                 }
 
-                if(response.message){
+                if (response.message) {
                     [ALInternalSettings setRegistrationStatusMessage:response.message];
                 }
 
@@ -239,7 +230,8 @@
     }];
 }
 
--(void)updateUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
+-(void)updateUser:(ALUser *)alUser
+   withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
 
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/update",KBASE_URL];
 
@@ -264,6 +256,18 @@
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
     [user setRoleName:[ALApplozicSettings getUserRoleName]];
 
+    if (alUser.displayName) {
+        user.displayName = alUser.displayName;
+    }
+
+    if (alUser.contactNumber) {
+        user.contactNumber = alUser.contactNumber;
+    }
+
+    if (alUser.email) {
+        user.email = alUser.email;
+    }
+
     if ([ALUserDefaultsHandler getAppModuleName] != NULL) {
         [user setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
     }
@@ -287,9 +291,9 @@
     NSData * postdata = [NSJSONSerialization dataWithJSONObject:user.dictionary options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
 
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
 
-    [ALResponseHandler processRequest:theRequest andTag:@"UPDATE USER DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
+    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE USER DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
         ALSLog(ALLoggerSeverityInfo, @"Update login user details %@", theJson);
 
         NSString *statusStr = (NSString *)theJson;
@@ -306,7 +310,7 @@
             }
 
             [ALUserDefaultsHandler setUserPricingPackage:response.pricingPackage];
-            
+
             if (response.message) {
                 [ALInternalSettings setRegistrationStatusMessage:response.message];
             }
@@ -322,7 +326,7 @@
             if (response.authToken) {
                 [ALUserDefaultsHandler setAuthToken:response.authToken];
             }
-            
+
             [ALUserDefaultsHandler setUserRoleType:response.roleType];
 
         }
@@ -331,8 +335,7 @@
     }];
 }
 
--(void)syncAccountStatusWithCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion
-{
+-(void)syncAccountStatusWithCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
     ALUser *user = [[ALUser alloc] init];
     [user setNotificationMode:ALUserDefaultsHandler.getNotificationMode];
     [user setRegistrationId:ALUserDefaultsHandler.getApnDeviceToken];
@@ -356,12 +359,11 @@
     //  [[ALMQTTConversationService sharedInstance] unsubscribeToConversation];
 }
 
--(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion
-{
+-(void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion {
     NSString *urlString = [NSString stringWithFormat:@"%@%@",KBASE_URL,AL_LOGOUT_URL];
-    NSMutableURLRequest * request = [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil];
-    
-    [ALResponseHandler processRequest:request andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
+    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:urlString paramString:nil];
+
+    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"USER_LOGOUT" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
@@ -380,9 +382,10 @@
             ALSLog(ALLoggerSeverityError, @"Error in logout: %@", error.description);
             [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         }
-        
+
         completion(response,error);
     }];
+
 }
 
 +(BOOL)isAppUpdated{
@@ -397,11 +400,9 @@
         [defaults setObject:currentAppVersion forKey:@"appVersion"];
         [defaults synchronize];
         return NO;
-    }
-    else if ([previousVersion isEqualToString:currentAppVersion]) {
+    } else if ([previousVersion isEqualToString:currentAppVersion]) {
         return NO;
-    }
-    else {
+    } else {
         ALSLog(ALLoggerSeverityInfo, @"App was updated since last run");
         
         [ALRegisterUserClientService sendServerRequestForAppUpdate];
@@ -416,9 +417,10 @@
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/register/version/update",KBASE_URL];
     NSString * paramString = [NSString stringWithFormat:@"appVersionCode=%i&deviceKey=%@", AL_VERSION_CODE , [ALUserDefaultsHandler getDeviceKeyString]];
-    NSLog(@"Sebdubga data to server sendServerRequestForAppUpdate ");
-    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
-    [ALResponseHandler processRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
+    NSLog(@"sending data to server from sendServerRequestForAppUpdate ");
+
+    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
+    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"APP_UPDATED" WithCompletionHandler:^(id theJson, NSError *theError) {
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"error:%@",theError);
         }
@@ -426,22 +428,23 @@
     }];
 }
 
--(void)syncAccountStatus
-{
+-(void)syncAccountStatus {
     NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/application/pricing/package", KBASE_URL];
     NSString * paramString = [NSString stringWithFormat:@"applicationId=%@", [ALUserDefaultsHandler getApplicationKey]];
-    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
-    [ALResponseHandler processRequest:theRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
-        if (theError)
-        {
+
+    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:paramString];
+
+    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"SYNC_ACCOUNT_STATUS" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+        if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR_SYNC_ACCOUNT_STATUS :: %@", theError.description);
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_SYNC_ACCOUNT_STATUS :: %@",(NSString *)theJson);
     }];
+
 }
 
--(ALRegistrationResponse *) getLoginRegistrationResponse{
+-(ALRegistrationResponse *) getLoginRegistrationResponse {
     ALRegistrationResponse * registrationResponse = [[ALRegistrationResponse alloc]init];
     registrationResponse.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
     registrationResponse.userKey = [ALUserDefaultsHandler getUserKeyString];
@@ -464,8 +467,7 @@
     return registrationResponse;
 }
 
--(NSString *)getUserParamTextForLogging:(ALUser *)user
-{
+-(NSString *)getUserParamTextForLogging:(ALUser *)user {
     NSString *passwordText = user.password ? @"***":@"";
     [user setPassword: passwordText];
     NSError * error;

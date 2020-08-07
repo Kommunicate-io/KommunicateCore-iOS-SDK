@@ -36,6 +36,7 @@
     self.deletedAtTime = [dict objectForKey:@"deletedAtTime"];
     self.metadata = [dict objectForKey:@"metadata"];
     self.roleType = [dict objectForKey:@"roleType"];
+    self.status = [dict objectForKey:@"status"];
 }
 
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string

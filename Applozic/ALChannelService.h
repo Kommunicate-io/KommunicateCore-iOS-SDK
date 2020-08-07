@@ -649,4 +649,5 @@ extern NSString *const AL_MESSAGE_SYNC;
 
 -(void)createChannelEntry:(ALChannel*)channel fromMessageList:(BOOL) isFromMessageList;
 
+- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*) channelFeedsList calledFromMessageList:(BOOL)isFromMessageList;
 @end

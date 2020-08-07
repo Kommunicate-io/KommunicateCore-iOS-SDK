@@ -23,52 +23,42 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CONVERSATION_URL];
     
     NSDictionary * dictionaryToSend = [NSDictionary dictionaryWithDictionary:[ALConversationProxy getDictionaryForCreate:alConversationProxy]];
-                                       
+
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionaryToSend options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"CREATE_CONVERSATION" WithCompletionHandler:^(id theJson, NSError *theError) {
-        
+    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE_CONVERSATION" WithCompletionHandler:^(id theJson, NSError *theError) {
+
         ALConversationCreateResponse *response = nil;
-        
-        if (theError)
-        {
+
+        if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CREATE_CONVERSATION %@", theError);
-        }
-        else
-        {
+        } else {
             response = [[ALConversationCreateResponse alloc] initWithJSONString:theJson];
         }
         ALSLog(ALLoggerSeverityInfo, @"SEVER RESPONSE FROM JSON CREATE_CONVERSATION : %@", theJson);
         completion(theError, response);
-        
     }];
-    
 }
 
-+(void)fetchTopicDetails:(NSNumber *)alConversationProxyID andCompletion:(void (^)(NSError *, ALAPIResponse *))completion{
++(void)fetchTopicDetails:(NSNumber *)alConversationProxyID
+           andCompletion:(void (^)(NSError *, ALAPIResponse *))completion {
     
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL, FETCH_CONVERSATION_DETAILS];
     NSString * theParamString = [NSString stringWithFormat:@"id=%@",alConversationProxyID];
     
-    NSMutableURLRequest * theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-    
-    [ALResponseHandler processRequest:theRequest andTag:@"FETCH_TOPIC_DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
-       
+    NSMutableURLRequest *theRequest =  [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+
+    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"FETCH_TOPIC_DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
+        
         ALAPIResponse *response = nil;
-        if(theError)
-        {
+        if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN FETCH_TOPIC_DETAILS SERVER CALL REQUEST %@", theError);
-        }
-        else
-        {
+        } else {
             response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         }
-        
         completion(theError, response);
-
     }];
 }
 

@@ -120,6 +120,11 @@
 
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string
 {
+
+    if (!string) {
+        return nil;
+    }
+
     NSData * data = [string dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
     NSMutableDictionary * dictionary;

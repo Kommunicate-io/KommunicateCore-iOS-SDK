@@ -66,6 +66,7 @@ const int REGULAR_CONTACTS = 0;
         chatView.text = text;
         chatView.individualLaunch = YES;
         chatView.chatViewDelegate = self;
+        chatView.isSearch = NO;
         ALSLog(ALLoggerSeverityInfo, @"CALLED_VIA_NOTIFICATION");
         
         UINavigationController * conversationViewNavController = [self createNavigationControllerForVC:chatView];
@@ -124,6 +125,7 @@ const int REGULAR_CONTACTS = 0;
         chatView.individualLaunch = YES;
         chatView.displayName = displayName;
         chatView.chatViewDelegate = self;
+        chatView.isSearch = NO;
         
         UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];
         conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
@@ -148,14 +150,15 @@ const int REGULAR_CONTACTS = 0;
                                                             bundle:[NSBundle bundleForClass:ALChatViewController.class]];
        
        ALChatViewController *chatView = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
-       
-       chatView.channelKey = groupID;
-       chatView.text = text;
-       chatView.contactIds = userId;
-       chatView.individualLaunch = YES;
-       chatView.displayName = displayName;
-       chatView.chatViewDelegate = self;
-       
+
+        chatView.channelKey = groupID;
+        chatView.text = text;
+        chatView.contactIds = userId;
+        chatView.individualLaunch = YES;
+        chatView.displayName = displayName;
+        chatView.chatViewDelegate = self;
+        chatView.isSearch = NO;
+
        UINavigationController *conversationViewNavController = [self createNavigationControllerForVC:chatView];
         conversationViewNavController.modalPresentationStyle = UIModalPresentationFullScreen;
        conversationViewNavController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve ;

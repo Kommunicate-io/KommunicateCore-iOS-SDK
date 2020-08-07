@@ -7,7 +7,6 @@
 //
 
 #import "ALAuthClientService.h"
-#import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
 #import "ALUserDefaultsHandler.h"
 #import "ALConstant.h"
@@ -38,7 +37,7 @@ static NSString *const AL_AUTH_TOKEN_REFRESH_URL = @"/rest/ws/register/refresh/t
 
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, AL_AUTH_TOKEN_REFRESH_URL];
 
-    NSMutableURLRequest * theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
+    NSMutableURLRequest * theRequest = [self createPostRequestWithURL:theUrlString withParamString:theParamString];
 
     [ALResponseHandler processRequest:theRequest andTag:@"REFRESH_AUTH_TOKEN_OF_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
         if(theError){
@@ -61,6 +60,32 @@ static NSString *const AL_AUTH_TOKEN_REFRESH_URL = @"/rest/ws/register/refresh/t
         }
         completion(apiResponse, nil);
     }];
+}
+
+-(NSMutableURLRequest *)createPostRequestWithURL:(NSString *)urlString
+                                 withParamString:(NSString *)paramString {
+
+    NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+    [theRequest setTimeoutInterval:600];
+    [theRequest setHTTPMethod:@"POST"];
+
+    if (paramString != nil) {
+        NSData * thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
+        [theRequest setHTTPBody:thePostData];
+        [theRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[thePostData length]] forHTTPHeaderField:@"Content-Length"];
+    }
+    [theRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    NSString * appMoudle = [ALUserDefaultsHandler getAppModuleName];
+    if (appMoudle) {
+        [theRequest addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
+    }
+    NSString * deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
+
+    if (deviceKeyString) {
+        [theRequest addValue:deviceKeyString forHTTPHeaderField:@"Device-Key"];
+    }
+    [theRequest addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
+    return theRequest;
 }
 
 @end

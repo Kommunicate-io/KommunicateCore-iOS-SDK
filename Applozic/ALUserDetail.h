@@ -30,6 +30,7 @@
 @property (nonatomic,retain) NSMutableDictionary * metadata;
 @property (nonatomic, strong) NSNumber * notificationAfterTime;
 @property (nonatomic, strong) NSString * email;
+@property (nonatomic, strong) NSNumber *status;
 
 -(void)setUserDetails:(NSString *)jsonString;
 

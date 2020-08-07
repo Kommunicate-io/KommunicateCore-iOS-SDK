@@ -15,27 +15,32 @@
 static NSString *const CREATED_TIME = @"createdAtTime";
 static NSString *const VALID_UPTO = @"validUpto";
 
--(void)decodeAndSaveToken:(NSString *)authToken {
+-(NSError *)decodeAndSaveToken:(NSString *)authToken {
+    NSError * jwtError;
+    if (!authToken) {
+        NSError * error = [NSError errorWithDomain:@"Applozic"
+                                              code:1
+                                          userInfo:@{NSLocalizedDescriptionKey : @"AuthToken is nil"}];
+        return error;
+    }
 
-    if (authToken){
-        [ALUserDefaultsHandler setAuthToken:authToken];
-        NSError * jwtError;
-        ALJWT * jwt = [ALJWT decodeWithJwt:authToken error:&jwtError];
+    [ALUserDefaultsHandler setAuthToken:authToken];
+    ALJWT *jwt = [ALJWT decodeWithJwt:authToken error:&jwtError];
 
-        if (!jwtError && jwt.body) {
-            NSDictionary * jwtBody = jwt.body;
-            NSNumber *createdAtTime = [jwtBody objectForKey:CREATED_TIME];
-            NSNumber *validUptoInMins = [jwtBody objectForKey:VALID_UPTO];
+    if (!jwtError && jwt.body) {
+        NSDictionary * jwtBody = jwt.body;
+        NSNumber *createdAtTime = [jwtBody objectForKey:CREATED_TIME];
+        NSNumber *validUptoInMins = [jwtBody objectForKey:VALID_UPTO];
 
-            if (createdAtTime) {
-                [ALUserDefaultsHandler setAuthTokenCreatedAtTime:createdAtTime];
-            }
+        if (createdAtTime) {
+            [ALUserDefaultsHandler setAuthTokenCreatedAtTime:createdAtTime];
+        }
 
-            if (validUptoInMins) {
-                [ALUserDefaultsHandler setAuthTokenValidUptoInMins:validUptoInMins];
-            }
+        if (validUptoInMins) {
+            [ALUserDefaultsHandler setAuthTokenValidUptoInMins:validUptoInMins];
         }
     }
+    return jwtError;
 }
 
 -(BOOL)isAuthTokenValid {
@@ -72,11 +77,11 @@ static NSString *const VALID_UPTO = @"validUpto";
             completion(nil, error);
             return;
         }
+        NSError *authTokenError = nil;
         if ([apiResponse.response isKindOfClass:[NSString class]]) {
-            [self decodeAndSaveToken:(NSString *)apiResponse.response];
+            authTokenError = [self decodeAndSaveToken:(NSString *)apiResponse.response];
         }
-        completion(apiResponse, nil);
-        return;
+        completion(apiResponse, authTokenError);
     }];
 }
 

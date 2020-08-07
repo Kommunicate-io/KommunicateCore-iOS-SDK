@@ -48,6 +48,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     self.roleType = [JSONString valueForKey:@"roleType"];
     self.notificationAfterTime = [JSONString valueForKey:@"notificationAfterTime"];
     self.email = [JSONString valueForKey:@"email"];
+    self.status = [JSONString valueForKey:@"status"];
 }
 
 -(void)userDetail
@@ -75,6 +76,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     self.roleType = [self getNSNumberFromJsonValue:json[@"roleType"]];
     self.notificationAfterTime = [self getNSNumberFromJsonValue:json[@"notificationAfterTime"]];
     self.email = [self getStringFromJsonValue: json[@"email"]];
+    self.status = [self getNSNumberFromJsonValue:json[@"status"]];
 
 }
 

@@ -723,35 +723,38 @@ static const int SHOW_GROUP = 102;
         [theRequest setPredicate:contactFilterPredicate];
     }
     
-    NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
-    
-    for (DB_CONTACT *dbContact in theArray)
-    {
-        
-        ALContact *contact = [[ALContact alloc] init];
-        
-        contact.userId = dbContact.userId;
-        contact.fullName = dbContact.fullName;
-        contact.contactNumber = dbContact.contactNumber;
-        contact.displayName = dbContact.displayName;
-        contact.contactImageUrl = dbContact.contactImageUrl;
-        contact.email = dbContact.email;
-        contact.localImageResourceName = dbContact.localImageResourceName;
-        contact.contactType = dbContact.contactType;
-        
-        
-        [self.contactList addObject:contact];
+    NSArray * theArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
+
+    if (theArray.count > 0) {
+        for (DB_CONTACT *dbContact in theArray)
+        {
+
+            ALContact *contact = [[ALContact alloc] init];
+
+            contact.userId = dbContact.userId;
+            contact.fullName = dbContact.fullName;
+            contact.contactNumber = dbContact.contactNumber;
+            contact.displayName = dbContact.displayName;
+            contact.contactImageUrl = dbContact.contactImageUrl;
+            contact.email = dbContact.email;
+            contact.localImageResourceName = dbContact.localImageResourceName;
+            contact.contactType = dbContact.contactType;
+            contact.status = dbContact.status;
+            [self.contactList addObject:contact];
+        }
+
+        NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+        NSArray * descriptors = [NSArray arrayWithObject:valueDescriptor];
+        self.filteredContactList = [NSMutableArray arrayWithArray:[self.contactList sortedArrayUsingDescriptors:descriptors]];
+        [self.contactList removeAllObjects];
+        self.contactList = [NSMutableArray arrayWithArray:self.filteredContactList];
+        [[self activityIndicator] stopAnimating];
+        [self.contactsTableView reloadData];
+
+    } else {
+        [[self activityIndicator] stopAnimating];
     }
-    
-    NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-    NSArray * descriptors = [NSArray arrayWithObject:valueDescriptor];
-    self.filteredContactList = [NSMutableArray arrayWithArray:[self.contactList sortedArrayUsingDescriptors:descriptors]];
-    [self.contactList removeAllObjects];
-    self.contactList = [NSMutableArray arrayWithArray:self.filteredContactList];
-    
-    [[self activityIndicator] stopAnimating];
-    [self.contactsTableView reloadData];
-    
+
 }
 
 #pragma mark orientation method

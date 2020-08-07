@@ -426,7 +426,7 @@ UIViewController * modalCon;
     else
     {
         if(alMessage.fileMeta.thumbnailFilePath == nil){
-            [self.delegate thumbnailDownload:alMessage.key];
+            [self.delegate thumbnailDownloadWithMessageObject:alMessage];
         }else{
 
             NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:alMessage.fileMeta.thumbnailFilePath];

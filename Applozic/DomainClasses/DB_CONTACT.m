@@ -30,6 +30,6 @@
 @dynamic roleType;
 @dynamic metadata;
 @dynamic notificationAfterTime;
-
+@dynamic status;
 
 @end

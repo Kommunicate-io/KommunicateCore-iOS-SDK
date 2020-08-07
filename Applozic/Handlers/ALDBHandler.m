@@ -32,22 +32,9 @@ dispatch_queue_t dispatchGlobalQueue;
 }
 
 - (id)init {
-    
     if (self = [super init]) {
 
 
-    }
-
-    if (@available(iOS 10.0, *)) {
-        NSPersistentContainer * container = [[NSPersistentContainer alloc] initWithName:@"AppLozic" managedObjectModel:self.managedObjectModel];
-
-        [container loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription* store, NSError * error) {
-            ALSLog(ALLoggerSeverityInfo, @"pers url: %@",container.persistentStoreCoordinator.persistentStores.firstObject.URL);
-            if(error != nil) {
-                ALSLog(ALLoggerSeverityError, @"%@", error);
-            }
-        }];
-        self.persistentContainer = container;
     }
     return self;
 }
@@ -103,6 +90,7 @@ dispatch_queue_t dispatchGlobalQueue;
 
         if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]){
             ALSLog(ALLoggerSeverityError, @"Failed to setup the persistentStoreCoordinator %@, %@", error, [error userInfo]);
+            return nil;
         } else {
             sourceStore = [_persistentStoreCoordinator persistentStoreForURL:storeURL];
             if (sourceStore != nil && groupURL){
@@ -111,6 +99,7 @@ dispatch_queue_t dispatchGlobalQueue;
                 destinationStore = [_persistentStoreCoordinator migratePersistentStore:sourceStore toURL:groupURL options:options withType:NSSQLiteStoreType error:&error];
                 if (destinationStore == nil){
                     ALSLog(ALLoggerSeverityError, @"Failed to migratePersistentStore");
+                    return nil;
                 } else {
 
                     NSFileCoordinator *coord = [[NSFileCoordinator alloc]initWithFilePresenter:nil];
@@ -164,9 +153,8 @@ dispatch_queue_t dispatchGlobalQueue;
 - (NSError *)saveContext {
     NSError *error = nil;
     @try {
-        NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-        if (managedObjectContext != nil) {
-            if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+        if (self.managedObjectContext) {
+            if ([self.managedObjectContext hasChanges] && ![self.managedObjectContext save:&error]) {
                 ALSLog(ALLoggerSeverityError, @"Unresolved error %@, %@", error, [error userInfo]);
                 return error;
             }
@@ -207,18 +195,20 @@ dispatch_queue_t dispatchGlobalQueue;
                         completion:(void (^)(NSError*error))completion {
     @try {
         NSError* error;
+        if (!context) {
+            error = [NSError errorWithDomain:@"Applozic" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Private context is nil"}];
+            completion(error);
+            return;
+        }
         if (context.hasChanges && [context save:&error]) {
-            NSManagedObjectContext* parentContext = [context parentContext];
-            [parentContext performBlock:^ {
-                NSError* parentContextError;
-                if (parentContext.hasChanges && [parentContext save:&parentContextError]) {
-                    completion(nil);
-                } else {
-                    if (parentContextError) {
-                        ALSLog(ALLoggerSeverityError, @"DB ERROR in MainContext :%@",parentContextError);
-                    }
-                    completion(parentContextError);
-                }
+            if (!self.managedObjectContext) {
+                error = [NSError errorWithDomain:@"Applozic" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Managed object context is nil"}];
+                completion(error);
+                return;
+            }
+            [self.managedObjectContext performBlock:^ {
+                NSError *parentContextError = [self saveContext];
+                completion(parentContextError);
             }];
         } else {
             if (error) {
@@ -233,9 +223,82 @@ dispatch_queue_t dispatchGlobalQueue;
 }
 
 - (NSManagedObjectContext *)privateContext {
-    NSManagedObjectContext *managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    [managedObjectContext setParentContext:self.managedObjectContext];
-    return managedObjectContext;
+    NSManagedObjectContext *privateManagedObjectContext = nil;
+    if (self.managedObjectContext) {
+        privateManagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        [privateManagedObjectContext setParentContext:self.managedObjectContext];
+    }
+    return privateManagedObjectContext;
+}
+
+-(NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError: (NSError **)fetchError {
+    NSArray * fetchResultArray = nil;
+    if (self.managedObjectContext) {
+        fetchResultArray = [self.managedObjectContext executeFetchRequest:fetchrequest
+                                                                    error:fetchError];
+    }
+    return fetchResultArray;
+}
+
+-(NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name {
+    if (self.managedObjectContext) {
+        return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
+    }
+    return nil;
+}
+
+-(NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest {
+
+    if (self.managedObjectContext) {
+        NSError *fetchError = nil;
+        NSUInteger fetchCount = [self.managedObjectContext countForFetchRequest:fetchrequest error:&fetchError];
+        if (fetchError) {
+            return 0;
+        }
+        return fetchCount;
+    }
+    return 0;
+}
+
+-(NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID {
+    NSManagedObject* managedObject = nil;
+    if (self.managedObjectContext) {
+        NSError *managedObjectError = nil;
+        managedObject = [self.managedObjectContext existingObjectWithID:objectID
+                                                                  error:&managedObjectError];
+        if (managedObjectError) {
+            ALSLog(ALLoggerSeverityError, @"Error while fetching NSManagedObject %@", managedObjectError);
+            return nil;
+        }
+    }
+    return managedObject;
+}
+
+-(NSManagedObject *)insertNewObjectForEntityForName:(NSString *) entityName {
+    if (self.managedObjectContext) {
+        return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:self.managedObjectContext];
+    }
+    return nil;
+}
+
+-(void)deleteObject:(NSManagedObject *) managedObject {
+    if (self.managedObjectContext) {
+        [self.managedObjectContext deleteObject:managedObject];
+    }
+}
+-(NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName withManagedObjectContext:(NSManagedObjectContext *) context {
+    if (context) {
+        return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+    }
+    return nil;
+}
+
+-(NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError **)fetchError {
+    NSBatchUpdateResult *batchUpdateResult = nil;
+    if (self.managedObjectContext) {
+        batchUpdateResult = (NSBatchUpdateResult *)[self.managedObjectContext executeRequest:updateRequest error:fetchError];
+    }
+    return batchUpdateResult;
 }
 
 @end

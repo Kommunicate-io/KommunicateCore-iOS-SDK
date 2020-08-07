@@ -5,11 +5,6 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-static const CGFloat NAVIGATION_TEXT_SIZE = 20;
-static const CGFloat USER_NAME_LABEL_SIZE = 18;
-static const CGFloat MESSAGE_LABEL_SIZE = 14;
-static const CGFloat TIME_LABEL_SIZE = 12;
-static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
 static const int LAUNCH_GROUP_OF_TWO = 4;
 static const int REGULAR_CONTACTS = 0;
 static const int BROADCAST_GROUP_CREATION = 5;
@@ -49,7 +44,10 @@ static const int BROADCAST_GROUP_CREATION = 5;
 #import "ALMessageClientService.h"
 #import "ALLogger.h"
 #import "ALNotificationHelper.h"
+#import <Applozic/Applozic-Swift.h>
+#import "ALSearchResultViewController.h"
 
+static const CGFloat NAVIGATION_TEXT_SIZE = 20;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
@@ -59,11 +57,7 @@ static int const MQTT_MAX_RETRY = 3;
 // Private interface
 //==============================================================================================================================================
 
-@interface ALMessagesViewController ()<UITableViewDataSource, UITableViewDelegate, ALMessagesDelegate, ALMQTTConversationDelegate>
-
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *navigationRightButton;
-
--(IBAction)navigationRightButtonAction:(id)sender;
+@interface ALMessagesViewController ()<UITableViewDataSource, UITableViewDelegate, ALMessagesDelegate, ALMQTTConversationDelegate, UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
 - (IBAction)backButtonAction:(id)sender;
@@ -86,6 +80,12 @@ static int const MQTT_MAX_RETRY = 3;
 @property (strong, nonatomic) UIBarButtonItem *refreshButton;
 
 @property (nonatomic, strong) ALMessageDBService *dBService;
+
+@property (strong, nonatomic) UISearchController *searchController;
+
+@property (strong, nonatomic) ALSearchResultViewController *searchResultVC;
+
+@property (strong, nonatomic) ALCustomSearchBar *customSearchBar;
 
 @end
 
@@ -112,6 +112,8 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)viewDidLoad
 {
     [super viewDidLoad];
+    self.extendedLayoutIncludesOpaqueBars = true;
+
     self.mqttRetryCount = 0;
     [self setUpTableView];
     self.mTableView.allowsMultipleSelectionDuringEditing = NO;
@@ -136,14 +138,58 @@ static int const MQTT_MAX_RETRY = 3;
     [self.view addSubview:self.emptyConversationText];
     self.emptyConversationText.hidden = YES;
     
-    self.barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton: NSLocalizedStringWithDefaultValue(@"back", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], [ALApplozicSettings getTitleForBackButtonMsgVC], @"")]];
-    
-    if((self.channelKey || self.userIdToLaunch)){
+     if((self.channelKey || self.userIdToLaunch)){
         [self createAndLaunchChatView ];
     }
     [_mTableView setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
-    [_navigationRightButton setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     self.colourDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
+}
+
+-(void)setupNavigationButtons {
+
+    if (self.navigationItem.titleView == nil) {
+        UIColor * itemColor = [ALApplozicSettings getColorForNavigationItem];
+
+        NSMutableArray * rightSideNavItems = [[NSMutableArray alloc] init];
+
+        if(![ALUserDefaultsHandler isNavigationRightButtonHidden]) {
+
+
+            UIBarButtonItem * startNewButton  = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                                                                              target:self
+                                                                                              action:@selector(navigationRightButtonAction)];
+            [startNewButton setTintColor:itemColor];
+            [rightSideNavItems addObject: startNewButton];
+
+        }
+
+        if (ALApplozicSettings.isMessageSearchEnabled) {
+            UIBarButtonItem * searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                             target:self
+                                                                                             action:@selector(searchButtonAction)];
+
+            [searchButton setTintColor:itemColor];
+            [rightSideNavItems addObject: searchButton];
+        }
+
+        if([ALApplozicSettings isRefreshChatButtonEnabledInMsgVc])
+        {
+            self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                               target:self
+                                                                               action:@selector(refreshMessageList)];
+            [self.refreshButton setTintColor:itemColor];
+            [rightSideNavItems addObject: self.refreshButton];
+        }
+
+        if (rightSideNavItems && rightSideNavItems.count) {
+            [self.navigationItem setRightBarButtonItems:rightSideNavItems];
+        }
+
+        if (![ALUserDefaultsHandler isBackButtonHidden]) {
+            self.barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton: NSLocalizedStringWithDefaultValue(@"back", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], [ALApplozicSettings getTitleForBackButtonMsgVC], @"")]];
+            [self.navigationItem setLeftBarButtonItem:self.barButtonItem];
+        }
+    }
 }
 
 -(void)loadMessages:(NSNotification *)notification
@@ -174,7 +220,6 @@ static int const MQTT_MAX_RETRY = 3;
     }
 
     [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
-    [self.navigationItem setLeftBarButtonItem:self.barButtonItem];
     [self.tabBarController.tabBar setHidden:[ALUserDefaultsHandler isBottomTabBarHidden]];
     
     if ([self.detailChatViewController refreshMainView])
@@ -188,24 +233,10 @@ static int const MQTT_MAX_RETRY = 3;
         [self.detailChatViewController setRefreshMainView:FALSE];
         [self.mTableView reloadData];
     }
-    
-    if([ALUserDefaultsHandler isNavigationRightButtonHidden])
-    {
-        [self.navigationItem setRightBarButtonItems:nil];
-    }
-    
-    if([ALApplozicSettings getCustomNavRightButtonMsgVC])
-    {
-        self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                                        target:self
-                                                                                        action:@selector(refreshMessageList)];
-        [self.navigationItem setRightBarButtonItem:self.refreshButton];
-    }
-    
-    if([ALUserDefaultsHandler isBackButtonHidden])
-    {
-        [self.navigationItem setLeftBarButtonItems:nil];
-    }
+
+    [self setupNavigationButtons];
+
+    [self setupSearchViewController];
 
     //register for notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationhandler:) name:@"pushNotification" object:nil];    
@@ -226,7 +257,11 @@ static int const MQTT_MAX_RETRY = 3;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCallForUser:) name:@"USER_DETAILS_UPDATE_CALL" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateBroadCastMessages) name:@"BROADCAST_MSG_UPDATE" object:nil];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationUnreadCount:) name:@"Update_unread_count" object:nil];
-    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keybordDidHideNotification)
+                                                    name:UIKeyboardDidHideNotification
+                                                  object:nil];
+
     [self.navigationController.navigationBar setTitleTextAttributes: @{
                                                                        NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -252,6 +287,7 @@ static int const MQTT_MAX_RETRY = 3;
     [self callLastSeenStatusUpdate];
 }
 
+
 -(void)intializeSubgroupMessages
 {
     ALChannelService * channelService = [ALChannelService new];
@@ -268,7 +304,7 @@ static int const MQTT_MAX_RETRY = 3;
     if(channel){
         ALContactCell *contactCell = [self getCellForGroup:channel.key];
         if(contactCell){
-            [self updateProfileImageAndUnreadCount:contactCell WithChannel:channel orChannelId:nil];
+            [contactCell updateProfileImageAndUnreadCountWithChannel:channel orContact:nil withColourDictionary:self.colourDictionary];
         }
     }
 }
@@ -296,7 +332,6 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
     self.userIdToLaunch = nil;
     self.channelKey = nil;
     if(self.detailChatViewController){
@@ -320,6 +355,8 @@ static int const MQTT_MAX_RETRY = 3;
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [self.navigationController.view setNeedsLayout];
+    [self.navigationController.view layoutIfNeeded];
     [self.tabBarController.tabBar setHidden: [ALUserDefaultsHandler isBottomTabBarHidden]];
     //unregister for notification
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushNotification" object:nil];
@@ -358,8 +395,7 @@ static int const MQTT_MAX_RETRY = 3;
 #pragma mark - NAVIGATION RIGHT BUTTON ACTION + CONTACT LAUNCH FOR USER/SUB GROUP
 //==============================================================================================================================================
 
--(IBAction)navigationRightButtonAction:(id)sender
-{
+-(void)navigationRightButtonAction {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.forGroup = [NSNumber numberWithInt:REGULAR_CONTACTS];
@@ -394,6 +430,42 @@ static int const MQTT_MAX_RETRY = 3;
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"REFRESH MSG VC");
+    }];
+}
+
+-(void)setupSearchViewController {
+
+    if (self.navigationItem.titleView == nil) {
+        UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+
+        _searchResultVC = (ALSearchResultViewController*)[storyboard instantiateViewControllerWithIdentifier:@"ALSearchViewController"];
+
+        self.searchController = [[UISearchController alloc] initWithSearchResultsController:_searchResultVC];
+        self.searchController.searchBar.delegate = self;
+        self.searchController.searchBar.autocapitalizationType =  UITextAutocapitalizationTypeNone;
+        self.searchController.hidesNavigationBarDuringPresentation = NO;
+
+        self.customSearchBar = [[ALCustomSearchBar alloc] initWithSearchBar:self.searchController.searchBar];
+        NSString * searchLabel = NSLocalizedStringWithDefaultValue(@"SearchLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Search...", @"");
+        self.searchController.searchBar.placeholder = searchLabel;
+        if (@available(iOS 13.0, *)) {
+            self.searchController.searchBar.searchTextField.backgroundColor = [UIColor whiteColor];
+            self.searchController.automaticallyShowsCancelButton = YES;
+        } else {
+            self.searchController.searchBar.showsCancelButton = YES;
+        }
+        self.definesPresentationContext = YES;
+    }
+}
+
+-(void)searchButtonAction {
+    [UIView animateWithDuration:0.5 animations:^{
+        [self.navigationItem setRightBarButtonItems:nil];
+        [self.navigationItem setLeftBarButtonItem:nil];
+        self.navigationItem.titleView = self.customSearchBar;
+        [self.customSearchBar show:YES];
+    } completion:^(BOOL finished) {
+        [self.customSearchBar becomeFirstResponder];
     }];
 }
 
@@ -475,7 +547,6 @@ static int const MQTT_MAX_RETRY = 3;
     for(ALMessage *msg in messagesArray)
     {
 
-        
         ALContactCell *contactCell;
         ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
         ALChannelService * channelService = [[ALChannelService alloc] init];
@@ -497,20 +568,20 @@ static int const MQTT_MAX_RETRY = 3;
         else if(contactCell)
         {
             contactCell.mMessageLabel.text = msg.message;
-            
-            ALContact *alContact = [contactDBService loadContactByKey:@"userId" value:msg.contactIds];
-            
-            ALChannel * channel = [channelService getChannelByKey:msg.groupId];
-            [self updateProfileImageAndUnreadCount:contactCell WithChannel:channel orChannelId:alContact];
-            //if ([msg.type integerValue] == [FORWARD_STATUS integerValue])
-              //  contactCell.mLastMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:@"mobicom_social_forward.png"];
-            //else if ([msg.type integerValue] == [REPLIED_STATUS integerValue])
-              //  contactCell.mLastMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:@"mobicom_social_reply.png"];
-            
+            ALContact *alContact = nil;
+            ALChannel * channel = nil;
+
+            if (msg.groupId != nil) {
+                channel = [channelService getChannelByKey:msg.groupId];
+            } else {
+                alContact = [contactDBService loadContactByKey:@"userId" value:msg.contactIds];
+            }
+
+            [contactCell updateProfileImageAndUnreadCountWithChannel:channel orContact:alContact withColourDictionary:self.colourDictionary];
+
             BOOL isToday = [ALUtilityClass isToday:[NSDate dateWithTimeIntervalSince1970:[msg.createdAtTime doubleValue]/1000]];
             contactCell.mTimeLabel.text = [msg getCreatedAtTime:isToday];
-            [self displayAttachmentMediaType:msg andContactCell: contactCell];
-
+            [contactCell displayAttachmentMediaType:msg];
             
         }
         else
@@ -689,62 +760,8 @@ static int const MQTT_MAX_RETRY = 3;
         {
             //Add rest of messageList
             contactCell = (ALContactCell *)[tableView dequeueReusableCellWithIdentifier:@"ContactCell"];
-            
-            [contactCell.mUserNameLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:USER_NAME_LABEL_SIZE]];
-            [contactCell.mMessageLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:MESSAGE_LABEL_SIZE]];
-            [contactCell.mTimeLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:TIME_LABEL_SIZE]];
-            [contactCell.imageNameLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:IMAGE_NAME_LABEL_SIZE]];
-            
-            contactCell.unreadCountLabel.backgroundColor = [ALApplozicSettings getUnreadCountLabelBGColor];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                 
-                 contactCell.unreadCountLabel.layer.cornerRadius = contactCell.unreadCountLabel.frame.size.width/2;
-                 contactCell.unreadCountLabel.layer.masksToBounds = YES;
-                 
-                 contactCell.mUserImageView.layer.cornerRadius = contactCell.mUserImageView.frame.size.width/2;
-                 contactCell.mUserImageView.layer.masksToBounds = YES;
-             });
-
-            [contactCell.onlineImageMarker setBackgroundColor:[UIColor clearColor]];
-
             ALMessage *message = (ALMessage *)self.mContactsMessageListArray[indexPath.row];
-            
-            ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
-            ALContact *alContact = [contactDBService loadContactByKey:@"userId" value: message.to];
-
-            contactCell.mUserNameLabel.textColor = [ALApplozicSettings getMessageListTextColor];
-            contactCell.mTimeLabel.textColor = [ALApplozicSettings getMessageSubtextColour];
-            contactCell.mMessageLabel.textColor = [ALApplozicSettings getMessageSubtextColour];
-
-            if([message.groupId intValue])
-            {
-                ALChannelService *channelService = [[ALChannelService alloc] init];
-                [channelService getChannelInformation:message.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel)
-                {
-                    [self updateProfileImageAndUnreadCount:contactCell WithChannel:alChannel orChannelId:nil];
-                }];
-            }
-            else
-            {
-                 [self updateProfileImageAndUnreadCount:contactCell WithChannel:nil orChannelId:alContact];
-
-            }
-
-            
-            contactCell.mMessageLabel.text = message.message;
-            contactCell.mMessageLabel.hidden = NO;
-//            
-//            if ([message.type integerValue] == [FORWARD_STATUS integerValue])
-//                contactCell.mLastMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:@"mobicom_social_forward.png"];
-//            else if ([message.type integerValue] == [REPLIED_STATUS integerValue])
-//                contactCell.mLastMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:@"mobicom_social_reply.png"];
-//            
-            BOOL isToday = [ALUtilityClass isToday:[NSDate dateWithTimeIntervalSince1970:[message.createdAtTime doubleValue]/1000]];
-            contactCell.mTimeLabel.text = [message getCreatedAtTime:isToday];
-            
-            [self displayAttachmentMediaType:message andContactCell:contactCell];
-        
+            [contactCell updateWithMessage:message withColourDictionary:self.colourDictionary];
         }break;
                 
         default:
@@ -752,175 +769,6 @@ static int const MQTT_MAX_RETRY = 3;
     }
     [contactCell setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
     return contactCell;
-}
-
-
-//==============================================================================================================================================
-#pragma mark - update profile user image
-//==============================================================================================================================================
-
--(void)updateProfileImageAndUnreadCount:(ALContactCell *)contactCell WithChannel:(ALChannel*) alChannel orChannelId:(ALContact*)contact{
-  
-    UILabel* nameIcon = (UILabel*)[contactCell viewWithTag:102];
-    nameIcon.textColor = [UIColor whiteColor];
-
-    ALContactService * contactService = [ALContactService new];
-    contactCell.mUserImageView.backgroundColor = [UIColor clearColor];
-    if(alChannel)
-    {
-        
-        if(alChannel.type == GROUP_OF_TWO)
-        {
-            NSString * receiverId =  [alChannel getReceiverIdInGroupOfTwo];
-            ALContact* grpContact = [contactService loadContactByKey:@"userId" value:receiverId];
-            contactCell.mUserNameLabel.text = [grpContact getDisplayName];
-            contactCell.onlineImageMarker.hidden = (!grpContact.connected);
-            if(grpContact.contactImageUrl.length)
-            {
-                ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-                [messageClientService downloadImageUrlAndSet:grpContact.contactImageUrl imageView:contactCell.mUserImageView defaultImage:nil];
-                contactCell.imageNameLabel.hidden = YES;
-                nameIcon.hidden=YES;
-            }
-            else
-            {
-                nameIcon.hidden = NO;
-                [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
-                contactCell.mUserImageView.backgroundColor = [ALColorUtility getColorForAlphabet:[grpContact getDisplayName] colorCodes: self.colourDictionary];
-                [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[grpContact getDisplayName]]];
-            }
-            
-        }
-        else
-        {
-        
-            NSString  *placeHolderImage ;
-            if (alChannel.type == BROADCAST)
-            {
-                placeHolderImage = @"broadcast_group.png";
-                [contactCell.mUserImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"broadcast_group.png"]];
-            }else{
-                placeHolderImage = @"applozic_group_icon.png";
-                [contactCell.mUserImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
-            }
-
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alChannel.channelImageURL imageView:contactCell.mUserImageView defaultImage:placeHolderImage];
-            
-            nameIcon.hidden = YES;
-            contactCell.mUserNameLabel.text = [alChannel name];
-            contactCell.onlineImageMarker.hidden = YES;
-            
-        }
-    }
-    else
-    {
-        contactCell.mUserNameLabel.text = [contact getDisplayName];
-        contactCell.onlineImageMarker.hidden = (!contact.connected);
-        if(contact.contactImageUrl.length)
-        {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:contact.contactImageUrl imageView:contactCell.mUserImageView defaultImage:@"ic_contact_picture_holo_light.png"];
-            contactCell.imageNameLabel.hidden = YES;
-            nameIcon.hidden= YES;
-        }
-        else
-        {
-            nameIcon.hidden = NO;
-            [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
-            contactCell.mUserImageView.backgroundColor = [ALColorUtility getColorForAlphabet:[contact getDisplayName] colorCodes:self.colourDictionary];
-            [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[contact getDisplayName]]];
-        }
-    }
-    
-    //for contact Id:
-    
-    //update unread count value
-    int count = (alChannel) ? alChannel.unreadCount.intValue :contact.unreadCount.intValue;
-    if(count==0)
-    {
-        contactCell.unreadCountLabel.text = @"";
-        [contactCell.unreadCountLabel setHidden:YES];
-    }
-    else
-    {
-        [contactCell.unreadCountLabel setHidden:NO];
-        contactCell.unreadCountLabel.text=[NSString stringWithFormat:@"%i",count];
-
-    }
-    
-    //online status
-    ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
-    BOOL isUserDeleted = [contactDBService isUserDeleted:contact.userId];
-
-    if( contact && ( contact.block || contact.blockBy || isUserDeleted  || ![ALApplozicSettings getVisibilityForOnlineIndicator]) )
-    {
-        [contactCell.onlineImageMarker setHidden:YES];
-    }
-    
-}
-
-/*********************************************  ATTACHMENT ICON & TITLE IN TABLE CELL ******************************************************/
-
--(void)displayAttachmentMediaType:(ALMessage *)message andContactCell:(ALContactCell *)contactCell
-{
-
-    
-    if( message.fileMeta || message.contentType == ALMESSAGE_CONTENT_LOCATION ){
-        contactCell.mMessageLabel.hidden = YES;
-        contactCell.imageMarker.hidden = NO;
-        contactCell.imageNameLabel.hidden = NO;
-        
-        if([message.fileMeta.contentType hasPrefix:@"image"])
-        {
-            //        contactCell.imageNameLabel.text = NSLocalizedString(@"MEDIA_TYPE_IMAGE", nil);
-            contactCell.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"image", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image", @"");
-            
-            contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"];
-        }
-        else if([message.fileMeta.contentType hasPrefix:@"video"])
-        {
-            //            contactCell.imageNameLabel.text = NSLocalizedString(@"MEDIA_TYPE_VIDEO", nil);
-            contactCell.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"video", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Video", @"");
-            contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"];
-        }
-        else if (message.contentType == ALMESSAGE_CONTENT_LOCATION)   // location..
-        {
-            contactCell.mMessageLabel.hidden = YES;
-            contactCell.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"location", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Location", @"");
-            contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"location_filled.png"];
-        }
-        else if (message.fileMeta.contentType)           //other than video and image
-        {
-            //        contactCell.imageNameLabel.text = NSLocalizedString(@"MEDIA_TYPE_ATTACHMENT", nil);
-            contactCell.imageNameLabel.text =  NSLocalizedStringWithDefaultValue(@"attachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Attachment", @"");
-            contactCell.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_attachment.png"];
-        }
-        else
-        {
-            contactCell.imageNameLabel.hidden = YES;
-            contactCell.imageMarker.hidden = YES;
-            contactCell.mMessageLabel.hidden = NO;
-        }
-        UIColor *subTextColour = [ALApplozicSettings getMessageSubtextColour];
-        contactCell.imageNameLabel.textColor = subTextColour;
-        contactCell.mMessageLabel.textColor = subTextColour;
-        contactCell.imageMarker.tintColor = subTextColour;
-    }
-    else if (message.contentType == AV_CALL_CONTENT_THREE)
-    {
-        contactCell.mMessageLabel.hidden = YES;
-        contactCell.imageNameLabel.hidden = NO;
-        contactCell.imageMarker.hidden = NO;
-        contactCell.imageNameLabel.text = [message getVOIPMessageText];
-        contactCell.imageMarker.image = [ALUtilityClass getVOIPMessageImage:message];
-    }
-    else
-    {
-        contactCell.imageNameLabel.hidden = YES;
-        contactCell.imageMarker.hidden = YES;
-        contactCell.mMessageLabel.hidden = NO;
-    }
 }
 
 //==============================================================================================================================================
@@ -1362,6 +1210,15 @@ static int const MQTT_MAX_RETRY = 3;
     }
 }
 
+-(void)keybordDidHideNotification {
+
+    if ([self.navigationController.visibleViewController isKindOfClass:self.class]
+        && [ALApplozicSettings isMessageSearchEnabled]
+        && [self.searchController.searchBar.text isEqualToString:@""]) {
+        self.navigationItem.titleView = nil;
+        [self setupNavigationButtons];
+    }
+}
 -(void)callLastSeenStatusUpdate
 {
     [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray * userDetailArray)
@@ -1727,6 +1584,28 @@ static int const MQTT_MAX_RETRY = 3;
         [self.mActivityIndicator stopAnimating];
         [self.mTableView setUserInteractionEnabled:YES];
     }
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    if (searchBar.text.length) {
+        [self.searchResultVC searchWithKey:searchBar.text];
+    }
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+
+    if ([searchText isEqual: @""]) {
+        [self.searchResultVC clearAndShowEmptyView];
+    }
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+
+    [self.searchResultVC clearAndShowEmptyView];
+    [self.customSearchBar show:NO];
+    [self.customSearchBar resignFirstResponder];
+    self.navigationItem.titleView = nil;
+    [self setupNavigationButtons];
 }
 
 @end

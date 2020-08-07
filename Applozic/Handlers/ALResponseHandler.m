@@ -8,6 +8,7 @@
 #import "ALResponseHandler.h"
 #import "NSData+AES.h"
 #import "ALUserDefaultsHandler.h"
+#import "ALAuthService.h"
 
 @implementation ALResponseHandler
 
@@ -153,6 +154,42 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
     [nsurlSessionDataTask resume];
 }
 
+
++(void)authenticateAndProcessRequest:(NSMutableURLRequest *)theRequest
+                              andTag:(NSString *)tag
+               WithCompletionHandler:(void (^)(id, NSError *))completion {
+
+    [self authenticateRequest:theRequest WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+
+        [self processRequest:urlRequest
+                      andTag:tag
+       WithCompletionHandler:^(id theJson, NSError *theError) {
+            completion(theJson, theError);
+        }];
+    }];
+}
+
++(void)authenticateRequest:(NSMutableURLRequest *)request
+            WithCompletion:(void (^)(NSMutableURLRequest *urlRequest, NSError *error)) completion {
+
+    ALAuthService * authService = [[ALAuthService alloc] init];
+    [authService validateAuthTokenAndRefreshWithCompletion:^(NSError *error) {
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+        NSMutableURLRequest *urlRequest = request;
+        NSString *authToken = [ALUserDefaultsHandler getAuthToken];
+        if (authToken) {
+            [urlRequest addValue:[ALUserDefaultsHandler getAuthToken] forHTTPHeaderField:@"X-Authorization"];
+        }
+        completion(urlRequest, nil);
+    }];
+}
 
 +(NSError *) errorWithDescription:(NSString *) reason
 {
