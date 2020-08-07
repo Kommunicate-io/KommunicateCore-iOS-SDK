@@ -12,7 +12,7 @@
 
 @interface ALAuthService : NSObject
 
--(void)decodeAndSaveToken:(NSString *)authToken;
+-(NSError *)decodeAndSaveToken:(NSString *)authToken;
 
 -(void) validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion;
 

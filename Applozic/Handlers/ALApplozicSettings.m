@@ -524,13 +524,13 @@
     return   [userDefaults boolForKey:AL_NO_MORE_CONVERSATION_VISIBILITY];
 }
 
-+(void)setCustomNavRightButtonMsgVC:(BOOL)flag
++(void)enableRefreshChatButtonInMsgVc:(BOOL)flag
 {   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
     [userDefaults setBool:flag forKey:AL_CUSTOM_NAV_RIGHT_BUTTON_MSGVC];
     [userDefaults synchronize];
 }
 
-+(BOOL)getCustomNavRightButtonMsgVC
++(BOOL)isRefreshChatButtonEnabledInMsgVc
 {   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
     return   [userDefaults boolForKey:AL_CUSTOM_NAV_RIGHT_BUTTON_MSGVC];
 }
@@ -1872,6 +1872,17 @@
 +(BOOL)isGroupListingTabDisabled {
     NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
     return [userDefaults boolForKey:AL_GROUPS_LIST_TAB];
+}
+
++(void)enableMessageSearch:(BOOL)flag {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    [userDefaults setBool:flag forKey:AL_MESSAGE_SEARCH];
+    [userDefaults synchronize];
+}
+
++(BOOL)isMessageSearchEnabled {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    return [userDefaults boolForKey:AL_MESSAGE_SEARCH];
 }
 
 @end

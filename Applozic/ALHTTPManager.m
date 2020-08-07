@@ -33,10 +33,9 @@ static dispatch_semaphore_t semaphore;
 
     if(self->_downloadTask != nil){
         [self->_buffer appendData:data];
-
         if(!self->_downloadTask.isThumbnail){
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self.attachmentProgressDelegate onUpdateBytesDownloaded:self->_buffer.length withMessage:[messageDatabaseService getMessageByKey:self->_downloadTask.identifier]];
+                [self.attachmentProgressDelegate onUpdateBytesDownloaded:self->_buffer.length withMessage:self->_downloadTask.message];
             });
         }
 
@@ -103,27 +102,17 @@ static dispatch_semaphore_t semaphore;
     ALMessageDBService *messageDatabaseService = [[ALMessageDBService alloc]init];
 
     if(error == nil && [task.response isKindOfClass:[NSHTTPURLResponse class]] && [(NSHTTPURLResponse *)task.response statusCode] == 200){
-            if( self->_downloadTask != nil){
+        if( self->_downloadTask != nil){
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                ALMessage *almessage = [messageDatabaseService writeDataAndUpdateMessageInDb:self.buffer withMessage:self->_downloadTask.message withFileFlag:!self->_downloadTask.isThumbnail];
 
-                if(self->_downloadTask.isThumbnail){
-                    ALMessage *almessage =  [messageDatabaseService  writeDataAndUpdateMessageInDb:self.buffer withMessageKey:self->_downloadTask.identifier withFileFlag:NO];
-
-                    if(self.attachmentProgressDelegate){
-                        dispatch_async(dispatch_get_main_queue(), ^(void){
-                            [self.attachmentProgressDelegate onDownloadCompleted:almessage];
-                        });
-                    }
-                }else{
-                    ALMessage *almessage =  [messageDatabaseService writeDataAndUpdateMessageInDb:self.buffer withMessageKey:self->_downloadTask.identifier withFileFlag:YES];
-                    if(self.attachmentProgressDelegate){
-                        dispatch_async(dispatch_get_main_queue(), ^(void){
-                            [self.attachmentProgressDelegate onDownloadCompleted:almessage];
-                        });
-                    }
+                if (self.attachmentProgressDelegate) {
+                    [self.attachmentProgressDelegate onDownloadCompleted:almessage];
                 }
                 self.buffer = nil;
                 [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:session];
-            }
+            });
+        }
     }else{
         [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:session];
         if(error){
@@ -134,7 +123,7 @@ static dispatch_semaphore_t semaphore;
         self.buffer = nil;
         if(self->_downloadTask != nil && self.attachmentProgressDelegate){
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self.attachmentProgressDelegate onDownloadFailed:[messageDatabaseService getMessageByKey:self->_downloadTask.identifier]];
+                [self.attachmentProgressDelegate onDownloadFailed:self->_downloadTask.message];
             });
         }
     }
@@ -172,107 +161,122 @@ static dispatch_semaphore_t semaphore;
     }
 
     ALSLog(ALLoggerSeverityInfo, @"FILE_PATH : %@",filePath);
-    NSMutableURLRequest * request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
+    NSMutableURLRequest *request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
 
-    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-            //Create boundary, it can be anything
-            NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
-            // set Content-Type in HTTP header
-            NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-            [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
-            // post body
-            NSMutableData *body = [NSMutableData data];
-            //Populate a dictionary with all the regular values you would like to send.
-            NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-            // add params (all params are strings)
-            for (NSString *param in parameters) {
-                [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-                [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", param] dataUsingEncoding:NSUTF8StringEncoding]];
-                [body appendData:[[NSString stringWithFormat:@"%@\r\n", [parameters objectForKey:param]] dataUsingEncoding:NSUTF8StringEncoding]];
+    [ALResponseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error)  {
+
+        if (error) {
+            if(self.attachmentProgressDelegate){
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    message.inProgress = NO;
+                    message.isUploadFailed = YES;
+                    [self.attachmentProgressDelegate onUploadFailed:message];
+                });
             }
+            return;
+        }
 
-            NSString* FileParamConstant;
-            if(ALApplozicSettings.isS3StorageServiceEnabled){
-                FileParamConstant = @"file";
-            }else{
-                FileParamConstant = @"files[]";
-            }
-            NSData *imageData = [[NSData alloc]initWithContentsOfFile:filePath];
-            ALSLog(ALLoggerSeverityInfo, @"Attachment data length: %f",imageData.length/1024.0);
-            //Assuming data is not nil we add this to the multipart form
-            if (imageData)
-            {
-                [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-                [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant,message.fileMeta.name] dataUsingEncoding:NSUTF8StringEncoding]];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+                //Create boundary, it can be anything
+                NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
+                // set Content-Type in HTTP header
+                NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+                [urlRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
+                // post body
+                NSMutableData *body = [NSMutableData data];
+                //Populate a dictionary with all the regular values you would like to send.
+                NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
+                // add params (all params are strings)
+                for (NSString *param in parameters) {
+                    [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+                    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", param] dataUsingEncoding:NSUTF8StringEncoding]];
+                    [body appendData:[[NSString stringWithFormat:@"%@\r\n", [parameters objectForKey:param]] dataUsingEncoding:NSUTF8StringEncoding]];
+                }
 
-                [body appendData:[[NSString stringWithFormat:@"Content-Type:%@\r\n\r\n", message.fileMeta.contentType] dataUsingEncoding:NSUTF8StringEncoding]];
-                [body appendData:imageData];
-                [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-            }
-            //Close off the request with the boundary
-            [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            // setting the body of the post to the request
-            [request setHTTPBody:body];
-            // set URL
-            [request setURL:[NSURL URLWithString:uploadURL]];
+                NSString* FileParamConstant;
+                if(ALApplozicSettings.isS3StorageServiceEnabled){
+                    FileParamConstant = @"file";
+                }else{
+                    FileParamConstant = @"files[]";
+                }
+                NSData *imageData = [[NSData alloc]initWithContentsOfFile:filePath];
+                ALSLog(ALLoggerSeverityInfo, @"Attachment data length: %f",imageData.length/1024.0);
+                //Assuming data is not nil we add this to the multipart form
+                if (imageData)
+                {
+                    [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+                    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant,message.fileMeta.name] dataUsingEncoding:NSUTF8StringEncoding]];
 
-            NSMutableArray * nsURLSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+                    [body appendData:[[NSString stringWithFormat:@"Content-Type:%@\r\n\r\n", message.fileMeta.contentType] dataUsingEncoding:NSUTF8StringEncoding]];
+                    [body appendData:imageData];
+                    [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+                }
+                //Close off the request with the boundary
+                [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+                // setting the body of the post to the request
+                [urlRequest setHTTPBody:body];
+                // set URL
+                [urlRequest setURL:[NSURL URLWithString:uploadURL]];
 
-            for(NSURLSession *session in nsURLSessionArray ){
-                NSURLSessionConfiguration *config = session.configuration;
-                NSArray *array =  [config.identifier componentsSeparatedByString:@","];
-                if(array && array.count>1){
-                    //Check if message key are same and first argumnent is not THUMBNAIL
-                    if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqualToString: message.key]){
-                        ALSLog(ALLoggerSeverityInfo, @"Already present in upload file Queue returing for key %@",message.key);
-                        return;
+                NSMutableArray * nsURLSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+
+                for(NSURLSession *session in nsURLSessionArray ){
+                    NSURLSessionConfiguration *config = session.configuration;
+                    NSArray *array =  [config.identifier componentsSeparatedByString:@","];
+                    if(array && array.count>1){
+                        //Check if message key are same and first argumnent is not THUMBNAIL
+                        if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqualToString: message.key]){
+                            ALSLog(ALLoggerSeverityInfo, @"Already present in upload file Queue returing for key %@",message.key);
+                            return;
+                        }
                     }
                 }
-            }
 
-            NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"FILE,%@",message.key]];
+                NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"FILE,%@",message.key]];
 
-            if(ALApplozicSettings.getShareExtentionGroup){
-                config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
-            }
+                if(ALApplozicSettings.getShareExtentionGroup){
+                    config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
+                }
 
-            NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
-            [self startSession: session withRequest: request];
-        });
-    }else{
-        ALSLog(ALLoggerSeverityError, @"<<< ERROR >>> :: FILE DO NOT EXIT AT GIVEN PATH");
-        if(self.attachmentProgressDelegate){
-
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self.attachmentProgressDelegate onUploadFailed:message];
+                NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
+                [self startSession: session withRequest: urlRequest];
             });
+        }else{
+            ALSLog(ALLoggerSeverityError, @"<<< ERROR >>> :: FILE DO NOT EXIT AT GIVEN PATH");
+            if(self.attachmentProgressDelegate){
+
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    message.inProgress = NO;
+                    message.isUploadFailed = YES;
+                    [self.attachmentProgressDelegate onUploadFailed:message];
+                });
+            }
         }
-    }
+    }];
 
 }
 
--(void) processDownloadForMessage:(ALMessage *) alMessage isAttachmentDownload:(BOOL) attachmentDownloadFlag {
+-(void) processDownloadForMessage:(ALMessage *) alMessage
+             isAttachmentDownload:(BOOL) attachmentDownloadFlag {
 
     ALDownloadTask * downloadTask = [[ALDownloadTask alloc]init];
-    downloadTask.identifier = alMessage.key;
     downloadTask.isThumbnail = !attachmentDownloadFlag;
+    downloadTask.message = alMessage;
     self.downloadTask = downloadTask;
-
-    ALMessageDBService *messageDatabase = [[ALMessageDBService alloc]init];
 
     NSMutableArray * nsURLSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
 
-    for(NSURLSession *session in nsURLSessionArray){
+    for (NSURLSession *session in nsURLSessionArray) {
         NSURLSessionConfiguration *config = session.configuration;
         NSArray *array =  [config.identifier componentsSeparatedByString:@","];
-        if(array && array.count>1){
+        if (array && array.count>1) {
             //Check if the currently  its called for file download or THUMBNAIL with messageKey
             if(attachmentDownloadFlag && [array[0] isEqualToString:@"FILE"] &&
                [array[1] isEqualToString:alMessage.key]){
                 ALSLog(ALLoggerSeverityInfo, @"Already present in file Download Queue returing for  key %@",alMessage.key);
                 return;
-            }else if (!attachmentDownloadFlag &&  [array[0] isEqualToString:@"THUMBNAIL"] && [array[1] isEqualToString:alMessage.key]){
+            } else if (!attachmentDownloadFlag &&  [array[0] isEqualToString:@"THUMBNAIL"] && [array[1] isEqualToString:alMessage.key]) {
                 ALSLog(ALLoggerSeverityInfo, @"Already present in Download Thumbnail download Queue returing for  key %@",alMessage.key);
                 return;
             }
@@ -296,36 +300,33 @@ static dispatch_semaphore_t semaphore;
     NSData * data =  [[NSData alloc] initWithContentsOfFile:filePath];
     ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
     if(data){
-        DB_Message * messageEntity = (DB_Message*)[messageDatabase getMessageByKey:@"key" value:alMessage.key];
-        if(attachmentDownloadFlag){
-            messageEntity.inProgress = [NSNumber numberWithBool:NO];
-            messageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
-            messageEntity.filePath = fileName;
-        }else{
-            messageEntity.fileMetaInfo.thumbnailFilePath = fileName;
-        }
-
-        NSError * error = [[ALDBHandler sharedInstance] saveContext];
-        if (error) {
-            alMessage = [messageDatabase createMessageEntity:messageEntity];
-            alMessage.isUploadFailed = YES;
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self.attachmentProgressDelegate onDownloadFailed:alMessage];
-            });
-        } else {
-            alMessage =  [messageDatabase createMessageEntity:messageEntity];
-            if(self.attachmentProgressDelegate){
-                dispatch_async(dispatch_get_main_queue(), ^(void){
+        ALMessageDBService * messageDbService = [[ALMessageDBService alloc] init];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            DB_Message * messageEntity = [self updateDbMessageWithKey:alMessage.key withFileName:fileName withAttachmentFlag:attachmentDownloadFlag];
+            if (messageEntity) {
+                self.downloadTask.message = [messageDbService createMessageEntity:messageEntity];
+                if(self.attachmentProgressDelegate) {
+                    [self.attachmentProgressDelegate onDownloadCompleted:self.downloadTask.message];
+                }
+            } else {
+                if (attachmentDownloadFlag) {
+                    alMessage.inProgress = NO;
+                    alMessage.isUploadFailed = NO;
+                    alMessage.imageFilePath = fileName;
+                } else{
+                    alMessage.fileMeta.thumbnailFilePath = fileName;
+                }
+                self.downloadTask.message = alMessage;
+                if (self.attachmentProgressDelegate) {
                     [self.attachmentProgressDelegate onDownloadCompleted:alMessage];
-                });
+                }
             }
-        }
+        });
     }else{
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-            if(attachmentDownloadFlag){
+            if (attachmentDownloadFlag) {
                 [messageClientService downloadImageUrl:alMessage.fileMeta.blobKey withCompletion:^(NSString *fileURL, NSError *error) {
-                    if(error)
-                    {
+                    if (error) {
                         ALSLog(ALLoggerSeverityError, @"ERROR GETTING DOWNLOAD URL : %@", error);
                         if(self.attachmentProgressDelegate){
                             dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -336,23 +337,28 @@ static dispatch_semaphore_t semaphore;
                     }
                     ALSLog(ALLoggerSeverityInfo, @"ATTACHMENT DOWNLOAD URL : %@", fileURL);
 
-                    NSMutableURLRequest * theRequest;
-                    if(ALApplozicSettings.isS3StorageServiceEnabled || ALApplozicSettings.isGoogleCloudServiceEnabled) {
-                        theRequest = [ALRequestHandler createGETRequestWithUrlStringWithoutHeader:fileURL paramString:nil];
-                    }else{
-                        theRequest = [ALRequestHandler createGETRequestWithUrlString: fileURL paramString:nil];
-                    }
+                    [self createcreateGETRequestForAttachmentDownloadWithUrlString:fileURL withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
-                    NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"FILE,%@",alMessage.key]];
+                        if (error) {
+                            if(self.attachmentProgressDelegate){
+                                dispatch_async(dispatch_get_main_queue(), ^(void){
+                                    [self.attachmentProgressDelegate onDownloadFailed:alMessage];
+                                });
+                            }
+                            return;
+                        }
+                        NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"FILE,%@",alMessage.key]];
 
-                    if(ALApplozicSettings.getShareExtentionGroup){
-                        config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
-                    }
-                    NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
-                    [self startSession: session withRequest:theRequest];
+                        if (ALApplozicSettings.getShareExtentionGroup) {
+                            config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
+                        }
+                        NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
+                        [self startSession: session withRequest:theRequest];
+                    }];
                 }];
             } else {
-                [messageClientService downloadImageThumbnailUrl:alMessage withCompletion:^(NSString *fileURL, NSError *error) {
+
+                [messageClientService downloadImageThumbnailUrl:alMessage.fileMeta.thumbnailUrl blobKey:alMessage.fileMeta.thumbnailBlobKey completion:^(NSString *fileURL, NSError *error) {
 
                     ALSLog(ALLoggerSeverityInfo, @"Thumbnail DOWNLOAD URL : %@", fileURL);
                     if(error == nil){
@@ -363,17 +369,17 @@ static dispatch_semaphore_t semaphore;
                         NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"THUMBNAIL,%@", alMessage.key]];
                         config.HTTPMaximumConnectionsPerHost = 2;
 
-                        if(ALApplozicSettings.getShareExtentionGroup){
+                        if (ALApplozicSettings.getShareExtentionGroup) {
                             config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
                         }
 
                         NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
 
                         [self startSession: session withRequest:urlRequest];
-                    }else{
+                    } else {
                         ALSLog(ALLoggerSeverityError, @"ERROR  DOWNLOAD Thumbnail : %@", error.description);
-                        if(self.attachmentProgressDelegate){
-                            dispatch_async(dispatch_get_main_queue(), ^(void){
+                        if (self.attachmentProgressDelegate) {
+                            dispatch_async(dispatch_get_main_queue(), ^(void) {
                                 [self.attachmentProgressDelegate onDownloadFailed:alMessage];
                             });
                         }
@@ -385,7 +391,8 @@ static dispatch_semaphore_t semaphore;
     }
 }
 
--(void) startSession: (NSURLSession *) session withRequest: (NSURLRequest *) urlRequest {
+-(void) startSession: (NSURLSession *) session
+         withRequest: (NSURLRequest *) urlRequest {
     [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:session];
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     if ([[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] containsObject:session]) {
@@ -397,53 +404,107 @@ static dispatch_semaphore_t semaphore;
     }
 }
 
--(void)uploadProfileImage:(UIImage *)profileImage withFilePath:(NSString *)filePath uploadURL:(NSString *)uploadURL withCompletion:(void(^)(NSData * data,NSError *error)) completion{
+-(void)uploadProfileImage:(UIImage *)profileImage
+             withFilePath:(NSString *)filePath uploadURL:(NSString *)uploadURL withCompletion:(void(^)(NSData * data,NSError *error))completion {
 
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        NSError *fileError = [NSError errorWithDomain:@"Applozic"
+                                                 code:errSSLInternal
+                                             userInfo:@{NSLocalizedDescriptionKey : @"File does not exist "}];
+
+        completion(nil, fileError);
         return;
     }
-    NSMutableURLRequest * request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
+    NSMutableURLRequest *request = [ALRequestHandler createPOSTRequestWithUrlString:uploadURL paramString:nil];
 
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-        //Create boundary, it can be anything
-        NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
-        // set Content-Type in HTTP header
-        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-        [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
-        // post body
-        NSMutableData *body = [NSMutableData data];
-        NSString *FileParamConstant = @"file";
-        NSData *imageData = [[NSData alloc] initWithContentsOfFile:filePath];
-        ALSLog(ALLoggerSeverityInfo, @"IMAGE_DATA :: %f",imageData.length/1024.0);
+    [ALResponseHandler authenticateRequest:request WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
 
-        //Assuming data is not nil we add this to the multipart form
-        if (imageData)
-        {
-
-            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant, @"imge_123_profile"] dataUsingEncoding:NSUTF8StringEncoding]];
-
-            [body appendData:[[NSString stringWithFormat:@"Content-Type:%@\r\n\r\n", @"image/jpeg"] dataUsingEncoding:NSUTF8StringEncoding]];
-            [body appendData:imageData];
-            [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        if (error) {
+            completion(nil, error);
+            return;
         }
-        //Close off the request with the boundary
-        [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        // setting the body of the post to the request
-        [request setHTTPBody:body];
-        // set URL
-        [request setURL:[NSURL URLWithString:uploadURL]];
 
-        NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+            //Create boundary, it can be anything
+            NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
+            // set Content-Type in HTTP header
+            NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+            [urlRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
+            // post body
+            NSMutableData *body = [NSMutableData data];
+            NSString *FileParamConstant = @"file";
+            NSData *imageData = [[NSData alloc] initWithContentsOfFile:filePath];
+            ALSLog(ALLoggerSeverityInfo, @"IMAGE_DATA :: %f",imageData.length/1024.0);
+
+            //Assuming data is not nil we add this to the multipart form
+            if (imageData) {
+
+                [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+                [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant, @"imge_123_profile"] dataUsingEncoding:NSUTF8StringEncoding]];
+
+                [body appendData:[[NSString stringWithFormat:@"Content-Type:%@\r\n\r\n", @"image/jpeg"] dataUsingEncoding:NSUTF8StringEncoding]];
+                [body appendData:imageData];
+                [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+            }
+            //Close off the request with the boundary
+            [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            // setting the body of the post to the request
+            [urlRequest setHTTPBody:body];
+            // set URL
+            [urlRequest setURL:[NSURL URLWithString:uploadURL]];
+
+            NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
 
 
-        NSURLSessionDataTask *nsurlSessionDataTask  = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                completion(data,error);
-            });
-        }];
-        [nsurlSessionDataTask resume];
-    });
+            NSURLSessionDataTask *nsurlSessionDataTask  = [session dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    completion(data,error);
+                });
+            }];
+            [nsurlSessionDataTask resume];
+        });
+    }];
 }
 
+-(DB_Message *)updateDbMessageWithKey:(NSString *)key
+                         withFileName:(NSString *)fileName
+                   withAttachmentFlag:(BOOL) isAttachmentDownload {
+    DB_Message * messageEntity = nil;
+    @try {
+        ALMessageDBService * messageDatabase = [[ALMessageDBService alloc] init];
+        messageEntity = (DB_Message*)[messageDatabase getMessageByKey:@"key" value:key];
+        if (isAttachmentDownload) {
+            messageEntity.inProgress = [NSNumber numberWithBool:NO];
+            messageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
+            messageEntity.filePath = fileName;
+        } else{
+            messageEntity.fileMetaInfo.thumbnailFilePath = fileName;
+        }
+        [[ALDBHandler sharedInstance] saveContext];
+    }
+    @catch (NSException *exception) {
+        ALSLog(ALLoggerSeverityError, @"NSException while update db message: %@",exception.reason);
+    }@finally {
+        return messageEntity;
+    }
+}
+
+-(void) createcreateGETRequestForAttachmentDownloadWithUrlString:(NSString *)fileURL withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
+
+    NSMutableURLRequest * theRequest;
+    if (ALApplozicSettings.isS3StorageServiceEnabled ||
+        ALApplozicSettings.isGoogleCloudServiceEnabled) {
+        theRequest = [ALRequestHandler createGETRequestWithUrlStringWithoutHeader:fileURL paramString:nil];
+        completion(theRequest, nil);
+    } else {
+        NSMutableURLRequest *theRequest =  [ALRequestHandler createGETRequestWithUrlString: fileURL paramString:nil];
+        [ALResponseHandler authenticateRequest:theRequest WithCompletion:^(NSMutableURLRequest *urlRequest, NSError *error) {
+            if (error) {
+                completion(nil, error);
+                return;
+            }
+            completion(urlRequest, nil);
+        }];
+    }
+}
 @end

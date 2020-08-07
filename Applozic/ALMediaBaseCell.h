@@ -28,7 +28,7 @@
 @protocol ALMediaBaseCellDelegate <NSObject>
 
 -(void) downloadRetryButtonActionDelegate:(int) index andMessage:(ALMessage *) message;
--(void) thumbnailDownload:(NSString *) key;
+-(void) thumbnailDownloadWithMessageObject:(ALMessage *) message;
 -(void) stopDownloadForIndex:(int)index andMessage:(ALMessage *)message;
 -(void) showImagePreviewWithFilePath:(NSString *) filePath;
 -(void) deleteMessageFromView:(ALMessage *)message;

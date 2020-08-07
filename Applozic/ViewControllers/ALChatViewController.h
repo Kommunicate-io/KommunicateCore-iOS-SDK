@@ -46,6 +46,7 @@ extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
 @property (nonatomic, strong) NSNumber * conversationId;
 @property (strong, nonatomic) ALMessage * alMessage;
 @property (nonatomic, strong) NSString * contactsGroupId;
+@property (nonatomic) BOOL isSearch;
 
 @property (nonatomic) BOOL isVisible;
 

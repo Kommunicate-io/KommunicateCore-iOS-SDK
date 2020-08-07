@@ -21,8 +21,6 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-@property (strong, nonatomic) NSPersistentContainer *persistentContainer;
-
 - (NSManagedObjectContext *)privateContext;
 
 - (NSError *)saveContext;
@@ -30,5 +28,22 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 +(ALDBHandler *) sharedInstance;
 
 - (void)savePrivateAndMainContext:(NSManagedObjectContext*)context
-                        completion:(void (^)(NSError*error))completion;
+                       completion:(void (^)(NSError*error))completion;
+
+-(NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError;
+
+-(NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name;
+
+-(NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest;
+
+-(NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID;
+
+-(NSManagedObject *)insertNewObjectForEntityForName:(NSString *) entityName;
+
+-(NSManagedObject *)insertNewObjectForEntityForName:(NSString *) entityName withManagedObjectContext:(NSManagedObjectContext *) context;
+
+-(void) deleteObject:(NSManagedObject *) managedObject;
+
+-(NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError: (NSError **)fetchError;
+
 @end

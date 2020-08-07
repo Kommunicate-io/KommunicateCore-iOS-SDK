@@ -73,12 +73,6 @@
 
     self.message = [self getStringFromJsonValue:messageJson[@"message"]];
 
-
-    // sent
-
-//    self.sent = [self getBoolFromJsonValue:messageJson[@"sent"]];
-
-
     // sendToDevice
 
     self.sendToDevice = [self getBoolFromJsonValue:messageJson[@"sendToDevice"]];
@@ -101,8 +95,7 @@
 
     // source
 
-//    self.source = [self getStringFromJsonValue:messageJson[@"source"]];
-     self.source = [self getShortFromJsonValue:messageJson[@"source"]];
+    self.source = [self getShortFromJsonValue:messageJson[@"source"]];
 
 
     // contactIds
@@ -138,25 +131,25 @@
 
     // file meta info
 
-     NSDictionary * fileMetaDict = messageJson[@"fileMeta"];
+    NSDictionary * fileMetaDict = messageJson[@"fileMeta"];
 
-            if ([self validateJsonClass:fileMetaDict]) {
+    if ([self validateJsonClass:fileMetaDict]) {
 
-                ALFileMetaInfo * theFileMetaInfo = [ALFileMetaInfo new];
+        ALFileMetaInfo * theFileMetaInfo = [ALFileMetaInfo new];
 
-                theFileMetaInfo.blobKey = [self getStringFromJsonValue:fileMetaDict[@"blobKey"]];
-                theFileMetaInfo.thumbnailBlobKey = [self getStringFromJsonValue:fileMetaDict[@"thumbnailBlobKey"]];
-                theFileMetaInfo.contentType = [self getStringFromJsonValue:fileMetaDict[@"contentType"]];
-                theFileMetaInfo.createdAtTime = [self getNSNumberFromJsonValue:fileMetaDict[@"createdAtTime"]];
-                theFileMetaInfo.key = [self getStringFromJsonValue:fileMetaDict[@"key"]];
-                theFileMetaInfo.name = [self getStringFromJsonValue:fileMetaDict[@"name"]];
-                theFileMetaInfo.userKey = [self getStringFromJsonValue:fileMetaDict[@"userKey"]];
-                theFileMetaInfo.size = [self getStringFromJsonValue:fileMetaDict[@"size"]];
-                theFileMetaInfo.thumbnailUrl = [self getStringFromJsonValue:fileMetaDict[@"thumbnailUrl"]];
-                theFileMetaInfo.url = [self getStringFromJsonValue:fileMetaDict[@"url"]];
+        theFileMetaInfo.blobKey = [self getStringFromJsonValue:fileMetaDict[@"blobKey"]];
+        theFileMetaInfo.thumbnailBlobKey = [self getStringFromJsonValue:fileMetaDict[@"thumbnailBlobKey"]];
+        theFileMetaInfo.contentType = [self getStringFromJsonValue:fileMetaDict[@"contentType"]];
+        theFileMetaInfo.createdAtTime = [self getNSNumberFromJsonValue:fileMetaDict[@"createdAtTime"]];
+        theFileMetaInfo.key = [self getStringFromJsonValue:fileMetaDict[@"key"]];
+        theFileMetaInfo.name = [self getStringFromJsonValue:fileMetaDict[@"name"]];
+        theFileMetaInfo.userKey = [self getStringFromJsonValue:fileMetaDict[@"userKey"]];
+        theFileMetaInfo.size = [self getStringFromJsonValue:fileMetaDict[@"size"]];
+        theFileMetaInfo.thumbnailUrl = [self getStringFromJsonValue:fileMetaDict[@"thumbnailUrl"]];
+        theFileMetaInfo.url = [self getStringFromJsonValue:fileMetaDict[@"url"]];
 
-                self.fileMeta = theFileMetaInfo;
-            }
+        self.fileMeta = theFileMetaInfo;
+    }
 
     self.deleted = NO;
 
@@ -212,7 +205,6 @@
 
 -(NSString *)getCreatedAtTimeChat:(BOOL)today {
 
-   // NSString *formattedStr = today?@"hh:mm a":@"dd MMM hh:mm a";
     NSString *formattedStr = @"hh:mm a";
     NSString *formattedDateStr = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedStr];
 
@@ -256,26 +248,35 @@
             && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:ALUserDefaultsHandler.getUserId]);
 }
 
--(NSString*)getNotificationText
-{
+-(NSString*)getLastMessage {
 
-    if(self.contentType == ALMESSAGE_CONTENT_LOCATION)
-    {
+    if (self.contentType == ALMESSAGE_CONTENT_LOCATION) {
         return NSLocalizedStringWithDefaultValue(@"location", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Location", @"");
-
     }
-    else if(self.contentType == ALMESSAGE_CONTENT_VCARD)
-    {
+
+    if (self.contentType == ALMESSAGE_CONTENT_VCARD) {
         return NSLocalizedStringWithDefaultValue(@"contact", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Contact", @"");
     }
-    if(self.message && ![self.message isEqualToString:@""])
-    {
-        return self.message;
+
+    if (self.contentType == ALMESSAGE_CONTENT_AUDIO) {
+        return NSLocalizedStringWithDefaultValue(@"audio", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Audio", @"");
     }
-    else
-    {
+
+    if (self.contentType == ALMESSAGE_CONTENT_CAMERA_RECORDING) {
+        return NSLocalizedStringWithDefaultValue(@"video", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Video", @"");
+    }
+
+    if (self.contentType == ALMESSAGE_CONTENT_ATTACHMENT
+        || self.fileMeta != nil
+        || self.imageFilePath != nil) {
         return NSLocalizedStringWithDefaultValue(@"attachment", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Attachment", @"");
     }
+    if (self.message
+        && ![self.message isEqualToString:@""]) {
+        return self.message;
+    }
+
+    return @"Message";
 }
 
 
@@ -287,28 +288,23 @@
     }
 
     NSData * data = [string dataUsingEncoding:NSUTF8StringEncoding];
-//    NSString * error;
     NSPropertyListFormat format;
     NSMutableDictionary * metaDataDictionary;
-//    NSMutableDictionary * metaDataDictionary = [NSPropertyListSerialization
-//                          propertyListFromData:data
-//                          mutabilityOption:NSPropertyListImmutable
-//                          format:&format
-//                          errorDescription:&error];
+
+    if (data) {
+        return nil;
+    }
+
     @try
     {
         NSError * error;
         metaDataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
-                                                                                     format:&format
-                                                                                      error:&error];
-        if(!metaDataDictionary)
-        {
-//            ALSLog(ALLoggerSeverityError, @"ERROR: COULD NOT PARSE META-DATA : %@", error.description);
-        }
+                                                                        format:&format
+                                                                         error:&error];
     }
     @catch(NSException * exp)
     {
-//         NSLog(@"METADATA_DICTIONARY_EXCEPTION :: %@", exp.description);
+        //         NSLog(@"METADATA_DICTIONARY_EXCEPTION :: %@", exp.description);
     }
 
     return metaDataDictionary;
@@ -356,8 +352,8 @@
 
 -(BOOL)isPushNotificationMessage
 {
-  return (self.metadata && [self.metadata valueForKey:@"category"] &&
-   [ [self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_PUSHNNOTIFICATION]);
+    return (self.metadata && [self.metadata valueForKey:@"category"] &&
+            [ [self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_PUSHNNOTIFICATION]);
 }
 
 -(BOOL)isMessageCategoryHidden
@@ -409,6 +405,10 @@
 
 }
 
+-(BOOL)hasAttachment {
+    return self.fileMeta != nil || self.imageFilePath != nil;
+}
+
 -(BOOL)isSilentNotification{
 
     if( _metadata && [_metadata  valueForKey:@"show"] ){
@@ -458,8 +458,8 @@
         _source = AL_SOURCE_IOS;
         _metadata = builder.metadata; // EXAMPLE FOR META DATA
         if(builder.imageFilePath){
-        _imageFilePath = builder.imageFilePath.lastPathComponent;
-        _fileMeta = [self getFileMetaInfo];
+            _imageFilePath = builder.imageFilePath.lastPathComponent;
+            _fileMeta = [self getFileMetaInfo];
             //File Meta Creation
             _fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", builder.imageFilePath];
             if(builder.to){

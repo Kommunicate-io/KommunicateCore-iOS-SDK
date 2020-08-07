@@ -18,7 +18,6 @@
 - (id)initWithJSONString:(NSString *)syncMessageResponse {
     
     [self parseMessagseArray:syncMessageResponse];
-   // NSLog(@"message response from server....###%@" , syncMessageResponse );
     return self;
 }
 
@@ -71,12 +70,7 @@
     
     self.conversationPxyList = conversationProxyList;
     self.userDetailsList = theUserDetailArray;
-    
-    ALMessage * lastMessage = (ALMessage *)[theMessagesArray lastObject];
-    [ALUserDefaultsHandler setLastMessageListTime:lastMessage.createdAtTime];
-    
+
 }
-
-
 
 @end

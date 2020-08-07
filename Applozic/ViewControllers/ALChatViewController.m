@@ -293,7 +293,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
                                                  name:@"UPDATE_CHANNEL_NAME" object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setFreezeForAddingRemovingUser:)
-                                                      name:@"UPDATE_USER_FREEZE_CHANNEL_ADD_REMOVING" object:nil];
+                                                 name:@"UPDATE_USER_FREEZE_CHANNEL_ADD_REMOVING" object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackGround)
                                                  name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -304,7 +304,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
                                                  name:@"USER_DETAILS_UPDATE_CALL" object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChannelMemberUpdate:)
-                                                  name:AL_Updated_Group_Members object:nil];
+                                                 name:AL_Updated_Group_Members object:nil];
 
 
     self.mqttObject = [ALMQTTConversationService sharedInstance];
@@ -428,7 +428,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         ALSLog(ALLoggerSeverityInfo, @"Messsage 05:%@",msg.message);
         msg.deleted = YES;
 
-           [self deleteMessageFromView:msg]; // Removes message from U.I.
+        [self deleteMessageFromView:msg]; // Removes message from U.I.
 
         [ALMessageService deleteMessage:messageKey andContactId:self.contactIds withCompletion:^(NSString * response, NSError * error) {
 
@@ -596,12 +596,12 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 //==============================================================================================================================================
 
 -(void)navigationController:(UINavigationController *)navigationController
-                             willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+     willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     [navigationController.navigationBar setTitleTextAttributes: @{
-                                                                  NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-                                                                  NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:18]
-                                                                  }];
+        NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+        NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:18]
+    }];
     [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
     [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
 }
@@ -711,19 +711,24 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(void)prepareViewController {
 
-    if ([self isOpenGroup]) {
-        [self reloadView];
-        [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
-        return;
+    if (self.isSearch) {
+        [self loadSearchMessagesWithNextPage:NO];
+    } else {
+        if ([self isOpenGroup]) {
+            [self reloadView];
+            [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
+            return;
+        }
+
+        NSString * key = self.channelKey ? [self.channelKey stringValue]: self.contactIds;
+        if ([ALUserDefaultsHandler isServerCallDoneForMSGList:key]) {
+            [self reloadView];
+            [self markConversationRead];
+        } else {
+            [self loadMessagesWithStarting:YES WithScrollToBottom:YES withNextPage:NO];
+        }
     }
 
-    NSString * key = self.channelKey ? [self.channelKey stringValue]: self.contactIds;
-    if ([ALUserDefaultsHandler isServerCallDoneForMSGList:key]) {
-        [self reloadView];
-        [self markConversationRead];
-    } else {
-        [self loadMessagesWithStarting:YES WithScrollToBottom:YES withNextPage:NO];
-    }
 }
 
 //====================================================================================================================================
@@ -824,9 +829,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     NSNumber * actualChannelKey = tempChannelKey ? tempChannelKey : [NSNumber numberWithInt:0];
 
     BOOL noGroupIdMatch = !([actualChannelKey isEqualToNumber:currentChannelKey]);
-
-//    BOOL noGroupIdMatch = !([[[self.alMessageWrapper getUpdatedMessageArray][0] groupId] isEqualToNumber:self.channelKey]);
-
     if(noGroupIdMatch){  // No group match return YES without doubt!
         return YES;
     }
@@ -886,40 +888,40 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
                          style:UIAlertActionStyleDefault
                          handler:^(UIAlertAction * action)
                          {
-                             [self.sendMessageTextView setText:@""];
-                             [alert dismissViewControllerAnimated:YES completion:nil];
-                         }];
+        [self.sendMessageTextView setText:@""];
+        [alert dismissViewControllerAnimated:YES completion:nil];
+    }];
 
     UIAlertAction* unblock = [UIAlertAction
                               actionWithTitle:NSLocalizedStringWithDefaultValue(@"unBlock", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"UNBLOCK", @"")
                               style:UIAlertActionStyleDefault
                               handler:^(UIAlertAction * action)
                               {
-                                  if(![ALDataNetworkConnection checkDataNetworkAvailable])
-                                  {
-                                      [self showNoDataNotification];
-                                      return;
-                                  }
-                                  ALUserService *userService = [ALUserService new];
-                                  [userService unblockUser:self.contactIds withCompletionHandler:^(NSError *error, BOOL userBlock) {
+        if(![ALDataNetworkConnection checkDataNetworkAvailable])
+        {
+            [self showNoDataNotification];
+            return;
+        }
+        ALUserService *userService = [ALUserService new];
+        [userService unblockUser:self.contactIds withCompletionHandler:^(NSError *error, BOOL userBlock) {
 
-                                      if(userBlock)
-                                      {
+            if(userBlock)
+            {
 
-                                          self.isUserBlocked = NO;
-                                          [self.label setHidden:self.isUserBlocked];
+                self.isUserBlocked = NO;
+                [self.label setHidden:self.isUserBlocked];
 
-                                          NSString * unblokInfo = NSLocalizedStringWithDefaultValue(@"blockedSusccessFullyInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"%@ is unblocked successfully", @"");
+                NSString * unblokInfo = NSLocalizedStringWithDefaultValue(@"blockedSusccessFullyInfo", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"%@ is unblocked successfully", @"");
 
-                                          NSString *alertText = [NSString stringWithFormat:unblokInfo,[self.alContact getDisplayName]] ;
+                NSString *alertText = [NSString stringWithFormat:unblokInfo,[self.alContact getDisplayName]] ;
 
-                                          [alertText stringByAppendingString:unblokInfo];
+                [alertText stringByAppendingString:unblokInfo];
 
-                                          [ALUtilityClass showAlertMessage:alertText andTitle:   NSLocalizedStringWithDefaultValue(@"userUnBlock", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"USER UNBLOCK", @"")];
-                                      }
+                [ALUtilityClass showAlertMessage:alertText andTitle:   NSLocalizedStringWithDefaultValue(@"userUnBlock", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"USER UNBLOCK", @"")];
+            }
 
-                                  }];
-                              }];
+        }];
+    }];
 
     [alert addAction:ok];
     if (![ALApplozicSettings isUnblockInChatDisabled]) {
@@ -1029,7 +1031,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     {
         self.pickerView.delegate = self;
         self.pickerView.dataSource = self;
-//        self.pickerView.frame = CGRectMake(0, 40,[UIScreen mainScreen].bounds.size.width, 216);
     }
 
     defaultTableRect = self.mTableView.frame;
@@ -1048,12 +1049,12 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     if(self.channelKey)
     {
         conversationList = [NSMutableArray arrayWithArray:[alconversationService
-                                                    getConversationProxyListForChannelKey:self.channelKey]];
+                                                           getConversationProxyListForChannelKey:self.channelKey]];
     }
     else
     {
         conversationList = [NSMutableArray arrayWithArray:[alconversationService
-                                                    getConversationProxyListForUserID:self.contactIds]];
+                                                           getConversationProxyListForUserID:self.contactIds]];
     }
 
     self.conversationTitleList = [[NSMutableArray alloc] init];
@@ -1069,15 +1070,15 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         ALTopicDetail * topicDetail = [[ALTopicDetail alloc] init];   //WithDictonary:conversation.topicDetailJson];
         topicDetail = conversation.getTopicDetail;
 
-            if(conversation.getTopicDetail != nil && topicDetail.title != nil)
-            {
-                [self.conversationTitleList addObject:topicDetail.title];
-                [self.pickerConvIdsArray addObject:conversation.Id];
-            }
-            else
-            {
-                ALSLog(ALLoggerSeverityError, @"<< ERROR: Topic Detail NILL >>");
-            }
+        if(conversation.getTopicDetail != nil && topicDetail.title != nil)
+        {
+            [self.conversationTitleList addObject:topicDetail.title];
+            [self.pickerConvIdsArray addObject:conversation.Id];
+        }
+        else
+        {
+            ALSLog(ALLoggerSeverityError, @"<< ERROR: Topic Detail NILL >>");
+        }
     }
 
     [self.pickerView setHidden:YES];
@@ -1108,10 +1109,9 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     titleLabelButton.userInteractionEnabled = YES;
     [titleLabelButton setTitleColor:[ALApplozicSettings getColorForNavigationItem] forState:UIControlStateNormal];
 
-//    if(!(self.individualLaunch) || [ALUserDefaultsHandler isServerCallDoneForUserInfoForContact:[self.alContact userId]])
-//    {
+    if (self.alContact) {
         [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
-//    }
+    }
 
     if([self isGroup])
     {
@@ -1212,7 +1212,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     NSPredicate* compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2]];
     [theRequest setPredicate:compoundPredicate];
 
-    self.mTotalCount = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:nil];
+    self.mTotalCount = [theDbHandler countForFetchRequest:theRequest];
 }
 
 //This is just a test method
@@ -1339,7 +1339,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }
     else
     {
-       [self googleLocationErrorAlert];
+        [self googleLocationErrorAlert];
     }
 }
 
@@ -1661,6 +1661,9 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return [[UITableViewCell alloc]init];
+    }
 
     ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][indexPath.row];
 
@@ -1676,7 +1679,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         [self.view layoutIfNeeded];
         return theCell;
     }
-   else  if(theMessage.isLinkMessage)
+    else  if(theMessage.isLinkMessage)
     {
         ALLinkCell *theCell = (ALLinkCell *)[tableView dequeueReusableCellWithIdentifier:@"ALLinkCell"];
         theCell.tag = indexPath.row;
@@ -1774,7 +1777,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }
     else if (theMessage.contentType == ALMESSAGE_CONTENT_VCARD)
     {
-        
+
         if([theMessage isSentMessage]){
             ALMyContactMessageCell *theCell = (ALMyContactMessageCell *)[tableView dequeueReusableCellWithIdentifier:@"MyContactMessageCell"];
             theCell.tag = indexPath.row;
@@ -1824,6 +1827,11 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.sendMessageTextView resignFirstResponder];
+
+    if (self.alMessageWrapper.messageArray.count == 0) {
+        return nil;
+    }
+
     ALMessage *msgCell = self.alMessageWrapper.messageArray[indexPath.row];
     if([msgCell.type isEqualToString:@"100"])
     {
@@ -1837,6 +1845,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return 0;
+    }
+
     ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][indexPath.row];
     CGFloat cellHeight = [ALUIConstant getCellHeight:theMessage andCellFrame:self.view.frame];
     return cellHeight;
@@ -1844,6 +1856,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.alMessageWrapper getUpdatedMessageArray].count == 0) {
+        return NO;
+    }
+
     ALMessage *msgCell = self.alMessageWrapper.messageArray[indexPath.row];
     if([msgCell.type isEqualToString:@"100"] || msgCell.contentType ==(short)ALMESSAGE_CHANNEL_NOTIFICATION)
     {
@@ -1858,20 +1874,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 -(BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
     return (action == @selector(copy:));
-}
-
--(void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
-//    // required
-//    if (action == @selector(copy:))
-//    {
-//        NSLog(@"COPY");
-//        [self copy:NULL];
-//    }
-//    if (action == @selector(deleteAction:))
-//    {
-//        NSLog(@"DELETE ACTION");
-//    }
 }
 
 +(UITableViewStyle)tableViewStyleForCoder:(NSCoder *)decoder
@@ -2007,7 +2009,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     bottomRight.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - bottomLeft.frame.size.width) + 10, 58,
                                    [UIScreen mainScreen].bounds.size.width - bottomLeft.frame.size.width, 50);
 
-   [self setLabelViews:@[topLeft,bottomLeft,topRight,bottomRight] onView:view];
+    [self setLabelViews:@[topLeft,bottomLeft,topRight,bottomRight] onView:view];
 
     if(topicDetail.title != nil)
     {
@@ -2045,7 +2047,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
 -(void)resizeLabels:(UILabel*)label{
 
-//    CGSize maximumLabelSize = CGSizeMake(296, FLT_MAX);
     CGSize expectedLabelSize = [label.text sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17.0f]}];
     CGRect newFrame = label.frame;
     newFrame.size.height = expectedLabelSize.height;
@@ -2131,7 +2132,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     NSInteger anIndex = 0;
 
     if(self.pickerConvIdsArray.count>0){
-     anIndex = [self.pickerConvIdsArray indexOfObject:iD];
+        anIndex = [self.pickerConvIdsArray indexOfObject:iD];
     }
     if(NSNotFound == anIndex) {
         ALSLog(ALLoggerSeverityInfo, @"PickerView Index not found %ld",(long)anIndex);
@@ -2233,7 +2234,7 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
         if(![ALUserDefaultsHandler isServerCallDoneForMSGList:[self.conversationId stringValue]])
         {
-           [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
+            [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
         }
         else
         {
@@ -2277,7 +2278,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     theMessage.groupId = self.channelKey;
     theMessage.conversationId  = self.conversationId;
     theMessage.source = AL_SOURCE_IOS;
-//    theMessage.metadata = [self getNewMetaDataDictionary]; // EXAMPLE FOR META DATA
 
     if(self.messageReplyId){
         NSMutableDictionary * metaData = [NSMutableDictionary new];
@@ -2286,13 +2286,6 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }
     return theMessage;
 }
-
-//-(NSMutableDictionary *)getNewMetaDataDictionary      // EXAMPLE FOR META DATA
-//{
-//    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-//    [dict setObject:@"VALUE" forKey:@"KEY"];
-//    return dict;
-//}
 
 //==============================================================================================================================================
 #pragma mark - GET FILEMETA OBJECT
@@ -2352,7 +2345,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
         predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil", self.contactIds];
     }
 
-    self.mTotalCount = [theDbHandler.managedObjectContext countForFetchRequest:theRequest error:nil];
+
+    self.mTotalCount = [theDbHandler countForFetchRequest:theRequest];
 
     NSPredicate* predicate2 = [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
     NSPredicate* predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
@@ -2361,52 +2355,43 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     [theRequest setFetchOffset:self.startIndex];
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
 
-    NSArray * theArray = [theDbHandler.managedObjectContext executeFetchRequest:theRequest error:nil];
-    [self enableLoadMoreOption: !(theArray.count < 50)];
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
+    NSArray * theArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
 
-    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+    if (theArray.count) {
+        [self enableLoadMoreOption: !(theArray.count < 50)];
+        ALMessageDBService* messageDBService = [[ALMessageDBService alloc]init];
 
-    for (DB_Message * theEntity in theArray)
-    {
-        ALMessage * theMessage = [messageDBService createMessageEntity:theEntity];
-        [tempArray insertObject:theMessage atIndex:0];
-        //[self.mMessageListArrayKeyStrings insertObject:theMessage.key atIndex:0];
-    }
+        NSMutableArray *tempArray = [[NSMutableArray alloc] init];
 
-    [self.alMessageWrapper addObjectToMessageArray:tempArray];
-    [self.mTableView reloadData];
-
-    if(isLoadEarlierTapped)
-    {
-        if ((theArray != nil && theArray.count < self.rp )|| [self.alMessageWrapper getUpdatedMessageArray].count == self.mTotalCount)
+        for (DB_Message * theEntity in theArray)
         {
-//            self.mTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
+            ALMessage * theMessage = [messageDBService createMessageEntity:theEntity];
+            [tempArray insertObject:theMessage atIndex:0];
         }
-        self.startIndex = self.startIndex + theArray.count;
+
+        [self.alMessageWrapper addObjectToMessageArray:tempArray];
         [self.mTableView reloadData];
-        if (theArray.count != 0)
+
+        if(isLoadEarlierTapped)
         {
-            CGRect theFrame = [self.mTableView rectForRowAtIndexPath:[NSIndexPath indexPathForRow:theArray.count-1 inSection:0]];
-            [self.mTableView setContentOffset:CGPointMake(0, theFrame.origin.y-60)];
-        }
-    }
-    else
-    {
-        if (theArray.count < self.rp || [self.alMessageWrapper getUpdatedMessageArray].count == self.mTotalCount)
-        {
-//            self.mTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
+            self.startIndex = self.startIndex + theArray.count;
+            [self.mTableView reloadData];
+            if (theArray.count != 0)
+            {
+                CGRect theFrame = [self.mTableView rectForRowAtIndexPath:[NSIndexPath indexPathForRow:theArray.count-1 inSection:0]];
+                [self.mTableView setContentOffset:CGPointMake(0, theFrame.origin.y-60)];
+            }
         }
         else
         {
-//            self.mTableView.tableHeaderView = self.mTableHeaderView;
-        }
-        self.startIndex = theArray.count;
+            self.startIndex = theArray.count;
 
-        [self scrollTableViewToBottomWithAnimation:YES];
+            [self scrollTableViewToBottomWithAnimation:YES];
+        }
+
+        self.refresh = YES;
     }
 
-    self.refresh = YES;
     [self setBackGroundWallpaper];
 }
 
@@ -2469,41 +2454,37 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 -(void)downloadRetryButtonActionDelegate:(int)index andMessage:(ALMessage *)message
 {
 
-    if(message.msgDBObjectId){
-        ALMediaBaseCell *imageCell = (ALMediaBaseCell *)[self.mTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-        imageCell.progresLabel.alpha = 1;
-        imageCell.mMessage.fileMeta.progressValue = 0;
-        imageCell.mDowloadRetryButton.alpha = 0;
-        imageCell.downloadRetryView.alpha = 0;
-        imageCell.sizeLabel.alpha = 0;
-        message.inProgress = YES;
+    ALMediaBaseCell *imageCell = (ALMediaBaseCell *)[self.mTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    imageCell.progresLabel.alpha = 1;
+    imageCell.mMessage.fileMeta.progressValue = 0;
+    imageCell.mDowloadRetryButton.alpha = 0;
+    imageCell.downloadRetryView.alpha = 0;
+    imageCell.sizeLabel.alpha = 0;
+    message.inProgress = YES;
 
-        NSMutableArray * sessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    NSMutableArray * sessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
 
-        for(NSURLSession *session in sessionArray){
-            NSURLSessionConfiguration *config =  session.configuration;
-            NSArray *array =  [config.identifier componentsSeparatedByString:@","];
-            if(array && array.count>1){
-                //Check if message key are same and first argumnent is not THUMBNAIL
-                if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqualToString: message.key]){
-                    ALSLog(ALLoggerSeverityInfo, @"Already task in proccess ignoring download retry for the key %@",message.key);
-                    return;
-                }
+    for(NSURLSession *session in sessionArray){
+        NSURLSessionConfiguration *config =  session.configuration;
+        NSArray *array =  [config.identifier componentsSeparatedByString:@","];
+        if(array && array.count>1){
+            //Check if message key are same and first argumnent is not THUMBNAIL
+            if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqualToString: message.key]){
+                ALSLog(ALLoggerSeverityInfo, @"Already task in proccess ignoring download retry for the key %@",message.key);
+                return;
             }
         }
+    }
 
-        if ([message.type isEqualToString:@"5"]&& !message.fileMeta.key) // upload
-        {
-            [self uploadImage:message];
-        }
-        else    //download
-        {
-            ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
-            manager.attachmentProgressDelegate = self;
-            [manager processDownloadForMessage:message isAttachmentDownload:YES];
-        }
-    }else{
-        ALSLog(ALLoggerSeverityInfo, @"Message is not in db ");
+    if ([message.type isEqualToString:@"5"]&& !message.fileMeta.key) // upload
+    {
+        [self uploadImage:message];
+    }
+    else    //download
+    {
+        ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
+        manager.attachmentProgressDelegate = self;
+        [manager processDownloadForMessage:message isAttachmentDownload:YES];
     }
 
 }
@@ -2548,12 +2529,10 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     }
 }
 
--(void) thumbnailDownload:(NSString *) key{
-
-    ALMessageDBService * messageDBService = [[ALMessageDBService alloc]init];
+-(void) thumbnailDownloadWithMessageObject:(ALMessage *) message {
     ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self;
-    [manager processDownloadForMessage:[messageDBService getMessageByKey:key] isAttachmentDownload:NO];
+    [manager processDownloadForMessage:message isAttachmentDownload:NO];
 }
 
 -(CGFloat)bytesConvertsToDegree:(CGFloat)totalBytesExpectedToWrite comingBytes:(CGFloat)totalBytesWritten
@@ -2868,8 +2847,8 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
 
         [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"deleteConversation", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delete Conversation" , @"")
                                                           style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                              [self deleteConversation];
-                                                          }]];
+            [self deleteConversation];
+        }]];
 
     }
 
@@ -2877,13 +2856,13 @@ NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotifi
     {
 
         [theController addAction:[UIAlertAction actionWithTitle:  NSLocalizedStringWithDefaultValue(@"videoCall", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Video Call" , @"")
-style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                          style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
             [self openCallView:NO];
         }]];
 
         [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"audioCall", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Audio Call" , @"")
- style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                          style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
             [self openCallView:YES];
         }]];
@@ -2992,23 +2971,23 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 -(void)openContactsView
 {
 
-        CNContactStore *contactStore = [[CNContactStore alloc] init];
-        [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
+    CNContactStore *contactStore = [[CNContactStore alloc] init];
+    [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
 
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
 
-                if (granted)
-                {
-                    CNContactPickerViewController *contactPicker = [CNContactPickerViewController new];
-                    contactPicker.delegate = self;
-                    [self presentViewController:contactPicker animated:YES completion:nil];
-                }
-                else
-                {
-                    [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForContacts", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Contacts Permission", @"")  andViewController:self];
-                }
-            });
-        }];
+            if (granted)
+            {
+                CNContactPickerViewController *contactPicker = [CNContactPickerViewController new];
+                contactPicker.delegate = self;
+                [self presentViewController:contactPicker animated:YES completion:nil];
+            }
+            else
+            {
+                [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForContacts", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Contacts Permission", @"")  andViewController:self];
+            }
+        });
+    }];
 
 }
 
@@ -3061,16 +3040,16 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     [ALMessageService deleteMessageThread:userId orChannelKey:groupId
                            withCompletion:^(NSString *string, NSError *error) {
 
-                               if(error)
-                               {
-                                   [ALUtilityClass displayToastWithMessage:@"Delete failed"];
-                                   return;
-                               }
+        if(error)
+        {
+            [ALUtilityClass displayToastWithMessage:@"Delete failed"];
+            return;
+        }
 
-                               [self clearMessagesFromChatView];
+        [self clearMessagesFromChatView];
 
 
-                           }];
+    }];
 }
 
 
@@ -3279,7 +3258,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.conversationId = alMessage.conversationId;
         self.channelKey = nil;
         self.contactIds = alMessage.contactIds;
-        //[self fetchAndRefresh:YES];
     }
     else if ([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
     {
@@ -3287,7 +3265,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.conversationId = alMessage.conversationId;
         self.channelKey = alMessage.groupId;
         self.contactIds = alMessage.contactIds;
-       // [self fetchAndRefresh:YES];
         [self reloadView];
         [self markConversationRead];
     }
@@ -3391,7 +3368,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     self.conversationId = conversationId;
     self.channelKey = channelKey;
     [self subscrbingChannel];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
 
         [self.mTableView setUserInteractionEnabled:NO];
@@ -3439,7 +3416,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(IBAction)loadEarlierButtonAction:(id)sender
 {
-    [self loadMessagesWithStarting:NO WithScrollToBottom:NO withNextPage:YES];
+    if (self.isSearch) {
+        [self loadSearchMessagesWithNextPage:YES];
+    } else {
+        [self loadMessagesWithStarting:NO WithScrollToBottom:NO withNextPage:YES];
+    }
 }
 
 -(void)loadMessagesWithStarting:(BOOL)loadFromStart WithScrollToBottom:(BOOL)isScrollToBottom withNextPage:(BOOL)isNextPage
@@ -3488,74 +3469,66 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             self.loadEarlierAction.hidden = YES;
             [self enableLoadMoreOption:(messages.count > 0)];
 
-            if(messages.count == 0)
-            {
-                if(self.conversationId && [ALApplozicSettings getContextualChatOption])
-                {
-                    [ALUserDefaultsHandler setShowLoadEarlierOption:NO forContactId:[self.conversationId stringValue]];
-                }
-                else
-                {
-                    NSString * IDs = (self.channelKey ? [self.channelKey stringValue] : self.contactIds);
-                    [ALUserDefaultsHandler setShowLoadEarlierOption:NO forContactId:IDs];
-                }
+            if (messages.count == 0) {
                 [self.mActivityIndicator stopAnimating];
-                return;
+                [self showNoConversationLabel];
             }
 
-            NSMutableArray * array = [self.alMessageWrapper getUpdatedMessageArray];
+            [self updateMessagesInArray:messages];
 
-            if([array firstObject])
-            {
-                ALMessage *messgae = [array firstObject];
-                if([messgae.type isEqualToString:@"100"])
-                {
-                    [array removeObjectAtIndex:0];
-                }
+            CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.mActivityIndicator stopAnimating];
+                [self.mTableView reloadData];
+            });
+            if (isScrollToBottom) {
+                [self scrollTableViewToBottomWithAnimation:NO];
+            } else {
+                CGFloat newTableViewHeight = self.mTableView.contentSize.height;
+                self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
             }
-            for (ALMessage * msg in messages)
-            {
-                if([msg isHiddenMessage] )  // Filters Hidden Messages and VOIP Notifcation messages
-                {
-                    continue;
-                }
-                if([self.alMessageWrapper getUpdatedMessageArray].count > 0)
-                {
-                    ALMessage *msg1 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
+        } else {
+            [self.mActivityIndicator stopAnimating];
+            [self showNoConversationLabel];
+            self.loadEarlierAction.hidden = YES;
+            ALSLog(ALLoggerSeverityError, @"some error");
+        }
+    }];
+}
 
-                    if([self.alMessageWrapper checkDateOlder:msg.createdAtTime andNewer:msg1.createdAtTime])
-                    {
-                        ALMessage *dateCell = [self.alMessageWrapper getDatePrototype:self.alMessageWrapper.dateCellText andAlMessageObject:msg];
-                        /// Checking if data message is already exist with same date in list
-                        NSArray * filteredDateArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = %@ AND message = %@",@"100", dateCell.message]];
+-(void)loadSearchMessagesWithNextPage:(BOOL)isNextPage {
 
-                        ALMessage *msg3 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
-                        if(![msg3.type isEqualToString:@"100"] && ![msg3 isVOIPNotificationMessage] && !filteredDateArray.count)
-                        {
-                            [[self.alMessageWrapper getUpdatedMessageArray] insertObject:dateCell atIndex:0];
-                        }
-                    }
-                }
-                NSArray * theFilteredArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"key = %@",msg.key]];
-                if (!theFilteredArray.count) {
-                    [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
-                }
-                [self.noConLabel setHidden:YES];
+    [self.mActivityIndicator startAnimating];
 
+    NSNumber *time;
+    if([self.alMessageWrapper getUpdatedMessageArray].count > 1 && [self.alMessageWrapper getUpdatedMessageArray] != nil)
+    {
+        ALMessage * theMessage = [self.alMessageWrapper getUpdatedMessageArray][1];
+        time = theMessage.createdAtTime;
+    }
+
+    MessageListRequest * messageListRequest = [[MessageListRequest alloc] init];
+
+    messageListRequest.userId = self.contactIds;
+    messageListRequest.channelKey = self.channelKey;
+    messageListRequest.conversationId = self.conversationId;
+
+    if (time) {
+        messageListRequest.endTimeStamp = time;
+    }
+
+    ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
+    [messageClientService getMessageListForUser:messageListRequest isSearch:YES withCompletion:^(NSMutableArray<ALMessage *> * messages, NSError * error) {
+
+        if (error == nil) {
+            self.loadEarlierAction.hidden = YES;
+            [self enableLoadMoreOption:(messages.count > 0)];
+            if (messages.count == 0) {
+                [self.mActivityIndicator stopAnimating];
+                [self showNoConversationLabel];
             }
-            ALMessage * message = [array firstObject];
-            if(message)
-            {
-                NSString *dateTxt = [self.alMessageWrapper msgAtTop:message];
-                ALMessage *lastMsg = [self.alMessageWrapper getDatePrototype:dateTxt andAlMessageObject:message];
-                [[self.alMessageWrapper getUpdatedMessageArray] insertObject:lastMsg atIndex:0];
-            }
 
-            NSArray *sortedArray = [self getSortedMessages];
-            [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
-            if (sortedArray.count) {
-                [[self.alMessageWrapper messageArray] setArray:sortedArray];
-            }
+            [self updateMessagesInArray:messages];
 
             [self.mActivityIndicator stopAnimating];
 
@@ -3563,26 +3536,75 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 CGFloat oldTableViewHeight = self.mTableView.contentSize.height;
                 [self.mTableView reloadData];
 
-                if(isScrollToBottom)
-                {
+                if (!isNextPage){
                     [self scrollTableViewToBottomWithAnimation:NO];
-                }
-                else
-                {
+                } else {
                     CGFloat newTableViewHeight = self.mTableView.contentSize.height;
                     self.mTableView.contentOffset = CGPointMake(0, newTableViewHeight - oldTableViewHeight);
                 }
             });
             [self markConversationRead];
-        }
-        else
-        {
+        } else {
             [self.mActivityIndicator stopAnimating];
             [self showNoConversationLabel];
             self.loadEarlierAction.hidden = YES;
-            ALSLog(ALLoggerSeverityError, @"some error");
         }
     }];
+}
+
+-(void)updateMessagesInArray:(NSMutableArray *)messages {
+
+    NSMutableArray * array = [self.alMessageWrapper getUpdatedMessageArray];
+
+    if([array firstObject]) {
+        ALMessage *messgae = [array firstObject];
+        if([messgae.type isEqualToString:@"100"])
+        {
+            [array removeObjectAtIndex:0];
+        }
+    }
+
+    for (ALMessage * msg in messages) {
+        if ([msg isHiddenMessage]) { // Filters Hidden Messages
+            continue;
+        }
+
+        if ([self.alMessageWrapper getUpdatedMessageArray].count > 0) {
+            ALMessage *msg1 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
+
+            if ([self.alMessageWrapper checkDateOlder:msg.createdAtTime andNewer:msg1.createdAtTime]) {
+                ALMessage *dateCell = [self.alMessageWrapper getDatePrototype:self.alMessageWrapper.dateCellText andAlMessageObject:msg];
+                /// Checking if data message is already exist with same date in list
+                NSArray * filteredDateArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type = %@ AND message = %@",@"100", dateCell.message]];
+
+                ALMessage *msg3 = [[self.alMessageWrapper getUpdatedMessageArray] objectAtIndex:0];
+                if (![msg3.type isEqualToString:@"100"] &&
+                    ![msg3 isVOIPNotificationMessage] &&
+                    !filteredDateArray.count) {
+                    [[self.alMessageWrapper getUpdatedMessageArray] insertObject:dateCell atIndex:0];
+                }
+            }
+        }
+
+            NSArray * theFilteredArray = [[self.alMessageWrapper getUpdatedMessageArray] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"key = %@",msg.key]];
+            if (!theFilteredArray.count) {
+                [[self.alMessageWrapper getUpdatedMessageArray] insertObject:msg atIndex:0];
+            }
+            [self.noConLabel setHidden:YES];
+    }
+
+    ALMessage * message = [[self.alMessageWrapper getUpdatedMessageArray] firstObject];
+    if (message) {
+        NSString * dateTxt = [self.alMessageWrapper msgAtTop:message];
+        ALMessage * lastMsg = [self.alMessageWrapper getDatePrototype:dateTxt andAlMessageObject:message];
+        [[self.alMessageWrapper getUpdatedMessageArray] insertObject:lastMsg atIndex:0];
+    }
+
+    NSArray *sortedArray = [self getSortedMessages];
+    [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
+    if (sortedArray.count) {
+        [[self.alMessageWrapper messageArray] setArray:sortedArray];
+    }
 }
 
 -(NSArray *)getSortedMessages {
@@ -3643,7 +3665,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     }
 
     [ALUserService userDetailServerCall:self.contactIds withCompletion:^(ALUserDetail *alUserDetail)
-    {
+     {
         if(alUserDetail)
         {
             [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:alUserDetail.userId];
@@ -3893,13 +3915,14 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     if(self.conversationId && [ALApplozicSettings getContextualChatOption])
     {
         doneConversation = ([ALUserDefaultsHandler isShowLoadEarlierOption:[self.conversationId stringValue]]
-                                 && [ALUserDefaultsHandler isServerCallDoneForMSGList:[self.conversationId stringValue]]);
+                            && [ALUserDefaultsHandler isServerCallDoneForMSGList:[self.conversationId stringValue]]);
 
     }
     else
     {
         NSString * IDs = (self.channelKey ? [self.channelKey stringValue] : self.contactIds);
-        if(self.alChannel && self.alChannel.type == OPEN){
+
+        if((self.alChannel && self.alChannel.type == OPEN) || self.isSearch){
             doneOtherwise = ([ALUserDefaultsHandler isShowLoadEarlierOption:IDs]);
         }else{
             doneOtherwise = ([ALUserDefaultsHandler isShowLoadEarlierOption:IDs]
@@ -3933,7 +3956,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self showMicButton];
     } else if(isAudioRecordingEnabled) {
         [self showSendButton];
-//        [soundRecording hide];
         [self hideSoundRecordingView];
     }
 
@@ -3989,13 +4011,13 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     NSStringDrawingOptions options = NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin;
 
     NSDictionary *attr = @{
-                           NSFontAttributeName:self.sendMessageTextView.font
-                           };
+        NSFontAttributeName:self.sendMessageTextView.font
+    };
 
     CGRect ts = [textToMesure boundingRectWithSize:CGSizeMake(width-20.0, FLT_MAX)
-                               options:options
-                            attributes:attr
-                               context:nil];
+                                           options:options
+                                        attributes:attr
+                                           context:nil];
     return ts;
 }
 
@@ -4251,10 +4273,6 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     NSMutableArray * messageArray = notification.object;
 
     [self addMessageToList:messageArray];
-//    for (ALMessage * almessage in messageArray)
-//    {
-//        [self markSingleMessageRead:almessage];
-//    }
     [self showNoConversationLabel];
 
 }
@@ -4285,16 +4303,10 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
 -(void)showSuggestionView:(NSURL *)fileURL andFrame:(CGRect)frame
 {
-//    NSLog(@"CALL_GESTURE_SELECTOR_TO_DELEGATE_&_FILE_URL : %@", fileURL);
     interaction = [UIDocumentInteractionController interactionControllerWithURL:fileURL];
     interaction.delegate = self;
-
-    // IF OPENING IN SAME VIEW
-//   BOOL selfFlag = [interaction presentPreviewAnimated:YES];
-
     //IF NEED SUGGESTION MENU : IT WILL RUN ON DEVICE ONLY
-   [interaction presentOpenInMenuFromRect:frame inView:self.view animated:YES];
-
+    [interaction presentOpenInMenuFromRect:frame inView:self.view animated:YES];
 }
 
 -(UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller
@@ -4329,7 +4341,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     }
     else
     {
-         [self.mActivityIndicator stopAnimating];
+        [self.mActivityIndicator stopAnimating];
     }
 }
 
@@ -4492,7 +4504,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 if(![[NSFileManager defaultManager] fileExistsAtPath:filePath]){
                     NSURL *docAppGroupURL = ALUtilityClass.getAppsGroupDirectory;
                     if(docAppGroupURL != nil){
-                     [docAppGroupURL URLByAppendingPathComponent:message.imageFilePath];
+                        [docAppGroupURL URLByAppendingPathComponent:message.imageFilePath];
                         theUrl = [NSURL fileURLWithPath:docAppGroupURL.path];
                     }
                 }else{
@@ -4643,7 +4655,7 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     if ([ALApplozicSettings getOptionToPushNotificationToShowCustomGroupDetalVC]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:ThirdPartyDetailVCNotification object:nil userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
                                                                                                                         ThirdPartyDetailVCNotificationALContact : self.alContact
-                                                                                                                        }];
+        }];
     } else {
         [self.mActivityIndicator startAnimating];
 
@@ -4675,10 +4687,10 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 -(void)handleTapGestureForKeyBoard
 {
 
-        if([self.sendMessageTextView isFirstResponder])
-        {
-            [self.sendMessageTextView resignFirstResponder];
-        }
+    if([self.sendMessageTextView isFirstResponder])
+    {
+        [self.sendMessageTextView resignFirstResponder];
+    }
 
 }
 
@@ -4807,12 +4819,12 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 - (void)onDownloadFailed:(ALMessage *)alMessage {
     dispatch_async(dispatch_get_main_queue(), ^{
 
-    ALMediaBaseCell * imageCell=  [self getCell:alMessage.key];
-    imageCell.progresLabel.alpha = 0;
-    imageCell.mDowloadRetryButton.alpha = 1;
-    imageCell.downloadRetryView.alpha = 1;
-    imageCell.sizeLabel.alpha = 1;
-            });
+        ALMediaBaseCell * imageCell=  [self getCell:alMessage.key];
+        imageCell.progresLabel.alpha = 0;
+        imageCell.mDowloadRetryButton.alpha = 1;
+        imageCell.downloadRetryView.alpha = 1;
+        imageCell.sizeLabel.alpha = 1;
+    });
 }
 
 - (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(ALMessage *)alMessage {
@@ -4835,11 +4847,11 @@ style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
     if(alMessage != nil){
 
-           NSIndexPath * path = [self getIndexPathForMessage:oldMessageKey];
-            if(path.row < [self.alMessageWrapper getUpdatedMessageArray].count){
+        NSIndexPath * path = [self getIndexPathForMessage:oldMessageKey];
+        if(path.row < [self.alMessageWrapper getUpdatedMessageArray].count){
             [self.alMessageWrapper getUpdatedMessageArray][path.row] = alMessage;
             [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
-          }
+        }
         [self updateUserDisplayNameWithMessage:alMessage withDisplayName:self.displayName];
     }
 }

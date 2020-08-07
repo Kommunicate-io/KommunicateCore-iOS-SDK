@@ -942,6 +942,16 @@
     return [userDefaults valueForKey:AL_AUTHENTICATION_TOKEN_VALID_UPTO_MINS];
 }
 
++(void)setInitialMessageListCallDone:(BOOL)flag {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    [userDefaults setBool:flag forKey:AL_INITIAL_MESSAGE_LIST_CALL];
+    [userDefaults synchronize];
+}
+
++(BOOL)isInitialMessageListCallDone {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    return [userDefaults boolForKey:AL_INITIAL_MESSAGE_LIST_CALL];
+}
 
 +(NSUserDefaults *)getUserDefaults {
     return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];

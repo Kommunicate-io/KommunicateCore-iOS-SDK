@@ -152,7 +152,7 @@
     } else {
         contact.displayName = dbContact.displayName;
     }
-
+    contact.status = dbContact.status;
     return contact;
 }
 

@@ -310,7 +310,7 @@ static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessag
             else
             {
                 NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-                [dict setObject:[alMessage getNotificationText] forKey:@"alertValue"];
+                [dict setObject:[alMessage getLastMessage] forKey:@"alertValue"];
                 [dict setObject:[NSNumber numberWithInt:APP_STATE_ACTIVE] forKey:@"updateUI"];
 
                 if(alMessage.groupId){
