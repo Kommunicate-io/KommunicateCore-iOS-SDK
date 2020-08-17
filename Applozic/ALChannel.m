@@ -195,6 +195,10 @@
     return NO;
 }
 
+-(BOOL)isDeleted {
+    return self.deletedAtTime != nil && self.deletedAtTime.intValue > 0;
+}
+
 + (CONVERSATION_CATEGORY)getConversationCategory:(NSDictionary *)metadata
 {
     NSString *status = [metadata objectForKey:AL_CHANNEL_CONVERSATION_STATUS];

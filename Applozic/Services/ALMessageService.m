@@ -426,7 +426,10 @@ static ALMessageClientService *alMsgClientService;
                 }
             }
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:NEW_MESSAGE_NOTIFICATION object:messageArray userInfo:nil];
+
+        if (messageArray.count) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:NEW_MESSAGE_NOTIFICATION object:messageArray userInfo:nil];
+        }
         completion(messageArray);
     }];
 }
