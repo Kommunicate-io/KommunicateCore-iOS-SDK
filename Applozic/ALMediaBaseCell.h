@@ -81,5 +81,4 @@
 -(BOOL)isMessageReplyMenuEnabled:(SEL) action;
 
 @property (nonatomic, strong) ALChannel * channel;
-@property (nonatomic, strong) ALContact * contact;
 @end

@@ -291,7 +291,7 @@
     NSPropertyListFormat format;
     NSMutableDictionary * metaDataDictionary;
 
-    if (data) {
+    if (!data) {
         return nil;
     }
 

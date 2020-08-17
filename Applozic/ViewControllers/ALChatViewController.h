@@ -71,7 +71,7 @@ extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
 -(void)individualNotificationhandler:(NSNotification *) notification;
 
 -(void)updateDeliveryStatus:(NSNotification *) notification;
--(void) setTitle;
+-(void) updateConversationProfileDetails;
 
 //-(void) syncCall:(NSString *) contactId updateUI:(NSNumber *) updateUI alertValue: (NSString *) alertValue;
 -(void) syncCall:(ALMessage *) alMessage andMessageList:(NSMutableArray*)messageArray;

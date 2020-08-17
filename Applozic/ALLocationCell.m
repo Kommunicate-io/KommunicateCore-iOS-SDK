@@ -208,7 +208,7 @@
         self.mMessageStatusImageView.frame = CGRectMake(self.mDateLabel.frame.origin.x + self.mDateLabel.frame.size.width,
                                                         self.mDateLabel.frame.origin.y, MSG_STATUS_CONSTANT, MSG_STATUS_CONSTANT);
 
-        if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
+        if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
             self.mMessageStatusImageView.hidden = NO;
             NSString * imageName = [self getMessageStatusIconName:self.mMessage];
             self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];

@@ -395,11 +395,10 @@ UIViewController * modalCon;
                                                 self.mImageView.frame.origin.y + self.mImageView.frame.size.height/2.0 - DOWNLOAD_RETRY_PADDING_Y,
                                                 90, 40);
 
-    if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || self.contact)) {
+    if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
 
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName = [self getMessageStatusIconName:self.mMessage];
-        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
         self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
     }
 

@@ -76,6 +76,8 @@ typedef enum {
 -(BOOL) isBroadcastGroup;
 -(BOOL) isOpenGroup;
 -(BOOL)isGroupOfTwo;
+-(BOOL)isDeleted;
+
 -(NSString*)getReceiverIdInGroupOfTwo;
 
 -(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
