@@ -85,7 +85,7 @@ static CGFloat const DATE_LABEL_SIZE = 12;
         
         self.mMessageStatusImageView.contentMode = UIViewContentModeScaleToFill;
         self.mMessageStatusImageView.backgroundColor = [UIColor clearColor];
-         [self.contentView addSubview:self.mMessageStatusImageView];
+        [self.contentView addSubview:self.mMessageStatusImageView];
         
         self.mDowloadRetryButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.mDowloadRetryButton setContentMode:UIViewContentModeCenter];
@@ -139,7 +139,16 @@ static CGFloat const DATE_LABEL_SIZE = 12;
             self.imageWithText.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.mChannelMemberName.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         }
-        
+
+        self.frontView = [[ALTappableView alloc] init];
+        self.frontView.backgroundColor = [UIColor clearColor];
+        self.frontView.alpha = 1.0;
+
+        UILongPressGestureRecognizer * menuTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
+        menuTapGesture.minimumPressDuration = 1.0;
+        menuTapGesture.cancelsTouchesInView = NO;
+        [self.frontView addGestureRecognizer:menuTapGesture];
+
     }
     
     return self;
@@ -147,16 +156,13 @@ static CGFloat const DATE_LABEL_SIZE = 12;
 
 -(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize
 {
+    self.mMessage = alMessage;
     return self;
 }
 
 -(void) dowloadRetryButtonAction
 {
     [self.delegate downloadRetryButtonActionDelegate:(int)self.tag andMessage:self.mMessage];
-}
-
-- (void)msgInfo:(id)sender{
-
 }
 
 -(void)setupProgress{
@@ -270,12 +276,6 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     
 }
 
--(BOOL)isMessageReplyMenuEnabled:(SEL) action;
-{
-
-    return ([ALApplozicSettings isReplyOptionEnabled] && action ==@selector(processMessageReply:));
-}
-
 -(NSString *)getMessageStatusIconName:(ALMessage *)alMessage {
 
     switch (alMessage.status.intValue) {
@@ -295,6 +295,148 @@ static CGFloat const DATE_LABEL_SIZE = 12;
             return @"ic_action_about.png";
             break;
     }
+}
+
+
+-(BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+-(void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
+
+    UIView * superView = [longPressGestureRecognizer.view superview];
+    UIView * gestureView = longPressGestureRecognizer.view;
+
+    if (!superView || !gestureView || !self.canBecomeFirstResponder) {
+        return;
+    }
+
+    UIMenuController * sharedMenuController =  [UIMenuController sharedMenuController] ;
+
+    if (![gestureView canBecomeFirstResponder] ||
+        sharedMenuController.isMenuVisible) {
+        return;
+    }
+
+    [gestureView becomeFirstResponder];
+    [self processKeyBoardHideTap];
+
+    UIMenuItem * messageForwardMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+    UIMenuItem * messageReplyMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
+
+    if ([self.mMessage.type isEqualToString:AL_IN_BOX]) {
+
+        [sharedMenuController setMenuItems: @[messageForwardMenuItem,
+                                              messageReplyMenuItem]];
+
+    } else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]) {
+
+        UIMenuItem * deleteForAllMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"deleteForAll", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Delete for all", @"") action:@selector(deleteMessageForAll:)];
+
+        UIMenuItem * msgInfoMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
+
+        [sharedMenuController setMenuItems: @[msgInfoMenuItem,
+                                              messageReplyMenuItem,
+                                              messageForwardMenuItem,
+                                              deleteForAllMenuItem]];
+    }
+
+    [sharedMenuController setTargetRect:gestureView.frame inView:superView];
+    [sharedMenuController setMenuVisible:YES animated:YES];
+}
+
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+
+    if (self.channel && self.channel.type == OPEN) {
+        return NO;
+    }
+
+    if (![self.mMessage isMessageSentToServer]) {
+        return action == @selector(delete:);
+    }
+
+    if ([self.mMessage isSentMessage] && self.mMessage.groupId) {
+        return (self.mMessage.isDownloadRequired ?
+                (action == @selector(delete:) ||
+                 [self isMessageDeleteForAllMenuEnabled:action] ||
+                 action == @selector(msgInfo:)):
+                (action == @selector(delete:) ||
+                 action == @selector(msgInfo:) ||
+                 [self isMessageDeleteForAllMenuEnabled:action] ||
+                 [self isForwardMenuEnabled:action] ||
+                 [self isMessageReplyMenuEnabled:action]));
+    }
+    
+    return (self.mMessage.isDownloadRequired ?
+            (action == @selector(delete:)):
+            (action == @selector(delete:)||
+             [self isForwardMenuEnabled:action] ||
+             [self isMessageReplyMenuEnabled:action]));
+}
+
+-(BOOL)isMessageReplyMenuEnabled:(SEL) action {
+    return ([ALApplozicSettings isReplyOptionEnabled] &&
+            action == @selector(messageReply:));
+}
+
+-(BOOL)isForwardMenuEnabled:(SEL) action {
+    return ([ALApplozicSettings isForwardOptionEnabled] &&
+            action == @selector(messageForward:));
+}
+
+-(BOOL)isMessageDeleteForAllMenuEnabled:(SEL) action {
+    return ([ALApplozicSettings isMessageDeleteForAllEnabled] &&
+            action == @selector(deleteMessageForAll:));
+}
+
+-(void) messageForward:(id)sender {
+    ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
+    [self processForwardMessage];
+}
+
+-(void) processKeyBoardHideTap {
+    [self.delegate handleTapGestureForKeyBoard];
+}
+
+-(void) messageReply:(id)sender {
+    ALSLog(ALLoggerSeverityInfo, @"Message reply option is pressed");
+    [self processMessageReply];
+}
+
+-(void) delete:(id)sender {
+    //UI
+    ALSLog(ALLoggerSeverityInfo, @"message to deleteUI %@",self.mMessage.message);
+    [self.delegate deleteMessageFromView:self.mMessage];
+
+    //serverCall
+    [ALMessageService deleteMessage:self.mMessage.key andContactId:self.mMessage.contactIds withCompletion:^(NSString *string, NSError *error) {
+
+        ALSLog(ALLoggerSeverityError, @"DELETE MESSAGE ERROR :: %@", error.description);
+    }];
+}
+
+- (void)msgInfo:(id)sender {
+    [self.delegate showAnimationForMsgInfo:YES];
+    UIStoryboard *storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+    ALMessageInfoViewController *msgInfoVC = (ALMessageInfoViewController *)[storyboardM instantiateViewControllerWithIdentifier:@"ALMessageInfoView"];
+
+    __weak typeof(ALMessageInfoViewController *) weakObj = msgInfoVC;
+
+    [msgInfoVC setMessage:self.mMessage andHeaderHeight:self.mBubleImageView.frame.size.height withCompletionHandler:^(NSError *error) {
+
+        if(!error)
+        {
+            [self.delegate loadViewForMedia:weakObj];
+        }
+        else
+        {
+            [self.delegate showAnimationForMsgInfo:NO];
+        }
+    }];
+}
+
+-(void)deleteMessageForAll:(id)sender {
+    [self.delegate deleteMessasgeforAll:self.mMessage];
 }
 
 @end

@@ -117,11 +117,6 @@ static int const MQTT_MAX_RETRY = 3;
     self.mqttRetryCount = 0;
     [self setUpTableView];
     self.mTableView.allowsMultipleSelectionDuringEditing = NO;
-    [self.mActivityIndicator startAnimating];
-    
-    self.dBService = [[ALMessageDBService alloc] init];
-    self.dBService.delegate = self;
-    [self.dBService getMessages:self.childGroupList];
 
     self.alMqttConversationService = [ALMQTTConversationService sharedInstance];
     self.alMqttConversationService.mqttConversationDelegate = self;
@@ -221,18 +216,13 @@ static int const MQTT_MAX_RETRY = 3;
 
     [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
     [self.tabBarController.tabBar setHidden:[ALUserDefaultsHandler isBottomTabBarHidden]];
-    
-    if ([self.detailChatViewController refreshMainView])
+
+    if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
     {
-        if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
-        {
-            [self intializeSubgroupMessages];
-        }
-        
-        [self.dBService getMessages:self.childGroupList];
-        [self.detailChatViewController setRefreshMainView:FALSE];
-        [self.mTableView reloadData];
+        [self intializeSubgroupMessages];
     }
+
+    [self prepareViewController];
 
     [self setupNavigationButtons];
 
@@ -262,6 +252,9 @@ static int const MQTT_MAX_RETRY = 3;
                                                     name:UIKeyboardDidHideNotification
                                                   object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageMetaDataUpdate:)
+                                                   name:AL_MESSAGE_META_DATA_UPDATE object:nil];
+
     [self.navigationController.navigationBar setTitleTextAttributes: @{
                                                                        NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -287,6 +280,12 @@ static int const MQTT_MAX_RETRY = 3;
     [self callLastSeenStatusUpdate];
 }
 
+-(void)prepareViewController {
+    [self.mActivityIndicator startAnimating];
+    self.dBService = [[ALMessageDBService alloc] init];
+    self.dBService.delegate = self;
+    [self.dBService getMessages:self.childGroupList];
+}
 
 -(void)intializeSubgroupMessages
 {
@@ -509,14 +508,6 @@ static int const MQTT_MAX_RETRY = 3;
     }
     
     self.mContactsMessageListArray = messagesArray;
-    for (int i=0; i<messagesArray.count; i++) {
-        ALMessage * message = messagesArray[i];
-        if(message.groupId != nil) {
-            // It's a group message
-        } else if (message.contactIds != nil)  {
-            // It's a normal one to one message
-        }
-    }
     [self.mTableView reloadData];
     ALSLog(ALLoggerSeverityInfo, @"GETTING MESSAGE ARRAY");
 }
@@ -525,7 +516,6 @@ static int const MQTT_MAX_RETRY = 3;
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.dBService getMessages:nil];
-        [self.detailChatViewController setRefreshMainView:NO];
         [self.mTableView reloadData];
     });
 }
@@ -681,6 +671,21 @@ static int const MQTT_MAX_RETRY = 3;
     ALContactCell *contactCell  = (ALContactCell *)[self.mTableView cellForRowAtIndexPath:path];
     
     return contactCell;
+}
+
+-(NSIndexPath*) getIndexPathForMessage:(NSString*)messageKey {
+    int index = (int)[self.mContactsMessageListArray indexOfObjectPassingTest:^BOOL(id element,NSUInteger idx,BOOL *stop) {
+        ALMessage *message = (ALMessage*)element;
+        if([message.key isEqualToString:messageKey])
+        {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];
+
+    NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:1];
+    return path;
 }
 
 //==============================================================================================================================================
@@ -1134,8 +1139,6 @@ static int const MQTT_MAX_RETRY = 3;
 
 -(void)updateLastSeenAtStatus:(ALUserDetail *) alUserDetail
 {
-    [self.detailChatViewController setRefreshMainView:YES];
-    
     if ([self.detailChatViewController.contactIds isEqualToString:alUserDetail.userId])
     {
         [self.detailChatViewController updateLastSeenAtStatus:alUserDetail];
@@ -1606,6 +1609,47 @@ static int const MQTT_MAX_RETRY = 3;
     [self.customSearchBar resignFirstResponder];
     self.navigationItem.titleView = nil;
     [self setupNavigationButtons];
+}
+
+-(void)onMessageMetaDataUpdate:(NSNotification *)notification {
+    if (self.mContactsMessageListArray.count == 0) {
+        return;
+    }
+    
+    ALMessage *message = (ALMessage *)notification.object;
+    NSIndexPath * path = [self getIndexPathForMessage:message.key];
+    if ([self isValidIndexPath:path]) {
+        ALMessage *alMessage = self.mContactsMessageListArray[path.row];
+        if ([alMessage.key isEqualToString:message.key]) {
+            alMessage.metadata = message.metadata;
+            [self reloadDataWithMessageKey:message.key andMessage:alMessage withValidIndexPath:path];
+        }
+    }
+}
+
+-(BOOL)isValidIndexPath:(NSIndexPath *)indexPath {
+    return self.mTableView &&
+    indexPath.row != -1 &&
+    indexPath.section < [self.mTableView numberOfSections] &&
+    indexPath.row < [self.mTableView numberOfRowsInSection:indexPath.section];
+}
+
+-(void)reloadDataWithMessageKey:(NSString *)messageKey
+                     andMessage:(ALMessage *)alMessage
+             withValidIndexPath:(NSIndexPath *)path {
+    NSInteger newCount = self.mContactsMessageListArray.count;
+    NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
+    ALMessage * message = self.mContactsMessageListArray[path.row];
+    if ([message.key isEqualToString:messageKey]) {
+        self.mContactsMessageListArray[path.row] = alMessage;
+    }
+    if (newCount > oldCount) {
+        ALSLog(ALLoggerSeverityInfo, @"Message list shouldn't have more number of rows then the numberOfRowsInSection before update reloading tableView");
+        [self.mTableView reloadData];
+        return;
+    } else {
+        [self.mTableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationFade];
+    }
 }
 
 @end

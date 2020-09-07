@@ -30,7 +30,6 @@
     if(self)
     {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.contentView.userInteractionEnabled = YES;
 
         self.contactProfileImage = [[UIImageView alloc] init];
         [self.contactProfileImage setBackgroundColor:[UIColor whiteColor]];
@@ -62,10 +61,7 @@
             self.emailId.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             self.contactPerson.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         }
-
-        UITapGestureRecognizer * menuTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
-        [self.contentView addGestureRecognizer:menuTapGesture];
-
+        [self.contentView addSubview:self.frontView];
     }
     return self;
 }
@@ -109,27 +105,6 @@
 
 }
 
-#pragma mark - Menu option tap Method -
-
--(void) proccessTapForMenu:(id)tap{
-
-    [self processKeyBoardHideTap];
-
-    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
-    UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
-
-    if ([self.mMessage.type isEqualToString:AL_IN_BOX]){
-        [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
-    }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
-        UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
-        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
-    }
-
-    [[UIMenuController sharedMenuController] update];
-
-}
-
-
 //==================================================================================================
 #pragma mark - KAProgressLabel Delegate Methods
 //==================================================================================================
@@ -165,49 +140,11 @@
     self.progresLabel.endDegree = metaInfo.progressValue;
 }
 
-//==================================================================================================
-//==================================================================================================
-
-
--(BOOL) canPerformAction:(SEL)action withSender:(id)sender
-{
-    if([self.mMessage isSentMessage] && self.mMessage.groupId)
-    {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)||  [self isForwardMenuEnabled:action]  ||  [self isMessageReplyMenuEnabled:action]));
-    }
-
-    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):
-            (action == @selector(delete:) ||  [self isForwardMenuEnabled:action]  || [self isMessageReplyMenuEnabled:action]));
-}
-
-
--(void) delete:(id)sender
-{
-    [self.delegate deleteMessageFromView:self.mMessage];
-    [ALMessageService deleteMessage:self.mMessage.key andContactId:self.mMessage.contactIds withCompletion:^(NSString *string, NSError *error) {
-
-        ALSLog(ALLoggerSeverityError, @"DELETE MESSAGE ERROR :: %@", error.description);
-    }];
-}
-
 -(void)openUserChatVC
 {
     [self.delegate processUserChatView:self.mMessage];
 }
 
--(void) messageForward:(id)sender
-{
-    ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
-    [self.delegate processForwardMessage:self.mMessage];
-
-}
-
--(void) messageReply:(id)sender
-{
-    ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
-    [self.delegate processMessageReply:self.mMessage];
-
-}
 - (void)msgInfo:(id)sender
 {
     [self.delegate showAnimationForMsgInfo:YES];
@@ -231,25 +168,9 @@
     }];
 }
 
--(BOOL)isForwardMenuEnabled:(SEL) action;
-{
-    return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
-}
-
--(BOOL)isMessageReplyMenuEnabled:(SEL) action
-{
-    return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
-
-}
-
--(void) processKeyBoardHideTap
-{
-    [self.delegate handleTapGestureForKeyBoard];
-}
-
 -(void)processOpenChat
 {
-    [self processKeyBoardHideTap];
+    [self.delegate handleTapGestureForKeyBoard];
     [self.delegate openUserChat:self.mMessage];
 }
 

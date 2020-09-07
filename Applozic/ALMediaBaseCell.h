@@ -24,6 +24,7 @@
 #import "ALChannel.h"
 #import "ALContact.h"
 #import <AVKit/AVKit.h>
+#import "ALTappableView.h"
 
 @protocol ALMediaBaseCellDelegate <NSObject>
 
@@ -39,6 +40,7 @@
 -(void) processTapGesture:(ALMessage *)alMessage;
 -(void) processForwardMessage:(ALMessage *) message;
 -(void) handleTapGestureForKeyBoard;
+-(void) deleteMessasgeforAll:(ALMessage *) message;
 
 @optional
 
@@ -65,7 +67,11 @@
 @property (retain, retain) UIView * replyParentView;
 @property (strong, nonatomic)  NSMutableDictionary *alphabetiColorCodesDictionary;
 
+@property (nonatomic, strong) ALTappableView * frontView;
+
 @property (nonatomic, assign) id <ALMediaBaseCellDelegate> delegate;
+
+@property (strong, nonatomic) UILongPressGestureRecognizer * menuTapGesture;
 
 -(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize;
 @property (retain, nonatomic) MessageReplyView * replyUIView;

@@ -25,5 +25,7 @@
 + (CGFloat) getChatCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame;
 + (CGFloat) getCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame;
 + (CGFloat) getLinkCelllHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame;
++(CGSize)textSizeWithText:(NSString *)text
+             andCellFrame:(CGRect)cellFrame;
 
 @end

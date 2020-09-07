@@ -210,6 +210,8 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
     self.contactProfileImage.layer.cornerRadius = self.contactProfileImage.frame.size.width/2;
     self.contactProfileImage.layer.masksToBounds = YES;
 
+    self.frontView.frame = self.mBubleImageView.frame;
+
     self.mDateLabel.text = theDate;
     theUrl  = nil;
     self.vCardClass = nil;

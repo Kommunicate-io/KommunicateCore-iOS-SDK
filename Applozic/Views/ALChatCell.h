@@ -15,9 +15,11 @@
 #import "ALApplozicSettings.h"
 #import "ALChannel.h"
 #import "ALContact.h"
+#import "ALTappableView.h"
 
 @protocol ALChatCellDelegate <NSObject>
 
+-(void) deleteMessasgeforAll:(ALMessage *) message;
 -(void) deleteMessageFromView:(ALMessage *) message;
 -(void) loadView:(UIViewController *)launch;
 -(void) showAnimation:(BOOL)flag;
@@ -64,5 +66,7 @@
 @property (nonatomic, strong) ALChannel * channel;
 
 @property (strong, nonatomic)  NSMutableDictionary *colourDictionary;
+
+@property (nonatomic,retain) ALTappableView * frontView;
 
 @end

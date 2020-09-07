@@ -679,4 +679,30 @@ WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     }];
 }
 
+-(void)deleteMessageForAllWithKey:(NSString *) keyString
+                   withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
+    NSString * theUrlString = [NSString stringWithFormat:@"%@/rest/ws/message/v2/delete",KBASE_URL];
+    NSString * theParamString = [NSString stringWithFormat:@"key=%@&deleteForAll=true",keyString];
+
+    NSMutableURLRequest *theRequest = [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
+
+    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"DELETE_MESSAGE_FOR_ALL" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+        if (theError) {
+            completion(nil, theError);
+            return;
+        }
+        ALSLog(ALLoggerSeverityInfo, @"Response for delete message for all: %@", (NSString *)theJson);
+        ALAPIResponse* response = [[ALAPIResponse alloc] initWithJSONString:theJson];
+        if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+            completion(response, nil);
+        } else {
+            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+                                                         code:1
+                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message for all"}];
+            completion(nil, responseError);
+        }
+    }];
+}
+
 @end

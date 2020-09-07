@@ -69,8 +69,6 @@
 
 -(void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion;
 
--(void)updateUserApplicationInfo;
-
 -(void)updatePassword:(NSString*)oldPassword withNewPassword :(NSString *) newPassword withCompletion:(void(^)( ALAPIResponse* alAPIResponse, NSError *theError))completion;
 -(void)processResettingUnreadCount;
 
@@ -99,5 +97,8 @@
 -(void)disableChat:(BOOL) disable withCompletion: (void(^)(BOOL response, NSError *error)) completion;
 
 - (void)updateDisplayNameWith:(NSString *) userId withDisplayName:(NSString *) displayName withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError * error)) completion;
+
+-(void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
+                                withCompletion:(void(^)(NSMutableArray *contcatArray, NSError * error))completion;
 
 @end

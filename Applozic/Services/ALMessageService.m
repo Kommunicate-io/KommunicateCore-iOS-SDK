@@ -1045,4 +1045,14 @@ static ALMessageClientService *alMsgClientService;
 
 }
 
+
+-(void)deleteMessageForAllWithKey:(NSString *) keyString
+                   withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
+    ALMessageClientService * mesasgeClientService  = [[ALMessageClientService alloc] init];
+    [mesasgeClientService deleteMessageForAllWithKey:keyString withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+        completion(apiResponse, error);
+    }];
+}
+
+
 @end

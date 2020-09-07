@@ -12,9 +12,10 @@
 #import "ALApplozicSettings.h"
 #import "ALAudioVideoBaseVC.h"
 #import "ALChannelMsgCell.h"
+#import "ALMyDeletedMessageCell.h"
+#import "ALFriendDeletedMessage.h"
 
 @implementation ALUIConstant
-
 
 +(CGSize) getFrameSize
 {
@@ -22,15 +23,19 @@
     return PHONE_SIZE;
 }
 
-+(CGSize)textSize:(ALMessage *)theMessage andCellFrame:(CGRect)cellFrame
-{
-    CGSize theTextSize = [ALUtilityClass getSizeForText:theMessage.message
++(CGSize)textSize:(ALMessage *)theMessage andCellFrame:(CGRect)cellFrame {
+   return [self textSizeWithText:theMessage.message andCellFrame:cellFrame];
+}
+
++(CGSize)textSizeWithText:(NSString *)text andCellFrame:(CGRect)cellFrame {
+    CGSize theTextSize = [ALUtilityClass getSizeForText:text
                                                maxWidth:cellFrame.size.width - 115
                                                    font:[ALApplozicSettings getFontFace]
                                                fontSize:[ALApplozicSettings getChatCellTextFontSize]];
-    
+
     return theTextSize;
 }
+
 
 //=========================================================================================================
 #pragma ChatViewController TABLE CELL HEIGHT CONSTANTS
@@ -169,8 +174,14 @@
     
     CGFloat replyViewHeight = 70;
     CGFloat heightOfCell;
-    
-    if(alMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
+    if (alMessage.isDeletedForAll) {
+        if (alMessage.isSentMessage) {
+            return [ALMyDeletedMessageCell getDeletedMessageCellHeight:alMessage andCellFrame:cellFrame];
+        } else {
+            return [ALFriendDeletedMessage getDeletedMessageCellHeight:alMessage andCellFrame:cellFrame];
+        }
+    }
+    else if(alMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
     {
         heightOfCell = [self getLocationCellHeight:cellFrame];
     }

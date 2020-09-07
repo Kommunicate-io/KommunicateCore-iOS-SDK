@@ -50,8 +50,6 @@ extern NSString * const ThirdPartyDetailVCNotificationChannelKey;
 
 @property (nonatomic) BOOL isVisible;
 
-
-@property (nonatomic) BOOL refreshMainView;
 @property (nonatomic) BOOL refresh;
 @property (strong, nonatomic) NSString * displayName;
 

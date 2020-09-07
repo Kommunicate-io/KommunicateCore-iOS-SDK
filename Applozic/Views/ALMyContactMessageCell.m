@@ -185,6 +185,8 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
     self.mDateLabel.text = theDate;
 
+    self.frontView.frame = self.mBubleImageView.frame;
+
     theUrl = nil;
     self.vCardClass = nil;
     if (alMessage.imageFilePath != NULL)

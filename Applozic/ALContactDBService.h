@@ -54,7 +54,7 @@
 
 -(BOOL)setUnreadCountDB:(ALContact*)contact;
 
--(void)updateFilteredContacts:(ALContactsResponse *)contactsResponse;
+-(NSMutableArray*)updateFilteredContacts:(ALContactsResponse *)contactsResponse withLoadContact:(BOOL)isLoadContactFromDb;
 
 -(NSMutableArray *)getAllContactsFromDB;
 -(NSNumber *)getOverallUnreadCountForContactsFromDB;

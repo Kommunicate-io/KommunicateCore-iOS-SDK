@@ -595,6 +595,7 @@
     theMessage.metadata = [theMessage getMetaDataDictionary:theEntity.metadata];
     theMessage.msgHidden = [theEntity.msgHidden boolValue];
     theMessage.source = [theEntity source];
+    theMessage.messageReplyType = theEntity.replyMessageType;
 
     /// file meta info
     if (theEntity.fileMetaInfo) {

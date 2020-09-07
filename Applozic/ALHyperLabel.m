@@ -51,7 +51,7 @@ static UIColor *ALHyperLabelLinkColorHighlight;
 	if (!self.userInteractionEnabled) {
 		self.userInteractionEnabled = YES;
 	}
-	
+
 	if (!self.linkAttributeDefault) {
 		self.linkAttributeDefault = @{NSForegroundColorAttributeName: ALHyperLabelLinkColorDefault,
 									  NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
@@ -195,6 +195,10 @@ static UIColor *ALHyperLabelLinkColorHighlight;
 	}
 	
 	return nil;
+}
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
 }
 
 @end

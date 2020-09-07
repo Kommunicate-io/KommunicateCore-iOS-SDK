@@ -158,7 +158,19 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
 
 -(void)displayAttachmentMediaType:(ALMessage *)message {
 
-    if (message.fileMeta ||
+    if ([message isDeletedForAll]) {
+        UIColor *subtextColour = [ALApplozicSettings getMessageSubtextColour];
+        self.mMessageLabel.hidden = YES;
+        self.imageMarker.hidden = NO;
+        self.imageNameLabel.hidden = NO;
+        self.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"deletedMessageText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"This message has been deleted", @"");
+
+        UIImage *deletedIcon = [ALUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
+        deletedIcon = [deletedIcon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.imageMarker.tintColor = subtextColour;
+        self.imageMarker.image = deletedIcon;
+        self.imageNameLabel.textColor = subtextColour;
+    } else if (message.fileMeta ||
         message.contentType == ALMESSAGE_CONTENT_LOCATION) {
         self.mMessageLabel.hidden = YES;
         self.imageMarker.hidden = NO;
