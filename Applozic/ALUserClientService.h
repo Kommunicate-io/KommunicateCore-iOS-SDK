@@ -11,7 +11,6 @@
 #import "ALContact.h"
 #import "ALContactsResponse.h"
 #import "ALUserDetailListFeed.h"
-#import "AlApplicationInfoFeed.h"
 #import "ALAPIResponse.h"
 #import "ALMuteRequest.h"
 
@@ -59,9 +58,6 @@
    withCompletion:(void(^)(id theJson, NSError *theError))completion;
 
 -(void)subProcessUserDetailServerCallPOST:(ALUserDetailListFeed *)ob withCompletion:(void(^)(NSMutableArray * userDetailArray, NSError * theError))completionMark;
-
--(void) updateApplicationInfoDeatils:(AlApplicationInfoFeed *)applicationInfoDeatils withCompletion:(void (^)(NSString *json, NSError *error))completion;
-
 
 -(void)updatePassword:(NSString*)oldPassword withNewPassword :(NSString *) newPassword  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 

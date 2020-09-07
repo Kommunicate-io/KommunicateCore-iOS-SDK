@@ -153,6 +153,8 @@ static NSString *const AL_RESTRICTED_MESSAGE_PATTERN  = @"com.applozic.AL_RESTRI
 static NSString *const AL_DISABLE_NOTIFICATION_TAP = @"com.applozic.AL_DISABLE_NOTIFICATION_TAP";
 static NSString *const AL_GROUPS_LIST_TAB = @"com.applozic.AL_GROUPS_LIST_TAB";
 static NSString *const AL_MESSAGE_SEARCH = @"com.applozic.AL_MESSAGE_SEARCH";
+static NSString *const AL_MESSAGE_DELETE_FOR_ALL_ENABLED = @"com.applozic.userdefault.AL_MESSAGE_DELETE_FOR_ALL_ENABLED";
+
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -615,4 +617,8 @@ static NSString *const AL_MESSAGE_SEARCH = @"com.applozic.AL_MESSAGE_SEARCH";
 +(void)enableMessageSearch:(BOOL)flag;
 
 +(BOOL)isMessageSearchEnabled;
+
++(void)enableMessageDeleteForAllOption:(BOOL)flag;
++(BOOL)isMessageDeleteForAllEnabled;
+
 @end

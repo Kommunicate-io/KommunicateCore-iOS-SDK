@@ -17,8 +17,6 @@
 
 @implementation ALApplozicSettings
 
-
-
 +(void)setFontFace:(NSString *)fontFace
 {   NSUserDefaults * userDefaults  =  ALApplozicSettings.getUserDefaults;
     [userDefaults setValue:fontFace forKey:AL_FONT_FACE];
@@ -1883,6 +1881,17 @@
 +(BOOL)isMessageSearchEnabled {
     NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
     return [userDefaults boolForKey:AL_MESSAGE_SEARCH];
+}
+
++(void)enableMessageDeleteForAllOption:(BOOL)flag {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    [userDefaults setBool:flag forKey:AL_MESSAGE_DELETE_FOR_ALL_ENABLED];
+    [userDefaults synchronize];
+}
+
++(BOOL)isMessageDeleteForAllEnabled {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    return [userDefaults boolForKey:AL_MESSAGE_DELETE_FOR_ALL_ENABLED];
 }
 
 @end

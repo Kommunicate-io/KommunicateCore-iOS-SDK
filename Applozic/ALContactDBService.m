@@ -605,21 +605,27 @@
     return userList;
 }
 
--(void)updateFilteredContacts:(ALContactsResponse *)contactsResponse {
+-(NSMutableArray*)updateFilteredContacts:(ALContactsResponse *)contactsResponse withLoadContact:(BOOL)isLoadContactFromDb {
     NSMutableArray * contactArray = [NSMutableArray new];
     for (ALUserDetail * userDetail in contactsResponse.userDetailList) {
         userDetail.unreadCount = 0;
         [self updateUserDetail:userDetail];
-        ALContact * contact = [self loadContactByKey:@"userId" value: userDetail.userId];
-        [contactArray addObject:contact];
+        if (isLoadContactFromDb) {
+            ALContact * contact = [self loadContactByKey:@"userId" value: userDetail.userId];
+            [contactArray addObject:contact];
+        }
     }
+    return contactArray;
 }
 
 -(NSMutableArray *)getAllContactsFromDB {
     ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"userId !=%@ AND deletedAtTime == nil",[ALUserDefaultsHandler getUserId]];
     NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_CONTACT"];
+    [theRequest setPredicate:predicate];
     [theRequest setReturnsDistinctResults:YES];
-    
+
     NSMutableArray * contactList = [NSMutableArray new];
     NSError *fetchError = nil;
     NSArray *userArray = [theDbHandler executeFetchRequest:theRequest withError:&fetchError];

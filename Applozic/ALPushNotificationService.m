@@ -318,33 +318,6 @@
             }
 
         }else if([type isEqualToString:self.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]){
-            NSString* keyString;
-            NSString* deviceKey;
-            @try
-            {
-                NSDictionary * message = [theMessageDict objectForKey:@"message"];
-                ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:message];
-                keyString = alMessage.key;
-                deviceKey = alMessage.deviceKey;
-            } @catch (NSException * exp) {
-                ALSLog(ALLoggerSeverityError, @"Error while fetching message from dictionary : %@", exp.description);
-                @try
-                {
-                    NSString * messageKey = [theMessageDict valueForKey:@"message"];
-                    if(messageKey){
-                        ALMessageDBService * messagedbService = [[ALMessageDBService alloc]init];
-                        DB_Message * dbMessage  = (DB_Message *)[messagedbService getMessageByKey:@"key" value:messageKey];
-                        if (dbMessage != nil) {
-                            deviceKey = dbMessage.deviceKey;
-                        }
-                    }
-                } @catch (NSException * exp) {
-                    ALSLog(ALLoggerSeverityError, @"Error while fetching message from dictionary : %@", exp.description);
-                }
-            }
-            if (deviceKey != nil && [deviceKey isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]]) {
-                return TRUE;
-            }
             [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
                 ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
             }];

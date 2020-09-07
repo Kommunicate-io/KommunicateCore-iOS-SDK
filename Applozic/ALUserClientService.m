@@ -15,7 +15,6 @@
 #import "NSString+Encode.h"
 #import "ALAPIResponse.h"
 #import "ALUserDetailListFeed.h"
-#import "AlApplicationInfoFeed.h"
 
 NSString * const ApplozicDomain = @"Applozic";
 
@@ -255,8 +254,19 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         }
 
-        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REGISTERED_CONTACT_WITH_PAGE_SIZE_JSON : %@",(NSString *)theJson);
-        ALContactsResponse * contactResponse = [[ALContactsResponse alloc] initWithJSONString:(NSString *)theJson];
+        NSString *jsonString = (NSString *)theJson;
+        if ([jsonString isKindOfClass:[NSString class]] &&
+            [jsonString isEqualToString:@"error"]) {
+            NSError * error = [NSError
+                               errorWithDomain:@"Applozic"
+                               code:1
+                               userInfo:[NSDictionary dictionaryWithObject:@"Got some error failed to fetch the registered contacts" forKey:NSLocalizedDescriptionKey]];
+            completion(nil, error);
+            return;
+        }
+
+        ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REGISTERED_CONTACT_WITH_PAGE_SIZE_JSON : %@", jsonString);
+        ALContactsResponse * contactResponse = [[ALContactsResponse alloc] initWithJSONString:jsonString];
         [ALUserDefaultsHandler setContactViewLoadStatus:YES];
         completion(contactResponse, nil);
     }];
@@ -467,39 +477,6 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                                                                                           forKey:NSLocalizedDescriptionKey]];
             completionMark(nil, reponseError);
         }
-    }];
-}
-
-
-//========================================================================================================================
-#pragma mark UPDATE Application info
-//========================================================================================================================
-
--(void) updateApplicationInfoDeatils:(AlApplicationInfoFeed *)applicationInfoDeatils
-                      withCompletion:(void (^)(NSString *json, NSError *error))completion{
-    
-    NSString * theUrlString = [NSString stringWithFormat:@"%@/apps/customer/application/info/update",KBASE_URL];
-    NSError *error;
-    NSData * postdata = [NSJSONSerialization dataWithJSONObject:applicationInfoDeatils.dictionary options:0 error:&error];
-    NSString *paramString = [[NSString alloc] initWithData:postdata encoding:NSUTF8StringEncoding];
-    
-    NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:paramString];
-
-    [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"UPDATE_APPLICATION_INFO" WithCompletionHandler:^(id theJson, NSError *theError) {
-
-        ALSLog(ALLoggerSeverityInfo, @"Update Application Info reponse  :: %@",(NSString *)theJson);
-        NSString * jsonString  = (NSString *)theJson;
-
-        if (jsonString != nil  && [jsonString isEqualToString:@"/success/"]) {
-            completion(theJson, theError);
-        } else {
-            NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                     userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON FOR UPDATEING THE APPLICATION INFO"
-                                                                                          forKey:NSLocalizedDescriptionKey]];
-            completion(theJson, reponseError);
-            return ;
-        }
-
     }];
 }
 

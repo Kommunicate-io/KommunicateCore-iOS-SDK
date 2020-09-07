@@ -82,7 +82,7 @@ UIViewController * modalCon;
 
         UITapGestureRecognizer * tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageFullScreen:)];
         tapper.numberOfTapsRequired = 1;
-        [self.mImageView addGestureRecognizer:tapper];
+        [self.frontView addGestureRecognizer:tapper];
         [self.contentView addSubview:self.mImageView];
 
         [self.mDowloadRetryButton addTarget:self action:@selector(dowloadRetryButtonAction) forControlEvents:UIControlEventTouchUpInside];
@@ -91,9 +91,7 @@ UIViewController * modalCon;
             self.mImageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         }
 
-        UITapGestureRecognizer * menuTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
-        [self.contentView addGestureRecognizer:menuTapGesture];
-
+        [self.contentView addSubview:self.frontView];
     }
 
     return self;
@@ -391,6 +389,8 @@ UIViewController * modalCon;
 
     }
 
+    self.frontView.frame = self.mBubleImageView.frame;
+
     self.mDowloadRetryButton.frame = CGRectMake(self.mImageView.frame.origin.x + self.mImageView.frame.size.width/2.0 - DOWNLOAD_RETRY_PADDING_X,
                                                 self.mImageView.frame.origin.y + self.mImageView.frame.size.height/2.0 - DOWNLOAD_RETRY_PADDING_Y,
                                                 90, 40);
@@ -414,11 +414,14 @@ UIViewController * modalCon;
         NSString *filePath = documentDirectory.path;
 
         if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
-            [self setInImageView:[NSURL fileURLWithPath:filePath]];
+
+            theUrl = [NSURL fileURLWithPath:filePath];
+            [self setInImageView:theUrl];
         }else{
             NSURL *appGroupDirectory =  [ALUtilityClass getAppsGroupDirectoryWithFilePath:alMessage.imageFilePath];
             if(appGroupDirectory){
-                [self setInImageView:[NSURL fileURLWithPath:appGroupDirectory.path]];
+                theUrl = [NSURL fileURLWithPath:appGroupDirectory.path];
+                [self setInImageView:theUrl];
             }
         }
     }
@@ -458,32 +461,6 @@ UIViewController * modalCon;
     }
     [self.mImageView sd_setImageWithURL:url placeholderImage:nil options:0];
 }
-
-#pragma mark - Menu option tap Method -
-
--(void) proccessTapForMenu:(id)tap{
-
-    [self processKeyBoardHideTap];
-
-    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
-    UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
-
-    if ([self.mMessage.type isEqualToString:AL_IN_BOX]){
-
-        [[UIMenuController sharedMenuController] setMenuItems: @[messageForward,messageReply]];
-
-    }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
-
-
-        UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
-
-        [[UIMenuController sharedMenuController] setMenuItems: @[msgInfo,messageReply,messageForward]];
-    }
-    [[UIMenuController sharedMenuController] update];
-
-}
-
-
 
 #pragma mark - KAProgressLabel Delegate Methods -
 
@@ -569,27 +546,6 @@ UIViewController * modalCon;
     [modalCon dismissViewControllerAnimated:YES completion:nil];
 }
 
--(BOOL) canPerformAction:(SEL)action withSender:(id)sender
-{
-    ALSLog(ALLoggerSeverityInfo, @"Action: %@", NSStringFromSelector(action));
-
-    if(self.mMessage.groupId){
-        ALChannelService *channelService = [[ALChannelService alloc] init];
-        ALChannel *channel =  [channelService getChannelByKey:self.mMessage.groupId];
-        if(channel && channel.type == OPEN){
-            return NO;
-        }
-    }
-
-    if([self.mMessage isSentMessage] && self.mMessage.groupId)
-    {
-        return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) || [self isMessageReplyMenuEnabled:action] || (action == @selector(copy:))));
-    }
-
-    return (self.mMessage.isDownloadRequired? (action == @selector(delete:)):(action == @selector(delete:)|| [self isForwardMenuEnabled:action] || [self isMessageReplyMenuEnabled:action] || (action == @selector(copy:))));
-}
-
-
 
 - (void)copy:(id)sender {
 
@@ -614,37 +570,16 @@ UIViewController * modalCon;
 
 }
 
--(void) delete:(id)sender
-{
-    //UI
-    ALSLog(ALLoggerSeverityInfo, @"message to deleteUI %@",self.mMessage.message);
-    [self.delegate deleteMessageFromView:self.mMessage];
-
-    //serverCall
-    [ALMessageService deleteMessage:self.mMessage.key andContactId:self.mMessage.contactIds withCompletion:^(NSString *string, NSError *error) {
-
-        ALSLog(ALLoggerSeverityError, @"DELETE MESSAGE ERROR :: %@", error.description);
-    }];
-}
-
--(void) messageForward:(id)sender
-{
-    ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
-    [self.delegate processForwardMessage:self.mMessage];
-
-}
-
-
--(void) messageReply:(id)sender
-{
-    ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
-    [self.delegate processMessageReply:self.mMessage];
-
-}
 
 -(void)openUserChatVC
 {
     [self.delegate processUserChatView:self.mMessage];
+}
+
+-(void)processOpenChat
+{
+    [self.delegate handleTapGestureForKeyBoard];
+    [self.delegate openUserChat:self.mMessage];
 }
 
 - (void)msgInfo:(id)sender
@@ -668,28 +603,4 @@ UIViewController * modalCon;
         }
     }];
 }
-
--(void) processKeyBoardHideTap
-{
-    [self.delegate handleTapGestureForKeyBoard];
-}
-
--(BOOL)isForwardMenuEnabled:(SEL) action;
-{
-    return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
-}
-
--(BOOL)isMessageReplyMenuEnabled:(SEL) action
-{
-
-    return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
-
-}
-
--(void)processOpenChat
-{
-    [self processKeyBoardHideTap];
-    [self.delegate openUserChat:self.mMessage];
-}
-
 @end

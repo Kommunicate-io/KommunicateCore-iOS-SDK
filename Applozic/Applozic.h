@@ -124,3 +124,4 @@ FOUNDATION_EXPORT const unsigned char ApplozicVersionString[];
 #import <Applozic/ALChannelOfTwoMetaData.h>
 #import <Applozic/ALNotificationHelper.h>
 #import <Applozic/ALAuthService.h>
+#import <Applozic/ALTappableView.h>

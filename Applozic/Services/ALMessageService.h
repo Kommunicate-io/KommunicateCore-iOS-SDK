@@ -94,4 +94,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 - (void) fetchReplyMessages:(NSMutableArray<NSString *> *) keys withCompletion: (void(^)(NSMutableArray<ALMessage *>* messages))completion;
 
+-(void)deleteMessageForAllWithKey:(NSString *) keyString
+                   withCompletion:(void (^)(ALAPIResponse *, NSError *))completion;
+
 @end

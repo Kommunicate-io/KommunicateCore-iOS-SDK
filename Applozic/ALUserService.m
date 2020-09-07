@@ -354,7 +354,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
         [ALApplozicSettings setStartTime:response.lastFetchTime];
         ALContactDBService * dbServie = [ALContactDBService new];
-        [dbServie updateFilteredContacts:response];
+        [dbServie updateFilteredContacts:response withLoadContact:NO];
         completion(error);
 
     }];
@@ -486,20 +486,6 @@ static int CONTACT_PAGE_SIZE = 100;
             completion(alContact);
         }
 }
-
--(void)updateUserApplicationInfo{
-
-    AlApplicationInfoFeed *userApplicationInfo = [AlApplicationInfoFeed new];
-    userApplicationInfo.applicationKey = [ALUserDefaultsHandler getApplicationKey];
-    userApplicationInfo.bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-
-    ALUserClientService *clientService = [ALUserClientService new];
-    [clientService updateApplicationInfoDeatils:userApplicationInfo withCompletion:^(NSString *json, NSError *error) {
-        ALSLog(ALLoggerSeverityInfo, @"Response For user application update reponse :%@",json);
-    }];
-
-}
-
 
 -(void)updatePassword:(NSString*)oldPassword withNewPassword :(NSString *) newPassword  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
 
@@ -668,6 +654,51 @@ static int CONTACT_PAGE_SIZE = 100;
         } else {
             ALSLog(ALLoggerSeverityError, @"Error while disabling chat for user");
             completion(NO, error);
+        }
+    }];
+}
+
+/// This method will give registered contacts and contacts from local DB.
+/// @param nextPage If nextPage is NO or false it will get contacts from starting and return the array of contact.
+/// If nextPage is YES or true it will return the next older contacts
+/// @param completion Returns an array of ALContact in case of successfully fetched else it will return NSError.
+-(void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
+                                withCompletion:(void(^)(NSMutableArray *contcatArray, NSError * error))completion {
+
+    if (![ALUserDefaultsHandler isLoggedIn]) {
+        NSError * error = [NSError
+                           errorWithDomain:@"Applozic"
+                           code:1
+                           userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+        completion(nil, error);
+        return;
+    }
+    ALUserClientService * clientService = [ALUserClientService new];
+    NSUInteger pageSize = (NSUInteger)CONTACT_PAGE_SIZE;
+    NSNumber * startTime;
+    if (nextPage) {
+        startTime = [ALApplozicSettings getStartTime];
+    } else {
+        startTime = 0;
+    }
+    [clientService getListOfRegisteredUsers:startTime
+                                andPageSize:pageSize
+                             withCompletion:^(ALContactsResponse * response, NSError * error) {
+
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+
+        [ALApplozicSettings setStartTime:response.lastFetchTime];
+        ALContactDBService * dbServie = [ALContactDBService new];
+        NSMutableArray * nextPageContactArray = [dbServie updateFilteredContacts:response
+                                                                 withLoadContact:nextPage];
+        if (nextPage) {
+            completion(nextPageContactArray, nil);
+        } else {
+            NSMutableArray * contcatArray = [dbServie getAllContactsFromDB];
+            completion(contcatArray, error);
         }
     }];
 }
