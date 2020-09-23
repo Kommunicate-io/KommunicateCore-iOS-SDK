@@ -809,14 +809,6 @@ static ALMessageClientService *alMsgClientService;
 }
 
 //============================================================================================================
-#pragma mark ADD BROADCAST MESSAGE TO DB
-//============================================================================================================
-
-+(void)addBroadcastMessageToDB:(ALMessage *)alMessage {
-    [ALMessageDBService addBroadcastMessageToDB:alMessage];
-}
-
-//============================================================================================================
 #pragma mark GET LATEST MESSAGE FOR USER/CHANNEL
 //============================================================================================================
 

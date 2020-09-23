@@ -70,6 +70,7 @@ static NSString *const AL_AUTHENTICATION_TOKEN = @"AL_AUTHENTICATION_TOKEN";
 static NSString *const AL_AUTHENTICATION_TOKEN_CREATED_TIME = @"com.applozic.userdefault.AUTHENTICATION_TOKEN_CREATED_TIME";
 static NSString *const AL_AUTHENTICATION_TOKEN_VALID_UPTO_MINS = @"com.applozic.userdefault.AUTHENTICATION_TOKEN_VALID_UPTO_MINS";
 static NSString *const AL_INITIAL_MESSAGE_LIST_CALL = @"com.applozic.userdefault.AL_INITIAL_MESSAGE_LIST_CALL";
+static NSString *const AL_LOGGED_IN_USER_DEACTIVATED = @"com.applozic.userdefault.AL_LOGGED_IN_USER_DEACTIVATED";
 
 #import <Foundation/Foundation.h>
 #import "ALApplozicSettings.h"
@@ -277,5 +278,8 @@ static NSString *const AL_INITIAL_MESSAGE_LIST_CALL = @"com.applozic.userdefault
 
 +(void)setInitialMessageListCallDone:(BOOL)flag;
 +(BOOL)isInitialMessageListCallDone;
+
++ (void)deactivateLoggedInUser:(BOOL)deactivate;
++ (BOOL)isLoggedInUserDeactivated;
 
 @end

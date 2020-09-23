@@ -56,5 +56,5 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 -(BOOL)isChatDisabled;
 -(BOOL)isDisplayNameUpdateRequired;
 -(NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString;
-
+-(BOOL)isDeleted;
 @end

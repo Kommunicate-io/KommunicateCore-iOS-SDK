@@ -119,6 +119,10 @@
 
 -(void)onUserMuteStatus:(ALUserDetail *)userDetail;
 
+/// onChannelMute will be called after a group has been muted/unmuted.
+/// @param channelKey You will get the channelKey by using this channel key you can get channel and check isNotificationMuted from ALChannel object.
+-(void)onChannelMute:(NSNumber *)channelKey;
+
 @end
 
 @interface ALRealTimeUpdate : NSObject

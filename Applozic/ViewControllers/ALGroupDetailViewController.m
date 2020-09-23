@@ -57,6 +57,10 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(groupDetailsSyncCall:) name:updateGroupMembersNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAPNS:) name:@"pushNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMQTTNotification:) name:@"MQTT_APPLOZIC_01" object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChannelMuteNotification:)
+                                                 name:ALChannelDidChangeGroupMuteNotification object:nil];
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -240,6 +244,17 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     }
 }
 
+-(void)onChannelMuteNotification:(NSNotification *)notification {
+    NSDictionary * userInfoDictionary = notification.userInfo;
+    if (userInfoDictionary &&
+        self.alChannel &&
+        [self.alChannel.key isEqualToNumber:[userInfoDictionary objectForKey:@"CHANNEL_KEY"]]) {
+        ALChannelService * channnelService = [[ALChannelService alloc] init];
+        self.alChannel = [channnelService getChannelByKey:self.alChannel.key];
+        NSIndexPath *path = [NSIndexPath indexPathForRow:1 inSection:0];
+        [self.tableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationFade];
+    }
+}
 
 //------------------------------------------------------------------------------------------------------------------
 #pragma mark - Table View DataSource Methods

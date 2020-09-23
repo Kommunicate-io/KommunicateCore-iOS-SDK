@@ -553,8 +553,6 @@ UIViewController * modalCon;
     dispatch_async(queue, ^{
 
         UIPasteboard *appPasteBoard = UIPasteboard.generalPasteboard;
-        appPasteBoard.persistent = YES;
-
         NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString * filePath = [docDir stringByAppendingPathComponent:self.mMessage.imageFilePath];
 

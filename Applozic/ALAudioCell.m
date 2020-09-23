@@ -93,6 +93,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
             
         }
         [self.contentView addSubview:self.frontView];
+        [self.contentView bringSubviewToFront:self.playPauseStop];
     }
     
     return self;
@@ -113,7 +114,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     
     self.mediaTrackLength.text = [self getAudioLength:alMessage.imageFilePath];
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
-    
+
     self.mMessage = alMessage;
     self.progresLabel.alpha = 0;
     
