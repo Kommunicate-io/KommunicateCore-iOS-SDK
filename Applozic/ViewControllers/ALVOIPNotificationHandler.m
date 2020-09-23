@@ -18,7 +18,6 @@
     UNMutableNotificationContent *content;
     SystemSoundID soundID;
     NSString *soundPath;
-    UILocalNotification *localNotification;
     UIApplication *appObject;
     UNUserNotificationCenter *center;
 }
@@ -150,24 +149,12 @@
                     alertString = [NSString stringWithFormat:@"Video Call from %@",[alContact getDisplayName]];
   
                 }
-              
-                if (IS_OS_EARLIER_THAN_10)
-                {
-                    appObject.delegate = self;
-                    localNotification = [[UILocalNotification alloc] init];
-                    localNotification.alertBody =
-                    localNotification.alertTitle = alertString;
-                    localNotification.userInfo = [userInfo mutableCopy];
-                }
-                else
-                {
-                    content = [[UNMutableNotificationContent alloc] init];
-                    content.title = @"";
-                    content.body = alertString;
-                    content.userInfo = [userInfo mutableCopy];
-                    center.delegate = self;
-                }
-            
+                content = [[UNMutableNotificationContent alloc] init];
+                content.title = @"";
+                content.body = alertString;
+                content.userInfo = [userInfo mutableCopy];
+                center.delegate = self;
+
                 count = 0;
                 apnTimer = [NSTimer scheduledTimerWithTimeInterval:3.0
                                                            target:self
@@ -236,29 +223,19 @@
     if (count < 60)
     {
         ALSLog(ALLoggerSeverityInfo, @"BG_TIME_REMAIN : %f",appObject.backgroundTimeRemaining);
-        if (IS_OS_EARLIER_THAN_10)
-        {
-            [appObject presentLocalNotificationNow:localNotification];
-            if (count != 0)
-            {
-                // REMOVE FROM NOTIFICATION CENTER
+
+        NSString *reuqestIdentifier = [NSString stringWithFormat:@"%@_%i",@"INCOMING_VOIP_APN",count];
+        UNNotificationRequest * request = [UNNotificationRequest requestWithIdentifier:reuqestIdentifier content:content trigger:nil];
+        [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+            if (!error) {
+                ALSLog(ALLoggerSeverityInfo, @"PUSHKIT : INCOMING_VOIP_APN");
             }
-        }
-        else
+        }];
+
+        if (count != 0)
         {
-            NSString *reuqestIdentifier = [NSString stringWithFormat:@"%@_%i",@"INCOMING_VOIP_APN",count];
-            UNNotificationRequest * request = [UNNotificationRequest requestWithIdentifier:reuqestIdentifier content:content trigger:nil];
-            [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-                if (!error) {
-                    ALSLog(ALLoggerSeverityInfo, @"PUSHKIT : INCOMING_VOIP_APN");
-                }
-            }];
-            
-            if (count != 0)
-            {
-                NSString *cancelIdentifier = [NSString stringWithFormat:@"%@_%i",@"INCOMING_VOIP_APN",(count - 3)];
-                [center removeDeliveredNotificationsWithIdentifiers:@[cancelIdentifier]];
-            }
+            NSString *cancelIdentifier = [NSString stringWithFormat:@"%@_%i",@"INCOMING_VOIP_APN",(count - 3)];
+            [center removeDeliveredNotificationsWithIdentifiers:@[cancelIdentifier]];
         }
         AudioServicesPlaySystemSound(soundID);
         count = count + 3;
@@ -290,12 +267,6 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
     UNNotificationContent * notifyContent = response.notification.request.content;
     [self didReceiveLocalNotification:notifyContent.userInfo];
-}
-
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-    
-    ALSLog(ALLoggerSeverityInfo, @"ALVOIP : DID_RECEIVE_LOCAL_NOTIFICATION");
-    [self didReceiveLocalNotification:notification.userInfo];
 }
 
 -(void)didReceiveLocalNotification:(NSDictionary *)userInfo

@@ -286,7 +286,7 @@
 {
     NSString * URLString = [NSString stringWithFormat:@"https://maps.google.com/maps?q=%@",[self formatLocationJson:super.mMessage]];
     NSURL * locationURL = [NSURL URLWithString:URLString];
-    [[UIApplication sharedApplication] openURL:locationURL];
+    [[UIApplication sharedApplication] openURL:locationURL options:@{} completionHandler:nil];
 }
 
 -(void)openUserChatVC

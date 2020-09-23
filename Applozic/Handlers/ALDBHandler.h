@@ -15,19 +15,17 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 @interface ALDBHandler : NSObject
 
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (strong, nonatomic) NSPersistentContainer *persistentContainer;
 
-- (NSManagedObjectContext *)privateContext;
+@property (nonatomic) BOOL isStoreLoaded;
 
 - (NSError *)saveContext;
 
 +(ALDBHandler *) sharedInstance;
 
-- (void)savePrivateAndMainContext:(NSManagedObjectContext*)context
+- (void)saveWithContext:(NSManagedObjectContext*)context
                        completion:(void (^)(NSError*error))completion;
 
 -(NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError;

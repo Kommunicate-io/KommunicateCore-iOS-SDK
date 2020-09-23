@@ -707,17 +707,17 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         {
             NSNumber * contact = [NSNumber numberWithInteger:substring.integerValue];
             NSURL * phoneNumber = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@",contact]];
-            [[UIApplication sharedApplication] openURL:phoneNumber];
+            [[UIApplication sharedApplication] openURL:phoneNumber options:@{} completionHandler:nil];
         }
         else
         {
             if([substring hasPrefix:@"http"])
             {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:substring]];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:substring] options:@{} completionHandler:nil];
             }
             else
             {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@",substring]]];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@",substring]] options:@{} completionHandler:nil];
             }
         }
     };

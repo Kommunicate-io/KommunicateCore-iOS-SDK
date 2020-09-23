@@ -76,7 +76,6 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 
 -(ALMessage *)getALMessageByKey:(NSString*)messageReplyId;
 
-+(void)addBroadcastMessageToDB:(ALMessage *)alMessage;
 +(void)syncMessages;
 +(void) getLatestMessageForUser:(NSString *)deviceKeyString withDelegate : (id<ApplozicUpdatesDelegate>)theDelegate withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 

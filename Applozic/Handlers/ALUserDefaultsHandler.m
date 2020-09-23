@@ -957,6 +957,17 @@
     return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
 }
 
++ (void)deactivateLoggedInUser:(BOOL)deactivate {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    [userDefaults setBool: deactivate forKey:AL_LOGGED_IN_USER_DEACTIVATED];
+    [userDefaults synchronize];
+}
+
++ (BOOL)isLoggedInUserDeactivated {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    return [userDefaults boolForKey:AL_LOGGED_IN_USER_DEACTIVATED];
+}
+
 +(SecureStore *)getSecureStore {
     PasswordQueryable *passQuery = [[PasswordQueryable alloc]
                                            initWithService: AL_STORE];

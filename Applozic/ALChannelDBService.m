@@ -1054,11 +1054,11 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         completion(memberList);
     }];
     
-    NSManagedObjectContext *managedObjectContext =  [[ALDBHandler sharedInstance] managedObjectContext];
-
-    if (managedObjectContext) {
-        [managedObjectContext performBlock:^{
-            [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
+    ALDBHandler *handler = [ALDBHandler sharedInstance];
+    NSManagedObjectContext *context = handler.persistentContainer.viewContext;
+    if (context) {
+        [context performBlock:^{
+            [context executeRequest:asynchronousFetchRequest error:nil];
         }];
     } else {
         completion(nil);
@@ -1083,10 +1083,11 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         }
     }];
     
-    NSManagedObjectContext *managedObjectContext = [[ALDBHandler sharedInstance] managedObjectContext];
-    if (managedObjectContext) {
-        [managedObjectContext performBlock:^{
-            [managedObjectContext executeRequest:asynchronousFetchRequest error:nil];
+    ALDBHandler *handler = [ALDBHandler sharedInstance];
+    NSManagedObjectContext *context = handler.persistentContainer.viewContext;
+    if (context) {
+        [context performBlock:^{
+            [context executeRequest:asynchronousFetchRequest error:nil];
         }];
     } else {
         completion(nil);

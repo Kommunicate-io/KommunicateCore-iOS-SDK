@@ -302,6 +302,6 @@
 - (IBAction)callButtonAction:(id)sender {
     
     NSURL * phoneNumber = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@", self.alContact.contactNumber]];
-    [[UIApplication sharedApplication] openURL:phoneNumber];
+    [[UIApplication sharedApplication] openURL:phoneNumber options:@{} completionHandler:nil];
 }
 @end

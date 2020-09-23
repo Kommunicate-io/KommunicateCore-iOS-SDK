@@ -151,12 +151,13 @@
                                                  preferredStyle:UIAlertControllerStyleAlert];
 
         UIAlertAction* settingButton = [UIAlertAction
-                                   actionWithTitle:NSLocalizedStringWithDefaultValue(@"settings", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Settings", @"")
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action) {
-                                       NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-                                       [[UIApplication sharedApplication] openURL:settingsURL];
-                                   }];
+                                        actionWithTitle:NSLocalizedStringWithDefaultValue(@"settings", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Settings", @"")
+                                        style:UIAlertActionStyleDefault
+                                        handler:^(UIAlertAction * action) {
+            NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            [[UIApplication sharedApplication] openURL:settingsURL options:@{} completionHandler:nil];
+
+        }];
 
         UIAlertAction* cancelButton = [UIAlertAction
                                    actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"")

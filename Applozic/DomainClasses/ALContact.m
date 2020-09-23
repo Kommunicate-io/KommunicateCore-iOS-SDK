@@ -119,4 +119,8 @@
     return _metadata;
 }
 
+-(BOOL)isDeleted {
+    return self.deletedAtTime != nil && self.deletedAtTime.intValue > 0;
+}
+
 @end

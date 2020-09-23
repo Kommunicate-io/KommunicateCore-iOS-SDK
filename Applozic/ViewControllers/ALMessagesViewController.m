@@ -78,6 +78,7 @@ static int const MQTT_MAX_RETRY = 3;
 @property (strong, nonatomic)  NSMutableDictionary *colourDictionary;
 @property (strong, nonatomic) UIBarButtonItem *barButtonItem;
 @property (strong, nonatomic) UIBarButtonItem *refreshButton;
+@property (strong, nonatomic) UIBarButtonItem *startNewButton;
 
 @property (nonatomic, strong) ALMessageDBService *dBService;
 
@@ -150,11 +151,12 @@ static int const MQTT_MAX_RETRY = 3;
         if(![ALUserDefaultsHandler isNavigationRightButtonHidden]) {
 
 
-            UIBarButtonItem * startNewButton  = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+            self.startNewButton  = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                                                               target:self
                                                                                               action:@selector(navigationRightButtonAction)];
-            [startNewButton setTintColor:itemColor];
-            [rightSideNavItems addObject: startNewButton];
+            [self.startNewButton setTintColor:itemColor];
+            [self.startNewButton setEnabled:![ALUserDefaultsHandler isLoggedInUserDeactivated]];
+            [rightSideNavItems addObject: self.startNewButton];
 
         }
 
@@ -254,6 +256,10 @@ static int const MQTT_MAX_RETRY = 3;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageMetaDataUpdate:)
                                                    name:AL_MESSAGE_META_DATA_UPDATE object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLoggedInUserDeactivated:)
+                                                 name:ALLoggedInUserDidChangeDeactivateNotification object:nil];
+
 
     [self.navigationController.navigationBar setTitleTextAttributes: @{
                                                                        NSForegroundColorAttributeName:[UIColor whiteColor],
@@ -1525,6 +1531,17 @@ static int const MQTT_MAX_RETRY = 3;
                                                                              instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.forGroup = [NSNumber numberWithInt:BROADCAST_GROUP_CREATION];
     [self.navigationController pushViewController:contactVC animated:YES];
+}
+
+-(void)onLoggedInUserDeactivated:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+
+    if (!userInfo ||
+        !self.startNewButton) {
+        return;
+    }
+
+    [self.startNewButton setEnabled:![[userInfo valueForKey:@"DEACTIVATED"] isEqualToString:@"true"]];
 }
 
 //==============================================================================================================================================
