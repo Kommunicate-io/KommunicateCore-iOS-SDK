@@ -744,6 +744,8 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 -(void)prepareViewController {
 
+    [self setBackGroundWallpaper];
+
     if (self.isSearch) {
         [self loadSearchMessagesWithNextPage:NO];
     } else {
@@ -2478,7 +2480,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         self.refresh = YES;
     }
 
-    [self setBackGroundWallpaper];
 }
 
 //==============================================================================================================================================

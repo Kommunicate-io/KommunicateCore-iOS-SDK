@@ -653,4 +653,6 @@ extern NSString *const AL_MESSAGE_SYNC;
 
 -(void)updateMuteAfterTime:(NSNumber*)notificationAfterTime
               andChnnelKey:(NSNumber*)channelKey;
+
+-(void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError * error))completion;
 @end

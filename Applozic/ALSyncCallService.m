@@ -10,6 +10,7 @@
 #import "ALMessageDBService.h"
 #import "ALContactDBService.h"
 #import "ALChannelService.h"
+#import "ALMessageService.h"
 
 @implementation ALSyncCallService
 
@@ -56,6 +57,12 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CONVERSATION_DELETION"
                                                         object:(contactID ? contactID :channelKey)];
     
+}
+
+-(void)syncMessageMetadata {
+    [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
+        ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
+    }];
 }
 
 @end

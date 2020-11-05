@@ -26,4 +26,6 @@
 -(void)updateTableAtConversationDeleteForContact:(NSString*)contactID
                                   ConversationID:(NSString *)conversationID
                                       ChannelKey:(NSNumber *)channelKey;
+-(void)syncMessageMetadata;
+
 @end
