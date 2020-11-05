@@ -406,7 +406,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 }
 
-+(void)syncCallForChannel:(NSNumber *)updatedAt
++(void)syncCallForChannel:(NSNumber *)updatedAt withFetchUserDetails:(BOOL)fetchUserDetails
             andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion {
     NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CHANNEL_SYNC_URL];
     NSString * theParamString = nil;
@@ -428,25 +428,41 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
         } else {
             NSMutableArray* userNotPresentIds =[NSMutableArray new];
             response = [[ALChannelSyncResponse alloc] initWithJSONString:theJson];
-            ALContactService * contactService = [ALContactService new];
+            if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                if (fetchUserDetails) {
+                    ALContactService * contactService = [ALContactService new];
+                    for(ALChannel * channel in response.alChannelArray) {
 
-            for(ALChannel * channel in response.alChannelArray) {
+                        for (NSString * userId in channel.membersName) {
 
-                for (NSString * userId in channel.membersName) {
-
-                    if(![contactService isContactExist:userId]){
-                        [userNotPresentIds addObject:userId];
+                            if(![contactService isContactExist:userId]){
+                                [userNotPresentIds addObject:userId];
+                            }
+                        }
                     }
-                }
-            } if(userNotPresentIds.count>0) {
-                ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
-                ALUserService *alUserService = [ALUserService new];
-                [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
-                    ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
+
+                    if (userNotPresentIds.count>0) {
+                        ALSLog(ALLoggerSeverityInfo, @"Call userDetails...");
+                        ALUserService *alUserService = [ALUserService new];
+                        [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                            ALSLog(ALLoggerSeverityInfo, @"User detail response sucessfull.");
+                            completion(error, response);
+                        }];
+                    } else {
+                        completion(error, response);
+                    }
+                } else {
                     completion(error, response);
-                }];
+                }
             } else {
-                completion(error, response);
+                NSError *error = [NSError
+                                  errorWithDomain:@"Applozic"
+                                  code:1
+                                  userInfo:[NSDictionary
+                                            dictionaryWithObject:@"Status fail in response"
+                                            forKey:NSLocalizedDescriptionKey]];
+                completion(error, nil);
+                return;
             }
         }
     }];

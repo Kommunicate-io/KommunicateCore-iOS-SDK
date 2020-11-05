@@ -722,16 +722,12 @@ dispatch_queue_t channelUserbackgroundQueue;
 
     NSNumber *updateAt = [ALUserDefaultsHandler getLastSyncChannelTime];
 
-    [ALChannelClientService syncCallForChannel:updateAt andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
-
-        if([response.status isEqualToString:@"success"])
-        {
+    [ALChannelClientService syncCallForChannel:updateAt withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+        if(!error){
+            [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
             [self createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_METADATA" object:nil];
-        }
-        if(!error){
-            [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
         }
     }];
 
@@ -1190,5 +1186,20 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
+/// This method will return all the channels for the logged-in user.
+/// @param completion will have a channel array of ALChannel or will have an error in case of while fetching channels.
+-(void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError * error))completion {
+
+    [ALChannelClientService syncCallForChannel:[ALUserDefaultsHandler getChannelListLastSyncGeneratedTime] withFetchUserDetails:NO andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+        [ALUserDefaultsHandler setChannelListLastSyncGeneratedTime:response.generatedAt];
+        [self createChannelsAndUpdateInfo:response.alChannelArray withDelegate:nil];
+        NSMutableArray *channelArray = [self getAllChannelList];
+        completion(channelArray, nil);
+    }];
+}
 
 @end

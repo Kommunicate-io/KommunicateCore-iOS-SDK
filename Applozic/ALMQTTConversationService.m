@@ -509,9 +509,28 @@ NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUser
             // BROADCAST MESSAGE : MESSAGE_DELIVERED_AND_READ
         }
         else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]){ // MESSAGE_METADATA_UPDATE
-            [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
-                ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
-            }];
+            @try
+            {
+                NSDictionary *messageDict = [theMessageDict objectForKey:@"message"];
+                ALMessage *alMessage = [[ALMessage alloc] initWithDictonary: messageDict];
+                if (alMessage.groupId != nil) {
+                    ALChannelService *channelService = [[ALChannelService alloc] init];
+                    ALChannel * channel = [channelService getChannelByKey:alMessage.groupId];
+                    if (channel && channel.isOpenGroup) {
+                        if (alMessage.hasAttachment) {
+                            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+                            [messageDBService updateMessageMetadataOfKey:alMessage.key withMetadata:alMessage.metadata];
+                        }
+                        [[NSNotificationCenter defaultCenter] postNotificationName:AL_MESSAGE_META_DATA_UPDATE object:alMessage userInfo:nil];
+                    } else {
+                        [self.alSyncCallService syncMessageMetadata];
+                    }
+                } else {
+                    [self.alSyncCallService syncMessageMetadata];
+                }
+            } @catch (NSException * exp) {
+                ALSLog(ALLoggerSeverityError, @"Error while conversating dictionary to message: %@", exp.description);
+            }
         }
         else if([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_READ)]]){
             //Conversation read for user
@@ -818,7 +837,6 @@ NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUser
 
     }];
 }
-
 -(BOOL)shouldRetry {
     BOOL isInBackground = [UIApplication sharedApplication].applicationState == UIApplicationStateBackground;
     return !isInBackground && [ALDataNetworkConnection checkDataNetworkAvailable];

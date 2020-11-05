@@ -50,8 +50,8 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 
 +(void)getChannelInformationResponse:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion;
 
-
-+(void)syncCallForChannel:(NSNumber *)channelKey andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
++(void)syncCallForChannel:(NSNumber *)updatedAt withFetchUserDetails:(BOOL)fetchUserDetails
+            andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
 
 -(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
