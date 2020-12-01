@@ -1894,4 +1894,35 @@
     return [userDefaults boolForKey:AL_MESSAGE_DELETE_FOR_ALL_ENABLED];
 }
 
++(void)setPhotosSelectionLimit:(NSInteger)selectionLimit {
+    NSUserDefaults *userDefaults = ALApplozicSettings.getUserDefaults;
+    if (selectionLimit < 1 || selectionLimit > 20) {
+        selectionLimit = 10;
+    }
+    [userDefaults setInteger:selectionLimit forKey:AL_PHOTO_PICKER_SELECTION_LIMIT];
+    [userDefaults synchronize];
+}
+
++(NSInteger)getPhotosSelectionLimit {
+    NSUserDefaults *userDefaults = ALApplozicSettings.getUserDefaults;
+    NSInteger limit = [userDefaults integerForKey:AL_PHOTO_PICKER_SELECTION_LIMIT];
+    return limit > 0 ? limit : 10;
+}
+
++(void)setMessageMetadata:(NSMutableDictionary *) messageMetadata {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    [userDefaults setObject:messageMetadata forKey:AL_MESSAGE_META_DATA_KEY];
+    [userDefaults synchronize];
+}
+
++(NSMutableDictionary *)getMessageMetadata {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    NSDictionary * metadataDictionary = [userDefaults dictionaryForKey:AL_MESSAGE_META_DATA_KEY];
+    NSMutableDictionary * messageMetadata = nil;
+    if (metadataDictionary) {
+        messageMetadata = [metadataDictionary mutableCopy];
+    }
+    return messageMetadata;
+}
+
 @end

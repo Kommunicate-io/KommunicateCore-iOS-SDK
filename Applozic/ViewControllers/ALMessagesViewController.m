@@ -1450,7 +1450,7 @@ static int const MQTT_MAX_RETRY = 3;
     [allMessagesArray sortUsingDescriptors:descriptors];
 
     self.mContactsMessageListArray = allMessagesArray;
-
+    [self emptyConversationAlertLabel];
     [self.mTableView reloadData];
 }
 //==============================================================================================================================================

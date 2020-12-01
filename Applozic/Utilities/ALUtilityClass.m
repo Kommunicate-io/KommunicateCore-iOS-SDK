@@ -804,4 +804,58 @@
     [topVC.navigationController presentViewController:uiAlertController animated:true completion:nil];
 }
 
++(NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url {
+
+    NSString *fileName = url.lastPathComponent;
+    NSString * uniqueFileName = [NSString stringWithFormat:@"%f_%@",[[NSDate date] timeIntervalSince1970] * 1000, fileName];
+    NSURL* documentFileURL = [ALUtilityClass getApplicationDirectoryWithFilePath:uniqueFileName];
+    @try {
+        NSFileManager * fileManager = [NSFileManager defaultManager];
+        NSError * error = nil;
+
+        if ([fileManager fileExistsAtPath:documentFileURL.path]) {
+            [fileManager removeItemAtURL:documentFileURL error:&error];
+        }
+
+        if (error) {
+            return nil;
+        }
+
+        [fileManager moveItemAtPath:url.path toPath:documentFileURL.path error:&error];
+
+        if (error) {
+            return nil;
+        }
+    }  @catch (NSException *exception) {
+        return nil;
+    }
+    return documentFileURL;
+}
+
++(UIAlertController *)displayLoadingAlertControllerWithText:(NSString *)loadingText {
+
+    UIAlertController * uiAlertController = [UIAlertController
+                                             alertControllerWithTitle:loadingText
+                                             message:nil
+                                             preferredStyle:UIAlertControllerStyleAlert];
+
+    UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+    UIViewController * uiViewController = [[UIViewController alloc] init];
+    uiViewController.preferredContentSize = activityIndicatorView.frame.size;
+    activityIndicatorView.color = [UIColor grayColor];
+    [activityIndicatorView startAnimating];
+    [uiViewController.view addSubview:activityIndicatorView];
+    [uiAlertController setValue:uiViewController forKey:@"contentViewController"];
+    ALPushAssist * pushAssit = [[ALPushAssist alloc] init];
+    [pushAssit.topViewController presentViewController:uiAlertController animated:true completion:nil];
+    return uiAlertController;
+}
+
++(void)dismissAlertController:(UIAlertController *)alertController
+               withCompletion:(void (^)(BOOL dismissed)) completion {
+    [alertController dismissViewControllerAnimated:YES completion:^{
+        completion(YES);
+    }];
+}
+
 @end
