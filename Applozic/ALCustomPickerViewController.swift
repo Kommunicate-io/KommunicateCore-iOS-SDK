@@ -152,7 +152,7 @@ public class ALBaseNavigationViewController: UINavigationController {
                     //whatever
                 }
             }
-      @unknown default:
+        @unknown default:
             print("Unknown permission state in PhotoLibrary")
             break
         }

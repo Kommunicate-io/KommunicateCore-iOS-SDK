@@ -111,6 +111,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 @property (nonatomic, assign) BOOL comingFromBackground;
 @property (nonatomic, strong) ALVideoCoder *videoCoder;
 @property (strong, nonatomic)  NSMutableDictionary *alphabetiColorCodesDictionary;
+@property (strong, nonatomic)  NSMutableDictionary *messageMetadata;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *nsLayoutconstraintAttachmentWidth;
 
@@ -140,8 +141,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 @property (nonatomic) BOOL isUserBlocked;
 @property (nonatomic) BOOL isUserBlockedBy;
 @property (nonatomic, strong) ALLoadingIndicator *loadingIndicator;
+@property (nonatomic, strong) ALPhotoPicker *photoPicker;
 
--(void)processAttachment:(NSString *)filePath andMessageText:(NSString *)textwithimage andContentType:(short)contentype;
+-(void)processAttachment:(NSString *)filePath
+          andMessageText:(NSString *)textwithimage
+          andContentType:(short)contentype
+     withMessageMetadata:(NSMutableDictionary *)metadata;
 
 @end
 
@@ -199,6 +204,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }
 
     [self initialSetUp];
+    self.photoPicker = [[ALPhotoPicker alloc] initWithSelectionLimit:[ALApplozicSettings getPhotosSelectionLimit] loadingTitle:NSLocalizedStringWithDefaultValue(@"ExportLoadingIndicatorText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Exporting...", @"")];
+
+    self.photoPicker.delegate = self;
     self.placeHolderTxt = NSLocalizedStringWithDefaultValue(@"placeHolderText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Write a Message...", @"");
     self.sendMessageTextView.text = self.placeHolderTxt;
     self.defaultMessageViewHeight = 56.0;
@@ -1087,6 +1095,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     CGFloat COORDINATE_POINT_Y = 44 - 17;
     [self.label setFrame: CGRectMake(0, COORDINATE_POINT_Y ,self.navigationController.navigationBar.frame.size.width, 20)];
+    self.messageMetadata = [ALApplozicSettings getMessageMetadata];
 }
 
 //==============================================================================================================================================
@@ -1208,7 +1217,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 -(void)setTitleWithChannel:(ALChannel *)channel
-                  orContact:(ALContact *)contact {
+                 orContact:(ALContact *)contact {
     /// Contact will be present in case of one to one chat or group of two
     if (contact) {
         [titleLabelButton setTitle:[contact getDisplayName] forState:UIControlStateNormal];
@@ -1345,7 +1354,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     message.contentType = almessage.contentType;
 
     if( message.imageFilePath ){
-        [self processAttachment:message.imageFilePath andMessageText:message.message andContentType:almessage.contentType];
+        [self processAttachment:message.imageFilePath andMessageText:message.message andContentType:almessage.contentType withMessageMetadata:self.messageMetadata];
         self.alMessage=nil;
         [self showNoConversationLabel];
         return;
@@ -1382,7 +1391,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }
 
     if( message.imageFilePath ){
-        [self processAttachment:message.imageFilePath andMessageText:message.message andContentType:almessage.contentType];
+        [self processAttachment:message.imageFilePath andMessageText:message.message andContentType:almessage.contentType withMessageMetadata:self.messageMetadata];
         self.alMessage=nil;
         [self showNoConversationLabel];
         return;
@@ -1393,7 +1402,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     self.mTotalCount = self.mTotalCount+1;
     self.startIndex = self.startIndex + 1;
 
-    [self sendMessage:message messageAtIndex: [[self.alMessageWrapper getUpdatedMessageArray] count] withUserDisplayName:nil];
+    [self sendMessage:message messageAtIndex: [[self.alMessageWrapper getUpdatedMessageArray] count] withUserDisplayName:nil withMessageMetadata:self.messageMetadata];
 
     [self.mTableView reloadData];       //RELOAD MANUALLY SINCE NO NETWORK ERROR
     [self scrollTableViewToBottomWithAnimation:YES];
@@ -1412,6 +1421,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if (latLongString.length != 0)
     {
         ALMessage * locationMessage = [self formLocationMessage:latLongString];
+        locationMessage.metadata = [locationMessage combineMetadata:self.messageMetadata];
         [self sendLocationMessage:locationMessage withCompletion:^(NSString *message, NSError *error) {
 
             if(!error)
@@ -2665,7 +2675,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     {
         // SAVE IMAGE TO DOC.
         NSString * filePath = [ALImagePickerHandler saveImageToDocDirectory:image];
-        [self processAttachment:filePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+        [self processAttachment:filePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_ATTACHMENT withMessageMetadata:self.messageMetadata];
     }
 
     // VIDEO ATTACHMENT
@@ -2694,7 +2704,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                 if([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
                     UISaveVideoAtPathToSavedPhotosAlbum(videoFilePath, self, nil, nil);
                 }
-                [self processAttachment:videoFilePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_CAMERA_RECORDING];
+                [self processAttachment:videoFilePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_CAMERA_RECORDING withMessageMetadata:self.messageMetadata];
             }];
         }
     }
@@ -2705,14 +2715,17 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 #pragma mark - PROCESSING & UPLOADING MEDIA ATTACHMENT
 //==============================================================================================================================================
 
--(void)processAttachment:(NSString *)filePath andMessageText:(NSString *)textwithimage andContentType:(short)contentype
-{
+-(void)processAttachment:(NSString *)filePath
+          andMessageText:(NSString *)textwithimage
+          andContentType:(short)contentype
+     withMessageMetadata:(NSMutableDictionary *)metadata {
     // create message object
     ALMessage * theMessage = [self getMessageToPost];
     theMessage.contentType = contentype;
     theMessage.fileMeta = [self getFileMetaInfo];
     theMessage.message = textwithimage;
     theMessage.imageFilePath = filePath.lastPathComponent;
+    theMessage.metadata = [theMessage combineMetadata:metadata];
 
     theMessage.fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", filePath.lastPathComponent];
     if(self.contactIds)
@@ -2795,19 +2808,19 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         switch (attachment.attachmentType) {
             case ALMultimediaTypeGif:
                 filePath = [ALImagePickerHandler saveGifToDocDirectory:attachment.classImage withGIFData :attachment.dataGIF];
-                [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+                [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT withMessageMetadata:self.messageMetadata];
                 break;
 
             case ALMultimediaTypeImage:
                 filePath = [ALImagePickerHandler saveImageToDocDirectory:attachment.classImage];
-                [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+                [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT withMessageMetadata:self.messageMetadata];
                 break;
 
             case ALMultimediaTypeVideo:
                 videoURL = [NSURL fileURLWithPath:attachment.classVideoPath];
                 [ALImagePickerHandler saveVideoToDocDirectory:videoURL handler:^(NSString * filePath){
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+                        [self processAttachment:filePath andMessageText:messageText andContentType:ALMESSAGE_CONTENT_ATTACHMENT withMessageMetadata:self.messageMetadata];
                     });
                 }];
                 break;
@@ -2821,7 +2834,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 -(void)audioAttachment:(NSString *)audioFilePath
 {
-    [self processAttachment:audioFilePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_AUDIO];
+    [self processAttachment:audioFilePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_AUDIO withMessageMetadata:self.messageMetadata];
 }
 
 //==============================================================================================================================================
@@ -2931,15 +2944,20 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         }
 
         [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"photosOrVideoOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], attachmentMenuDefaultText , @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            if([ALApplozicSettings isMultiSelectGalleryViewDisabled]) {
-                UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
-                ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
-                launchChat.multipleAttachmentDelegate = self;
-                [self.navigationController pushViewController:launchChat animated:YES];
+
+            if (@available(iOS 14.0, *)) {
+                [self.photoPicker openGalleryFrom:self];
             } else {
-                ALBaseNavigationViewController *controller = [ALCustomPickerViewController makeInstanceWithDelegate:self];
-                controller.modalPresentationStyle = UIModalPresentationFullScreen;
-                [self presentViewController:controller animated:NO completion:nil];
+                if([ALApplozicSettings isMultiSelectGalleryViewDisabled]) {
+                    UIStoryboard* storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+                    ALMultipleAttachmentView *launchChat = (ALMultipleAttachmentView *)[storyboardM instantiateViewControllerWithIdentifier:@"collectionView"];
+                    launchChat.multipleAttachmentDelegate = self;
+                    [self.navigationController pushViewController:launchChat animated:YES];
+                } else {
+                    ALBaseNavigationViewController *controller = [ALCustomPickerViewController makeInstanceWithDelegate:self];
+                    controller.modalPresentationStyle = UIModalPresentationFullScreen;
+                    [self presentViewController:controller animated:NO completion:nil];
+                }
             }
         }]];
     }
@@ -2981,7 +2999,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 {
     ALVCardClass *vcardClass = [[ALVCardClass alloc] init];
     NSString *contactFilePath = [vcardClass saveContactToDocDirectory:contact];
-    [self processAttachment:contactFilePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_VCARD];
+    [self processAttachment:contactFilePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_VCARD withMessageMetadata:self.messageMetadata];
 }
 
 //==============================================================================================================================================
@@ -3180,11 +3198,16 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 
 -(void)sendMessage:(ALMessage *)theMessage withUserDisplayName:(NSString *) displayName {
-    [self sendMessage:theMessage messageAtIndex:0 withUserDisplayName:displayName];
+    [self sendMessage:theMessage messageAtIndex:0 withUserDisplayName:displayName withMessageMetadata:self.messageMetadata];
 }
 
--(void)sendMessage:(ALMessage *)theMessage messageAtIndex:(NSUInteger) messageIndex withUserDisplayName:(NSString *) displayName {
+-(void)sendMessage:(ALMessage *)theMessage
+    messageAtIndex:(NSUInteger) messageIndex
+withUserDisplayName:(NSString *) displayName
+withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     [self resetMessageReplyView];
+    theMessage.metadata = [theMessage combineMetadata:messageMetadata];
+
     [[ALMessageService sharedInstance] sendMessages:theMessage withCompletion:^(NSString *message, NSError *error) {
 
         if(error)
@@ -3202,8 +3225,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self updateUserDisplayNameWithMessage:theMessage withDisplayName:displayName];
     }];
 }
-
-
 
 -(ALMessage *)getMessageFromViewList:(NSString *)key withValue:(id)value
 {
@@ -4154,7 +4175,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     self.sendMessageTextView.hidden = YES;
 
     for (int i = 1; i < n; ++i)
-        newText = [newText stringByAppendingString:@"\n|W|"];
+    newText = [newText stringByAppendingString:@"\n|W|"];
 
     self.sendMessageTextView.text = newText;
 
@@ -4816,7 +4837,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 #pragma mark - ALSoundRecorderProtocol
 
 -(void) finishRecordingAudioWithFileUrl:(NSString *)fileURL {
-    [self processAttachment:fileURL andMessageText:@"" andContentType:ALMESSAGE_CONTENT_AUDIO];
+    [self processAttachment:fileURL andMessageText:@"" andContentType:ALMESSAGE_CONTENT_AUDIO withMessageMetadata:self.messageMetadata];
     [soundRecording hide];
 }
 
@@ -4871,7 +4892,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 - (void)finishRecordingAudioWithFilePath:(NSString *)filePath {
     if ([soundRecordingView isRecordingTimeSufficient]) {
-        [self processAttachment:filePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_AUDIO];
+        [self processAttachment:filePath andMessageText:@"" andContentType:ALMESSAGE_CONTENT_AUDIO withMessageMetadata:self.messageMetadata];
     }
     [soundRecordingView userDidStopRecording];
     [soundRecordingView setHidden:YES];
@@ -4894,7 +4915,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)onSendButtonClick:(NSString * _Nullable)filePath withReplyMessageKey:(NSString *)messageKey{
 
     self.messageReplyId = messageKey;
-    [self processAttachment:filePath andMessageText:nil andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+    [self processAttachment:filePath andMessageText:nil andContentType:ALMESSAGE_CONTENT_ATTACHMENT withMessageMetadata:self.messageMetadata];
 }
 
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
@@ -4902,7 +4923,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if(urls != nil && urls.count){
         NSURL *filePath =  urls.firstObject;
         NSString *filePathString = [ALDocumentPickerHandler saveFile:filePath];
-        [self processAttachment:filePathString andMessageText:@"" andContentType:ALMESSAGE_CONTENT_ATTACHMENT];
+        [self processAttachment:filePathString andMessageText:@"" andContentType:ALMESSAGE_CONTENT_ATTACHMENT withMessageMetadata:self.messageMetadata];
     }
 }
 
@@ -4957,7 +4978,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 }
 
 -(void)reloadDataWithMessageKey:(NSString *)messageKey
-                      andMessage:(ALMessage *)alMessage withValidIndexPath:(NSIndexPath *)path {
+                     andMessage:(ALMessage *)alMessage withValidIndexPath:(NSIndexPath *)path {
     NSInteger newCount = [self.alMessageWrapper getUpdatedMessageArray].count;
     NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
     ALMessage * message = [self.alMessageWrapper getUpdatedMessageArray][path.row];

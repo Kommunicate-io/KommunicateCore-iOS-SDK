@@ -32,6 +32,7 @@
 		1829B22D2347C4AE00472008 /* ALSearchRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1829B22B2347C4AE00472008 /* ALSearchRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18413E1F23D0695D00696FA6 /* ALNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18413E1D23D0695C00696FA6 /* ALNotificationHelper.m */; };
 		18413E2023D0695D00696FA6 /* ALNotificationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18413E1E23D0695D00696FA6 /* ALNotificationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1846F65025769BA700A55D0B /* ALPhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1846F64F25769BA600A55D0B /* ALPhotoPicker.swift */; };
 		184D1FB32506649000DC2465 /* ALFriendDeletedMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 184D1FAB2506648F00DC2465 /* ALFriendDeletedMessage.m */; };
 		184D1FB42506649000DC2465 /* ALDeletedMessasgeBaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 184D1FAC2506649000DC2465 /* ALDeletedMessasgeBaseCell.m */; };
 		184D1FB52506649000DC2465 /* ALDeletedMessasgeBaseCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 184D1FAD2506649000DC2465 /* ALDeletedMessasgeBaseCell.h */; };
@@ -462,6 +463,7 @@
 		1829B22B2347C4AE00472008 /* ALSearchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALSearchRequest.h; path = Applozic/ALSearchRequest.h; sourceTree = "<group>"; };
 		18413E1D23D0695C00696FA6 /* ALNotificationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALNotificationHelper.m; path = Applozic/ALNotificationHelper.m; sourceTree = "<group>"; };
 		18413E1E23D0695D00696FA6 /* ALNotificationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALNotificationHelper.h; path = Applozic/ALNotificationHelper.h; sourceTree = "<group>"; };
+		1846F64F25769BA600A55D0B /* ALPhotoPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ALPhotoPicker.swift; path = Applozic/ALPhotoPicker.swift; sourceTree = "<group>"; };
 		184D1FAB2506648F00DC2465 /* ALFriendDeletedMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALFriendDeletedMessage.m; path = Applozic/Views/ALFriendDeletedMessage.m; sourceTree = "<group>"; };
 		184D1FAC2506649000DC2465 /* ALDeletedMessasgeBaseCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALDeletedMessasgeBaseCell.m; path = Applozic/Views/ALDeletedMessasgeBaseCell.m; sourceTree = "<group>"; };
 		184D1FAD2506649000DC2465 /* ALDeletedMessasgeBaseCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALDeletedMessasgeBaseCell.h; path = Applozic/Views/ALDeletedMessasgeBaseCell.h; sourceTree = "<group>"; };
@@ -1261,6 +1263,7 @@
 		6D6DF1DB1BC5371200EBA00F /* ApplozicUIWidget */ = {
 			isa = PBXGroup;
 			children = (
+				1846F64F25769BA600A55D0B /* ALPhotoPicker.swift */,
 				18A2B2B5228A14B000CE93BC /* ALTabViewController.h */,
 				18A2B2B6228A14B100CE93BC /* ALTabViewController.m */,
 				181F69C022007B720018FC13 /* ALDocumentPickerHandler.h */,
@@ -2022,6 +2025,7 @@
 				4612E9021E13882D0022DB23 /* MQTTInMemoryPersistence.m in Sources */,
 				18A2B2B4228A12C600CE93BC /* ALInternalSettings.m in Sources */,
 				6D6DF1C81BC5364C00EBA00F /* UIImage+GIF.m in Sources */,
+				1846F65025769BA700A55D0B /* ALPhotoPicker.swift in Sources */,
 				18C926E2249BC3EA00232576 /* ALJWT.swift in Sources */,
 				8B1635CD2119C6BF0008191A /* ALChannelOfTwoMetaData.m in Sources */,
 				18D29D4822610DBE009C4D39 /* MQTTLog.m in Sources */,
@@ -2349,7 +2353,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.12.0;
+				MARKETING_VERSION = 7.13.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2386,7 +2390,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.12.0;
+				MARKETING_VERSION = 7.13.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
