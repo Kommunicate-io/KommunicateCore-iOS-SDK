@@ -443,7 +443,7 @@
 
     [uiAlertController addAction:okButton];
     ALPushAssist *pushAssist = [[ALPushAssist alloc]init];
-    [pushAssist.topViewController.navigationController presentViewController:uiAlertController animated:NO completion:nil];
+    [pushAssist.topViewController.navigationController presentViewController:uiAlertController animated:YES completion:nil];
 
 
 }

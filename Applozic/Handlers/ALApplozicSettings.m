@@ -1526,8 +1526,9 @@
     NSArray * keyArray = [dictionary allKeys];
     for(NSString * defaultKeyString in keyArray)
     {
-        if([defaultKeyString hasPrefix:@"com.applozic"] && ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN])
-        {
+        if([defaultKeyString hasPrefix:@"com.applozic"] &&
+           ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN] &&
+           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN]) {
             [userDefaults removeObjectForKey:defaultKeyString];
             [userDefaults synchronize];
         }
@@ -1807,8 +1808,9 @@
 
     for(NSString * defaultKeyString in keyArray)
     {
-        if([defaultKeyString hasPrefix:AL_KEY_PREFIX] && ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN])
-        {
+        if([defaultKeyString hasPrefix:AL_KEY_PREFIX] &&
+           ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN] &&
+           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN]) {
             [oldUserDefaults removeObjectForKey:defaultKeyString];
             [oldUserDefaults synchronize];
         }

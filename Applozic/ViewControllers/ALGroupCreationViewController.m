@@ -22,7 +22,6 @@
 #import "ALRegisterUserClientService.h"
 #import "UIImageView+WebCache.h"
 #import "ALContactService.h"
-#import "ALVOIPNotificationHandler.h"
 #import "ALHTTPManager.h"
 
 static const int GROUP_CREATION = 1;

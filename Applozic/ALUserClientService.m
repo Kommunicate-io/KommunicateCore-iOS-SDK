@@ -585,6 +585,14 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REPORT_USER : %@",responseString);
 
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
+
+        if (![apiResponse.status isEqual:AL_RESPONSE_SUCCESS]) {
+            NSError * error = [NSError errorWithDomain:ApplozicDomain
+                                                  code:MessageKeyNotPresent
+                                              userInfo:@{NSLocalizedDescriptionKey : @"Failed to report a message"}];
+            completion(nil, error);
+            return;
+        }
         completion(apiResponse, theError);
     }];
 }

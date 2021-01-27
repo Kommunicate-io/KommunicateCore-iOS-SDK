@@ -1403,6 +1403,10 @@ static int const MQTT_MAX_RETRY = 3;
 
     for(ALMessage *message in messageArray){
 
+        if ([message isVOIPNotificationMessage]) {
+            continue;
+        }
+
         NSArray * theFilteredArray;
         if([message getGroupId])
         {

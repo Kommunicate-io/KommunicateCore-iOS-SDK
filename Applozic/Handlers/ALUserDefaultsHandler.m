@@ -97,8 +97,9 @@
     NSArray * keyArray = [dictionary allKeys];
     for(NSString * defaultKeyString in keyArray)
     {
-        if([defaultKeyString hasPrefix:AL_KEY_PREFIX] && ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN])
-        {
+        if([defaultKeyString hasPrefix:AL_KEY_PREFIX] &&
+           ![defaultKeyString isEqualToString:AL_APN_DEVICE_TOKEN] &&
+           ![defaultKeyString isEqualToString:AL_VOIP_DEVICE_TOKEN]) {
             [userDefaults removeObjectForKey:defaultKeyString];
             [userDefaults synchronize];
         }
@@ -982,6 +983,17 @@
         lastSyncGeneratedTime = [NSNumber numberWithInt:10000];
     }
     return lastSyncGeneratedTime;
+}
+
++(void)setVOIPDeviceToken:(NSString *)VOIPDeviceToken {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    [userDefaults setValue:VOIPDeviceToken forKey:AL_VOIP_DEVICE_TOKEN];
+    [userDefaults synchronize];
+}
+
++(NSString*) getVOIPDeviceToken {
+    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
+    return [userDefaults valueForKey:AL_VOIP_DEVICE_TOKEN];
 }
 
 +(SecureStore *)getSecureStore {

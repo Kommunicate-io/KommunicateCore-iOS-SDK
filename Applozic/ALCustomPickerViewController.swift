@@ -281,11 +281,11 @@ public class ALBaseNavigationViewController: UINavigationController {
             if let list = self?.selectedMultimediaList(images: images, videos: videoPaths, gifs: gifsData) {
                 self?.delegate?.multimediaSelected(list)
             }
-            self?.dismiss(animated: false, completion: nil)
+            self?.dismiss(animated: true, completion: nil)
         }
     }
     @IBAction func dismissAction(_ sender: UIBarButtonItem) {
-        self.navigationController?.dismiss(animated: false, completion: nil)
+        self.navigationController?.dismiss(animated: true, completion: nil)
     }
     
     func selectedMultimediaList(images: [UIImage], videos: [String], gifs: [Data]) -> [ALMultimediaData]{
