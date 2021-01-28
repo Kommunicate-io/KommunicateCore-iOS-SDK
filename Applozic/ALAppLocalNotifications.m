@@ -42,9 +42,6 @@
 -(void)dataConnectionNotificationHandler{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(thirdPartyNotificationHandler:)
                                                  name:@"showNotificationAndLaunchChat" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transferVOIPMessage:)
-                                                 name:@"newMessageNotification"
-                                               object:nil];
 
     [self dataConnectionHandler];
 }
@@ -268,17 +265,6 @@
     if (!isTapActionDisabled) {
         self.chatLauncher = [[ALChatLauncher alloc] initWithApplicationId:[ALUserDefaultsHandler getApplicationKey]];
         [self.chatLauncher launchIndividualChat:contactId withGroupId:groupID withConversationId:conversationId andViewControllerObject:pushAssistant.topViewController andWithText:nil];
-    }
-}
-
--(void)transferVOIPMessage:(NSNotification *)notification
-{
-    NSMutableArray * array = notification.object;
-    ALVOIPNotificationHandler * voipHandler = [ALVOIPNotificationHandler sharedManager];
-    ALPushAssist * assist = [[ALPushAssist alloc] init];
-    for (ALMessage *msg in array)
-    {
-        [voipHandler handleAVMsg:msg andViewController:assist.topViewController];
     }
 }
 

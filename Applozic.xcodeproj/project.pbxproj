@@ -431,9 +431,7 @@
 		C76D31451F0AAFB30087291F /* ALVOIPCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C76D31431F0AAFB30087291F /* ALVOIPCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C76D31461F0AAFB40087291F /* ALVOIPCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C76D31441F0AAFB30087291F /* ALVOIPCell.m */; };
 		C76D314B1F0AAFCE0087291F /* ALAudioVideoBaseVC.h in Headers */ = {isa = PBXBuildFile; fileRef = C76D31471F0AAFCE0087291F /* ALAudioVideoBaseVC.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C76D314C1F0AAFCF0087291F /* ALVOIPNotificationHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = C76D31481F0AAFCE0087291F /* ALVOIPNotificationHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C76D314D1F0AAFCF0087291F /* ALAudioVideoBaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C76D31491F0AAFCE0087291F /* ALAudioVideoBaseVC.m */; };
-		C76D314E1F0AAFCF0087291F /* ALVOIPNotificationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C76D314A1F0AAFCE0087291F /* ALVOIPNotificationHandler.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -877,9 +875,7 @@
 		C76D31431F0AAFB30087291F /* ALVOIPCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALVOIPCell.h; path = Applozic/ALVOIPCell.h; sourceTree = "<group>"; };
 		C76D31441F0AAFB30087291F /* ALVOIPCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALVOIPCell.m; path = Applozic/ALVOIPCell.m; sourceTree = "<group>"; };
 		C76D31471F0AAFCE0087291F /* ALAudioVideoBaseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAudioVideoBaseVC.h; sourceTree = "<group>"; };
-		C76D31481F0AAFCE0087291F /* ALVOIPNotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALVOIPNotificationHandler.h; sourceTree = "<group>"; };
 		C76D31491F0AAFCE0087291F /* ALAudioVideoBaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALAudioVideoBaseVC.m; sourceTree = "<group>"; };
-		C76D314A1F0AAFCE0087291F /* ALVOIPNotificationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALVOIPNotificationHandler.m; sourceTree = "<group>"; };
 		FE7E03D5C0037B0ABBBE6E5A /* Pods-Applozic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Applozic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Applozic/Pods-Applozic.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1132,9 +1128,7 @@
 				187EEAA723182396008012BC /* ALPreviewPhotoViewController.swift */,
 				1866E32D218749C900667018 /* ALImagePreviewController.m */,
 				C76D31471F0AAFCE0087291F /* ALAudioVideoBaseVC.h */,
-				C76D31481F0AAFCE0087291F /* ALVOIPNotificationHandler.h */,
 				C76D31491F0AAFCE0087291F /* ALAudioVideoBaseVC.m */,
-				C76D314A1F0AAFCE0087291F /* ALVOIPNotificationHandler.m */,
 				465EBAEE1E96246B00E7B79B /* Container Parent View */,
 				2934460E1D4F4229007BD1B4 /* Share Image */,
 				6D73B2FA1D4F0F9C007D3D72 /* ReceiverUserProfile */,
@@ -1856,7 +1850,6 @@
 				18FFE96C21519AD300E88C91 /* ALAudioSession.h in Headers */,
 				184D1FB82506649000DC2465 /* ALFriendDeletedMessage.h in Headers */,
 				184D1FB92506649000DC2465 /* ALTappableView.h in Headers */,
-				C76D314C1F0AAFCF0087291F /* ALVOIPNotificationHandler.h in Headers */,
 				8B170C2721232545003A14B3 /* UIImage+animatedGIF.h in Headers */,
 				C76D314B1F0AAFCE0087291F /* ALAudioVideoBaseVC.h in Headers */,
 				C76D31451F0AAFB30087291F /* ALVOIPCell.h in Headers */,
@@ -2073,7 +2066,6 @@
 				1866E32C218749BD00667018 /* UIColor+Extension.swift in Sources */,
 				29C849A31CC932050042643C /* NSString+Encode.m in Sources */,
 				6D7756EE1D5B82560025560B /* ALReachability.m in Sources */,
-				C76D314E1F0AAFCF0087291F /* ALVOIPNotificationHandler.m in Sources */,
 				6D7756AC1D5B80DF0025560B /* ALChannelClientService.m in Sources */,
 				6D6DF1751BC5364C00EBA00F /* ALJson.m in Sources */,
 				6D7756DA1D5B82000025560B /* ALUserBlocked.m in Sources */,
@@ -2353,7 +2345,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.13.0;
+				MARKETING_VERSION = 7.14.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2390,7 +2382,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 7.13.0;
+				MARKETING_VERSION = 7.14.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";

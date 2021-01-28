@@ -1658,7 +1658,7 @@ static const int SHOW_GROUP = 102;
 
 - (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey {
 
-    [self.uiAlertController dismissViewControllerAnimated:NO completion:nil];
+    [self.uiAlertController dismissViewControllerAnimated:YES completion:nil];
     if(self.directContactVCLaunch){
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DISMISS_SHARE_EXTENSION" object:nil];
     }
@@ -1666,7 +1666,7 @@ static const int SHOW_GROUP = 102;
 
 - (void)onUploadFailed:(ALMessage *)alMessage {
 
-    [self.uiAlertController dismissViewControllerAnimated:NO completion:nil];
+    [self.uiAlertController dismissViewControllerAnimated:YES completion:nil];
     if(self.directContactVCLaunch){
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DISMISS_SHARE_EXTENSION" object:nil];
     }

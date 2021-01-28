@@ -518,7 +518,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     [uiAlertController addAction:okButton];
     [uiAlertController addAction:cancelButton];
-    [self.navigationController presentViewController:uiAlertController animated:NO completion:nil];
+    [self.navigationController presentViewController:uiAlertController animated:YES completion:nil];
 }
 
 -(BOOL)isThisChannelLeft:(NSNumber *)channelKey
@@ -755,6 +755,9 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
         memberCell.nameLabel.text =  [alContact getDisplayName];
     }
 
+    memberCell.alphabeticLabel.tag = row;
+    memberCell.profileImageView.tag = row;
+
     [memberCell.alphabeticLabel setHidden:YES];
     [memberCell.profileImageView setHidden:NO];
 
@@ -781,6 +784,21 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
         NSUInteger randomIndex = random()% [colors count];
         memberCell.profileImageView.image = [ALColorUtility imageWithSize:CGRectMake(0,0,55,55) WithHexString:colors[randomIndex]];
     }
+
+    /// TapGestureRecognizer for alphabetic label icon
+    UITapGestureRecognizer *tapGestureRecognizerAlphabeticLabelIcon = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileIconTap:)];
+
+    tapGestureRecognizerAlphabeticLabelIcon.numberOfTapsRequired = 1;
+    [memberCell.alphabeticLabel setUserInteractionEnabled:YES];
+    [memberCell.alphabeticLabel addGestureRecognizer:tapGestureRecognizerAlphabeticLabelIcon];
+
+    /// TapGestureRecognizer for profile Imageview icon
+    UITapGestureRecognizer *tapGestureRecognizerProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileIconTap:)];
+
+    tapGestureRecognizerProfileImage.numberOfTapsRequired = 1;
+    [memberCell.profileImageView setUserInteractionEnabled:YES];
+    [memberCell.profileImageView addGestureRecognizer:tapGestureRecognizerProfileImage];
+
 }
 
 -(void)setupCellItems:(ALGroupDetailsMemberCell*)memberCell
@@ -791,6 +809,25 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     [memberCell.adminLabel setText:NSLocalizedStringWithDefaultValue(@"adminText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Admin", @"")];
     memberCell.adminLabel.textColor = [UIColor blackColor];
 
+}
+
+/// Profile Icon Tap UITapGestureRecognizer
+-(void)profileIconTap:(UITapGestureRecognizer*)sender {
+    
+    if (memberIds.count < 1) {
+        return;
+    }
+    
+    UIView *view = sender.view;
+    NSInteger selectedRow = view.tag;
+    NSString* userId = memberIds[selectedRow];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:ThirdPartyProfileTapNotification
+     object:nil
+     userInfo:@{ThirdPartyDetailVCNotificationNavigationVC : self.navigationController,
+                ThirdPartyDetailVCNotificationALContact : userId}
+     ];
 }
 
 #pragma mark Row Height

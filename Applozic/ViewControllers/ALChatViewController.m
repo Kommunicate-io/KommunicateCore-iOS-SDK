@@ -62,7 +62,6 @@
 #import "ALChannelMsgCell.h"
 #include <tgmath.h>
 #import "ALAudioVideoBaseVC.h"
-#import "ALVOIPNotificationHandler.h"
 #import "ALChannelService.h"
 #import "ALMultimediaData.h"
 #import <Applozic/Applozic-Swift.h>
@@ -86,7 +85,9 @@ NSString * const ThirdPartyDetailVCNotificationNavigationVC = @"ThirdPartyDetail
 NSString * const ThirdPartyDetailVCNotificationALContact = @"ThirdPartyDetailVCNotificationALContact";
 NSString * const ThirdPartyDetailVCNotificationChannelKey = @"ThirdPartyDetailVCNotificationChannelKey";
 NSString * const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotification";
-
+NSString * const ALAudioVideoCallForUserIdKey = @"USER_ID";
+NSString * const ALCallForAudioKey = @"CALL_FOR_AUDIO";
+NSString * const ALDidSelectStartCallOptionKey = @"ALDidSelectStartCallOption";
 
 @interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALLocationDelegate, ALAudioRecorderViewProtocol, ALAudioRecorderProtocol,
 ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
@@ -2543,6 +2544,77 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     }];
 }
 
+/// Message report delegate callback
+-(void)messageReport:(ALMessage *)alMessage {
+    if(![ALDataNetworkConnection checkDataNetworkAvailable]) {
+        return;
+    }
+
+    NSString *alertTitle = NSLocalizedStringWithDefaultValue(@"ReportAlertTitle",
+                                                             [ALApplozicSettings getLocalizableName],
+                                                             [NSBundle mainBundle],
+                                                             @"Are you sure you want to report this message?",
+                                                             @"");
+    NSString *alertMessage = NSLocalizedStringWithDefaultValue(@"ReportAlertMessage",
+                                                               [ALApplozicSettings getLocalizableName],
+                                                               [NSBundle mainBundle],
+                                                               @"If you report the message, it will be sent to admin of this application for review",
+                                                               @"");
+    NSString *reportMessageButtonTitle = NSLocalizedStringWithDefaultValue(@"ReportMessage",
+                                                                           [ALApplozicSettings getLocalizableName],
+                                                                           [NSBundle mainBundle],
+                                                                           @"Report message",
+                                                                           @"");
+    NSString *cancelTitle = NSLocalizedStringWithDefaultValue(@"cancel",
+                                                              [ALApplozicSettings getLocalizableName],
+                                                              [NSBundle mainBundle],
+                                                              @"Cancel",
+                                                              @"");
+
+    UIAlertController * uiAlertController = [UIAlertController
+                                             alertControllerWithTitle:alertTitle
+                                             message:alertMessage
+                                             preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* reportConfirmButton = [UIAlertAction
+                                          actionWithTitle:reportMessageButtonTitle
+                                          style:UIAlertActionStyleDefault
+                                          handler:^(UIAlertAction * action) {
+        [self reportMessageOnConfirmTap:alMessage];
+    }];
+    UIAlertAction* cancelButton = [UIAlertAction
+                                   actionWithTitle:cancelTitle
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action) {
+    }];
+    [uiAlertController addAction:reportConfirmButton];
+    [uiAlertController addAction:cancelButton];
+    [self presentViewController:uiAlertController animated:YES completion:nil];
+}
+
+-(void)reportMessageOnConfirmTap:(ALMessage *)alMessage {
+
+    [self.mActivityIndicator startAnimating];
+    ALUserService * service = [[ALUserService alloc] init];
+    [service reportUserWithMessageKey:alMessage.key
+                       withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+        [self.mActivityIndicator stopAnimating];
+        NSString *messageReportedInfo = @"";
+        if (error) {
+            messageReportedInfo = NSLocalizedStringWithDefaultValue(@"ReportMessageError",
+                                                                    [ALApplozicSettings getLocalizableName],
+                                                                    [NSBundle mainBundle],
+                                                                    @"Failed to report the message", @"");
+        } else {
+            messageReportedInfo = NSLocalizedStringWithDefaultValue(@"ReportMessageSuccess",
+                                                                    [ALApplozicSettings getLocalizableName],
+                                                                    [NSBundle mainBundle],
+                                                                    @"Message has been reported", @"");
+        }
+        [ALUtilityClass showAlertMessage:@"" andTitle:messageReportedInfo];
+    }];
+}
+
 //=================================================================================================================
 
 #pragma mark - Clear messages from chat view
@@ -2636,7 +2708,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     UIImage *image =   [ALUtilityClass getImageFromFilePath:filePath];
     if(image){
         ALPreviewPhotoViewController * contrller = [[ALPreviewPhotoViewController alloc] initWithImage:image pathExtension:filePath.pathExtension];
-        [self.navigationController pushViewController:contrller animated:NO];
+        [self.navigationController pushViewController:contrller animated:YES];
     }
 }
 
@@ -2956,7 +3028,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
                 } else {
                     ALBaseNavigationViewController *controller = [ALCustomPickerViewController makeInstanceWithDelegate:self];
                     controller.modalPresentationStyle = UIModalPresentationFullScreen;
-                    [self presentViewController:controller animated:NO completion:nil];
+                    [self presentViewController:controller animated:YES completion:nil];
                 }
             }
         }]];
@@ -3133,16 +3205,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         [self showNoDataNotification];
         return;
     }
-
-    NSString * roomID =  [NSString stringWithFormat:@"%@:%@",[ALUtilityClass getDevieUUID],
-                          [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000]];
-
-    ALVOIPNotificationHandler *voipHandler = [ALVOIPNotificationHandler sharedManager];
-    [voipHandler launchAVViewController:self.contactIds
-                           andLaunchFor:[NSNumber numberWithInt:AV_CALL_DIALLED]
-                               orRoomId:roomID
-                           andCallAudio:callForAudio
-                      andViewController:self];
+    
+    NSDictionary *callUserInfo = @{ALAudioVideoCallForUserIdKey: self.contactIds,
+                                   ALCallForAudioKey: [NSNumber numberWithBool:callForAudio]};
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:ALDidSelectStartCallOptionKey object:nil userInfo:callUserInfo];
+    
 }
 
 -(void)deleteConversation{
@@ -4827,6 +4895,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     self.channelKey = alMessage.groupId;
     self.contactIds = alMessage.contactIds;
     [self reloadView];
+    [self.mTableView reloadData];
     [self handleMessageForwardForChatView:alMessage];
 }
 

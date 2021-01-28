@@ -512,7 +512,15 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
     if ([self.mMessage.type isEqualToString:AL_IN_BOX]){
 
-        [sharedMenuController setMenuItems: @[messageForward, messageReply]];
+        UIMenuItem * messageReportMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"ReportMessageOption",
+                                                                                                                 [ALApplozicSettings getLocalizableName],
+                                                                                                                 [NSBundle mainBundle],
+                                                                                                                 @"Report", @"")
+                                                                        action:@selector(messageReport:)];
+
+        [sharedMenuController setMenuItems: @[messageForward,
+                                              messageReply,
+                                              messageReportMenuItem]];
 
     }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
 
@@ -554,15 +562,23 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 -(BOOL) canPerformAction:(SEL)action withSender:(id)sender
 {
 
+    if ([self.mMessage isSentMessage] &&
+        action == @selector(messageReport:)) {
+        return NO;
+    }
+
     ALChannelDBService *channelDbService = [[ALChannelDBService alloc] init];
 
     if (self.channel &&
         (self.channel.type == OPEN ||
          [channelDbService isChannelLeft:self.channel.key])) {
-        return (action == @selector(copy:));
+        return (action == @selector(copy:) ||
+                action == @selector(messageReport:));
     }
 
-    if (![self.mMessage isMessageSentToServer]) {
+    /// Check only for sent message
+    if (![self.mMessage isMessageSentToServer]
+        && [self.mMessage isSentMessage]) {
         return (action == @selector(copy:) ||
                 action == @selector(delete:));
     }
@@ -579,7 +595,8 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     return (action == @selector(delete:) ||
             action == @selector(copy:) ||
             [self isMessageReplyMenuEnabled:action] ||
-            [self isForwardMenuEnabled:action]);
+            [self isForwardMenuEnabled:action] ||
+            action == @selector(messageReport:));
 }
 
 -(void) messageForward:(id)sender
@@ -648,6 +665,10 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processMessageReply:self.mMessage];
 
+}
+
+-(void) messageReport:(id)sender {
+    [self.delegate messageReport:self.mMessage];
 }
 
 -(void) processKeyBoardHideTap

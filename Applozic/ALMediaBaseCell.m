@@ -326,8 +326,15 @@ static CGFloat const DATE_LABEL_SIZE = 12;
 
     if ([self.mMessage.type isEqualToString:AL_IN_BOX]) {
 
+        UIMenuItem * messageReportMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"ReportMessageOption",
+                                                                                                                 [ALApplozicSettings getLocalizableName],
+                                                                                                                 [NSBundle mainBundle],
+                                                                                                                 @"Report", @"")
+                                                                        action:@selector(messageReport:)];
+
         [sharedMenuController setMenuItems: @[messageForwardMenuItem,
-                                              messageReplyMenuItem]];
+                                              messageReplyMenuItem,
+                                              messageReportMenuItem]];
 
     } else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]) {
 
@@ -347,11 +354,18 @@ static CGFloat const DATE_LABEL_SIZE = 12;
 
 -(BOOL)canPerformAction:(SEL)action withSender:(id)sender {
 
-    if (self.channel && self.channel.type == OPEN) {
+    if ([self.mMessage isSentMessage] &&
+        action == @selector(messageReport:)) {
         return NO;
     }
 
-    if (![self.mMessage isMessageSentToServer]) {
+    if (self.channel && self.channel.type == OPEN) {
+        return action == @selector(messageReport:);
+    }
+
+    /// Check only for sent message 
+    if (![self.mMessage isMessageSentToServer]
+        && [self.mMessage isSentMessage]) {
         return action == @selector(delete:);
     }
 
@@ -366,12 +380,11 @@ static CGFloat const DATE_LABEL_SIZE = 12;
                  [self isForwardMenuEnabled:action] ||
                  [self isMessageReplyMenuEnabled:action]));
     }
-    
-    return (self.mMessage.isDownloadRequired ?
-            (action == @selector(delete:)):
-            (action == @selector(delete:)||
-             [self isForwardMenuEnabled:action] ||
-             [self isMessageReplyMenuEnabled:action]));
+    BOOL deleteOrReportActionFlag = (action == @selector(delete:) || action == @selector(messageReport:));
+    BOOL isActionMenuOptionEnabled = (self.mMessage.isDownloadRequired ? deleteOrReportActionFlag : ([self isForwardMenuEnabled:action] ||
+                                                                                                     [self isMessageReplyMenuEnabled:action] ||
+                                                                                                     deleteOrReportActionFlag));
+    return isActionMenuOptionEnabled;
 }
 
 -(BOOL)isMessageReplyMenuEnabled:(SEL) action {
@@ -401,6 +414,10 @@ static CGFloat const DATE_LABEL_SIZE = 12;
 -(void) messageReply:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Message reply option is pressed");
     [self processMessageReply];
+}
+
+-(void) messageReport:(id)sender {
+    [self.delegate messageReport:self.mMessage];
 }
 
 -(void) delete:(id)sender {

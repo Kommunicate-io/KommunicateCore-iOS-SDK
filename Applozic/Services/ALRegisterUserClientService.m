@@ -51,7 +51,12 @@
     [user setEmailVerified:true];
     [user setDeviceType:4];
     [user setAppVersionCode:AL_VERSION_CODE];
-    [user setRegistrationId: [ALUserDefaultsHandler getApnDeviceToken]];
+
+    NSString * registrationId = [self getRegistrationId];
+    if (registrationId) {
+        [user setRegistrationId:registrationId];
+    }
+
     [user setNotificationMode:[ALUserDefaultsHandler getNotificationMode]];
     [user setAuthenticationTypeId:[ALUserDefaultsHandler getUserAuthenticationTypeId]];
     [user setPassword:[ALUserDefaultsHandler getPassword]];
@@ -203,6 +208,79 @@
     }
 }
 
+-(void)updateAPNsOrVOIPDeviceToken:(NSString *)apnsOrVoipDeviceToken
+                  withApnTokenFlag:(BOOL) isAPNsToken
+                    withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
+
+    if (apnsOrVoipDeviceToken.length == 0) {
+        NSError *error = [NSError errorWithDomain:@"Applozic"
+                                             code:1
+                                         userInfo:@{NSLocalizedDescriptionKey : @"ApnOrVoipDeviceToken can not be empty or nil"}];
+
+        completion(nil, error);
+        return;
+    }
+
+    ALUser *user = [[ALUser alloc] init];
+    [user setNotificationMode:ALUserDefaultsHandler.getNotificationMode];
+
+    if (isAPNsToken) {
+        [ALUserDefaultsHandler setApnDeviceToken:apnsOrVoipDeviceToken];
+    } else {
+        [ALUserDefaultsHandler setVOIPDeviceToken:apnsOrVoipDeviceToken];
+    }
+
+    if (![ALUserDefaultsHandler isLoggedIn]) {
+        ALSLog(ALLoggerSeverityInfo, @"Ignoring APNs and VOIP token server call update as user is not logged in applozic and stored the token in user defaults for future use");
+        return;
+    }
+
+    NSString *apnsVOIPDeviceToken = [self getAPNsAndVOIPDeviceToken];
+    if (apnsVOIPDeviceToken) {
+        ALSLog(ALLoggerSeverityInfo, @"APNs and VOIP token both are exist calling server for updating token");
+        [user setRegistrationId:apnsVOIPDeviceToken];
+        [self updateUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
+            if (error) {
+                completion(nil, error);
+                return;
+            }
+            if (![response isRegisteredSuccessfully]) {
+                NSError *error = [NSError errorWithDomain:@"Applozic"
+                                                     code:1
+                                                 userInfo:@{NSLocalizedDescriptionKey : response.message}];
+                completion(nil, error);
+                return;
+            }
+            completion(response, error);
+        }];
+    } else {
+        ALSLog(ALLoggerSeverityInfo, @"Ignoring APNs and VOIP token server call update either token doesn't exist");
+    }
+}
+
+/// This method will return the apns and VOIP token in case if both token are there in user defauls
+-(NSString *)getAPNsAndVOIPDeviceToken {
+    NSString *apnAndVOIPToken = nil;
+
+    NSString *apnsDeviceToken = [ALUserDefaultsHandler getApnDeviceToken];
+    NSString *VOIPDeviceToken = [ALUserDefaultsHandler getVOIPDeviceToken];
+    if (apnsDeviceToken.length != 0 &&
+        VOIPDeviceToken.length != 0) {
+        // The format of the string is APNS token,VOIP token
+        apnAndVOIPToken = [[NSString alloc] initWithFormat:@"%@,%@", apnsDeviceToken, VOIPDeviceToken];
+    }
+    return apnAndVOIPToken;
+}
+
+-(NSString *)getRegistrationId {
+    NSString * registrationId = nil;
+    if ([ALApplozicSettings isAudioVideoEnabled]) {
+        registrationId = [self getAPNsAndVOIPDeviceToken];
+    } else {
+        registrationId = [ALUserDefaultsHandler getApnDeviceToken];
+    }
+    return registrationId;
+}
 
 -(void) updateDeviceToken:(NSString *)apnDeviceToken withCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion
 {
@@ -220,7 +298,6 @@
 
     ALUser *user = [[ALUser alloc] init];
     [user setNotificationMode:notificationMode];
-    [user setRegistrationId:ALUserDefaultsHandler.getApnDeviceToken];
 
     ALRegisterUserClientService * alRegisterUserClientService = [[ALRegisterUserClientService alloc] init];
     [alRegisterUserClientService updateUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
@@ -242,8 +319,11 @@
 
     if (alUser.registrationId) {
         [user setRegistrationId:alUser.registrationId];
-    } else if ([ALUserDefaultsHandler getApnDeviceToken]) {
-        [user setRegistrationId:[ALUserDefaultsHandler getApnDeviceToken]];
+    } else {
+        NSString * registrationId = [self getRegistrationId];
+        if (registrationId) {
+            [user setRegistrationId:registrationId];
+        }
     }
     [user setEnableEncryption:[ALUserDefaultsHandler getEnableEncryption]];
     [user setPrefContactAPI:2];
@@ -336,7 +416,10 @@
 -(void)syncAccountStatusWithCompletion:(void(^)(ALRegistrationResponse * response, NSError *error)) completion {
     ALUser *user = [[ALUser alloc] init];
     [user setNotificationMode:ALUserDefaultsHandler.getNotificationMode];
-    [user setRegistrationId:ALUserDefaultsHandler.getApnDeviceToken];
+    NSString * registrationId = [self getRegistrationId];
+    if (registrationId) {
+        [user setRegistrationId:registrationId];
+    }
 
     [self updateUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
         completion(response, error);

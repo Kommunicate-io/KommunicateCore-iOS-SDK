@@ -125,7 +125,7 @@ import UIKit
             let rect = CGRect(x: location.x - (viewWidth/2), y: location.y - (viewHeight/2), width: viewWidth, height: viewHeight)
 
             if self.scrollView.minimumZoomScale == self.scrollView.zoomScale {
-                self.scrollView.zoom(to: rect, animated: false)
+                self.scrollView.zoom(to: rect, animated: true)
             } else {
                 self.updateMinZoomScaleForSize(size: self.view.bounds.size)
             }
@@ -195,7 +195,7 @@ import UIKit
     }
 
     @IBAction func dismissAction(_ sender: UIBarButtonItem) {
-        self.navigationController?.popViewController(animated: false)
+        self.navigationController?.popViewController(animated: true)
     }
 
 }
