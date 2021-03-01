@@ -196,7 +196,7 @@
 }
 
 -(BOOL)isDeleted {
-    return self.deletedAtTime != nil && self.deletedAtTime.intValue > 0;
+    return self.deletedAtTime != nil && self.deletedAtTime.longValue > 0;
 }
 
 + (CONVERSATION_CATEGORY)getConversationCategory:(NSDictionary *)metadata

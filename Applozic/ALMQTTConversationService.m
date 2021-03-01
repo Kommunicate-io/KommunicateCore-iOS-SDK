@@ -22,12 +22,14 @@
 #import "ALPushNotificationService.h"
 #import "ALRegisterUserClientService.h"
 #import "ALAuthService.h"
+#import "ALDataNetworkConnection.h"
 
 static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
 static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
 static NSString * const observeSupportGroupMessage = @"observeSupportGroupMessage";
 NSString *const ALChannelDidChangeGroupMuteNotification = @"ALChannelDidChangeGroupMuteNotification";
 NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUserDidChangeDeactivateNotification";
+NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
 @implementation ALMQTTConversationService
 
@@ -380,13 +382,20 @@ NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUser
             NSString * pairedKey = deliveryParts[0];
             NSString * contactId = (deliveryParts.count > 1) ? deliveryParts[1] : nil;
 
+            ALMessageDBService *messageDataBaseService = [[ALMessageDBService alloc] init];
+            ALMessage *existingMessage = [messageDataBaseService getMessageByKey:pairedKey];
+            // Skip the Update of Delivered in case of existing message is DELIVERED_AND_READ already.
+            if (existingMessage &&
+                (existingMessage.status.intValue == DELIVERED_AND_READ)) {
+                return;
+            }
+
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED];
             [self.mqttConversationDelegate delivered:pairedKey contactId:contactId withStatus:DELIVERED];
 
-            ALMessageDBService *messageDataBaseService = [[ALMessageDBService alloc] init];
-            ALMessage *message = [messageDataBaseService getMessageByKey:pairedKey];
-            if(message){
-                [self.realTimeUpdate onMessageDelivered:message];
+            if (existingMessage) {
+                existingMessage.status = [NSNumber numberWithInt:DELIVERED];
+                [self.realTimeUpdate onMessageDelivered:existingMessage];
             }
         }
         else if([type isEqualToString:@"MESSAGE_DELETED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_DELETE_MESSAGE)]])
@@ -490,10 +499,7 @@ NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUser
         {
             //          FETCH USER DETAILS and UPDATE DB AND REAL-TIME
             NSString * userId = [theMessageDict objectForKey:@"message"];
-            if(![userId isEqualToString:[ALUserDefaultsHandler getUserId]])
-            {
-                [self.mqttConversationDelegate updateUserDetail:userId];
-            }
+            [self.mqttConversationDelegate updateUserDetail:userId];
             if(self.realTimeUpdate){
                 [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
                     [self.realTimeUpdate onUserDetailsUpdate:userDetail];
@@ -672,6 +678,58 @@ NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUser
 
     NSData * data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
     [self.session publishData:data onTopic:topicString retain:NO qos:MQTTQosLevelAtMostOnce];
+}
+
+-(BOOL) publishCustomData:(NSString *)dataString
+            withTopicName:(NSString *) topic {
+    @try {
+        if (!self.session ||
+            !(self.session.status == MQTTSessionStatusConnected) ||
+            ![ALDataNetworkConnection checkDataNetworkAvailable] ||
+            !dataString ||
+            !topic) {
+            return NO;
+        }
+
+        ALSLog(ALLoggerSeverityInfo, @"Sending custom data to topic : %@", topic);
+
+        NSData * data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+        [self.session publishData:data
+                          onTopic:topic
+                           retain:NO
+                              qos:MQTTQosLevelAtMostOnce];
+        return YES;
+    }  @catch (NSException * exp) {
+        ALSLog(ALLoggerSeverityError, @"Exception in publishCustomData :: %@", exp.description);
+    }
+    return NO;
+}
+
+-(BOOL) messageReadStatusPublishWithMessageKey:(NSString *) messageKey {
+
+    if (!messageKey) {
+        return NO;
+    }
+
+    ALMessageDBService * messageDBService = [[ALMessageDBService alloc] init];
+    ALMessage *message = [messageDBService getMessageByKey:messageKey];
+
+    if (!message) {
+        return NO;
+    }
+
+    NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i",
+                            [ALUserDefaultsHandler getUserId],
+                            message.pairedMessageKey,
+                            READ];
+
+    BOOL isReadStatusPublished = [self publishCustomData:dataString
+                                           withTopicName:AL_MESSAGE_STATUS_TOPIC];
+
+    if (isReadStatusPublished) {
+        [ALUserService markConversationReadInDataBaseWithMessage:message];
+    }
+    return isReadStatusPublished;
 }
 
 -(void) unsubscribeToConversation {

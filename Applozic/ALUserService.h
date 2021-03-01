@@ -101,4 +101,6 @@
 -(void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
                                 withCompletion:(void(^)(NSMutableArray *contcatArray, NSError * error))completion;
 
++(void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage;
+
 @end

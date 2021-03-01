@@ -18,9 +18,6 @@
 - (IBAction)uploadImageAction:(id)sender;
 - (IBAction)notificationToggle:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *userDesignationLabel;
-
 @property (weak, nonatomic) IBOutlet UIView *userView;
 
 

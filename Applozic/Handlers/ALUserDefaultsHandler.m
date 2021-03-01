@@ -680,32 +680,6 @@
     return [userDefaults boolForKey:AL_LOGIN_USER_CONTACT];
 }
 
-+(void)setProfileImageLink:(NSString *)imageLink
-{
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:imageLink forKey:AL_LOGIN_USER_PROFILE_IMAGE];
-    [userDefaults synchronize];
-}
-
-+(NSString *)getProfileImageLink
-{
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:AL_LOGIN_USER_PROFILE_IMAGE];
-}
-
-+(void)setProfileImageLinkFromServer:(NSString *)imageLink
-{
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    [userDefaults setValue:imageLink forKey:AL_LOGIN_USER_PROFILE_IMAGE_SERVER];
-    [userDefaults synchronize];
-}
-
-+(NSString *)getProfileImageLinkFromServer
-{
-    NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
-    return [userDefaults valueForKey:AL_LOGIN_USER_PROFILE_IMAGE_SERVER];
-}
-
 +(void)setLoggedInUserStatus:(NSString *)status
 {
     NSUserDefaults *userDefaults = ALUserDefaultsHandler.getUserDefaults;
