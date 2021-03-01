@@ -2968,7 +2968,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     if(((!self.channelKey && !self.conversationId)) && ![ALApplozicSettings isBlockUserOptionHidden])
     {
-        [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"blockUserOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"BLOCK USER", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [theController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"blockUserOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Block User", @"")  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
             if(![ALDataNetworkConnection checkDataNetworkAvailable])
             {
@@ -3829,9 +3829,17 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
         BOOL disableUserInteractionInChannel = [self updateChannelUserStatus];
         [self disableChatViewInteraction:disableUserInteractionInChannel withPlaceholder:nil];
     } else if (contact) {
-        if ([contact isDeleted]) {
-            /// User deletd.
-            NSString *userDeletedInfo = NSLocalizedStringWithDefaultValue(@"userDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has been deleted", @"");
+
+        ALContactService * contactService = [[ALContactService alloc] init];
+        ALContact *loginUserContact = [contactService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
+
+        if ([contact isDeleted] || [loginUserContact isDeleted]) {
+            /// User deletd .
+            NSString *userDeletedInfo = [loginUserContact isDeleted] ?
+            NSLocalizedStringWithDefaultValue(@"yourAccountDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your account deleted", @"")
+            :
+            NSLocalizedStringWithDefaultValue(@"userDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"User has been deleted", @"");
+
             [self disableChatViewInteraction: YES withPlaceholder: userDeletedInfo];
         } else if (ALUserDefaultsHandler.isChatDisabled) {
             /// User has disabled chat.
@@ -4299,7 +4307,12 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
     [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
 
+        if (!userDetail) {
+            return;
+        }
+
         [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAIL_OTHER_VC" object:userDetail];
+
         [self subProcessDetailUpdate:userDetail];
     }];
 }
@@ -4307,12 +4320,18 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 -(void)subProcessDetailUpdate:(ALUserDetail *)userDetail  // (COMMON METHOD CALL FROM SELF and ALMSGVC)
 {
     ALSLog(ALLoggerSeverityInfo, @"ALCHATVC : USER_DETAIL_SUB_PROCESS");
-    if(![self isGroup] && [userDetail.userId isEqualToString:self.contactIds])
+    if(![self isGroup])
     {
+        BOOL isEnableOrDisableChatRequired = NO;
         ALContactService *contactService = [ALContactService new];
-        self.alContact = [contactService loadContactByKey:@"userId" value:userDetail.userId];
-        [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
-        [self enableOrDisableChatWithChannel:nil orContact:self.alContact];
+        if ([userDetail.userId isEqualToString:self.contactIds]) {
+            self.alContact = [contactService loadContactByKey:@"userId" value:userDetail.userId];
+            [titleLabelButton setTitle:[self.alContact getDisplayName] forState:UIControlStateNormal];
+            isEnableOrDisableChatRequired = YES;
+        }
+        if (isEnableOrDisableChatRequired || [userDetail.userId isEqualToString:[ALUserDefaultsHandler getUserId]]) {
+            [self enableOrDisableChatWithChannel:nil orContact:self.alContact];
+        }
     }
     [self.mTableView reloadData];
 }
@@ -4439,19 +4458,28 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     NSArray * theFilteredArray = [messageList filteredArrayUsingPredicate:compoundPredicate];
     NSSortDescriptor *valueDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:YES];
     NSArray *descriptors = [NSArray arrayWithObject:valueDescriptor];
-    NSArray *sortedArray = [theFilteredArray sortedArrayUsingDescriptors:descriptors];
-    if(sortedArray.count==0){
+    NSArray *sortedMessageArray = [theFilteredArray sortedArrayUsingDescriptors:descriptors];
+    if(sortedMessageArray.count==0){
         ALSLog(ALLoggerSeverityInfo, @"No message for contact .....%@",self.contactIds);
         return;
     }
     [self updateConversationProfileDetails];
 
-    [self.alMessageWrapper addLatestObjectToArray:[NSMutableArray arrayWithArray:sortedArray]];
+    [self.alMessageWrapper addLatestObjectToArray:[NSMutableArray arrayWithArray:sortedMessageArray]];
     [self.mTableView reloadData];
     [self scrollTableViewToBottomWithAnimation:YES];
 
     if (self.comingFromBackground) {
-        [self markConversationRead];
+        BOOL isReadUpdateFailedToPublish = NO;
+        for (ALMessage *message in sortedMessageArray) {
+            BOOL isReadStatusPublished = [self.mqttObject messageReadStatusPublishWithMessageKey:message.key];
+            if (!isReadStatusPublished) {
+                isReadUpdateFailedToPublish = YES;
+            }
+        }
+        if (isReadUpdateFailedToPublish) {
+            [self markConversationRead];
+        }
     }
 }
 

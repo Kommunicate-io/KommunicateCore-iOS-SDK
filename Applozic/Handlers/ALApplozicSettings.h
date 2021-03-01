@@ -156,6 +156,7 @@ static NSString *const AL_MESSAGE_SEARCH = @"com.applozic.AL_MESSAGE_SEARCH";
 static NSString *const AL_MESSAGE_DELETE_FOR_ALL_ENABLED = @"com.applozic.userdefault.AL_MESSAGE_DELETE_FOR_ALL_ENABLED";
 static NSString *const AL_PHOTO_PICKER_SELECTION_LIMIT = @"com.applozic.userdefault.AL_PHOTO_PICKER_SELECTION_LIMIT";
 static NSString *const AL_MESSAGE_META_DATA_KEY = @"com.applozic.userdefault.AL_MESSAGE_META_DATA_KEY";
+static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.AL_SUPPORT_CONTACT_USER_ID";
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -627,4 +628,9 @@ static NSString *const AL_MESSAGE_META_DATA_KEY = @"com.applozic.userdefault.AL_
 
 +(void)setMessageMetadata:(NSMutableDictionary *) messageMetadata;
 +(NSMutableDictionary *)getMessageMetadata;
+
+/// Support contact userId can be set for  showing the support contact at top in contact screen.
++(void)setSupportContactUserId:(NSString *)userId;
++(NSString *)getSupportContactUserId;
+
 @end

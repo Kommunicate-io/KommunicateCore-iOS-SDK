@@ -226,21 +226,7 @@ static int CONTACT_PAGE_SIZE = 100;
 //===========================================
 +(void)markMessageAsRead:(ALMessage *)alMessage withPairedkeyValue:(NSString *)pairedkeyValue withCompletion:(void (^)(NSString *, NSError *))completion{
 
-
-    if(alMessage.groupId != NULL){
-        [ALChannelService setUnreadCountZeroForGroupID:alMessage.groupId];
-        ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
-        [channelDBService markConversationAsRead:alMessage.groupId];
-    }
-    else{
-        [ALUserService setUnreadCountZeroForContactId:alMessage.contactIds];
-        ALContactDBService * contactDBService=[[ALContactDBService alloc] init];
-        [contactDBService markConversationAsDeliveredAndRead:alMessage.contactIds];
-        //  TODO: Mark message read&delivered in DB not whole conversation
-    }
-
-
-
+    [self markConversationReadInDataBaseWithMessage:alMessage];
     //Server Call
     ALUserClientService * clientService = [[ALUserClientService alloc] init];
     [clientService markMessageAsReadforPairedMessageKey:pairedkeyValue withCompletion:^(NSString * response, NSError * error) {
@@ -248,6 +234,20 @@ static int CONTACT_PAGE_SIZE = 100;
         completion(response,error);
     }];
 
+}
+
++(void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage {
+
+    if (alMessage.groupId != NULL) {
+        [ALChannelService setUnreadCountZeroForGroupID:alMessage.groupId];
+        ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
+        [channelDBService markConversationAsRead:alMessage.groupId];
+    } else {
+        [ALUserService setUnreadCountZeroForContactId:alMessage.contactIds];
+        ALContactDBService * contactDBService=[[ALContactDBService alloc] init];
+        [contactDBService markConversationAsDeliveredAndRead:alMessage.contactIds];
+        //  TODO: Mark message read&delivered in DB not whole conversation
+    }
 }
 
 //===============================================================================================

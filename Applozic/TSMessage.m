@@ -243,7 +243,7 @@ __weak static UIViewController *_defaultViewController;
     keyWindow.windowLevel=UIWindowLevelStatusBar+1; //Causes the navigationBar to Hide....
     [keyWindow addSubview:currentView];
     [keyWindow bringSubviewToFront:currentView];
-    
+
 
 
     CGPoint toPoint;
@@ -362,9 +362,12 @@ __weak static UIViewController *_defaultViewController;
          }
      } completion:^(BOOL finished)
      {
-         [currentView removeFromSuperview];
-             [[[[UIApplication sharedApplication] delegate] window] setWindowLevel:UIWindowLevelNormal];
-         
+        [currentView removeFromSuperview];
+        UIWindow *window = [self window];
+        if (window) {
+            [window setWindowLevel:UIWindowLevelNormal];
+        }
+
          if ([self.messages count] > 0)
          {
              [self.messages removeObjectAtIndex:0];
@@ -458,6 +461,14 @@ __weak static UIViewController *_defaultViewController;
         _useiOS7Style = ! (TS_SYSTEM_VERSION_LESS_THAN(@"7.0") || !iOS7SDK);
     });
     return _useiOS7Style;
+}
+
+-(UIWindow*)window {
+    NSArray *windows = [[UIApplication sharedApplication] windows];
+    if (windows.count) {
+        return windows.firstObject;
+    }
+    return nil;
 }
 
 @end

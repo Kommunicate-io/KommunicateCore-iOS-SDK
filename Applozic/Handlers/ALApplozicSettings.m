@@ -1927,4 +1927,15 @@
     return messageMetadata;
 }
 
++(void)setSupportContactUserId:(NSString *)userId {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    [userDefaults setValue:userId forKey:AL_SUPPORT_CONTACT_USER_ID];
+    [userDefaults synchronize];
+}
+
++(NSString *)getSupportContactUserId {
+    NSUserDefaults * userDefaults = ALApplozicSettings.getUserDefaults;
+    return [userDefaults valueForKey:AL_SUPPORT_CONTACT_USER_ID];
+}
+
 @end

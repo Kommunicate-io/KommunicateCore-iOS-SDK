@@ -45,8 +45,6 @@ static NSString *const AL_UNREAD_COUNT_TYPE = @"com.applozic.userdefault.UNREAD_
 static NSString *const AL_MSG_SYN_CALL = @"com.applozic.userdefault.MSG_SYN_CALL";
 static NSString *const AL_DEBUG_LOG_FLAG = @"com.applozic.userdefault.DEBUG_LOG_FLAG";
 static NSString *const AL_LOGIN_USER_CONTACT = @"com.applozic.userdefault.LOGIN_USER_CONTACT";
-static NSString *const AL_LOGIN_USER_PROFILE_IMAGE = @"com.applozic.userdefault.LOGIN_USER_PROFILE_IMAGE";
-static NSString *const AL_LOGIN_USER_PROFILE_IMAGE_SERVER = @"com.applozic.userdefault.LOGIN_USER_PROFILE_IMAGE_SERVER";
 static NSString *const AL_LOGGEDIN_USER_STATUS = @"com.applozic.userdefault.LOGGEDIN_USER_STATUS";
 static NSString *const AL_LOGIN_USER_SUBSCRIBED_MQTT = @"com.applozic.userdefault.LOGIN_USER_SUBSCRIBED_MQTT";
 static NSString *const AL_USER_ENCRYPTION_KEY = @"com.applozic.userdefault.USER_ENCRYPTION_KEY";
@@ -218,13 +216,6 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 
 +(BOOL)getLoginUserConatactVisibility;
 +(void)setLoginUserConatactVisibility:(BOOL)flag;
-
-// LOGIN USER PROFILE IMAGE LINK
-+(NSString *)getProfileImageLink;
-+(void)setProfileImageLink:(NSString *)imageLink;
-
-+(NSString *)getProfileImageLinkFromServer;
-+(void)setProfileImageLinkFromServer:(NSString *)imageLink;
 
 +(NSString *)getLoggedInUserStatus;
 +(void)setLoggedInUserStatus:(NSString *)status;

@@ -122,9 +122,7 @@
                 if (response.notificationSoundFileName ) {
                     [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
                 }
-                if (response.imageLink) {
-                    [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
-                }
+
                 if (response.userEncryptionKey) {
                     [ALUserDefaultsHandler setUserEncryption:response.userEncryptionKey];
                 }
@@ -157,6 +155,7 @@
                 contact.contactNumber  = response.contactNumber;
                 contact.roleType  =  [NSNumber numberWithShort:response.roleType];
                 contact.metadata  =  response.metadata;
+                contact.userStatus = response.statusMessage;
                 [alContactDBService addContact:contact];
 
             }
@@ -395,10 +394,6 @@
 
             if (response.notificationSoundFileName) {
                 [ALUserDefaultsHandler setNotificationSoundFileName:response.notificationSoundFileName];
-            }
-
-            if(response.imageLink) {
-                [ALUserDefaultsHandler setProfileImageLinkFromServer:response.imageLink];
             }
 
             if (response.authToken) {

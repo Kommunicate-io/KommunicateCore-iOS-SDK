@@ -16,6 +16,7 @@
 
 extern NSString *const ALChannelDidChangeGroupMuteNotification;
 extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
+extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 
 @protocol ALMQTTConversationDelegate <NSObject>
 
@@ -68,4 +69,13 @@ extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 -(void) retryConnectionWithTopic:(NSString *)topic;
 
 -(void)subscribeToConversationWithTopic:(NSString *)topic withCompletionHandler:(void (^)(BOOL subscribed, NSError * error))completion;
+
+/// For publishing a read status of message using MQTT
+/// @param messageKey Pass the messageKey which is used for identifiying the message.
+-(BOOL) messageReadStatusPublishWithMessageKey:(NSString *) messageKey;
+
+/// For publishing custom data with topic using MQTT
+/// @param dataString Pass the string of data to publish.
+/// @param topic Pass the topic name to publish on.
+-(BOOL) publishCustomData:(NSString *)dataString withTopicName:(NSString *) topic;
 @end
