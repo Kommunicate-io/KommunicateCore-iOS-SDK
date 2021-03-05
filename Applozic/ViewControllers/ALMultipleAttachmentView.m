@@ -10,12 +10,13 @@
 
 #import "ALMultipleAttachmentView.h"
 #import "AlMultipleAttachmentCell.h"
-#import "ALUtilityClass.h"
 #import "ALChatViewController.h"
 #import "ALImagePickerHandler.h"
 #import "ALImagePickerController.h"
-#import "UIImage+animatedGIF.h"
 #import "ALMultimediaData.h"
+#import <ApplozicCore/ApplozicCore.h>
+#import "ALUIUtilityClass.h"
+#import "ALUIImage+animatedGIF.h"
 
 static CGFloat NAVIGATION_TEXT_SIZE = 20;
 
@@ -43,7 +44,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
     self.imageArray = [NSMutableArray new];
     self.mediaFileArray = [NSMutableArray new];
 
-    UIImage * addButtonImage = [ALUtilityClass getImageFromFramworkBundle:@"Plus_PNG.png"];
+    UIImage * addButtonImage = [ALUIUtilityClass getImageFromFramworkBundle:@"Plus_PNG.png"];
     [self.imageArray addObject: addButtonImage];
 
     //    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
@@ -81,7 +82,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
                                                                                                                 size:NAVIGATION_TEXT_SIZE]
                                                                            }];
 
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     }
@@ -106,7 +107,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
 
     [navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
     [navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
-    [navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+    [navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
 }
 
 -(void)gifFromURL:(NSURL *)url withCompletion:(void(^)(NSData * imageData))completion{
@@ -155,7 +156,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
                 UIImage * image = [info valueForKey:UIImagePickerControllerOriginalImage];
                 if(image)
                 {
-                    ALMultimediaData * object = [[ALMultimediaData new] getMultimediaDataOfType:ALMultimediaTypeImage withImage:[ALUtilityClass getNormalizedImage:image] withGif:nil withVideo:nil];
+                    ALMultimediaData * object = [[ALMultimediaData new] getMultimediaDataOfType:ALMultimediaTypeImage withImage:[ALUIUtilityClass getNormalizedImage:image] withGif:nil withVideo:nil];
                     completion(image, object);
                     return;
                 }
@@ -166,7 +167,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
                 if(isMovie)
                 {
                     NSURL *videoURL = info[UIImagePickerControllerMediaURL];
-                    UIImage * image = [ALUtilityClass subProcessThumbnail:videoURL];
+                    UIImage * image = [ALUIUtilityClass subProcessThumbnail:videoURL];
                     ALMultimediaData * object = [[ALMultimediaData new] getMultimediaDataOfType:ALMultimediaTypeVideo withImage:nil withGif:nil withVideo:[videoURL path]];
                     completion(image, object);
                     return;
@@ -248,7 +249,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
     int max = MAX_VALUE + 1;
     if(self.imageArray.count >= max)
     {
-        [ALUtilityClass showAlertMessage:   NSLocalizedStringWithDefaultValue(@"attachmentLimitReachedText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Maximum attachment limit reached" , @"")  andTitle:   NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OOPS!!!", @"")];
+        [ALUIUtilityClass showAlertMessage:   NSLocalizedStringWithDefaultValue(@"attachmentLimitReachedText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Maximum attachment limit reached" , @"")  andTitle:   NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OOPS!!!", @"")];
         return;
     }
 
@@ -260,7 +261,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
 {
     if(!self.mediaFileArray.count)
     {
-        [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"selectAtleastAttachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Select at least one attachment" , @"")andTitle: NSLocalizedStringWithDefaultValue(@"attachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Attachment" , @"")];
+        [ALUIUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"selectAtleastAttachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Select at least one attachment" , @"")andTitle: NSLocalizedStringWithDefaultValue(@"attachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Attachment" , @"")];
         return;
     }
     [self.multipleAttachmentDelegate multipleAttachmentProcess:self.mediaFileArray andText:headerView.msgTextField.text];
@@ -278,7 +279,7 @@ static NSString * const reuseIdentifier = @"collectionCell";
         }
         else
         {
-            [ALUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Photos Permission", @"") andViewController:self];
+            [ALUIUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Photos Permission", @"") andViewController:self];
         }
     }];
 }

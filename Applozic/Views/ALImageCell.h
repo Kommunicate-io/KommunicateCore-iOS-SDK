@@ -11,9 +11,9 @@
  ***********************************************************************/
 
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
 #import "KAProgressLabel.h"
 #import "ALMediaBaseCell.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALImageCell : ALMediaBaseCell
 

@@ -10,6 +10,7 @@
 #import "Applozic.h"
 #import "UIImageView+WebCache.h"
 #import "ALMessageInfoViewController.h"
+#import "ALUIUtilityClass.h"
 
 @implementation ALLocationCell
 {
@@ -159,8 +160,7 @@
         
         if(alContact.contactImageUrl)
         {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {
@@ -209,7 +209,7 @@
         if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
             self.mMessageStatusImageView.hidden = NO;
             NSString * imageName = [self getMessageStatusIconName:self.mMessage];
-            self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
+            self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
         }
     }
 
@@ -229,7 +229,7 @@
     }
     else
     {
-        [self.mImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
+        [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
     }
     
     [self addShadowEffects];

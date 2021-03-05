@@ -6,13 +6,10 @@
 //
 
 #import "ALContactCell.h"
-#import "ALContactService.h"
-#import "ALMessageClientService.h"
-#import "ALColorUtility.h"
 #import <UIKit/UIKit.h>
 #import "UIImageView+WebCache.h"
-#import "ALUtilityClass.h"
-#import "ALApplozicSettings.h"
+#import "ALColorUtility.h"
+#import "ALUIUtilityClass.h"
 
 static const CGFloat USER_NAME_LABEL_SIZE = 18;
 static const CGFloat MESSAGE_LABEL_SIZE = 14;
@@ -92,8 +89,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
             self.mUserNameLabel.text = [grpContact getDisplayName];
             self.onlineImageMarker.hidden = (!grpContact.connected);
             if (grpContact.contactImageUrl.length) {
-                ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-                [messageClientService downloadImageUrlAndSet:grpContact.contactImageUrl imageView:self.mUserImageView defaultImage:nil];
+                [ALUIUtilityClass downloadImageUrlAndSet:grpContact.contactImageUrl imageView:self.mUserImageView defaultImage:@"ic_contact_picture_holo_light.png"];
                 self.imageNameLabel.hidden = YES;
                 nameIcon.hidden = YES;
             } else {
@@ -107,14 +103,13 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
             NSString *placeHolderImage ;
             if (alChannel.type == BROADCAST) {
                 placeHolderImage = @"broadcast_group.png";
-                [self.mUserImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"broadcast_group.png"]];
+                [self.mUserImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"broadcast_group.png"]];
             } else {
                 placeHolderImage = @"applozic_group_icon.png";
-                [self.mUserImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
+                [self.mUserImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
             }
 
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alChannel.channelImageURL imageView:self.mUserImageView defaultImage:placeHolderImage];
+            [ALUIUtilityClass downloadImageUrlAndSet:alChannel.channelImageURL imageView:self.mUserImageView defaultImage:placeHolderImage];
 
             nameIcon.hidden = YES;
             self.mUserNameLabel.text = [alChannel name];
@@ -124,8 +119,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
         self.mUserNameLabel.text = [contact getDisplayName];
         self.onlineImageMarker.hidden = (!contact.connected);
         if (contact.contactImageUrl.length) {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:contact.contactImageUrl imageView:self.mUserImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:contact.contactImageUrl imageView:self.mUserImageView defaultImage:@"ic_contact_picture_holo_light.png"];
             self.imageNameLabel.hidden = YES;
             nameIcon.hidden= YES;
         } else {
@@ -165,7 +159,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
         self.imageNameLabel.hidden = NO;
         self.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"deletedMessageText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"This message has been deleted", @"");
 
-        UIImage *deletedIcon = [ALUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
+        UIImage *deletedIcon = [ALUIUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
         deletedIcon = [deletedIcon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         self.imageMarker.tintColor = subtextColour;
         self.imageMarker.image = deletedIcon;
@@ -179,17 +173,17 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
         if ([message.fileMeta.contentType hasPrefix:@"image"]) {
             self.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"image", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image", @"");
 
-            self.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"];
+            self.imageMarker.image = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"];
         } else if ([message.fileMeta.contentType hasPrefix:@"video"]) {
             self.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"video", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Video", @"");
-            self.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"];
+            self.imageMarker.image = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"];
         } else if (message.contentType == ALMESSAGE_CONTENT_LOCATION) {
             self.mMessageLabel.hidden = YES;
             self.imageNameLabel.text = NSLocalizedStringWithDefaultValue(@"location", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Location", @"");
-            self.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"location_filled.png"];
+            self.imageMarker.image = [ALUIUtilityClass getImageFromFramworkBundle:@"location_filled.png"];
         } else if (message.fileMeta.contentType) {
             self.imageNameLabel.text =  NSLocalizedStringWithDefaultValue(@"attachment", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Attachment", @"");
-            self.imageMarker.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_action_attachment.png"];
+            self.imageMarker.image = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_attachment.png"];
         } else {
             self.imageNameLabel.hidden = YES;
             self.imageMarker.hidden = YES;
@@ -204,7 +198,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
         self.imageNameLabel.hidden = NO;
         self.imageMarker.hidden = NO;
         self.imageNameLabel.text = [message getVOIPMessageText];
-        self.imageMarker.image = [ALUtilityClass getVOIPMessageImage:message];
+        self.imageMarker.image = [ALUIUtilityClass getVOIPMessageImage:message];
     } else {
         self.imageNameLabel.hidden = YES;
         self.imageMarker.hidden = YES;

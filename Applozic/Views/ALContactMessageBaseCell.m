@@ -7,18 +7,11 @@
 //
 
 #import "ALContactMessageBaseCell.h"
-#import "ALUtilityClass.h"
 #import "UIImageView+WebCache.h"
-#import "ALApplozicSettings.h"
-#import "ALConstant.h"
-#import "ALContact.h"
 #import "ALColorUtility.h"
-#import "ALContactDBService.h"
-#import "ALMessageService.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
 #import "ALVCardClass.h"
-#import "ALMessageClientService.h"
 
 
 @implementation ALContactMessageBaseCell

@@ -8,10 +8,9 @@
 
 #import "ALAudioCell.h"
 #import "UIImageView+WebCache.h"
-#import "ALMediaPlayer.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
-#import "ALMessageClientService.h"
+#import "ALUIUtilityClass.h"
 
 // Constants
 static CGFloat const DATE_LABEL_SIZE = 12;
@@ -80,7 +79,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         [self.mediaTrackLength setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:DATE_LABEL_SIZE]];
         [self.contentView addSubview:self.mediaTrackLength];
         
-        [self.playPauseStop setImage:[ALUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
+        [self.playPauseStop setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
         
         [self.mDowloadRetryButton addTarget:self action:@selector(dowloadRetryAction) forControlEvents:UIControlEventTouchUpInside];
         
@@ -158,8 +157,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         
         if(alContact.contactImageUrl)
         {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {
@@ -230,7 +228,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         {
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setHidden:NO];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"DownloadiOS.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DownloadiOS.png"] forState:UIControlStateNormal];
         }
         else
         {
@@ -320,13 +318,13 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         else if(!alMessage.imageFilePath && alMessage.fileMeta.blobKey)
         {
             self.mDowloadRetryButton.alpha = 1;
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"DownloadiOS.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DownloadiOS.png"] forState:UIControlStateNormal];
         }
         
         else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)
         {
             self.mDowloadRetryButton.alpha = 1;
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"UploadiOS2.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"UploadiOS2.png"] forState:UIControlStateNormal];
         }
         
     }
@@ -366,7 +364,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName = [self getMessageStatusIconName:self.mMessage];
-        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
+        self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
     }
     [self.contentView bringSubviewToFront:self.replyUIView];
     
@@ -404,7 +402,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 {
     self.progresLabel = [[KAProgressLabel alloc] init];
     self.progresLabel.cancelButton.frame = CGRectMake(10, 10, 40, 40);
-    [self.progresLabel.cancelButton setBackgroundImage:[ALUtilityClass getImageFromFramworkBundle:@"DELETEIOSX.png"] forState:UIControlStateNormal];
+    [self.progresLabel.cancelButton setBackgroundImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DELETEIOSX.png"] forState:UIControlStateNormal];
     [self.progresLabel setFrame:CGRectMake(cooridinateX, cooridinateY, 60, 60)];
     self.progresLabel.delegate = self;
     [self.progresLabel setTrackWidth: 4.0];
@@ -428,11 +426,11 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         if(!mediaPlayer.audioPlayer.isPlaying)
         {
             [mediaPlayer resumeAudio];
-            [self.playPauseStop setImage:[ALUtilityClass getImageFromFramworkBundle:@"PAUSE.png"] forState: UIControlStateNormal];
+            [self.playPauseStop setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"PAUSE.png"] forState: UIControlStateNormal];
         }
         else
         {
-            [self.playPauseStop setImage:[ALUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
+            [self.playPauseStop setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
             [mediaPlayer pauseAudio];
         }
     }else{
@@ -443,7 +441,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         mediaPlayer.delegate = self;
         mediaPlayer.key = self.mMessage.key;
         [mediaPlayer playAudio:self.mMessage.imageFilePath];
-        [self.playPauseStop setImage:[ALUtilityClass getImageFromFramworkBundle:@"PAUSE.png"] forState: UIControlStateNormal];
+        [self.playPauseStop setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"PAUSE.png"] forState: UIControlStateNormal];
 
     }
 }
@@ -477,7 +475,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
 -(void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
-    [self.playPauseStop setImage:[ALUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
+    [self.playPauseStop setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
     self.mediaTrackLength.text = [self getAudioLength:self.mMessage.imageFilePath];
     [self.mediaTrackProgress setProgress: 0.0];
     ALMediaPlayer * mediaPlayer =  [ALMediaPlayer sharedInstance];

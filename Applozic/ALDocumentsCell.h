@@ -13,6 +13,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ALMediaBaseCell.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALDocumentsCell : ALMediaBaseCell
 

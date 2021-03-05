@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 #import "ALDeletedMessasgeBaseCell.h"
 
 @interface ALMyDeletedMessageCell : ALDeletedMessasgeBaseCell

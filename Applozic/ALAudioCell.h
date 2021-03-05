@@ -13,14 +13,9 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 #import "ALColorUtility.h"
-#import "ALApplozicSettings.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALMessageService.h"
-#import "ALContactDBService.h"
 #import "KAProgressLabel.h"
-#import "ALUtilityClass.h"
 #import "ALMediaBaseCell.h"
 #import "ALMediaPlayer.h"
 

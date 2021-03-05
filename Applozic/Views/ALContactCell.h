@@ -6,9 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ALChannel.h"
-#import "ALContact.h"
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALContactCell : UITableViewCell
 

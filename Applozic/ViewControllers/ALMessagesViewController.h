@@ -9,6 +9,7 @@
 #import "ALChatViewController.h"
 #import "ALContactCell.h"
 #import "ALNewContactsViewController.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @protocol ALMessagesViewDelegate <NSObject>
 

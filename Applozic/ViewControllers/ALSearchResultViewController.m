@@ -7,13 +7,10 @@
 //
 
 #import "ALSearchResultViewController.h"
-#import "ALMessageService.h"
 #import <Applozic/Applozic-Swift.h>
 #import "ALContactCell.h"
-#import "ALUtilityClass.h"
-#import "ALMessage.h"
 #import "ALChatViewController.h"
-#import <Applozic/ALPushAssist.h>
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALSearchResultViewController()
 

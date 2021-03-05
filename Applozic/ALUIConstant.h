@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALUIConstant : NSObject
 

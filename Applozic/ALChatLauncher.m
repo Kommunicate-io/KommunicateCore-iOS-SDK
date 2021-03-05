@@ -8,15 +8,9 @@
 
 
 #import "ALChatLauncher.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALApplozicSettings.h"
 #import "ALChatViewController.h"
-#import "ALUser.h"
-#import "ALRegisterUserClientService.h"
-#import "ALMessageClientService.h"
-#import "ALUserDefaultsHandler.h"
 #import "ALMessagesViewController.h"
-#import "ALUserService.h"
+#import "ALUIUtilityClass.h"
 
 const int REGULAR_CONTACTS = 0;
 
@@ -313,11 +307,17 @@ const int REGULAR_CONTACTS = 0;
 {
     UITabBarItem *item1 = [tabBAR.tabBar.items objectAtIndex:0];
     [item1 setTitle:[ALApplozicSettings getChatListTabTitle]];
-    [item1 setImage:[ALApplozicSettings getChatListTabIcon]];
+    UIImage *chatCustomImg = [ALApplozicSettings getChatListTabIcon];
+    UIImage *defaultImg = [ALUIUtilityClass getImageFromFramworkBundle:@"chat_default.png"];
+    UIImage *chatIcon = chatCustomImg ? chatCustomImg : defaultImg;
+    [item1 setImage:chatIcon];
     
     UITabBarItem *item2 = [tabBAR.tabBar.items objectAtIndex:1];
     [item2 setTitle:[ALApplozicSettings getProfileTabTitle]];
-    [item2 setImage:[ALApplozicSettings getProfileTabIcon]];
+    UIImage *profileCustomImg = [ALApplozicSettings getChatListTabIcon];
+    UIImage *defaultProfileImg = [ALUIUtilityClass getImageFromFramworkBundle:@"contact_default.png"];
+    UIImage *profileIcon = profileCustomImg ? profileCustomImg : defaultProfileImg;
+    [item2 setImage:profileIcon];
 }
 
 //============================================

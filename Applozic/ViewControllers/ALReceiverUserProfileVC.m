@@ -7,11 +7,8 @@
 //
 
 #import "ALReceiverUserProfileVC.h"
-#import "ALUtilityClass.h"
 #import "UIImageView+WebCache.h"
-#import "ALApplozicSettings.h"
-#import "ALMessageClientService.h"
-#import "ALUserService.h"
+#import "ALUIUtilityClass.h"
 
 @interface ALReceiverUserProfileVC ()
 
@@ -85,7 +82,7 @@
 {
     UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
-    [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:theController andViewController:self];
     
     [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
     
@@ -199,11 +196,10 @@
     [self.emailId setText:self.alContact.email ? self.alContact.email : @"Not Available"];
     [self.phoneNo setText:self.alContact.contactNumber ? self.alContact.contactNumber : @"Not Available"];
     
-    [self.profileImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
+    [self.profileImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
     if(self.alContact.contactImageUrl)
     {
-        ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-        [messageClientService downloadImageUrlAndSet:_alContact.contactImageUrl imageView:_profileImageView defaultImage:nil];
+        [ALUIUtilityClass downloadImageUrlAndSet:_alContact.contactImageUrl imageView:_profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
     }
     
     [self.callButton setEnabled:NO];
@@ -216,7 +212,7 @@
     {
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
     }
 }
 

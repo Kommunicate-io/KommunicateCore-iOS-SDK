@@ -7,8 +7,6 @@
 //
 
 #import "ALCustomCell.h"
-#import "ALUtilityClass.h"
-#import "ALApplozicSettings.h"
 
 @implementation ALCustomCell
 

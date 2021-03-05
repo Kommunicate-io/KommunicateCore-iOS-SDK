@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ALContactService.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALReceiverUserProfileVC : UITableViewController
 

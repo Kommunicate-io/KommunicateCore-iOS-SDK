@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Applozic/Applozic.h>
-
+#import "ALMediaBaseCell.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

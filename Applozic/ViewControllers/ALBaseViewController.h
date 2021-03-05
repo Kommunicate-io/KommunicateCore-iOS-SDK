@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALBaseViewController : UIViewController <UITextViewDelegate>
 

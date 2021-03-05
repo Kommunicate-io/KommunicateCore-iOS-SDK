@@ -15,16 +15,6 @@ typedef enum {
     AV_CALL_RECEIVED = 1
 }AV_LAUNCH_OPTIONS;
 
-/**************************************************
- AV_CALL_CONTENT_TWO = 102    (NOTIFICATION ONLY)
- AV_CALL_CONTENT_THREE = 103  (SHOW MESG CONTENT)
- **************************************************/
-typedef enum
-{
-    AV_CALL_CONTENT_TWO = 102,
-    AV_CALL_CONTENT_THREE = 103
-} CALL_CONTENT_TYPE;
-
 @interface ALAudioVideoBaseVC : UIViewController
 
 @property (nonatomic, strong) NSString *userID;

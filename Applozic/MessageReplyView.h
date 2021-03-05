@@ -7,11 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
-
-#define MESSAGE_REPLY_WIDTH 100
-#define MESSAGE_REPLY_SUPER_VIEW_PADDING 10
-
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface MessageReplyView : UIView
 

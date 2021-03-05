@@ -7,8 +7,6 @@
 //
 
 #import "ALDeletedMessasgeBaseCell.h"
-#import "ALUtilityClass.h"
-#import "ALMessageService.h"
 
 @implementation ALDeletedMessasgeBaseCell
 

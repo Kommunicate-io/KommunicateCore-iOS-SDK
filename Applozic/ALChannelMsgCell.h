@@ -7,7 +7,8 @@
 //
 
 
-#import <Applozic/Applozic.h>
+#import <ApplozicCore/ApplozicCore.h>
+#import "ALChatCell.h"
 
 @interface ALChannelMsgCell : ALChatCell
 

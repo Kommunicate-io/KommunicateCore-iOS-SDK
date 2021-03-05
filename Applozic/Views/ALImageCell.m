@@ -9,22 +9,12 @@
 
 #import "ALImageCell.h"
 #import "UIImageView+WebCache.h"
-#import "ALDBHandler.h"
-#import "ALContact.h"
-#import "ALContactDBService.h"
-#import "ALApplozicSettings.h"
-#import "ALMessageService.h"
-#import "ALMessageDBService.h"
-#import "ALUtilityClass.h"
 #import "ALColorUtility.h"
-#import "ALMessage.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
-#import "ALDataNetworkConnection.h"
 #import "UIImage+MultiFormat.h"
-#import "ALMessageClientService.h"
-#import "ALConnectionQueueHandler.h"
-#import "UIImage+animatedGIF.h"
+#import "ALUIUtilityClass.h"
+#import "ALUIImage+animatedGIF.h"
 
 // Constants
 static CGFloat const DOWNLOAD_RETRY_PADDING_X = 45;
@@ -252,7 +242,7 @@ UIViewController * modalCon;
             ALSLog(ALLoggerSeverityInfo, @" file path not found making download button visible ....ALImageCell");
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
 
         }
         else
@@ -272,8 +262,7 @@ UIViewController * modalCon;
 
         if(alContact.contactImageUrl)
         {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {
@@ -377,14 +366,14 @@ UIViewController * modalCon;
         {
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
 
         }
         else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)
         {
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
         }
 
     }
@@ -399,7 +388,7 @@ UIViewController * modalCon;
 
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName = [self getMessageStatusIconName:self.mMessage];
-        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
+        self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
     }
 
     self.imageWithText.text = alMessage.message;
