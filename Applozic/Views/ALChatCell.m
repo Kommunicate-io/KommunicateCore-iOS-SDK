@@ -7,18 +7,11 @@
 
 
 #import "ALChatCell.h"
-#import "ALUtilityClass.h"
-#import "ALConstant.h"
 #import "UIImageView+WebCache.h"
-#import "ALContactDBService.h"
-#import "ALApplozicSettings.h"
-#import "ALMessageService.h"
-#import "ALMessageDBService.h"
-#import "UIImage+Utility.h"
 #import "ALColorUtility.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
-#import "ALMessageClientService.h"
+#import "ALUIUtilityClass.h"
 
 // Constants
 static CGFloat const DATE_LABEL_SIZE = 12;
@@ -99,7 +92,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         self.mMessageLabel = [[ALHyperLabel alloc] init];
         self.mMessageLabel.numberOfLines = 0;
 
-        NSString *fontName = [ALUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_FONTNAME];
+        NSString *fontName = [ALUIUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_FONTNAME];
 
         if (!fontName) {
             fontName = DEFAULT_FONT_NAME;
@@ -341,8 +334,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
         if(alContact.contactImageUrl)
         {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {
@@ -439,7 +431,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
                 imageName = @"ic_action_about.png";
                 break;
         }
-        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
+        self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
     }
 
     self.mDateLabel.text = theDate;

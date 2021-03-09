@@ -7,12 +7,10 @@
 //
 
 #import "ALImagePickerHandler.h"
-#import "UIImage+Utility.h"
+#import <ApplozicCore/ApplozicCore.h>
 #import <AVFoundation/AVAsset.h>
 #import <AVFoundation/AVAssetExportSession.h>
 #import <AVFoundation/AVMediaFormat.h>
-#import "ALApplozicSettings.h"
-
 @implementation ALImagePickerHandler
 
 

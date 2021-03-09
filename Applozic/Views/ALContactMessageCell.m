@@ -9,18 +9,11 @@
 // Constants
 
 #import "ALContactMessageCell.h"
-#import "ALUtilityClass.h"
 #import "UIImageView+WebCache.h"
-#import "ALApplozicSettings.h"
-#import "ALConstant.h"
-#import "ALContact.h"
-#import "ALColorUtility.h"
-#import "ALContactDBService.h"
-#import "ALMessageService.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
 #import "ALVCardClass.h"
-#import "ALMessageClientService.h"
+#import "ALUIUtilityClass.h"
 
 static CGFloat const USER_PROFILE_PADDING_X = 5;
 static CGFloat const USER_PROFILE_WIDTH = 45;
@@ -121,8 +114,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
         NSString * receiverName = [alContact getDisplayName];
         if(alContact.contactImageUrl)
         {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {
@@ -206,7 +198,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
 
     }
 
-    [self.contactProfileImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
+    [self.contactProfileImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
     self.contactProfileImage.layer.cornerRadius = self.contactProfileImage.frame.size.width/2;
     self.contactProfileImage.layer.masksToBounds = YES;
 

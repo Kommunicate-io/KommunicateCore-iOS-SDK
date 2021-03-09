@@ -7,13 +7,9 @@
 //
 
 #import "ALMapViewController.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALApplozicSettings.h"
-#import "ALDataNetworkConnection.h"
-#import "TSMessage.h"
 #import "UIImageView+WebCache.h"
-#import "ALMessage.h"
-#import "ALUtilityClass.h"
+#import <ApplozicCore/ApplozicCore.h>
+#import "ALUIUtilityClass.h"
 
 @interface ALMapViewController ()
 
@@ -224,7 +220,7 @@
         [self.mapView sd_setImageWithURL:staticImageURL];
     }
     else{
-        UIImage * offlineMapImage = [ALUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"];
+        UIImage * offlineMapImage = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"];
         [self.mapView setImage:offlineMapImage];
         
     }

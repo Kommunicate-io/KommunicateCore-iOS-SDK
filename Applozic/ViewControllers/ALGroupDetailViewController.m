@@ -8,18 +8,12 @@
 #import "ALGroupDetailViewController.h"
 #import "ALGroupDetailsMemberCell.h"
 #import "ALChatViewController.h"
-#import "ALChannel.h"
-#import "ALApplozicSettings.h"
 #import "UIImageView+WebCache.h"
 #import "ALMessagesViewController.h"
-#import "ALNotificationView.h"
-#import "ALDataNetworkConnection.h"
-#import "ALMQTTConversationService.h"
 #import "ALGroupCreationViewController.h"
-#import "ALPushAssist.h"
-#import "ALChannelUser.h"
-#import "ALMessageClientService.h"
 #import "ALNotificationHelper.h"
+#import <ApplozicCore/ApplozicCore.h>
+#import "ALUIUtilityClass.h"
 
 const int GROUP_ADDITION = 2;
 
@@ -114,7 +108,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     ALPushAssist *pushAssist = [ALPushAssist new];
 
-    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && pushAssist.isGroupDetailViewOnTop)
+    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && [pushAssist.topViewController isKindOfClass:[ALGroupDetailViewController class]])
     {
         ALMessage *alMessage = [[ALMessage alloc] init];
         alMessage.message = alertValue;
@@ -187,7 +181,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                                                                                                                 size:18]
                                                                            }];
 
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     }
@@ -482,7 +476,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                                            if(error)
                                            {
                                                ALSLog(ALLoggerSeverityError, @"DELETE FAILED: Unable to delete contact conversation : %@", error.description);
-                                               [ALUtilityClass displayToastWithMessage:NSLocalizedStringWithDefaultValue(@"deleteFailed", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delete failed!", @"")];
+                                               [ALUIUtilityClass displayToastWithMessage:NSLocalizedStringWithDefaultValue(@"deleteFailed", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delete failed!", @"")];
                                                return;
                                            }
                                            //DELETE CHANNEL FROM LOCAL AND BACK TO MAIN VIEW
@@ -498,7 +492,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
                                                NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
                                                for (UIViewController *viewController in allViewControllers)
                                                {
-                                                   if ([ALPushAssist isViewObjIsMsgVC:viewController] || [ALPushAssist isViewObjIsMsgContainerVC:viewController])
+                                                   if ([viewController isKindOfClass:[ALMessagesViewController class]] || [ALPushAssist isViewObjIsMsgContainerVC:viewController])
                                                    {
                                                        [self.navigationController popToViewController:viewController animated:YES];
                                                    }
@@ -542,7 +536,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
 
-    [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:theController andViewController:self];
 
     NSString* channelMemberID = [NSString stringWithFormat:@"%@",memberIds[row]];
 
@@ -610,7 +604,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
                 if (!error) {
 
-                    [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"groupSuccessFullyUpdateInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group information successfully updated", @"") andTitle:NSLocalizedStringWithDefaultValue(@"responseText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Reponse", @"")];
+                    [ALUIUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"groupSuccessFullyUpdateInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group information successfully updated", @"") andTitle:NSLocalizedStringWithDefaultValue(@"responseText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Reponse", @"")];
                     [self setupView];
                     [self.tableView reloadData];
                 }
@@ -769,13 +763,12 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     if (alContact.localImageResourceName)
     {
-        UIImage *someImage = [ALUtilityClass getImageFromFramworkBundle:alContact.localImageResourceName];
+        UIImage *someImage = [ALUIUtilityClass getImageFromFramworkBundle:alContact.localImageResourceName];
         [memberCell.profileImageView  setImage:someImage];
     }
     else if(alContact.contactImageUrl)
     {
-        ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-        [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:memberCell.profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+        [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:memberCell.profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
     }
     else
     {
@@ -863,10 +856,9 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     if (section == 0)
     {
         UIImageView *imageView = [[UIImageView alloc] initWithImage:
-                                  [ALUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
-
-        ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-        [messageClientService downloadImageUrlAndSet:self.alChannel.channelImageURL imageView:imageView defaultImage:nil];
+                                  [ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
+        
+        [ALUIUtilityClass downloadImageUrlAndSet:self.alChannel.channelImageURL imageView:imageView defaultImage:@"applozic_group_icon.png"];
 
         imageView.frame = CGRectMake((screenWidth/2)-30, 20, 60, 60);
         imageView.backgroundColor = [UIColor blackColor];
@@ -939,7 +931,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     ALChannelService *channelService = [ALChannelService new];
     if([channelService isChannelLeft:self.channelKeyID] || [ALChannelService isChannelDeleted:self.channelKeyID])
     {
-        [ALUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"yourNotAparticipantOfGroup", nil, [NSBundle mainBundle], @"You are not a participant of this group", @"")   andTitle:NSLocalizedStringWithDefaultValue(@"unableToProcess", nil, [NSBundle mainBundle], @"Unable process !!!", @"")];
+        [ALUIUtilityClass showAlertMessage: NSLocalizedStringWithDefaultValue(@"yourNotAparticipantOfGroup", nil, [NSBundle mainBundle], @"You are not a participant of this group", @"")   andTitle:NSLocalizedStringWithDefaultValue(@"unableToProcess", nil, [NSBundle mainBundle], @"Unable process !!!", @"")];
         return;
     }
 
@@ -964,7 +956,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
 
     UIAlertController * theController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
-    [ALUtilityClass setAlertControllerFrame:theController andViewController:self];
+    [ALUIUtilityClass setAlertControllerFrame:theController andViewController:self];
 
     [theController addAction:[UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:nil]];
 

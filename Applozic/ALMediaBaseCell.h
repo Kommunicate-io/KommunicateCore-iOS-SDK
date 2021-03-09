@@ -13,18 +13,13 @@
 
 #import <UIKit/UIKit.h>
 #import "KAProgressLabel.h"
-#import "ALMessage.h"
-#import "ALApplozicSettings.h"
-#import "ALConstant.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "ALUIConstant.h"
 #import "MessageReplyView.h"
-#import "ALApplozicSettings.h"
-#import "ALChannel.h"
-#import "ALContact.h"
 #import <AVKit/AVKit.h>
 #import "ALTappableView.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @protocol ALMediaBaseCellDelegate <NSObject>
 

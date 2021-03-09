@@ -9,16 +9,12 @@
 // Constants
 
 #import "ALDocumentsCell.h"
-#import "ALMessage.h"
-#import "ALContactDBService.h"
 #import "ALColorUtility.h"
 #import "UIImageView+WebCache.h"
 #import "KAProgressLabel.h"
-#import "ALUtilityClass.h"
-#import "ALMessageService.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
-#import "ALMessageClientService.h"
+#import "ALUIUtilityClass.h"
 
 static CGFloat const BUBBLE_PADDING_X  = 13;
 static CGFloat const BUBBLE_PADDING_X_OUTBOX  = 60;
@@ -221,12 +217,11 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         [self setupProgressValueX: (self.downloadRetryView.frame.origin.x + self.downloadRetryView.frame.size.width/2 - 30)
                              andY: (self.downloadRetryView.frame.origin.y + self.downloadRetryView.frame.size.height/2 - 30)];
         
-        [self.mImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
+        [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
         
         if(alContact.contactImageUrl)
         {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {
@@ -241,7 +236,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
             self.downloadRetryView.alpha = 1;
             self.sizeLabel.alpha = 1;
             [self.sizeLabel setText:[alMessage.fileMeta getTheSize]];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
         }
         else
         {
@@ -323,7 +318,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
                                                         self.mDateLabel.frame.origin.y,
                                                         MSG_STATUS_WIDTH, MSG_STATUS_HEIGHT);
         
-        [self.mImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"documentSend.png"]];
+        [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentSend.png"]];
         
          msgFrameHeight = self.mBubleImageView.frame.size.height;
         
@@ -343,7 +338,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
             self.downloadRetryView.alpha = 1;
             self.sizeLabel.alpha = 1;
             [self.sizeLabel setText:[alMessage.fileMeta getTheSize]];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
         }
         else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)
         {
@@ -351,7 +346,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
             self.downloadRetryView.alpha = 1;
             self.sizeLabel.alpha = 1;
             [self.sizeLabel setText:[alMessage.fileMeta getTheSize]];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
         }
     }
     self.frontView.frame = self.mBubleImageView.frame;
@@ -386,7 +381,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName = [self getMessageStatusIconName:self.mMessage];
-        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
+        self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
     }
     
     return self;
@@ -405,7 +400,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 {
     self.progresLabel = [[KAProgressLabel alloc] init];
     self.progresLabel.cancelButton.frame = CGRectMake(10, 10, 40, 40);
-    [self.progresLabel.cancelButton setBackgroundImage:[ALUtilityClass getImageFromFramworkBundle:@"DELETEIOSX.png"] forState:UIControlStateNormal];
+    [self.progresLabel.cancelButton setBackgroundImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DELETEIOSX.png"] forState:UIControlStateNormal];
     [self.progresLabel setFrame:CGRectMake(cooridinateX, cooridinateY, 60, 60)];
     self.progresLabel.delegate = self;
     [self.progresLabel setTrackWidth: 4.0];

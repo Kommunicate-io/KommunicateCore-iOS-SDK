@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 #import "ALChatCell.h"
 
 @interface ALCustomCell : ALChatCell

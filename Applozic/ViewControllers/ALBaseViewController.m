@@ -11,15 +11,10 @@ static CGFloat LAST_SEEN_LABEL_SIZE = 10;
 static CGFloat TYPING_LABEL_SIZE = 12.5;
 
 #import "ALBaseViewController.h"
-#import "ALUtilityClass.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALConstant.h"
-#import "ALApplozicSettings.h"
 #import "ALChatLauncher.h"
 #import "ALMessagesViewController.h"
 #import "ALNavigationController.h"
-#import "ALApplicationInfo.h"
-#import "ALRegisterUserClientService.h"
+#import "ALUIUtilityClass.h"
 
 static CGFloat const sendTextViewCornerRadius = 15.0f;
 
@@ -66,8 +61,8 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     self.sendMessageTextView.backgroundColor = [ALApplozicSettings getMsgTextViewBGColor];
     
     
-    if ([ALUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_BACKGROUND_COLOR])
-        self.mTableView.backgroundColor = (UIColor *)[ALUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_BACKGROUND_COLOR];
+    if ([ALUIUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_BACKGROUND_COLOR])
+        self.mTableView.backgroundColor = (UIColor *)[ALUIUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_BACKGROUND_COLOR];
     else
         self.mTableView.backgroundColor = [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1];
     
@@ -245,7 +240,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
         [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.label setTextColor:[ALApplozicSettings getColorForNavigationItem]];
        
     }
@@ -267,7 +262,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 -(void)checkPricingPackageAndShowMessage
 {
     if([applicationInfo isChatSuspended]) {
-        [ALUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];
+        [ALUIUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];
     }
     
 }
@@ -279,7 +274,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     self.sendButton.layer.masksToBounds = YES;
     
     [self.typingMessageView sendSubviewToBack:self.typeMsgBG];
-    UIImage * image = [[ALUtilityClass getImageFromFramworkBundle:@"TYMSGBG.png"]
+    UIImage * image = [[ALUIUtilityClass getImageFromFramworkBundle:@"TYMSGBG.png"]
                        resizableImageWithCapInsets:UIEdgeInsetsMake(20, 20, 10, 20)];
     
     [self.typeMsgBG setImage:image];
@@ -438,7 +433,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 -(UIView *)customCallButtonView
 {
-    UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUtilityClass getImageFromFramworkBundle:@"PhoneIcon.png"]];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUIUtilityClass getImageFromFramworkBundle:@"PhoneIcon.png"]];
     [imageView setFrame:CGRectMake(0, 0, 20, 20)];
     [imageView setTintColor:[UIColor whiteColor]];
 
@@ -456,7 +451,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 -(UIView *)customCloseButtonView
 {
-    UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUtilityClass getImageFromFramworkBundle:@"ic_clear_white.png"]];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUIUtilityClass getImageFromFramworkBundle:@"ic_clear_white.png"]];
     [imageView setFrame:CGRectMake(0, 0, 20, 20)];
     [imageView setTintColor:[UIColor whiteColor]];
     
@@ -483,7 +478,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 -(UIView *)setCustomBackButton
 {
-    UIImage * backImage = [ALUtilityClass getImageFromFramworkBundle:@"bbb.png"];
+    UIImage * backImage = [ALUIUtilityClass getImageFromFramworkBundle:@"bbb.png"];
     backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:backImage];
     [imageView setFrame:CGRectMake(-10, 0, 30, 30)];

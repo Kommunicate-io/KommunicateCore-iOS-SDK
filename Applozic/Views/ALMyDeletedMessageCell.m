@@ -7,9 +7,8 @@
 //
 
 #import "ALMyDeletedMessageCell.h"
-#import "ALApplozicSettings.h"
 #import "ALUIConstant.h"
-#import "ALUtilityClass.h"
+#import "ALUIUtilityClass.h"
 
 static CGFloat const DATE_LABEL_SIZE = 12;
 
@@ -55,7 +54,7 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
         self.mBubleImageView.backgroundColor = [UIColor whiteColor];
     }
 
-    UIImage * image = [ALUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
+    UIImage * image = [ALUIUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
     [self.mDeletedIcon setImage:image];
     self.backgroundColor = [UIColor clearColor];
 }

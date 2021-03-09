@@ -7,9 +7,8 @@
 //
 
 #import "ALFriendDeletedMessage.h"
-#import "ALApplozicSettings.h"
 #import "ALUIConstant.h"
-#import "ALUtilityClass.h"
+#import "ALUIUtilityClass.h"
 
 static CGFloat const DATE_LABEL_SIZE = 12;
 
@@ -61,7 +60,7 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
     self.mUserProfileImageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.mUserProfileImageView.layer.cornerRadius = 22.5;
     self.mUserProfileImageView.layer.masksToBounds = YES;
-    self.mUserProfileImageView.image = [ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"];
+    self.mUserProfileImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"];
     [self.contentView addSubview:self.mUserProfileImageView];
 
     if ([ALApplozicSettings getReceiveMsgColor]) {
@@ -70,7 +69,7 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
         self.mBubleImageView.backgroundColor = [UIColor whiteColor];
     }
 
-    UIImage * image = [ALUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
+    UIImage * image = [ALUIUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
     image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.mDeletedIcon.tintColor = recievedMessageColor;
     [self.mDeletedIcon setImage:image];

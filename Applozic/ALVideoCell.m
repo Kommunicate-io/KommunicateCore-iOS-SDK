@@ -12,7 +12,7 @@
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
 #import <AVKit/AVKit.h>
-
+#import "ALUIUtilityClass.h"
 
 // Constants
 static CGFloat const BUBBLE_PADDING_X = 13;
@@ -60,12 +60,12 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         self.tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(videoFullScreen:)];
         self.tapper.numberOfTapsRequired = 1;
         [self.contentView addSubview:self.mImageView];
-        [self.mImageView setImage: [ALUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
+        [self.mImageView setImage: [ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
         
         self.videoPlayFrontView = [[UIImageView alloc] init];
         [self.videoPlayFrontView setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.3]];
         [self.videoPlayFrontView setContentMode:UIViewContentModeScaleAspectFit];
-        [self.videoPlayFrontView setImage: [ALUtilityClass getImageFromFramworkBundle:@"playImage.png"]];
+        [self.videoPlayFrontView setImage: [ALUIUtilityClass getImageFromFramworkBundle:@"playImage.png"]];
         [self.contentView addSubview:self.videoPlayFrontView];
         if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
             self.transform = CGAffineTransformMakeScale(-1.0, 1.0);
@@ -206,8 +206,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         
         if(alContact.contactImageUrl)
         {
-            ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-            [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
         }
         else
         {
@@ -227,7 +226,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         {
             [self.mDowloadRetryButton setHidden:NO];
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
         }
         else
         {
@@ -325,14 +324,14 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         {
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
         }
         else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)
         {
             
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setTitle:[alMessage.fileMeta getTheSize] forState:UIControlStateNormal];
-            [self.mDowloadRetryButton setImage:[ALUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
+            [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"uploadI1.png"] forState:UIControlStateNormal];
         }
         msgFrameHeight = self.mBubleImageView.frame.size.height;
     }
@@ -362,7 +361,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     }
     else
     {
-        [self.mImageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
+        [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
         [self.videoPlayFrontView setHidden:YES];
         [self.frontView removeGestureRecognizer:self.tapper];
         
@@ -380,7 +379,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName = [self getMessageStatusIconName:self.mMessage];
-        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
+        self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
     }
     
     [self.contentView bringSubviewToFront:self.replyParentView];
@@ -391,7 +390,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
 -(void)setVideoThumbnail:(NSString *)videoFilePATH
 {
-    [self.mImageView setImage:[ALUtilityClass setVideoThumbnail:videoFilePATH]];
+    [self.mImageView setImage:[ALUIUtilityClass setVideoThumbnail:videoFilePATH]];
 }
 
 -(void) downloadRetryAction
@@ -403,7 +402,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 {
     self.progresLabel = [[KAProgressLabel alloc] init];
     self.progresLabel.cancelButton.frame = CGRectMake(10, 10, 40, 40);
-    [self.progresLabel.cancelButton setBackgroundImage:[ALUtilityClass getImageFromFramworkBundle:@"DELETEIOSX.png"] forState:UIControlStateNormal];
+    [self.progresLabel.cancelButton setBackgroundImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DELETEIOSX.png"] forState:UIControlStateNormal];
     [self.progresLabel setFrame:CGRectMake(cooridinateX, cooridinateY, 60, 60)];
     self.progresLabel.delegate = self;
     [self.progresLabel setTrackWidth: 4.0];

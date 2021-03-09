@@ -8,11 +8,7 @@
 
 #import "ALMessageInfoViewController.h"
 #import "UIImageView+WebCache.h"
-#import "ALApplozicSettings.h"
-#import "ALDataNetworkConnection.h"
-#import "ALNotificationView.h"
-#import "TSMessageView.h"
-#import "ALMessageClientService.h"
+#import "ALUIUtilityClass.h"
 
 @interface ALMessageInfoViewController ()
 {
@@ -57,7 +53,7 @@
 {
     if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
     {
-        [self.navigationController.navigationBar addSubview:[ALUtilityClass setStatusBarStyle]];
+        [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
     }
@@ -241,7 +237,7 @@
     [headerView addSubview:self.headerTitle];
     
     [self.headerTitle setText:title];
-    [self.tickImageView setImage:[ALUtilityClass getImageFromFramworkBundle:name]];
+    [self.tickImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:name]];
     
     return headerView;
 }
@@ -250,8 +246,7 @@
 {
     ALContactDBService * alContactDBService = [ALContactDBService new];
     ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:msgInfo.userId];
-    ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
-    [messageClientService downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.userImage defaultImage:nil];
+    [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.userImage defaultImage:@"ic_contact_picture_holo_light.png"];
     [self.firstAlphabet setHidden:YES];
     [self.userName setText:[alContact getDisplayName]];
     
@@ -312,10 +307,8 @@
         
         textSize  =  [ALUtilityClass getSizeForText:self.almessage.fileMeta.name maxWidth:maxWidth + 5 font:textView.font.fontName fontSize:textView.font.pointSize];
         [textView setFont:[UIFont fontWithName:@"Helvetica" size:12]];
-        
-        
-        
-        [imageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
+
+        [imageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
         
         bubbleView.frame = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
         imageView.frame = CGRectMake(bubbleView.frame.origin.x + 5, bubbleView.frame.origin.y + 5, self.msgHeaderHeight - 10, self.msgHeaderHeight - 10);
@@ -351,13 +344,13 @@
         {
             NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             NSString * filePath = [docDir stringByAppendingPathComponent:self.almessage.imageFilePath];
-            [imageView setImage: [ALUtilityClass setVideoThumbnail:filePath]];
+            [imageView setImage: [ALUIUtilityClass setVideoThumbnail:filePath]];
             
             
         }
         else
         {
-            [imageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
+            [imageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
             
         }
         
@@ -387,7 +380,7 @@
         bubbleView.frame = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
         imageView.frame = CGRectMake(bubbleView.frame.origin.x + 5, bubbleView.frame.origin.y + 5, self.msgHeaderHeight - 10, self.msgHeaderHeight - 10);
         
-        [imageView setImage:[ALUtilityClass getImageFromFramworkBundle:@"documentSend.png"]];
+        [imageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentSend.png"]];
         [textView setText:self.almessage.fileMeta.name];
         
         textView.frame = CGRectMake(imageView.frame.origin.x + imageView.frame.size.width + 5,
@@ -400,7 +393,7 @@
             imageView.frame = CGRectMake(bubbleView.frame.origin.x + 10, bubbleView.frame.origin.y + 5, 50, 50);
             imageView.layer.cornerRadius = imageView.frame.size.width/2;
             
-            [imageView setImage: [ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
+            [imageView setImage: [ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
     
                 if(self.VCardClass.contactImage)
                 {

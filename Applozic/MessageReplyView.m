@@ -8,26 +8,20 @@
 
 #import "MessageReplyView.h"
 #import "UIImageView+WebCache.h"
-#import  "ALUtilityClass.h"
-#import "ALMessageService.h"
-#import "ALContactService.h"
-#import "ALApplozicSettings.h"
 #import "ALLocationCell.h"
-#import "ALDataNetworkConnection.h"
-#import "ALMessageClientService.h"
+#import "ALUIUtilityClass.h"
 
-#define REPLY_VIEW_PADDING 5
-#define FONT_NAME @"Helvetica"
-#define FONT_SIZE 13
-#define ATTACHMENT_PREVIEW_WIDTH 60
+static CGFloat const REPLY_VIEW_PADDING = 5;
+static NSString *const FONT_NAME = @"Helvetica";
+static CGFloat const FONT_SIZE = 13;
+static CGFloat const ATTACHMENT_PREVIEW_WIDTH = 60;
+static NSString *const ATTACHMENT_TEXT_PHOTOS = @"photo";
+static NSString *const ATTACHMENT_TEXT_AUDIO = @"Audio";
+static NSString *const ATTACHMENT_TEXT_VIDEO = @"Video";
 
-#define ATTACHMENT_TEXT_PHOTOS @"photo"
-#define ATTACHMENT_TEXT_AUDIO @"Audio"
-#define ATTACHMENT_TEXT_VIDEO #"Video"
-
-#define ATTACHMENT_TEXT_CONATCT @"Conatct"
-#define ATTACHMENT_TEXT_DOCUMENT @"Attachment"
-#define SENT_MESSAGE_DISPLAY_NAME @"You"
+static NSString *const ATTACHMENT_TEXT_CONATCT = @"Conatct";
+static NSString *const ATTACHMENT_TEXT_DOCUMENT = @"Attachment";
+static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
 
 
 @implementation MessageReplyView
@@ -139,7 +133,7 @@
     
     self.replyMessageText.frame = CGRectMake( REPLY_VIEW_PADDING ,
                                              self.contactName.frame.origin.y + self.contactName.frame.size.height + REPLY_VIEW_PADDING,
-                                             frame.size.width- self.attachmentImage.frame.size.width+5,
+                                             (frame.size.width-10) - self.attachmentImage.frame.size.width+5,
                                              30);
     
 }
@@ -194,7 +188,7 @@
     
     if(replyMessage.isContactMessage)
     {
-        [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_person.png"]];
+        [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_person.png"]];
         
     }
     else if(replyMessage.isLocationMessage)
@@ -207,7 +201,7 @@
         }
         else
         {
-            [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
+            [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
         }
         
     }
@@ -216,40 +210,64 @@
     {
         if(replyMessage.isDocumentMessage){
             
-            [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
+            [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
             return;
         }
         if([replyMessage.fileMeta.contentType hasPrefix:@"audio"])
         {
-            [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
+            [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
             return;
         }else if([replyMessage.fileMeta.contentType hasPrefix:@"video"]){
-        
+
             if(replyMessage.imageFilePath){
-                NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-                NSString * filePath = [docDir stringByAppendingPathComponent:replyMessage.imageFilePath];
-                NSURL *url = [NSURL fileURLWithPath:filePath];
-                
-                [ALUtilityClass subVideoImage:url withCompletion:^(UIImage *image) {
+
+                NSURL * theUrl;
+                NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+
+                NSString * filePath = [docDirPath stringByAppendingPathComponent:replyMessage.imageFilePath];
+                if(![[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                    NSURL *docAppGroupURL = [ALUtilityClass getAppsGroupDirectory];
+
+                    if(docAppGroupURL != nil){
+                        [docAppGroupURL URLByAppendingPathComponent:replyMessage.imageFilePath];
+                        theUrl = [NSURL fileURLWithPath:docAppGroupURL.path];
+                    }
+                }else{
+                    theUrl = [NSURL fileURLWithPath:filePath];
+                }
+
+                [ALUIUtilityClass subVideoImage:theUrl withCompletion:^(UIImage *image) {
                     dispatch_async(dispatch_get_main_queue(), ^(void){
                         [self.attachmentImage setImage:image];
                         return;
                     });
                 }];
             }else{
-                [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"]];
+                [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"]];
             }
             return;
         }else if([replyMessage.fileMeta.contentType hasPrefix:@"image"]){
             if ( replyMessage.imageFilePath != NULL)
             {
-                NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-                NSString * filePath = [docDir stringByAppendingPathComponent:replyMessage.imageFilePath];
-//                url = [NSURL fileURLWithPath:filePath];
-                [self setImage:[NSURL fileURLWithPath:filePath]];
+
+                NSURL * theUrl;
+                NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+
+                NSString * filePath = [docDirPath stringByAppendingPathComponent:replyMessage.imageFilePath];
+                if(![[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                    NSURL *docAppGroupURL = [ALUtilityClass getAppsGroupDirectory];
+
+                    if(docAppGroupURL != nil){
+                      [docAppGroupURL URLByAppendingPathComponent:replyMessage.imageFilePath];
+                        theUrl = [NSURL fileURLWithPath:docAppGroupURL.path];
+                    }
+                }else{
+                    theUrl = [NSURL fileURLWithPath:filePath];
+                }
+
+                [self setImage:theUrl];
             }
-            else
-            {
+            else if (replyMessage.fileMeta.thumbnailBlobKey) {
                 ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
                 [messageClientService downloadImageUrl:replyMessage.fileMeta.thumbnailBlobKey withCompletion:^(NSString *fileURL, NSError *error) {
                     if(error)
@@ -260,11 +278,22 @@
                     ALSLog(ALLoggerSeverityInfo, @"ATTACHMENT DOWNLOAD URL : %@", fileURL);
                     [self setImage:[NSURL URLWithString:fileURL]];
                 }];
-                
-//                url = [NSURL URLWithString:replyMessage.fileMeta.thumbnailUrl];
+            } else if (replyMessage.fileMeta.thumbnailFilePath) {
+                NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath: replyMessage.fileMeta.thumbnailFilePath];
+                NSString *filePath = documentDirectory.path;
+
+                if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                    [self setImage:[NSURL fileURLWithPath:filePath]];
+                } else {
+                    [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
+                }
+            } else if (replyMessage.fileMeta.thumbnailUrl) {
+                [self setImage:[NSURL URLWithString:replyMessage.fileMeta.thumbnailUrl]];
+            } else {
+                [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
             }
         }else{
-            [self.attachmentImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
+            [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
         }
     }
 

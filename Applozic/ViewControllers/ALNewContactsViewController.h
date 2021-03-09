@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ALChannelService.h"
-#import "ALMessageDBService.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @protocol ALContactDelegate <NSObject>
 

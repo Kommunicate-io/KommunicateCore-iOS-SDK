@@ -7,10 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 #import "ALTappableView.h"
-#import "ALChannel.h"
 #import "ALChatCell.h"
 
 @interface ALDeletedMessasgeBaseCell : UITableViewCell

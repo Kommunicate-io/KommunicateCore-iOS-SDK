@@ -8,6 +8,7 @@
 
 #import "ALImageActivity.h"
 #import "ALUtilityClass.h"
+#import "ALUIUtilityClass.h"
 
 @implementation ALImageActivity
 
@@ -36,7 +37,7 @@
 //    {
 //        return [ALUtilityClass getImageFromFramworkBundle:@""];
 //    }
-    return [ALUtilityClass getImageFromFramworkBundle:@"forwardActivity.png"];
+    return [ALUIUtilityClass getImageFromFramworkBundle:@"forwardActivity.png"];
 }
 
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems

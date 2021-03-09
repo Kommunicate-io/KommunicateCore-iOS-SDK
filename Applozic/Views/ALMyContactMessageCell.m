@@ -7,18 +7,12 @@
 //
 
 #import "ALMyContactMessageCell.h"
-#import "ALUtilityClass.h"
 #import "UIImageView+WebCache.h"
-#import "ALApplozicSettings.h"
-#import "ALConstant.h"
-#import "ALContact.h"
 #import "ALColorUtility.h"
-#import "ALContactDBService.h"
-#import "ALMessageService.h"
 #import "ALMessageInfoViewController.h"
 #import "ALChatViewController.h"
 #import "ALVCardClass.h"
-#import "ALMessageClientService.h"
+#import "ALUIUtilityClass.h"
 
 static CGFloat const USER_PROFILE_PADDING_X_OUTBOX = 50;
 static CGFloat const USER_PROFILE_HEIGHT = 45;
@@ -179,7 +173,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
     }
 
-    [self.contactProfileImage setImage:[ALUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
+    [self.contactProfileImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
     self.contactProfileImage.layer.cornerRadius = self.contactProfileImage.frame.size.width/2;
     self.contactProfileImage.layer.masksToBounds = YES;
 
@@ -213,7 +207,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
         self.mMessageStatusImageView.hidden = NO;
         NSString * imageName = [self getMessageStatusIconName:self.mMessage];
-        self.mMessageStatusImageView.image = [ALUtilityClass getImageFromFramworkBundle:imageName];
+        self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
     }
     return self;
 }

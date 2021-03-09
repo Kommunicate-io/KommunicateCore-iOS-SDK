@@ -8,13 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "ALContactCell.h"
-#import "ALMessage.h"
-#import "ALMessageService.h"
-#import "ALMessageInfo.h"
-#import "ALContactDBService.h"
-#import "ALUtilityClass.h"
 #import "ALColorUtility.h"
 #import "ALVCardClass.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @interface ALMessageInfoViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 

@@ -116,9 +116,9 @@ extension ALPhotoPicker: PHPickerViewControllerDelegate {
             picker.dismiss(animated: true)
             return
         }
-        let alertController = ALUtilityClass.displayLoadingAlertController(withText: loadingTitle);
+        let alertController = ALUIUtilityClass.displayLoadingAlertController(withText: loadingTitle);
         export(results: results) { images, videos, gifData in
-            ALUtilityClass.dismiss(alertController) { (dismiss) in
+            ALUIUtilityClass.dismiss(alertController) { (dismiss) in
                 picker.dismiss(animated: true)
                 self.delegate?.multimediaSelected(self.selectedMultimediaList(images: images, videos: videos, gifs: gifData))
             }

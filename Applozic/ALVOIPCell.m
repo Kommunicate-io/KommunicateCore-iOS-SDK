@@ -7,8 +7,7 @@
 //
 
 #import "ALVOIPCell.h"
-#import "ALUtilityClass.h"
-#import "ALApplozicSettings.h"
+#import <ApplozicCore/ApplozicCore.h>
 #import "ALAudioVideoBaseVC.h"
 
 @implementation ALVOIPCell

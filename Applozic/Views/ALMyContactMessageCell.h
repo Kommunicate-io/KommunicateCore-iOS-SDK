@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 #import "ALContactMessageBaseCell.h"
 
 @interface ALMyContactMessageCell : ALContactMessageBaseCell

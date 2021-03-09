@@ -8,8 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import "ALConversationProxy.h"
-#import "ALMessage.h"
+#import <ApplozicCore/ApplozicCore.h>
 
 @protocol ALChatLauncherDelegate <NSObject>
 
