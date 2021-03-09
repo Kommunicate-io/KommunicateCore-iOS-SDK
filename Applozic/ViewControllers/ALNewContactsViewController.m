@@ -986,6 +986,10 @@ static const int SHOW_GROUP = 102;
             ALSLog(ALLoggerSeverityInfo, @"IN_NAVIGATION-BAR :: found in backStack .....launching from current vc");
             [(ALMessagesViewController*) currentVC createDetailChatViewController:contactId];
             isFoundInBackStack = true;
+        } else if ([currentVC isKindOfClass:NSClassFromString([ALApplozicSettings getMsgContainerVC])]) {
+            [self launchChatWithUserId:contactId orChannelKey:channelKey];
+            isFoundInBackStack = true;
+            break;
         }
     }
     
@@ -1432,6 +1436,14 @@ static const int SHOW_GROUP = 102;
         [viewControllersFromStack removeObjectAtIndex:viewControllersFromStack.count -2];
         self.navigationController.viewControllers = viewControllersFromStack;
     }
+}
+
+-(void)launchChatWithUserId:(NSString *) userID
+               orChannelKey:(NSNumber* ) channelKey {
+    ALChatViewController * detailChatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
+    detailChatViewController.contactIds = userID;
+    detailChatViewController.channelKey = channelKey;
+    [self.navigationController pushViewController:detailChatViewController animated:NO];
 }
 
 //==============================================================================================================================================

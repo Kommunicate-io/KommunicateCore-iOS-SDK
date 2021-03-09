@@ -92,8 +92,7 @@ static int const MQTT_MAX_RETRY = 3;
     self.mTableView.allowsMultipleSelectionDuringEditing = NO;
 
     self.alMqttConversationService = [ALMQTTConversationService sharedInstance];
-    self.alMqttConversationService.mqttConversationDelegate = self;
-    
+
     CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height +
     [UIApplication sharedApplication].statusBarFrame.size.height;
     
@@ -183,6 +182,8 @@ static int const MQTT_MAX_RETRY = 3;
             }];
         }
     }];
+    /// Setup the delegate in viewWillAppear
+    self.alMqttConversationService.mqttConversationDelegate = self;
     if([ALApplozicSettings isDropShadowInNavigationBarEnabled])
     {
         [self dropShadowInNavigationBar];

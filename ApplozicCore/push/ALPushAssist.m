@@ -43,7 +43,7 @@
         }
     }
 
-    return [self isVOIPViewOnTop];
+    return [self isVOIPViewOnTop] || [self isMessageContainerOnTop];
 }
 
 -(BOOL)isMessageContainerOnTop
