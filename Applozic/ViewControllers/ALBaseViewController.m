@@ -135,6 +135,10 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     self.callButton = [[UIBarButtonItem alloc] initWithCustomView:[self customCallButtonView]];
     self.closeButton = [[UIBarButtonItem alloc] initWithCustomView:[self customCloseButtonView]];
 
+    if ([ALApplozicSettings isAudioVideoEnabled]) {
+        self.audioCallButton = [[UIBarButtonItem alloc] initWithCustomView:[self audioCallButtonUIView]];
+        self.videoCallButton = [[UIBarButtonItem alloc] initWithCustomView:[self videoCallButtonUIView]];
+    }
     
     if(self.individualLaunch)
     {
@@ -467,6 +471,33 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     return view;
 }
 
+-(UIView *)customViewForButtonWithImage:(NSString *)imageName {
+    UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUIUtilityClass getImageFromFramworkBundle:imageName]];
+    [imageView setFrame:CGRectMake(0, 0, 25, 25)];
+    [imageView setTintColor:[ALApplozicSettings getColorForNavigationItem]];
+
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageView.frame.size.width, imageView.frame.size.height)];
+    view.bounds = CGRectMake(view.bounds.origin.x, view.bounds.origin.y, view.bounds.size.width, view.bounds.size.height);
+    [view addSubview:imageView];
+    [view setBackgroundColor:[UIColor clearColor]];
+    return view;
+}
+
+-(UIView *)audioCallButtonUIView {
+    UIView *audioButtonView =  [self customViewForButtonWithImage:@"phone_call_white.png"];
+    UITapGestureRecognizer * iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(audioCallAction)];
+    iconTap.numberOfTapsRequired = 1;
+    [audioButtonView addGestureRecognizer:iconTap];
+    return audioButtonView;
+}
+
+-(UIView *)videoCallButtonUIView {
+    UIView *videoCallButtonView =  [self customViewForButtonWithImage:@"video_call_icon_white.png"];
+    UITapGestureRecognizer * iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(videoCallAction)];
+    iconTap.numberOfTapsRequired = 1;
+    [videoCallButtonView addGestureRecognizer:iconTap];
+    return videoCallButtonView;
+}
 
 -(void)phoneCallMethod {
 
@@ -474,6 +505,14 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 -(void)closeConversation {
     
+}
+
+-(void)audioCallAction {
+
+}
+
+-(void)videoCallAction {
+
 }
 
 -(UIView *)setCustomBackButton

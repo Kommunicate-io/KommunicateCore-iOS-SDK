@@ -50,10 +50,11 @@
         return _managedObjectModel;
         
     }
-    
-    NSURL *modelURL = [[NSBundle bundleForClass:[self class]]URLForResource:@"AppLozic" withExtension:@"momd"];
+
+    NSBundle *bundle = [self getBundle];
+    NSURL *modelURL = [bundle URLForResource:@"AppLozic" withExtension:@"momd"];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    
+
     return _managedObjectModel;
 }
 
@@ -254,6 +255,15 @@
         return YES;
     }
     return NO;
+}
+
+/// get the bundle if its SWIFT_PACKAGE will use the runtime bundle of SPM else will use the bundle from class
+-(NSBundle*)getBundle {
+#if SWIFT_PACKAGE
+    return SWIFTPM_MODULE_BUNDLE;
+#else
+    return [NSBundle bundleForClass:[ALDBHandler class]];
+#endif
 }
 
 @end

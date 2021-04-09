@@ -196,10 +196,10 @@
     [self.emailId setText:self.alContact.email ? self.alContact.email : @"Not Available"];
     [self.phoneNo setText:self.alContact.contactNumber ? self.alContact.contactNumber : @"Not Available"];
     
-    [self.profileImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
+    [self.profileImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"]];
     if(self.alContact.contactImageUrl)
     {
-        [ALUIUtilityClass downloadImageUrlAndSet:_alContact.contactImageUrl imageView:_profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+        [ALUIUtilityClass downloadImageUrlAndSet:_alContact.contactImageUrl imageView:_profileImageView defaultImage:@"contact_default_placeholder"];
     }
     
     [self.callButton setEnabled:NO];

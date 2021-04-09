@@ -246,7 +246,7 @@
 {
     ALContactDBService * alContactDBService = [ALContactDBService new];
     ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:msgInfo.userId];
-    [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.userImage defaultImage:@"ic_contact_picture_holo_light.png"];
+    [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.userImage defaultImage:@"contact_default_placeholder"];
     [self.firstAlphabet setHidden:YES];
     [self.userName setText:[alContact getDisplayName]];
     
@@ -393,7 +393,7 @@
             imageView.frame = CGRectMake(bubbleView.frame.origin.x + 10, bubbleView.frame.origin.y + 5, 50, 50);
             imageView.layer.cornerRadius = imageView.frame.size.width/2;
             
-            [imageView setImage: [ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
+            [imageView setImage: [ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"]];
     
                 if(self.VCardClass.contactImage)
                 {

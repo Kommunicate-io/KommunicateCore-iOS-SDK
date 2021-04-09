@@ -173,7 +173,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
     }
 
-    [self.contactProfileImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
+    [self.contactProfileImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"]];
     self.contactProfileImage.layer.cornerRadius = self.contactProfileImage.frame.size.width/2;
     self.contactProfileImage.layer.masksToBounds = YES;
 

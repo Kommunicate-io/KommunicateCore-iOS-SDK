@@ -60,7 +60,7 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
     self.mUserProfileImageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.mUserProfileImageView.layer.cornerRadius = 22.5;
     self.mUserProfileImageView.layer.masksToBounds = YES;
-    self.mUserProfileImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"];
+    self.mUserProfileImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"];
     [self.contentView addSubview:self.mUserProfileImageView];
 
     if ([ALApplozicSettings getReceiveMsgColor]) {

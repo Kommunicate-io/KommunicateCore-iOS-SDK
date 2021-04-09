@@ -114,7 +114,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
         NSString * receiverName = [alContact getDisplayName];
         if(alContact.contactImageUrl)
         {
-            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"contact_default_placeholder"];
         }
         else
         {
@@ -198,7 +198,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
 
     }
 
-    [self.contactProfileImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"]];
+    [self.contactProfileImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"]];
     self.contactProfileImage.layer.cornerRadius = self.contactProfileImage.frame.size.width/2;
     self.contactProfileImage.layer.masksToBounds = YES;
 

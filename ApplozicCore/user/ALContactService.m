@@ -50,7 +50,11 @@
 #pragma mark Update APIS
 
 
--(BOOL)updateContact:(ALContact *)contact{
+-(BOOL)updateContact:(ALContact *)contact {
+
+    if (!contact.userId || contact.userId.length == 0) {
+        return NO;
+    }
     return [alContactDBService updateContact:contact];
     
 }
@@ -96,6 +100,11 @@
 }
 
 -(BOOL)addContact:(ALContact *)userContact{
+
+    if (!userContact.userId || userContact.userId.length == 0) {
+        return NO;
+    }
+
     return [alContactDBService addContact:userContact];
 
 }
