@@ -15,7 +15,7 @@
 #import "ALUIUtilityClass.h"
 
 static const int GROUP_CREATION = 1;
-static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
+static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
 
 @interface ALGroupCreationViewController ()
 
@@ -95,7 +95,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
     }
     else
     {
-        [self.groupIconView setImage:[UIImage imageNamed:DEFAULT_GROUP_ICON_NAME]];
+        [self.groupIconView setImage:[ALUIUtilityClass getImageFromFramworkBundle:DEFAULT_GROUP_ICON_NAME]];
     }
 }
 
@@ -322,7 +322,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon.png";
     [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
     
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
-        [self.groupIconView setImage:[UIImage imageNamed:DEFAULT_GROUP_ICON_NAME]];
+        [self.groupIconView setImage:[ALUIUtilityClass getImageFromFramworkBundle:DEFAULT_GROUP_ICON_NAME]];
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     

@@ -768,7 +768,7 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     }
     else if(alContact.contactImageUrl)
     {
-        [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:memberCell.profileImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+        [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:memberCell.profileImageView defaultImage:@"contact_default_placeholder"];
     }
     else
     {
@@ -856,9 +856,9 @@ static NSString *const updateGroupMembersNotification = @"Updated_Group_Members"
     if (section == 0)
     {
         UIImageView *imageView = [[UIImageView alloc] initWithImage:
-                                  [ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
+                                  [ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon"]];
         
-        [ALUIUtilityClass downloadImageUrlAndSet:self.alChannel.channelImageURL imageView:imageView defaultImage:@"applozic_group_icon.png"];
+        [ALUIUtilityClass downloadImageUrlAndSet:self.alChannel.channelImageURL imageView:imageView defaultImage:@"applozic_group_icon"];
 
         imageView.frame = CGRectMake((screenWidth/2)-30, 20, 60, 60);
         imageView.backgroundColor = [UIColor blackColor];

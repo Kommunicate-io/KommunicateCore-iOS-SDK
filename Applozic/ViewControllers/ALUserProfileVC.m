@@ -49,7 +49,7 @@
     [super viewDidLoad];
 
     alContactService = [[ALContactService alloc] init];
-    self.placeHolderImage = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"];
+    self.placeHolderImage = [ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"];
 
     [self fetchLoginUserDetails];
     

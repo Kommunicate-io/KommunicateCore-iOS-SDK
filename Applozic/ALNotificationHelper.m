@@ -9,6 +9,7 @@
 #import "ALNotificationHelper.h"
 #import <ApplozicCore/ApplozicCore.h>
 #import <Applozic/ALSearchResultViewController.h>
+#import "ALTabViewController.h"
 
 @implementation ALNotificationHelper
 
@@ -16,12 +17,26 @@
 
     ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
     NSString* topViewControllerName = NSStringFromClass(alPushAssist.topViewController.class);
-    return ([topViewControllerName hasPrefix:@"AL"]
-            || [topViewControllerName hasPrefix:@"Applozic"]
-            || [topViewControllerName isEqualToString:@"CNContactPickerViewController"]
-            || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]
-            || [topViewControllerName isEqualToString:@"PHPickerViewController"]
-            || [alPushAssist isOurViewOnTop]);
+    BOOL isApplozicVCOnTop =  ([topViewControllerName hasPrefix:@"AL"]
+                               || [topViewControllerName hasPrefix:@"Applozic"]
+                               || [topViewControllerName isEqualToString:@"CNContactPickerViewController"]
+                               || [topViewControllerName isEqualToString:@"CAMImagePickerCameraViewController"]
+                               || [topViewControllerName isEqualToString:@"PHPickerViewController"]
+                               || [alPushAssist isOurViewOnTop]
+                               || [[alPushAssist.topViewController presentingViewController] isKindOfClass:ALTabViewController.class]);
+
+    if (!isApplozicVCOnTop) {
+        /// Get the childViewControllers if the chat view is launched directly and check rootVC is ALChatViewController
+        NSArray<UIViewController *> *childViewControllers = [alPushAssist.topViewController presentingViewController].childViewControllers;
+        if (childViewControllers.count) {
+            UIViewController * firstViewController = childViewControllers.firstObject;
+            if ([firstViewController isKindOfClass:ALChatViewController.class]) {
+                return YES;
+            }
+        }
+    }
+
+    return isApplozicVCOnTop;
 }
 
 -(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL)isTapActionDisabled {

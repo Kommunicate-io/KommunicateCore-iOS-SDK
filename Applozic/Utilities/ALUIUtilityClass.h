@@ -19,7 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
                      imageView:(UIImageView *) imageView
                   defaultImage:(NSString *) defaultImage;
 
-+(void)showRetryUIAlertControllerWithButtonClickCompletionHandler:(void (^)(BOOL clicked)) completion;
 
 +(UIAlertController *)displayLoadingAlertControllerWithText:(NSString *)loadingText;
 

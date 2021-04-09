@@ -45,5 +45,6 @@
 +(NSURL *)getApplicationDirectoryWithFilePath:(NSString*) path;
 +(NSData *)compressImage:(NSData *) data;
 +(NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url;
++(NSBundle*)getBundle;
 
 @end

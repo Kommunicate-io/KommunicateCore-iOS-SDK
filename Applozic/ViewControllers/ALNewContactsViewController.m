@@ -480,7 +480,7 @@ static const int SHOW_GROUP = 102;
                 {
                     if (contact.contactImageUrl)
                     {
-                        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl] placeholderImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_contact_picture_holo_light.png"] options:SDWebImageRefreshCached];
+                        [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl] placeholderImage:[ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"] options:SDWebImageRefreshCached];
                         
                     }
                     else
@@ -529,8 +529,8 @@ static const int SHOW_GROUP = 102;
                 {
                     ALChannel * channel = (ALChannel *)[self.filteredContactList objectAtIndex:indexPath.row];
                     newContactCell.contactPersonName.text = [channel name];
-                    newContactCell.contactPersonImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"];
-                    [ALUIUtilityClass downloadImageUrlAndSet:channel.channelImageURL imageView:newContactCell.contactPersonImageView defaultImage:@"applozic_group_icon.png"];
+                    newContactCell.contactPersonImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon"];
+                    [ALUIUtilityClass downloadImageUrlAndSet:channel.channelImageURL imageView:newContactCell.contactPersonImageView defaultImage:@"applozic_group_icon"];
                     [nameIcon setHidden:YES];
                 }
                 else
@@ -702,7 +702,7 @@ static const int SHOW_GROUP = 102;
 
     if(![ALUserDefaultsHandler getLoginUserConatactVisibility]){
         NSPredicate* predicate = nil;
-        if (supportUserId) {
+        if (supportUserId && supportUserId.length > 0) {
             NSArray * userIdArray = [[NSArray alloc] initWithObjects:[ALUserDefaultsHandler getUserId], supportUserId, nil];
             predicate = [NSPredicate predicateWithFormat:@"NOT (userId IN %@) AND deletedAtTime == nil", userIdArray];
 
@@ -745,7 +745,7 @@ static const int SHOW_GROUP = 102;
         NSArray * descriptors = [NSArray arrayWithObject:valueDescriptor];
         self.filteredContactList = [NSMutableArray arrayWithArray:[self.contactList sortedArrayUsingDescriptors:descriptors]];
 
-        if (supportUserId) {
+        if (supportUserId && supportUserId.length > 0) {
             ALContact *supportContact = [self.contactService loadContactByKey:@"userId" value:supportUserId];
             [self.filteredContactList insertObject:supportContact atIndex:0];
         }

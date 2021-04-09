@@ -89,7 +89,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
             self.mUserNameLabel.text = [grpContact getDisplayName];
             self.onlineImageMarker.hidden = (!grpContact.connected);
             if (grpContact.contactImageUrl.length) {
-                [ALUIUtilityClass downloadImageUrlAndSet:grpContact.contactImageUrl imageView:self.mUserImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+                [ALUIUtilityClass downloadImageUrlAndSet:grpContact.contactImageUrl imageView:self.mUserImageView defaultImage:@"contact_default_placeholder"];
                 self.imageNameLabel.hidden = YES;
                 nameIcon.hidden = YES;
             } else {
@@ -105,8 +105,8 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
                 placeHolderImage = @"broadcast_group.png";
                 [self.mUserImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"broadcast_group.png"]];
             } else {
-                placeHolderImage = @"applozic_group_icon.png";
-                [self.mUserImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"applozic_group_icon.png"]];
+                placeHolderImage = @"applozic_group_icon";
+                [self.mUserImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:placeHolderImage]];
             }
 
             [ALUIUtilityClass downloadImageUrlAndSet:alChannel.channelImageURL imageView:self.mUserImageView defaultImage:placeHolderImage];
@@ -119,7 +119,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
         self.mUserNameLabel.text = [contact getDisplayName];
         self.onlineImageMarker.hidden = (!contact.connected);
         if (contact.contactImageUrl.length) {
-            [ALUIUtilityClass downloadImageUrlAndSet:contact.contactImageUrl imageView:self.mUserImageView defaultImage:@"ic_contact_picture_holo_light.png"];
+            [ALUIUtilityClass downloadImageUrlAndSet:contact.contactImageUrl imageView:self.mUserImageView defaultImage:@"contact_default_placeholder"];
             self.imageNameLabel.hidden = YES;
             nameIcon.hidden= YES;
         } else {

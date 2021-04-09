@@ -7,6 +7,7 @@
 //
 
 #import "ALApplozicSettings.h"
+#import "ALUIImage+Utility.h"
 
 #define  DEFAULT_MAX_FILE_UPLOAD_SIZE 32
 

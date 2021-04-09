@@ -7,8 +7,8 @@
 //
 
 #import "ALUserDefaultsHandler.h"
-#import <ApplozicCore/ApplozicCore-Swift.h>
 #import "ALLogger.h"
+#import "ALPasswordQueryable.h"
 
 @implementation ALUserDefaultsHandler
 
@@ -106,7 +106,7 @@
         }
     }
 
-    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    ALSecureStore *store = [ALUserDefaultsHandler getSecureStore];
     NSError *passError;
     [store removeValueFor:AL_STORE_USER_PASSWORD error:&passError];
     if (passError != nil) {
@@ -232,9 +232,9 @@
 //LOGIN USER PASSWORD
 +(void)setPassword:(NSString *)password
 {
-    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    ALSecureStore *store = [ALUserDefaultsHandler getSecureStore];
     NSError *passError;
-    [store setValue:password for:AL_STORE_USER_PASSWORD error:&passError];
+    [store setValue:password forUserAccount:AL_STORE_USER_PASSWORD error:&passError];
     if (passError != nil) {
         ALSLog(ALLoggerSeverityError, @"Failed to save password in the store : %@",
                [passError description]);
@@ -249,7 +249,7 @@
     if (passwordInDefaults != nil) {
         return passwordInDefaults;
     } else {
-        SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+        ALSecureStore *store = [ALUserDefaultsHandler getSecureStore];
         NSError *passError;
         NSString *passwordInStore = [store getValueFor:AL_STORE_USER_PASSWORD error:&passError];
         if (passError != nil) {
@@ -875,9 +875,9 @@
 }
 
 +(void)setAuthToken:(NSString*)authToken {
-    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    ALSecureStore *store = [ALUserDefaultsHandler getSecureStore];
     NSError *authTokenError;
-    [store setValue:authToken for:AL_AUTHENTICATION_TOKEN error:&authTokenError];
+    [store setValue:authToken forUserAccount:AL_AUTHENTICATION_TOKEN error:&authTokenError];
     if (authTokenError != nil) {
         ALSLog(ALLoggerSeverityError, @"Failed to save auth token in the store : %@",
                [authTokenError description]);
@@ -885,7 +885,7 @@
 }
 
 +(NSString*)getAuthToken {
-    SecureStore *store = [ALUserDefaultsHandler getSecureStore];
+    ALSecureStore *store = [ALUserDefaultsHandler getSecureStore];
     NSError *authTokenError;
     NSString *authTokenInStore = [store getValueFor:AL_AUTHENTICATION_TOKEN error:&authTokenError];
     if (authTokenError != nil) {
@@ -971,10 +971,10 @@
     return [userDefaults valueForKey:AL_VOIP_DEVICE_TOKEN];
 }
 
-+(SecureStore *)getSecureStore {
-    PasswordQueryable *passQuery = [[PasswordQueryable alloc]
-                                           initWithService: AL_STORE];
-    SecureStore *store = [[SecureStore alloc] initWithSecureStoreQueryable:passQuery];
++(ALSecureStore *)getSecureStore {
+    ALPasswordQueryable *passQuery = [[ALPasswordQueryable alloc] initWithService:AL_STORE];
+    ALSecureStore *store = [[ALSecureStore alloc] initWithSecureStoreQueryable:(passQuery)];
+
     return store;
 }
 @end

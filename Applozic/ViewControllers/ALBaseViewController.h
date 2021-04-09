@@ -30,6 +30,9 @@
 @property (strong, nonatomic) UIBarButtonItem * callButton;
 @property (strong, nonatomic) UIBarButtonItem * closeButton;
 
+@property (strong, nonatomic) UIBarButtonItem * audioCallButton;
+@property (strong, nonatomic) UIBarButtonItem * videoCallButton;
+
 @property (strong, nonatomic) NSMutableArray <UIBarButtonItem *> * navRightBarButtonItems;
 
 - (IBAction)sendAction:(id)sender;

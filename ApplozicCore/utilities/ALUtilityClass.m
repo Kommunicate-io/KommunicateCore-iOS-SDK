@@ -407,4 +407,13 @@
     return documentFileURL;
 }
 
+/// get the bundle if its SWIFT_PACKAGE will use the runtime bundle of SPM else will use the bundle from class
++(NSBundle*)getBundle {
+#if SWIFT_PACKAGE
+    return SWIFTPM_MODULE_BUNDLE;
+#else
+    return [NSBundle bundleForClass:[ALUtilityClass class]];
+#endif
+}
+
 @end

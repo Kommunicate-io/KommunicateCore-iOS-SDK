@@ -8,7 +8,7 @@
 
 #import "ALAuthService.h"
 #import "ALAuthClientService.h"
-#import <ApplozicCore/ApplozicCore-Swift.h>
+#import "ALJWT.h"
 
 @implementation ALAuthService
 
@@ -25,6 +25,7 @@ static NSString *const VALID_UPTO = @"validUpto";
     }
 
     [ALUserDefaultsHandler setAuthToken:authToken];
+
     ALJWT *jwt = [ALJWT decodeWithJwt:authToken error:&jwtError];
 
     if (!jwtError && jwt.body) {
