@@ -221,10 +221,9 @@
     if (filePath != NULL)
     {
         NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:filePath];
-        NSString *filePath = documentDirectory.path;
-        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+        if ([[NSFileManager defaultManager] fileExistsAtPath:documentDirectory.path]) {
             image =  [self getImageFromNSURL:documentDirectory];
-        }else{
+        } else {
             NSURL *appGroupDirectory =  [ALUtilityClass getAppsGroupDirectoryWithFilePath:filePath];
             if(appGroupDirectory){
                 image =   [self getImageFromNSURL:appGroupDirectory];

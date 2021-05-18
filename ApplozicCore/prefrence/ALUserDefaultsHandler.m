@@ -9,6 +9,7 @@
 #import "ALUserDefaultsHandler.h"
 #import "ALLogger.h"
 #import "ALPasswordQueryable.h"
+#import "ALUtilityClass.h"
 
 @implementation ALUserDefaultsHandler
 
@@ -930,7 +931,8 @@
 }
 
 +(NSUserDefaults *)getUserDefaults {
-    return [[NSUserDefaults alloc] initWithSuiteName:AL_DEFAULT_APP_GROUP];
+    NSString *appSuiteName = [ALUtilityClass getAppGroupsName];
+    return [[NSUserDefaults alloc] initWithSuiteName:appSuiteName];
 }
 
 + (void)deactivateLoggedInUser:(BOOL)deactivate {

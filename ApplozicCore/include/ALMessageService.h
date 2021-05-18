@@ -96,4 +96,12 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
 -(void)deleteMessageForAllWithKey:(NSString *) keyString
                    withCompletion:(void (^)(ALAPIResponse *, NSError *))completion;
 
+/// This method is used for getting total unread message count.
+/// @param completion will have total unread message count if there is no error in fetching.
+-(void)getTotalUnreadMessageCountWithCompletionHandler:(void (^)(NSUInteger unreadCount, NSError * error))completion;
+
+/// This method is used for getting total unread conversation count.
+/// @param completion will have total unread conversation count if there is no error in fetching.
+-(void)getTotalUnreadConversationCountWithCompletionHandler:(void (^)(NSUInteger conversationUnreadCount, NSError * error))completion;
+
 @end

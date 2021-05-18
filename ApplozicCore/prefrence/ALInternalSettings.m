@@ -7,6 +7,7 @@
 //
 
 #import "ALInternalSettings.h"
+#import "ALUtilityClass.h"
 
 @implementation ALInternalSettings
 
@@ -24,7 +25,8 @@
 }
 
 +(NSUserDefaults *)getUserDefaults{
-    return [[NSUserDefaults alloc] initWithSuiteName:@"group.com.applozic.share"];
+    NSString *appSuiteName = [ALUtilityClass getAppGroupsName];
+    return [[NSUserDefaults alloc] initWithSuiteName:appSuiteName];
 }
 
 @end

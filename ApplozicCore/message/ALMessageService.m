@@ -602,6 +602,8 @@ static ALMessageClientService *alMsgClientService;
     dbMessage.fileMetaInfo.name = message.fileMeta.name;
     dbMessage.fileMetaInfo.size = message.fileMeta.size;
     dbMessage.fileMetaInfo.suUserKeyString = message.fileMeta.userKey;
+    dbMessage.fileMetaInfo.thumbnailUrl = message.fileMeta.thumbnailUrl;
+
     message.fileMetaKey = message.fileMeta.key;
     message.msgDBObjectId = [dbMessage objectID];
 
@@ -1047,5 +1049,54 @@ static ALMessageClientService *alMsgClientService;
     }];
 }
 
+-(void)getTotalUnreadMessageCountWithCompletionHandler:(void (^)(NSUInteger unreadCount, NSError * error))completion {
+    ALUserService * alUserService = [[ALUserService alloc] init];
+    if (![ALUserDefaultsHandler isInitialMessageListCallDone]) {
+        ALMessageDBService * messageDBService = [[ALMessageDBService alloc] init];
+        [messageDBService getLatestMessages:NO
+                      withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {
+            if (error) {
+                completion(0, error);
+                return;
+            }
+            NSNumber *totalUnreadCount = [alUserService getTotalUnreadCount];
+            completion(totalUnreadCount.integerValue, nil);
+        }];
+    } else {
+        NSNumber *totalUnreadCount = [alUserService getTotalUnreadCount];
+        completion(totalUnreadCount.integerValue, nil);
+    }
+}
+
+-(void)getTotalUnreadConversationCountWithCompletionHandler:(void (^)(NSUInteger conversationUnreadCount, NSError * error))completion {
+    ALMessageDBService * messageDBService = [[ALMessageDBService alloc] init];
+    [messageDBService getLatestMessages:NO withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {
+
+        if (error) {
+            completion(0, error);
+            return;
+        }
+        NSUInteger unreadCount = 0;
+
+        ALChannelService *channelService = [[ALChannelService alloc] init];
+        ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
+
+        for (ALMessage *message in messageListArray) {
+            if (message.groupId &&
+                message.groupId.integerValue != 0) {
+                ALChannel *channel = [channelService getChannelByKey:message.groupId];
+                if (channel && channel.unreadCount.integerValue > 0) {
+                    unreadCount += 1;
+                }
+            } else {
+                ALContact *contact = [contactDBService loadContactByKey:@"userId" value:message.to];
+                if (contact && contact.unreadCount.integerValue > 0) {
+                    unreadCount += 1;
+                }
+            }
+        }
+        completion(unreadCount, nil);
+    }];
+}
 
 @end

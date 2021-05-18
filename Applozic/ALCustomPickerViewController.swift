@@ -46,7 +46,7 @@ public class ALBaseNavigationViewController: UINavigationController {
 
 }
 
-@objc public protocol ALCustomPickerDelegate: class {
+@objc public protocol ALCustomPickerDelegate: AnyObject {
     @objc func multimediaSelected(_ list: [ALMultimediaData])
 }
 
@@ -152,6 +152,8 @@ public class ALBaseNavigationViewController: UINavigationController {
                     //whatever
                 }
             }
+        case .limited:
+            print("Not implmented as we dont required We are using ALPhotoPicker for iOS 14 and above")
         @unknown default:
             print("Unknown permission state in PhotoLibrary")
             break

@@ -12,6 +12,7 @@
 #import "ApplozicClient.h"
 #import "ALMessageService.h"
 #import "ALUtilityClass.h"
+#import "ALVideoUploadManager.h"
 
 @implementation ALAttachmentService
 
@@ -63,25 +64,32 @@
         return;
     }
 
-    NSDictionary * userInfo = [attachmentMessage dictionary];
+    if ([attachmentMessage.fileMeta.contentType hasPrefix:@"video"]) {
+        ALVideoUploadManager * videoUploaddManager = [[ALVideoUploadManager alloc] init];
+        videoUploaddManager.attachmentProgressDelegate = self.attachmentProgressDelegate;
+        videoUploaddManager.delegate = self.delegate;
+        [videoUploaddManager uploadTheVideo:attachmentMessage];
+    } else {
+        NSDictionary * userInfo = [attachmentMessage dictionary];
 
-    ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
-    [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *responseUrl, NSError *error) {
+        ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
+        [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *responseUrl, NSError *error) {
 
-        if (error)
-        {
+            if (error)
+            {
 
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:attachmentMessage]];
-            });
-            return;
-        }
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:attachmentMessage]];
+                });
+                return;
+            }
 
-        ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
-        httpManager.attachmentProgressDelegate = self.attachmentProgressDelegate;
-        httpManager.delegate = self.delegate;
-        [httpManager processUploadFileForMessage:[alMessageDbService createMessageEntity:dbMessage] uploadURL:responseUrl];
-    }];
+            ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
+            httpManager.attachmentProgressDelegate = self.attachmentProgressDelegate;
+            httpManager.delegate = self.delegate;
+            [httpManager processUploadFileForMessage:[alMessageDbService createMessageEntity:dbMessage] uploadURL:responseUrl];
+        }];
+    }
 
 }
 

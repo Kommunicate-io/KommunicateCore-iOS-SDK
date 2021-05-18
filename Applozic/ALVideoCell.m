@@ -61,7 +61,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         self.tapper.numberOfTapsRequired = 1;
         [self.contentView addSubview:self.mImageView];
         [self.mImageView setImage: [ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
-        
+
         self.videoPlayFrontView = [[UIImageView alloc] init];
         [self.videoPlayFrontView setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.3]];
         [self.videoPlayFrontView setContentMode:UIViewContentModeScaleAspectFit];
@@ -339,35 +339,21 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     [self.contentView bringSubviewToFront:self.videoPlayFrontView];
     [self.videoPlayFrontView setFrame:self.mImageView.frame];
     [self.videoPlayFrontView setHidden:YES];
-    
-    if(alMessage.imageFilePath != nil && alMessage.fileMeta.blobKey)
-    {
 
-        NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:alMessage.imageFilePath];
-        NSString *filePath = documentDirectory.path;
-
-        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
-            self.videoFileURL  = [NSURL fileURLWithPath:filePath];
-        }else{
-            NSURL *appGroupDirectory =  [ALUtilityClass getAppsGroupDirectoryWithFilePath:alMessage.imageFilePath];
-            if(appGroupDirectory){
-                self.videoFileURL  = [NSURL fileURLWithPath:appGroupDirectory.path];
-            }
+    if (alMessage.imageFilePath != nil) {
+        if (alMessage.fileMeta.blobKey) {
+            [self.frontView addGestureRecognizer:self.tapper];
+            [self.videoPlayFrontView setHidden:NO];
+        } else {
+            [self.videoPlayFrontView setHidden:YES];
         }
-
-        [self.frontView addGestureRecognizer:self.tapper];
-        [self.videoPlayFrontView setHidden:NO];
-        [self setVideoThumbnail:filePath];
-    }
-    else
-    {
+    } else {
         [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
         [self.videoPlayFrontView setHidden:YES];
         [self.frontView removeGestureRecognizer:self.tapper];
-        
     }
-    
-    [self.mImageView setContentMode:UIViewContentModeScaleAspectFit];
+
+    [self setupVideoThumbnailInView];
     [self.mImageView setBackgroundColor:[UIColor whiteColor]];
     
     [self addShadowEffects];
@@ -387,10 +373,22 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     return self;
 }
 
+-(void)setupVideoThumbnailInView {
+    NSString *imagePath = nil;
+    if (self.mMessage.imageFilePath) {
+        imagePath = [ALUtilityClass getPathFromDirectory:self.mMessage.imageFilePath];
+        self.videoFileURL =  [NSURL fileURLWithPath:imagePath];
+    }
 
--(void)setVideoThumbnail:(NSString *)videoFilePATH
-{
-    [self.mImageView setImage:[ALUIUtilityClass setVideoThumbnail:videoFilePATH]];
+    if (self.mMessage.fileMeta.thumbnailFilePath) {
+        NSURL *documentDirectory = [ALUtilityClass getApplicationDirectoryWithFilePath:self.mMessage.fileMeta.thumbnailFilePath];
+        [self.mImageView sd_setImageWithURL: [NSURL fileURLWithPath:documentDirectory.path] placeholderImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"] options:0];
+    } else if (self.mMessage.fileMeta.thumbnailUrl && self.mMessage.fileMeta.thumbnailUrl.length > 0) {
+        [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
+        [self.delegate thumbnailDownloadWithMessageObject:self.mMessage];
+    } else if (imagePath) {
+        [self.mImageView setImage:[ALUIUtilityClass setVideoThumbnail:imagePath]];
+    }
 }
 
 -(void) downloadRetryAction

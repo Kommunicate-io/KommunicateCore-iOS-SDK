@@ -412,11 +412,36 @@
 
 -(NSMutableArray*)fetchLatestConversationsGroupByContactId:(BOOL)isFetchOnCreatedAtTime {
 
+    ALConversationListRequest *conversationListRequest = [[ALConversationListRequest alloc] init];
+
+    NSMutableArray *sortedArray = [self fetchLatestMessagesFromDatabaseWithRequestList:conversationListRequest];
+
+    if (self.delegate && [self.delegate respondsToSelector:@selector(getMessagesArray:)]) {
+        [self.delegate getMessagesArray:sortedArray];
+    }
+
+    return sortedArray;
+}
+
+-(NSMutableArray *)fetchLatestMessagesFromDatabaseWithRequestList:(ALConversationListRequest *) conversationListRequest {
+
+    NSPredicate *predicateCreatedAt;
+    if (conversationListRequest.endTimeStamp
+        && !conversationListRequest.startTimeStamp) {
+        predicateCreatedAt = [NSPredicate predicateWithFormat:@"createdAt < %@",conversationListRequest.endTimeStamp];
+    } else if (conversationListRequest.startTimeStamp) {
+        predicateCreatedAt = [NSPredicate predicateWithFormat:@"createdAt >= %@",conversationListRequest.startTimeStamp];
+    }
+
     ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
     /// get all unique contacts
     NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [theRequest setResultType:NSDictionaryResultType];
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+    if (predicateCreatedAt) {
+        [theRequest setPredicate:predicateCreatedAt];
+    }
+
     [theRequest setPropertiesToFetch:[NSArray arrayWithObjects:@"groupId", nil]];
     [theRequest setReturnsDistinctResults:YES];
 
@@ -454,7 +479,15 @@
     /// Find all message only have contact ...
     NSFetchRequest * theRequest1 = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [theRequest1 setResultType:NSDictionaryResultType];
-    [theRequest1 setPredicate:[NSPredicate predicateWithFormat:@"groupId=%d OR groupId=nil",0]];
+    NSPredicate *groupRemovePredicate = [NSPredicate predicateWithFormat:@"groupId=%d OR groupId=nil",0];
+
+    if (predicateCreatedAt) {
+        NSCompoundPredicate * compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicateCreatedAt, groupRemovePredicate]];
+        [theRequest1 setPredicate:compoundPredicate];
+    } else {
+        [theRequest1 setPredicate:groupRemovePredicate];
+    }
+
     [theRequest1 setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
     [theRequest1 setPropertiesToFetch:[NSArray arrayWithObjects:@"contactId", nil]];
     [theRequest1 setReturnsDistinctResults:YES];
@@ -485,10 +518,6 @@
     sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAtTime" ascending:NO];
     NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
     NSMutableArray *sortedArray = [[messagesArray sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
-
-    if (self.delegate && [self.delegate respondsToSelector:@selector(getMessagesArray:)]) {
-        [self.delegate getMessagesArray:sortedArray];
-    }
 
     return sortedArray;
 }

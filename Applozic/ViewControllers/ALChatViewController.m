@@ -45,6 +45,7 @@
 #import "ALMyDeletedMessageCell.h"
 #import "ALFriendDeletedMessage.h"
 #import "ALUIUtilityClass.h"
+#import "ALVideoUploadManager.h"
 
 static CGFloat const TEXT_VIEW_TO_MESSAGE_VIEW_RATIO = 1.4;
 NSString * const ThirdPartyDetailVCNotification = @"ThirdPartyDetailVCNotification";
@@ -716,7 +717,18 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if ([self isOpenGroup]) {
         [self loadMessagesWithStarting:NO WithScrollToBottom:YES withNextPage:NO];
     } else {
-        [self markConversationRead];
+        ALMessageDBService *messageDb = [[ALMessageDBService alloc] init];
+        NSMutableArray * currentMessagesArray = [self.alMessageWrapper getUpdatedMessageArray];
+        /// Check for new messages based on the current latest message and fetch if any messages are in data base
+        if (currentMessagesArray.count > 0) {
+            ALMessage *lastMessage = currentMessagesArray.lastObject;
+            MessageListRequest * messageListRequest = [[MessageListRequest alloc] init];
+            messageListRequest.startTimeStamp = [NSNumber numberWithLong:(lastMessage.createdAtTime.longValue + 1)];
+            NSMutableArray * messagesArray = [messageDb getMessageListForContactWithCreatedAt:messageListRequest];
+            if (messagesArray.count) {
+                [self addMessageToList:messagesArray];
+            }
+        }
     }
 }
 
@@ -2836,21 +2848,25 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         self.mTotalCount = self.mTotalCount+1;
         self.startIndex = self.startIndex + 1;
 
-        ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
-        [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
+        if ([theMessage.fileMeta.contentType hasPrefix:@"video"]) {
+            ALVideoUploadManager *videoUploadManager = [[ALVideoUploadManager alloc] init];
+            videoUploadManager.attachmentProgressDelegate = self;
+            [videoUploadManager uploadTheVideo:theMessage];
+        } else {
+            ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
+            [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
 
-            if (error)
-            {
-                ALSLog(ALLoggerSeverityError, @"%@",error);
-                [[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage];
-                return;
-            }
+                if (error) {
+                    ALSLog(ALLoggerSeverityError, @"%@",error);
+                    [self onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:theMessage]];
+                    return;
+                }
 
-            ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
-            httpManager.attachmentProgressDelegate = self;
-            [httpManager processUploadFileForMessage:theMessage uploadURL:url];
-
-        }];
+                ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
+                httpManager.attachmentProgressDelegate = self;
+                [httpManager processUploadFileForMessage:theMessage uploadURL:url];
+            }];
+        }
     }
 }
 
@@ -4411,6 +4427,9 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (self.comingFromBackground) {
         BOOL isReadUpdateFailedToPublish = NO;
         for (ALMessage *message in sortedMessageArray) {
+            if ([message isSentMessage]) {
+                continue;
+            }
             BOOL isReadStatusPublished = [self.mqttObject messageReadStatusPublishWithMessageKey:message.key];
             if (!isReadStatusPublished) {
                 isReadUpdateFailedToPublish = YES;
