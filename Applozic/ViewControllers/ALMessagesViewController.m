@@ -194,7 +194,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     //register for notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationhandler:) name:@"pushNotification" object:nil];    
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callLastSeenStatusUpdate)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive)
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:[UIApplication sharedApplication]];
     
@@ -1176,6 +1176,20 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
         [self setupNavigationButtons];
     }
 }
+
+-(void)onAppDidBecomeActive {
+    [self callLastSeenStatusUpdate];
+    // Check for any new messages in data base for current latest message createdAtTime
+    NSMutableArray *messagesArray = self.mContactsMessageListArray;
+    if (messagesArray.count > 0) {
+        ALMessage * message = messagesArray.firstObject;
+        ALConversationListRequest * conversationListRequest = [[ALConversationListRequest alloc] init];
+        conversationListRequest.endTimeStamp = [NSNumber numberWithLong:(message.createdAtTime.longValue + 1)];
+        NSMutableArray * latestMessageArray = [self.dBService fetchLatestMessagesFromDatabaseWithRequestList:conversationListRequest];
+        [self addMessageToListWithMessageArray:latestMessageArray];
+    }
+}
+
 -(void)callLastSeenStatusUpdate
 {
     [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray * userDetailArray)
@@ -1342,7 +1356,14 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 {
 
     NSMutableArray * messageArray = notification.object;
+    [self addMessageToListWithMessageArray:messageArray];
+}
 
+-(void)addMessageToListWithMessageArray:(NSMutableArray *)messageArray {
+
+    if (messageArray.count < 1) {
+        return;
+    }
     NSMutableArray * allMessagesArray = [[NSMutableArray alloc]init];
 
     allMessagesArray = self.mContactsMessageListArray;
@@ -1405,6 +1426,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [self emptyConversationAlertLabel];
     [self.mTableView reloadData];
 }
+
 //==============================================================================================================================================
 #pragma mark - CREATE GROUP METHOD
 //==============================================================================================================================================

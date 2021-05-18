@@ -18,7 +18,6 @@
 
 -(void) videoFullScreen:(UITapGestureRecognizer *)sender;
 -(void) downloadRetryAction;
--(void)setVideoThumbnail:(NSString *)videoFilePATH;
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapper;
 @property (nonatomic, strong) NSURL *videoFileURL;

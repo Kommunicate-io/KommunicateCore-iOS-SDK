@@ -112,3 +112,4 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import "ALNotificationView.h"
 #import "ALUIImage+Utility.h"
 #import "ALJWT.h"
+#import "ALConversationListRequest.h"

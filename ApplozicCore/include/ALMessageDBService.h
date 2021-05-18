@@ -12,6 +12,7 @@
 #import "ALMessage.h"
 #import "ALFileMetaInfo.h"
 #import "MessageListRequest.h"
+#import "ALConversationListRequest.h"
 
 @protocol ALMessagesDelegate <NSObject>
 
@@ -97,4 +98,9 @@
 -(void) updateMessageMetadataOfKey:(NSString*)messageKey withMetadata:(NSMutableDictionary*) metadata ;
 
 -(ALMessage*)writeDataAndUpdateMessageInDb:(NSData*)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
+
+/// Returns a list of last messages for group and contact based on the startTime or endTime
+/// @param conversationListRequest Used for passing the startTime or endTime
+-(NSMutableArray *)fetchLatestMessagesFromDatabaseWithRequestList:(ALConversationListRequest *) conversationListRequest;
+
 @end

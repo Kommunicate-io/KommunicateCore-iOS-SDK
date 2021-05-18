@@ -48,7 +48,6 @@ static dispatch_semaphore_t semaphore;
         ALMessage * message = [messageDatabaseService createMessageEntity:dbMessage];
 
         ALFileMetaInfo * existingFileMeta = message.fileMeta;
-
         NSError * theJsonError = nil;
         NSDictionary *theJson = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&theJsonError];
 
@@ -58,6 +57,11 @@ static dispatch_semaphore_t semaphore;
             }else{
                 NSDictionary *fileInfo = [theJson objectForKey:@"fileMeta"];
                 [message.fileMeta populate:fileInfo];
+            }
+
+            if ([message.fileMeta.contentType hasPrefix:@"video"]) {
+                message.fileMeta.thumbnailUrl = dbMessage.fileMetaInfo.thumbnailUrl;
+                message.fileMeta.thumbnailBlobKey = dbMessage.fileMetaInfo.thumbnailBlobKeyString;
             }
             ALMessage * almessage = [ALMessageService processFileUploadSucess:message];
 
@@ -229,7 +233,9 @@ static dispatch_semaphore_t semaphore;
                     NSArray *array =  [config.identifier componentsSeparatedByString:@","];
                     if(array && array.count>1){
                         //Check if message key are same and first argumnent is not THUMBNAIL
-                        if(![array[0] isEqual: @"THUMBNAIL"] && [array[1] isEqualToString: message.key]){
+                        if(![array[0] isEqual: @"VIDEO_THUMBNAIL"]
+                           && ![array[0] isEqual: @"THUMBNAIL"]
+                           && [array[1] isEqualToString: message.key]){
                             ALSLog(ALLoggerSeverityInfo, @"Already present in upload file Queue returing for key %@",message.key);
                             return;
                         }
@@ -340,7 +346,7 @@ static dispatch_semaphore_t semaphore;
                     }
                     ALSLog(ALLoggerSeverityInfo, @"ATTACHMENT DOWNLOAD URL : %@", fileURL);
 
-                    [self createcreateGETRequestForAttachmentDownloadWithUrlString:fileURL withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
+                    [self createGETRequestForAttachmentDownloadWithUrlString:fileURL withCompletion:^(NSMutableURLRequest *theRequest, NSError *error) {
 
                         if (error) {
                             if(self.attachmentProgressDelegate){
@@ -492,7 +498,7 @@ static dispatch_semaphore_t semaphore;
     }
 }
 
--(void) createcreateGETRequestForAttachmentDownloadWithUrlString:(NSString *)fileURL withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
+-(void) createGETRequestForAttachmentDownloadWithUrlString:(NSString *)fileURL withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
 
     NSMutableURLRequest * theRequest;
     if (ALApplozicSettings.isS3StorageServiceEnabled ||

@@ -59,14 +59,38 @@
 }
 
 -(NSPersistentContainer *)persistentContainer {
-
     @synchronized (self) {
         NSURL *storeURL = [ALUtilityClass getApplicationDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
+        NSURL *groupStoreURL = [ALUtilityClass getAppsGroupDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
+
+        // Add the fall back for store URL in case of Group Store URL is not there.
+        NSURL *persistentStoreURL = nil;
+        if (groupStoreURL) {
+            persistentStoreURL = groupStoreURL;
+        } else {
+            persistentStoreURL = storeURL;
+        }
 
         if (_persistentContainer == nil) {
             NSPersistentContainer *container = [[NSPersistentContainer alloc] initWithName:@"AppLozic" managedObjectModel:self.managedObjectModel];
 
-            NSPersistentStoreDescription * persistentStoreDescription = [[NSPersistentStoreDescription alloc] initWithURL:storeURL];
+            // Check if we already have a store saved in the default app location.
+            BOOL hasDefaultAppLocation = [[NSFileManager defaultManager] fileExistsAtPath:storeURL.path];
+
+            // Check if the store needs migration.
+            BOOL storeNeedsMigration = hasDefaultAppLocation
+            && groupStoreURL
+            && ![storeURL.absoluteString isEqualToString:groupStoreURL.absoluteString];
+
+            NSPersistentStoreDescription *persistentStoreDescription = nil;
+            // Check if the default location flag is true then use the store URL of saved app location
+            if (hasDefaultAppLocation) {
+                persistentStoreDescription = [[NSPersistentStoreDescription alloc] initWithURL:storeURL];
+            } else {
+                // Use the persistent Store URL
+                persistentStoreDescription = [[NSPersistentStoreDescription alloc] initWithURL:persistentStoreURL];
+            }
+
             persistentStoreDescription.shouldMigrateStoreAutomatically = YES;
             persistentStoreDescription.shouldInferMappingModelAutomatically = YES;
             container.persistentStoreDescriptions = @[persistentStoreDescription];
@@ -77,7 +101,58 @@
                     self->_isStoreLoaded = NO;
                     return;
                 }
-                self->_isStoreLoaded = YES;
+
+                if (storeNeedsMigration) {
+
+                    NSError *migrateError;
+                    NSError *deleteError;
+
+                    NSURL *oldStoreURL = description.URL;
+
+                    // Get the current store we want to migrate.
+                    NSPersistentStore *store = [container.persistentStoreCoordinator persistentStoreForURL: oldStoreURL];
+
+                    // Set the store options.
+                    NSDictionary *options = @{NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES],
+                                              NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES]};
+
+                    // Migrate the store to App group.
+                    NSPersistentStore *newStore = [container.persistentStoreCoordinator migratePersistentStore:store
+                                                                                                         toURL:groupStoreURL
+                                                                                                       options:options
+                                                                                                      withType:NSSQLiteStoreType
+                                                                                                         error:&migrateError];
+                    if (newStore
+                        && !migrateError) {
+                        self->_isStoreLoaded = YES;
+                        // Removing the old SQLLite database.
+                        [[[NSFileCoordinator alloc] init] coordinateWritingItemAtURL: oldStoreURL
+                                                                             options: NSFileCoordinatorWritingForDeleting
+                                                                               error: &deleteError
+                                                                          byAccessor: ^(NSURL *urlForModifying) {
+                            NSError *removeError;
+                            [[NSFileManager defaultManager] removeItemAtURL: urlForModifying
+                                                                      error: &removeError];
+                            if (removeError) {
+                                NSLog(@"Error in removing a old Store URL file %@ @@@@", [removeError localizedDescription]);
+                            }
+                        }];
+
+                        if (deleteError) {
+                            NSLog(@"Error in deleting the old Store URL %@", [deleteError localizedDescription]);
+                        }
+                    } else {
+                        // Store migration failed required
+                        self->_isStoreLoaded = NO;
+                        if (migrateError) {
+                            NSLog(@"Error in Store migration %@", [migrateError localizedDescription]);
+                        }
+                    }
+                } else {
+                    // Store migration not required
+                    self->_isStoreLoaded = YES;
+                }
+
             }];
 
             if (self.isStoreLoaded) {
@@ -85,7 +160,7 @@
                 _persistentContainer = container;
             }
         } else {
-            if (![self persistentStoreExistsWithStoreURL:storeURL]) {
+            if (![self persistentStoreExistsWithStoreURL:persistentStoreURL]) {
                 _persistentContainer = nil;
             }
         }

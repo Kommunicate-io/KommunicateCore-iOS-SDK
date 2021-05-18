@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc public protocol ALAudioRecorderProtocol: class {
+@objc public protocol ALAudioRecorderProtocol: AnyObject {
     func moveButton(location: CGPoint)
     func finishRecordingAudioWith(filePath: String)
     func startAudioRecord()

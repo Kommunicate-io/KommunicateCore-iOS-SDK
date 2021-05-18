@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ALMessage.h"
 
 @interface ALUploadTask : NSObject
 
@@ -15,5 +16,9 @@
 @property (nonatomic, copy) NSString * fileName;
 
 @property (nonatomic, copy) NSString * identifier;
+
+@property (nonatomic, strong) ALMessage * message;
+
+@property (nonatomic, strong) NSString * videoThumbnailName;
 
 @end
