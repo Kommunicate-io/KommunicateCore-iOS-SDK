@@ -12,7 +12,7 @@
 
 @interface ALFriendDeletedMessage : ALDeletedMessasgeBaseCell
 
-+(CGFloat)getDeletedMessageCellHeight:(ALMessage *)alMessage
++ (CGFloat)getDeletedMessageCellHeight:(ALMessage *)alMessage
                          andCellFrame:(CGRect)cellFrame;
 
 @end

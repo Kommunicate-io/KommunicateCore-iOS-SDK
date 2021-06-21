@@ -12,8 +12,8 @@
 
 @interface ALChannelFeed : ALJson
 
-@property (nonatomic) NSMutableArray <ALChannel *>* channelFeedsList;
+@property (nonatomic) NSMutableArray <ALChannel *>*channelFeedsList;
 
-@property (nonatomic) NSMutableArray <ALChannel *>* conversationProxyList;
+@property (nonatomic) NSMutableArray <ALChannel *>*conversationProxyList;
 
 @end

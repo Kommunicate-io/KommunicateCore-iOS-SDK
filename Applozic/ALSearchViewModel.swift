@@ -47,9 +47,9 @@ import Foundation
                     Int(truncating: $0.createdAtTime) > Int(truncating: $1.createdAtTime)
                 }).filter {
                     ($0.groupId != nil || $0.to != nil)
-            }.map {
-                self.messageList.append($0)
-            }
+                }.map {
+                    self.messageList.append($0)
+                }
             completion(true)
         }
     }
@@ -64,9 +64,9 @@ import Foundation
         service.searchMessage(with: request) { messages, error in
             guard
                 let messages = messages as? [ALMessage]
-                else {
-                    completion(nil, error)
-                    return
+            else {
+                completion(nil, error)
+                return
             }
             completion(messages, error)
         }

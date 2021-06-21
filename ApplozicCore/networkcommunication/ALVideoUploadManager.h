@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
 
-@property (nonatomic) ALUploadTask * uploadTask;
+@property (nonatomic) ALUploadTask *uploadTask;
 @property (nonatomic) ALMessageDBService *messageDatabaseService;
 
 -(void)uploadTheVideo:(ALMessage *)message;

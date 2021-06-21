@@ -41,44 +41,37 @@ typedef enum {
 
 @interface ALMessage : ALJson
 
-@property (nonatomic, copy) NSString * key;
+@property (nonatomic, copy) NSString *key;
 
+@property (nonatomic, copy) NSString *deviceKey;
 
-@property (nonatomic, copy) NSString * deviceKey;
+@property (nonatomic, copy) NSString *userKey;
 
-@property (nonatomic, copy) NSString * userKey;
+@property (nonatomic, copy) NSString *to;
 
-@property (nonatomic, copy) NSString * to;
-
-@property (nonatomic, copy) NSString * message;
-
-//@property (nonatomic, assign) BOOL sent;
+@property (nonatomic, copy) NSString *message;
 
 @property (nonatomic, assign) BOOL sendToDevice;
 
 @property (nonatomic, assign) BOOL shared;
 
-@property (nonatomic, copy) NSNumber * createdAtTime;
+@property (nonatomic, copy) NSNumber *createdAtTime;
 
-@property (nonatomic, copy) NSString * type;
+@property (nonatomic, copy) NSString *type;
 
-//@property (nonatomic, copy) NSString * source;
 @property (nonatomic) short source;
 
-
-@property (nonatomic, copy) NSString * contactIds;
+@property (nonatomic, copy) NSString *contactIds;
 
 @property (nonatomic, assign) BOOL storeOnDevice;
 
-@property (nonatomic,retain) ALFileMetaInfo * fileMeta;
+@property (nonatomic,retain) ALFileMetaInfo *fileMeta;
 
-//@property (nonatomic,assign) BOOL read;
-
-@property (nonatomic,retain) NSString * imageFilePath;
+@property (nonatomic,retain) NSString *imageFilePath;
 
 @property (nonatomic,assign) BOOL inProgress;
 
-@property (nonatomic, strong)NSString *fileMetaKey;
+@property (nonatomic, strong) NSString *fileMetaKey;
 
 @property (nonatomic, assign) BOOL isUploadFailed;
 
@@ -86,13 +79,13 @@ typedef enum {
 
 @property(nonatomic,assign)BOOL sentToServer;
 
-@property(nonatomic,copy) NSManagedObjectID * msgDBObjectId;
+@property(nonatomic,copy) NSManagedObjectID *msgDBObjectId;
 
 @property(nonatomic,copy) NSString *pairedMessageKey;
 
 @property(nonatomic,assign) long messageId;
 
-@property(nonatomic,retain)NSString * applicationId;
+@property(nonatomic,retain)NSString *applicationId;
 
 @property(nonatomic) short contentType;
 
@@ -100,53 +93,53 @@ typedef enum {
 
 @property(nonatomic,copy) NSNumber *conversationId;
 
-@property (nonatomic, copy) NSNumber * status;
+@property (nonatomic, copy) NSNumber *status;
 
-@property (nonatomic,retain) NSMutableDictionary * metadata;
+@property (nonatomic,retain) NSMutableDictionary *metadata;
 
-@property (nonatomic,copy)NSNumber* messageReplyType;
+@property (nonatomic,copy) NSNumber *messageReplyType;
 
--(NSString *)getCreatedAtTime:(BOOL)today;
+- (NSString *)getCreatedAtTime:(BOOL)today;
 
--(id)initWithDictonary:(NSDictionary*)messageDictonary;
+- (id)initWithDictonary:(NSDictionary*)messageDictonary;
 
--(BOOL)isDownloadRequired;
--(BOOL)isUploadRequire;
--(BOOL)isHiddenMessage;
--(BOOL)isVOIPNotificationMessage;
+- (BOOL)isDownloadRequired;
+- (BOOL)isUploadRequire;
+- (BOOL)isHiddenMessage;
+- (BOOL)isVOIPNotificationMessage;
 
--(NSString *)getCreatedAtTimeChat:(BOOL)today;
--(NSNumber *)getGroupId;
--(NSString *)getLastMessage;
--(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
--(NSString *)getVOIPMessageText;
--(BOOL)isMsgHidden;
--(BOOL)isPushNotificationMessage;
--(BOOL)isMessageCategoryHidden;
--(ALReplyType)getReplyType;
--(BOOL)isToIgnoreUnreadCountIncrement;
+- (NSString *)getCreatedAtTimeChat:(BOOL)today;
+- (NSNumber *)getGroupId;
+- (NSString *)getLastMessage;
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
+- (NSString *)getVOIPMessageText;
+- (BOOL)isMsgHidden;
+- (BOOL)isPushNotificationMessage;
+- (BOOL)isMessageCategoryHidden;
+- (ALReplyType)getReplyType;
+- (BOOL)isToIgnoreUnreadCountIncrement;
 
--(BOOL)isAReplyMessage;
+- (BOOL)isAReplyMessage;
 
--(BOOL)isSentMessage;
--(BOOL)isReceivedMessage;
+- (BOOL)isSentMessage;
+- (BOOL)isReceivedMessage;
 
--(BOOL)isLocationMessage;
--(BOOL)isContactMessage;
--(BOOL)isChannelContentTypeMessage;
--(BOOL)isDocumentMessage;
--(BOOL)isSilentNotification;
--(BOOL)isDeletedForAll;
--(BOOL)isMessageSentToServer;
+- (BOOL)isLocationMessage;
+- (BOOL)isContactMessage;
+- (BOOL)isChannelContentTypeMessage;
+- (BOOL)isDocumentMessage;
+- (BOOL)isSilentNotification;
+- (BOOL)isDeletedForAll;
+- (BOOL)isMessageSentToServer;
 
 @property (nonatomic,assign) BOOL deleted;
 @property (nonatomic, assign) BOOL msgHidden;
-- (instancetype)initWithBuilder:(ALMessageBuilder *)builder ;
-+ (instancetype)build:(void (^)(ALMessageBuilder *))builder ;
--(BOOL)isNotificationDisabled;
--(BOOL)isLinkMessage;
--(BOOL)isResetUnreadCountMessage;
--(BOOL)hasAttachment;
--(void)setAsDeletedForAll;
--(NSMutableDictionary *)combineMetadata:(NSMutableDictionary *)messageMetadata;
+- (instancetype)initWithBuilder:(ALMessageBuilder *)builder;
++ (instancetype)build:(void (^)(ALMessageBuilder *))builder;
+- (BOOL)isNotificationDisabled;
+- (BOOL)isLinkMessage;
+- (BOOL)isResetUnreadCountMessage;
+- (BOOL)hasAttachment;
+- (void)setAsDeletedForAll;
+- (NSMutableDictionary *)combineMetadata:(NSMutableDictionary *)messageMetadata;
 @end

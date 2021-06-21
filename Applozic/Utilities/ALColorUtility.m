@@ -10,7 +10,7 @@
 
 @implementation ALColorUtility
 
-+ (UIImage *)imageWithSize:(CGRect)rect WithHexString:(NSString*)stringToConvert {
++ (UIImage *)imageWithSize:(CGRect)rect WithHexString:(NSString *)stringToConvert {
     
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -23,8 +23,7 @@
     return image;
 }
 
-+ (UIColor *)colorWithHexString:(NSString *)stringToConvert
-{
++ (UIColor *)colorWithHexString:(NSString *)stringToConvert {
     NSString *noHashString = [stringToConvert stringByReplacingOccurrencesOfString:@"#" withString:@""]; // remove the #
     NSScanner *scanner = [NSScanner scannerWithString:noHashString];
     [scanner setCharactersToBeSkipped:[NSCharacterSet symbolCharacterSet]]; // remove + and $
@@ -40,32 +39,26 @@
     return colorFromHex;
 }
 
-+ (UIColor *)getColorForAlphabet:(NSString *)alphabet colorCodes:(NSMutableDictionary *)dictionary
-{
++ (UIColor *)getColorForAlphabet:(NSString *)alphabet colorCodes:(NSMutableDictionary *)dictionary {
 
     NSMutableDictionary *colourDictionary = [self getColorCodeWithDictionary:dictionary];
 
-    if(!alphabet || [alphabet isEqualToString:@""])
-    {
+    if (!alphabet || [alphabet isEqualToString:@""]) {
         return [UIColor lightGrayColor];
     }
-   
+
     UIColor * colour;
-    @try
-    {
+    @try {
         NSString * firstLetter = [[alphabet substringToIndex:1] uppercaseString];
         colour = [self colorWithHexString:[colourDictionary valueForKey:firstLetter]];
         
-        if(!colour)
-        {
+        if (!colour) {
             NSArray * keyArray = [colourDictionary allKeys];
             NSUInteger randomIndex = random()% [keyArray count];
             NSString * colorKey = [keyArray objectAtIndex:randomIndex];
             colour = [self colorWithHexString:[colourDictionary valueForKey:colorKey]];
         }
-    }
-    @catch(NSException *ex)
-    {
+    } @catch(NSException *ex) {
         ALSLog(ALLoggerSeverityInfo, @"ALPHABET = ' %@ ' && EXPCEPTION :: %@", alphabet, ex);
         colour = [UIColor lightGrayColor];
     }
@@ -74,9 +67,8 @@
 }
 
 
-+ (NSMutableDictionary *)getColorCodeWithDictionary:(NSMutableDictionary *)dictionary
-{
-    if(dictionary){
++ (NSMutableDictionary *)getColorCodeWithDictionary:(NSMutableDictionary *)dictionary {
+    if (dictionary) {
         return dictionary;
     }
 
@@ -124,12 +116,10 @@
 }
 
 
-+(NSString *)getAlphabetForProfileImage:(NSString *)actualName
-{
++(NSString *)getAlphabetForProfileImage:(NSString *)actualName {
     NSString * iconAlphabet = @"";
     NSString * trimmed = [actualName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    if(trimmed.length == 0)
-    {
+    if (trimmed.length == 0) {
         return actualName;
     }
     
@@ -137,20 +127,16 @@
     NSRange whiteSpaceRange = [trimmed rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]];
     NSArray *listNames = [trimmed componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
-    if (whiteSpaceRange.location != NSNotFound)
-    {
+    if (whiteSpaceRange.location != NSNotFound) {
         NSString *firstLetter = [[listNames[0] substringToIndex:1] uppercaseString];
         iconAlphabet = firstLetter;
         NSString *lastLetter = listNames[1];
-        if (lastLetter.length)
-        {
+        if (lastLetter.length) {
             lastLetter = [[listNames[1] substringToIndex:1] uppercaseString];
             iconAlphabet = [[firstLetter stringByAppendingString:lastLetter] uppercaseString];
         }
-    }
-    else
-    {
-         iconAlphabet = [firstLetter uppercaseString];
+    } else {
+        iconAlphabet = [firstLetter uppercaseString];
     }
 
     return iconAlphabet;

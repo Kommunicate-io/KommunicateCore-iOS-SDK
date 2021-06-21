@@ -14,15 +14,14 @@
 
 @implementation ALUIUtilityClass
 
-+(UIImage *)getImageFromFramworkBundle:(NSString *) UIImageName{
++ (UIImage *)getImageFromFramworkBundle:(NSString *) UIImageName {
 
     NSBundle * bundle = [NSBundle bundleForClass:ALUIUtilityClass.class];
     UIImage *image = [UIImage imageNamed:UIImageName inBundle:bundle compatibleWithTraitCollection:nil];
     return image;
 }
 
-+(UIImage *)getVOIPMessageImage:(ALMessage *)alMessage
-{
++ (UIImage *)getVOIPMessageImage:(ALMessage *)alMessage {
     NSString *msgType = (NSString *)[alMessage.metadata objectForKey:@"MSG_TYPE"];
     BOOL flag = [[alMessage.metadata objectForKey:@"CALL_AUDIO_ONLY"] boolValue];
 
@@ -42,9 +41,9 @@
     return image;
 }
 
-+(void) downloadImageUrlAndSet: (NSString *) blobKey
-                     imageView:(UIImageView *) imageView
-                  defaultImage:(NSString *) defaultImage {
++ (void) downloadImageUrlAndSet: (NSString *)blobKey
+                      imageView:(UIImageView *)imageView
+                   defaultImage:(NSString *)defaultImage {
 
     if (blobKey) {
         NSURL * theUrl1 = [NSURL URLWithString:blobKey];
@@ -52,7 +51,7 @@
     }
 }
 
-+(UIAlertController *)displayLoadingAlertControllerWithText:(NSString *)loadingText {
++ (UIAlertController *)displayLoadingAlertControllerWithText:(NSString *)loadingText {
 
     UIAlertController * uiAlertController = [UIAlertController
                                              alertControllerWithTitle:loadingText
@@ -71,15 +70,14 @@
     return uiAlertController;
 }
 
-+(void)dismissAlertController:(UIAlertController *)alertController
-               withCompletion:(void (^)(BOOL dismissed)) completion {
++ (void)dismissAlertController:(UIAlertController *)alertController
+                withCompletion:(void (^)(BOOL dismissed)) completion {
     [alertController dismissViewControllerAnimated:YES completion:^{
         completion(YES);
     }];
 }
 
-+(void)movementAnimation:(UIButton *)button andHide:(BOOL)flag
-{
++ (void)movementAnimation:(UIButton *)button andHide:(BOOL)flag {
     if(flag)  // FADE IN
     {
         [UIView animateWithDuration:0.3 animations:^{
@@ -99,8 +97,7 @@
 }
 
 
-+(void)displayToastWithMessage:(NSString *)toastMessage
-{
++ (void)displayToastWithMessage:(NSString *)toastMessage {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
 
         UIWindow * keyWindow = [[UIApplication sharedApplication] keyWindow];
@@ -132,8 +129,7 @@
     }];
 }
 
-+(UIView *)setStatusBarStyle
-{
++ (UIView *)setStatusBarStyle {
     UIApplication * app = [UIApplication sharedApplication];
     CGFloat height = app.statusBarFrame.size.height;
     CGFloat width = app.statusBarFrame.size.width;
@@ -143,8 +139,7 @@
 }
 
 
-+(UIImage *)getNormalizedImage:(UIImage *)rawImage
-{
++ (UIImage *)getNormalizedImage:(UIImage *)rawImage {
     if(rawImage.imageOrientation == UIImageOrientationUp)
         return rawImage;
 
@@ -156,7 +151,7 @@
     return normalizedImage;
 }
 
-+(id)parsedALChatCostomizationPlistForKey:(NSString *)key {
++ (id)parsedALChatCostomizationPlistForKey:(NSString *)key {
 
     id value = nil;
 
@@ -167,15 +162,15 @@
         if (color) {
             value = [ALUIUtilityClass colorWithHexString:color];
         }
-    }else if ([key isEqualToString:APPLOZIC_CHAT_BACKGROUND_COLOR]) {
+    } else if ([key isEqualToString:APPLOZIC_CHAT_BACKGROUND_COLOR]) {
         NSString *color= [values valueForKey:APPLOZIC_CHAT_BACKGROUND_COLOR];
         if (color) {
             value = [ALUIUtilityClass colorWithHexString:color];
         }
-    }else if ([key isEqualToString:APPLOZIC_CHAT_FONTNAME]) {
+    } else if ([key isEqualToString:APPLOZIC_CHAT_FONTNAME]) {
 
         value = [values valueForKey:APPLOZIC_CHAT_FONTNAME];
-    }else if ([key isEqualToString:APPLOGIC_TOPBAR_TITLE_COLOR]){
+    } else if ([key isEqualToString:APPLOGIC_TOPBAR_TITLE_COLOR]){
         NSString *color = [values valueForKey:APPLOGIC_TOPBAR_TITLE_COLOR];
         if (color) {
             value = [ALUIUtilityClass colorWithHexString:color];
@@ -193,8 +188,7 @@
     return parsedDict;
 }
 
-+(void)showAlertMessage:(NSString *)text andTitle:(NSString *)title
-{
++ (void)showAlertMessage:(NSString *)text andTitle:(NSString *)title {
 
     UIAlertController * uiAlertController = [UIAlertController
                                              alertControllerWithTitle:title
@@ -215,11 +209,10 @@
 
 }
 
-+(UIImage *)getImageFromFilePath:(NSString *)filePath{
++ (UIImage *)getImageFromFilePath:(NSString *)filePath {
 
     UIImage *image;
-    if (filePath != NULL)
-    {
+    if (filePath != NULL) {
         NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:filePath];
         if ([[NSFileManager defaultManager] fileExistsAtPath:documentDirectory.path]) {
             image =  [self getImageFromNSURL:documentDirectory];
@@ -234,19 +227,18 @@
 
 }
 
-+(UIImage*)getImageFromNSURL:(NSURL *)url{
++ (UIImage*)getImageFromNSURL:(NSURL *)url {
     UIImage *image;
     NSString * pathExtenion = url.pathExtension;
-    if(pathExtenion != nil && [pathExtenion isEqualToString:@"gif"]){
+    if (pathExtenion != nil && [pathExtenion isEqualToString:@"gif"]) {
         image  = [UIImage animatedImageWithAnimatedGIFURL:url];
-    }else{
+    } else {
         image =   [[UIImage alloc] initWithContentsOfFile:url.path];
     }
     return image;
 }
 
-+(UIColor*)colorWithHexString:(NSString*)hex
-{
++ (UIColor*)colorWithHexString:(NSString*)hex {
     NSString *colorString = [[hex stringByReplacingOccurrencesOfString: @"#" withString: @""] uppercaseString];
     NSString *cString = [[colorString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
 
@@ -282,15 +274,13 @@
                            alpha:1.0f];
 }
 
-+(UIImage *)setVideoThumbnail:(NSString *)videoFilePATH
-{
++ (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH {
     NSURL *url = [NSURL fileURLWithPath:videoFilePATH];
     UIImage * processThumbnail = [self subProcessThumbnail:url];
     return processThumbnail;
 }
 
-+(UIImage *)subProcessThumbnail:(NSURL *)url
-{
++ (UIImage *)subProcessThumbnail:(NSURL *)url {
     AVAsset *asset = [AVAsset assetWithURL:url];
     AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     imageGenerator.appliesPreferredTrackTransform = YES;
@@ -304,7 +294,7 @@
 }
 
 
-+(void)subVideoImage:(NSURL *)url  withCompletion:(void (^)(UIImage *image)) completion{
++ (void)subVideoImage:(NSURL *)url withCompletion:(void (^)(UIImage *image)) completion {
 
     AVAsset *asset = [AVAsset assetWithURL:url];
     AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
@@ -326,8 +316,7 @@
 }
 
 
-+(void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController
-{
++ (void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController {
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"applicationSettings", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Application Settings" , @"")    message:msgText
                                                                        preferredStyle:UIAlertControllerStyleAlert];
 
@@ -344,10 +333,8 @@
 }
 
 // FOR IPAD DEVICES
-+(void)setAlertControllerFrame:(UIAlertController *)alertController andViewController:(UIViewController *)viewController
-{
-    if(IS_IPAD)
-    {
++ (void)setAlertControllerFrame:(UIAlertController *)alertController andViewController:(UIViewController *)viewController {
+    if (IS_IPAD) {
         alertController.popoverPresentationController.sourceView = viewController.view;
         CGSize size = viewController.view.bounds.size;
         CGRect frame = CGRectMake((size.width/2.0), (size.height/2.0), 1.0, 1.0); // (x, y, popup point X, popup point Y);
@@ -356,28 +343,23 @@
     }
 }
 
-+(NSString *)getNameAlphabets:(NSString *)actualName
-{
++ (NSString *)getNameAlphabets:(NSString *)actualName {
     NSString *alpha = @"";
 
     NSRange whiteSpaceRange = [actualName rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]];
-    if (whiteSpaceRange.location != NSNotFound)
-    {
+    if (whiteSpaceRange.location != NSNotFound) {
         NSArray *listNames = [actualName componentsSeparatedByString:@" "];
         NSString *firstLetter = [[listNames[0] substringToIndex:1] uppercaseString];
         NSString *lastLetter = [[listNames[1] substringToIndex:1] uppercaseString];
         alpha = [[firstLetter stringByAppendingString: lastLetter] uppercaseString];
-    }
-    else
-    {
+    } else {
         NSString *firstLetter = [actualName substringToIndex:1];
         alpha = [firstLetter uppercaseString];
     }
     return alpha;
 }
 
-+(void)openApplicationSettings
-{
++ (void)openApplicationSettings {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
 }
 

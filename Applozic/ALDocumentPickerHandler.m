@@ -11,7 +11,7 @@
 
 @implementation ALDocumentPickerHandler
 
--(void)showDocumentPickerViewController:(id<UIDocumentPickerDelegate>) pickerDelegate{
+- (void)showDocumentPickerViewController:(id<UIDocumentPickerDelegate>)pickerDelegate {
 
     ALPushAssist * pushAssist = [[ALPushAssist alloc]init];
 
@@ -22,10 +22,10 @@
     [pushAssist.topViewController presentViewController:docPicker animated:YES completion:nil];
 }
 
-+(NSString *)saveFile:(NSURL *)fileUrl{
++ (NSString *)saveFile:(NSURL *)fileUrl {
 
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString * filePath = [docDir stringByAppendingString:[NSString stringWithFormat:@"/%f.%@",[[NSDate date] timeIntervalSince1970] * 1000,fileUrl.pathExtension]];
+    NSString *filePath = [docDir stringByAppendingString:[NSString stringWithFormat:@"/%f.%@",[[NSDate date] timeIntervalSince1970] * 1000,fileUrl.pathExtension]];
     NSData *fileData = [NSData dataWithContentsOfURL:fileUrl];
     [fileData writeToFile:filePath atomically:NO];
     return filePath;

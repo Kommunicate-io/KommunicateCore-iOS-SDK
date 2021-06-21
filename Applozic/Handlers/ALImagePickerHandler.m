@@ -14,29 +14,26 @@
 @implementation ALImagePickerHandler
 
 
-+(NSString *) saveImageToDocDirectory:(UIImage *) image
-{
-    NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString * timestamp = [NSString stringWithFormat:@"IMG-%f.jpeg",[[NSDate date] timeIntervalSince1970] * 1000];
-    NSString * filePath = [docDirPath stringByAppendingPathComponent:timestamp];
-    NSData * imageData = [image getCompressedImageData];
++ (NSString *)saveImageToDocDirectory:(UIImage *)image {
+    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *timestamp = [NSString stringWithFormat:@"IMG-%f.jpeg",[[NSDate date] timeIntervalSince1970] * 1000];
+    NSString *filePath = [docDirPath stringByAppendingPathComponent:timestamp];
+    NSData *imageData = [image getCompressedImageData];
     [imageData writeToFile:filePath atomically:YES];
     return filePath;
 }
 
-+(NSString *) saveGifToDocDirectory:(UIImage *)image withGIFData:(NSData *)imageData;
-{
-    NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString * timestamp = [NSString stringWithFormat:@"IMG-%f.gif",[[NSDate date] timeIntervalSince1970] * 1000];
-    NSString * filePath = [docDirPath stringByAppendingPathComponent:timestamp];
++ (NSString *)saveGifToDocDirectory:(UIImage *)image withGIFData:(NSData *)imageData; {
+    NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *timestamp = [NSString stringWithFormat:@"IMG-%f.gif",[[NSDate date] timeIntervalSince1970] * 1000];
+    NSString *filePath = [docDirPath stringByAppendingPathComponent:timestamp];
     [imageData writeToFile:filePath atomically:YES];
     return filePath;
 }
 
-+(void) saveVideoToDocDirectory:(NSURL *)videoURL handler:(void (^)(NSString *))handler
-{
-    NSString * videoPath1 = @"";
-    NSString * tempPath =@"";
++ (void) saveVideoToDocDirectory:(NSURL *)videoURL handler:(void (^)(NSString *))handler {
+    NSString *videoPath1 = @"";
+    NSString *tempPath =@"";
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     videoPath1 =[docDir stringByAppendingString:[NSString stringWithFormat:@"/VID-%f.mov",[[NSDate date] timeIntervalSince1970] * 1000]];
     NSData *videoData = [NSData dataWithContentsOfURL:videoURL];
@@ -44,8 +41,7 @@
 
     AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:videoPath1] options:nil];
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
-    if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality])
-    {
+    if ([compatiblePresets containsObject:AVAssetExportPresetLowQuality]) {
         AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:avAsset presetName:AVAssetExportPresetPassthrough];
         tempPath  = [docDir stringByAppendingString:[NSString stringWithFormat:@"/VID-%f.mp4",[[NSDate date] timeIntervalSince1970] * 1000]];
         exportSession.outputURL = [NSURL fileURLWithPath:tempPath];
@@ -65,7 +61,7 @@
                     break;
             }
             // If 'save video to gallery' is enabled then save to gallery
-            if([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
+            if ([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
                 UISaveVideoAtPathToSavedPhotosAlbum(tempPath, self, nil, nil);
             }
             handler(tempPath);

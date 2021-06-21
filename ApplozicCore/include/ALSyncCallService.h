@@ -13,19 +13,19 @@
 
 @interface ALSyncCallService : NSObject
 
--(void) updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status;
+- (void)updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status;
 
--(void) updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status;
+- (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status;
 
--(void) syncCall: (ALMessage *) alMessage;
+- (void)syncCall:(ALMessage *)alMessage;
 
--(void) syncCall: (ALMessage *) alMessage withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate;
+- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate;
 
--(void) updateConnectedStatus: (ALUserDetail *) alUserDetail;
+- (void)updateConnectedStatus:(ALUserDetail *)alUserDetail;
 
--(void)updateTableAtConversationDeleteForContact:(NSString*)contactID
-                                  ConversationID:(NSString *)conversationID
-                                      ChannelKey:(NSNumber *)channelKey;
--(void)syncMessageMetadata;
+- (void)updateTableAtConversationDeleteForContact:(NSString *)contactID
+                                   ConversationID:(NSString *)conversationID
+                                       ChannelKey:(NSNumber *)channelKey;
+- (void)syncMessageMetadata;
 
 @end

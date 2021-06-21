@@ -19,19 +19,17 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
 
 @interface ALGroupCreationViewController ()
 
-@property (nonatomic,strong) UIImagePickerController * mImagePicker;
-@property (nonatomic,strong) NSString * mainFilePath;
+@property (nonatomic,strong) UIImagePickerController *mImagePicker;
+@property (nonatomic,strong) NSString *mainFilePath;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end
 
-@implementation ALGroupCreationViewController
-{
+@implementation ALGroupCreationViewController {
     UIBarButtonItem *nextContacts;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     nextContacts = [[UIBarButtonItem alloc] init];
@@ -50,16 +48,14 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
 
     [self.descriptionTextView setText: NSLocalizedStringWithDefaultValue(@"descriptionTextForGroup", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Please provide group name", @"")];
     
-    if(self.isViewForUpdatingGroup)
-    {
+    if (self.isViewForUpdatingGroup) {
         [self setTitle:NSLocalizedStringWithDefaultValue(@"groupUpdateViewText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group Update", @"")];
         [nextContacts setTitle:NSLocalizedStringWithDefaultValue(@"updateUiButtonText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Update", @"")];
         [nextContacts setAction:@selector(updateGroupInfo:)];
         self.groupNameInput.text = self.channelName;
         [self setProfileImage];
-    }
-    else
-    {   [self setTitle:NSLocalizedStringWithDefaultValue(@"groupTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Create Group", @"")];
+    } else {
+        [self setTitle:NSLocalizedStringWithDefaultValue(@"groupTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Create Group", @"")];
         [nextContacts setTitle:NSLocalizedStringWithDefaultValue(@"nextUiButtonText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Next", @"")];
         [nextContacts setAction:@selector(launchContactSelection:)];
     }
@@ -75,8 +71,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     [self.activityIndicator setHidesWhenStopped:YES];
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     [self.groupNameInput becomeFirstResponder];
@@ -86,21 +81,16 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     // self.alNewContactViewController.delegateGroupCreation = self;
 }
 
--(void)setProfileImage
-{
+- (void)setProfileImage {
     NSURL *imageURL = [NSURL URLWithString:self.groupImageURL];
-    if(imageURL.path.length)
-    {
+    if (imageURL.path.length) {
         [self.groupIconView sd_setImageWithURL:imageURL placeholderImage:nil options:SDWebImageRefreshCached];
-    }
-    else
-    {
+    } else {
         [self.groupIconView setImage:[ALUIUtilityClass getImageFromFramworkBundle:DEFAULT_GROUP_ICON_NAME]];
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
 
@@ -108,11 +98,9 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
 #pragma mark - NAVIGATION RIGHT BUTTON SELECTORS : CREATION/UPDATE
 //=========================================================================================================================================
 
-- (void)launchContactSelection:(id)sender
-{
+- (void)launchContactSelection:(id)sender {
     //Check if group name text is empty
-    if([self.groupNameInput.text isEqualToString:@""])
-    {
+    if ([self.groupNameInput.text isEqualToString:@""]) {
         
         UIAlertController *alertController = [UIAlertController
                                               alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"groupNameInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Group Name", @"")
@@ -125,15 +113,15 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
                                    actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK", @"")                                   style:UIAlertActionStyleDefault
                                    handler:^(UIAlertAction *action)
                                    {
-                                       ALSLog(ALLoggerSeverityInfo, @"OK action");
-                                   }];
+            ALSLog(ALLoggerSeverityInfo, @"OK action");
+        }];
         [alertController addAction:okAction];
         [self presentViewController:alertController animated:YES completion:nil];
         return;
     }
     
     //Moving forward to member selection
-    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic"
                                                          bundle:[NSBundle bundleForClass:ALGroupCreationViewController.class]];
     ALNewContactsViewController *contactsVC = [storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     
@@ -142,8 +130,7 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     contactsVC.groupName = self.groupNameInput.text;
     contactsVC.groupImageURL = self.groupImageURL;
     
-    if([ALApplozicSettings getSubGroupLaunchFlag])
-    {
+    if ([ALApplozicSettings getSubGroupLaunchFlag]) {
         ALChannelService *channelService = [ALChannelService new];
         ALChannel *parentChannel = [channelService getChannelByKey:self.parentChannelKey];
         contactsVC.parentChannel = parentChannel;
@@ -154,10 +141,8 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     [self.navigationController pushViewController:contactsVC animated:YES];
 }
 
-- (void)updateGroupInfo:(id)sender
-{
-    if(!self.groupNameInput.text.length)
-    {
+- (void)updateGroupInfo:(id)sender {
+    if (!self.groupNameInput.text.length) {
         [ALUIUtilityClass showAlertMessage:
          NSLocalizedStringWithDefaultValue(@"youHaveNotUpdatedAnything", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"You haven't update anything", @"")  andTitle:NSLocalizedStringWithDefaultValue(@"wait", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Wait!!!", @"")];
         return;
@@ -167,16 +152,16 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     
     ALChannelService *channelService = [ALChannelService new];
     
-    NSString* changedName;
+    NSString *changedName;
     
-    if(self.channelName != nil && [self.groupNameInput.text isEqualToString:self.channelName]){
+    if (self.channelName != nil && [self.groupNameInput.text isEqualToString:self.channelName]) {
         changedName = nil;
-    }else{
+    } else {
         changedName = self.groupNameInput.text;
     }
     ALChannel *oldChannel =  [channelService getChannelByKey:self.channelKey ];
     BOOL isIngoreUpdating = NO;
-    if(oldChannel != nil && oldChannel.channelImageURL != NULL && [oldChannel.channelImageURL isEqualToString:self.groupImageURL]){
+    if (oldChannel != nil && oldChannel.channelImageURL != NULL && [oldChannel.channelImageURL isEqualToString:self.groupImageURL]) {
         self.groupImageURL = nil;
         isIngoreUpdating = YES;
     }
@@ -185,14 +170,13 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
                       andImageURL:self.groupImageURL orClientChannelKey:nil isUpdatingMetaData:isIngoreUpdating
                          metadata:nil orChildKeys:nil orChannelUsers:nil  withCompletion:^(NSError *error) {
         
-          if(!error)
-          {
-        
-              ALSLog(ALLoggerSeverityInfo, @"ALGroupCreationViewController updated the group info");
-              [self.navigationController popViewControllerAnimated:YES];
-              [self.grpInfoDelegate updateGroupInformation];
-          }
-          [self.loadingIndicator stopAnimating];
+        if (!error) {
+
+            ALSLog(ALLoggerSeverityInfo, @"ALGroupCreationViewController updated the group info");
+            [self.navigationController popViewControllerAnimated:YES];
+            [self.grpInfoDelegate updateGroupInformation];
+        }
+        [self.loadingIndicator stopAnimating];
     }];
 }
 
@@ -200,12 +184,11 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
 #pragma mark - GROUP ICON VIEW SETUP
 //=========================================================================================================================================
 
--(void)setupGroupIcon
-{
+- (void)setupGroupIcon {
     dispatch_async(dispatch_get_main_queue(), ^{
-          self.groupIconView.layer.cornerRadius = self.groupIconView.frame.size.width/2;
-          self.groupIconView.layer.masksToBounds = YES;
-          self.groupIconView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+        self.groupIconView.layer.cornerRadius = self.groupIconView.frame.size.width/2;
+        self.groupIconView.layer.masksToBounds = YES;
+        self.groupIconView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     });
     
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -215,9 +198,8 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
 }
 
 
--(void)uploadImage
-{
-    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+- (void)uploadImage {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     [ALUIUtilityClass setAlertControllerFrame:alertController andViewController:self];
     
@@ -233,9 +215,8 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
         [self uploadByCamera];
     }]];
     
-    if(self.isViewForUpdatingGroup && self.groupImageURL.length)
-    {
-        UIAlertAction * removeAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"removePhoto", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Remove Photo", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    if (self.isViewForUpdatingGroup && self.groupImageURL.length) {
+        UIAlertAction *removeAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"removePhoto", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Remove Photo", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             
             self.groupImageURL = @"";
             [self setProfileImage];
@@ -248,37 +229,28 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
--(void)uploadByPhotos
-{
+- (void)uploadByPhotos {
     self.mImagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     self.mImagePicker.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeImage];
     [self presentViewController:self.mImagePicker animated:YES completion:nil];
 }
 
--(void)uploadByCamera
-{
-    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera])
-    {
+- (void)uploadByCamera {
+    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
         [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                if (granted)
-                {
+                if (granted) {
                     self.mImagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
                     self.mImagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *) kUTTypeImage, nil];
                     [self presentViewController:self.mImagePicker animated:YES completion:nil];
-                }
-                else
-                {
-                    
+                } else {
                     [ALUIUtilityClass permissionPopUpWithMessage:NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"") andViewController:self];
                 }
             });
         }];
-    }
-    else
-    {
+    } else {
         [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"oppsText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OPPS !!", @"")];
         
         
@@ -290,15 +262,13 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
 #pragma mark - IMAGE PICKER DELEGATES
 //=========================================================================================================================================
 
--(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
-{
-    UIImage * rawImage = [info valueForKey:UIImagePickerControllerEditedImage];
-    UIImage * normalizedImage = [ALUIUtilityClass getNormalizedImage:rawImage];
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    UIImage *rawImage = [info valueForKey:UIImagePickerControllerEditedImage];
+    UIImage *normalizedImage = [ALUIUtilityClass getNormalizedImage:rawImage];
     [self.groupIconView setImage:normalizedImage];
     
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -306,46 +276,43 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     [self confirmUserForGroupImage:normalizedImage];
 }
 
--(NSString *)getImageFilePath:(UIImage *)image
-{
+- (NSString *)getImageFilePath:(UIImage *)image {
     NSString *filePath = [ALImagePickerHandler saveImageToDocDirectory:image];
     return filePath;
 }
 
--(void)confirmUserForGroupImage:(UIImage *)image
-{
+- (void)confirmUserForGroupImage:(UIImage *)image {
     image = [image getCompressedImageLessThanSize:1];
-    UIAlertController * alert = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"confirmationText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirmation!", @"")
-                                                                    message:NSLocalizedStringWithDefaultValue(@"areYouSureForUploadText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure to upload?", @"")
-                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"confirmationText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirmation!", @"")
+                                                                   message:NSLocalizedStringWithDefaultValue(@"areYouSureForUploadText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure to upload?", @"")
+                                                            preferredStyle:UIAlertControllerStyleAlert];
     
     [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
     
-    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         [self.groupIconView setImage:[ALUIUtilityClass getImageFromFramworkBundle:DEFAULT_GROUP_ICON_NAME]];
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     
-    UIAlertAction* upload = [UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"upload", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Upload", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+    UIAlertAction *upload = [UIAlertAction actionWithTitle: NSLocalizedStringWithDefaultValue(@"upload", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Upload", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
         [self.activityIndicator startAnimating];
 
-        if(![ALDataNetworkConnection checkDataNetworkAvailable])
-        {
-            ALNotificationView * notification = [ALNotificationView new];
+        if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
+            ALNotificationView *notification = [ALNotificationView new];
             [notification noDataConnectionNotificationView];
             [self.activityIndicator stopAnimating];
             return;
         }
         
-        NSString * uploadUrl = [KBASE_URL stringByAppendingString:AL_IMAGE_UPLOAD_URL];
+        NSString *uploadUrl = [KBASE_URL stringByAppendingString:AL_IMAGE_UPLOAD_URL];
         
         self.groupImageUploadURL = uploadUrl;
 
-        ALHTTPManager * manager = [[ALHTTPManager alloc]init];
-        [manager uploadProfileImage:image withFilePath:self.mainFilePath uploadURL:uploadUrl withCompletion:^(NSData * _Nullable data, NSError *error) {
+        ALHTTPManager *manager = [[ALHTTPManager alloc]init];
+        [manager uploadProfileImage:image withFilePath:self.mainFilePath uploadURL:uploadUrl withCompletion:^(NSData *_Nullable data, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if(error == nil){
+                if (error == nil) {
 
                     NSString *imageLinkFromServer = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                     ALSLog(ALLoggerSeverityInfo, @"GROUP_IMAGE_LINK :: %@",imageLinkFromServer);

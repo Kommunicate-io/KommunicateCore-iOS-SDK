@@ -15,7 +15,7 @@
 static NSString *const CREATED_TIME = @"createdAtTime";
 static NSString *const VALID_UPTO = @"validUpto";
 
--(NSError *)decodeAndSaveToken:(NSString *)authToken {
+- (NSError *)decodeAndSaveToken:(NSString *)authToken {
     NSError * jwtError;
     if (!authToken) {
         NSError * error = [NSError errorWithDomain:@"Applozic"
@@ -33,28 +33,32 @@ static NSString *const VALID_UPTO = @"validUpto";
         NSNumber *createdAtTime = [jwtBody objectForKey:CREATED_TIME];
         NSNumber *validUptoInMins = [jwtBody objectForKey:VALID_UPTO];
 
-        if (createdAtTime) {
+        if (createdAtTime != nil) {
             [ALUserDefaultsHandler setAuthTokenCreatedAtTime:createdAtTime];
         }
 
-        if (validUptoInMins) {
+        if (validUptoInMins != nil) {
             [ALUserDefaultsHandler setAuthTokenValidUptoInMins:validUptoInMins];
         }
     }
     return jwtError;
 }
 
--(BOOL)isAuthTokenValid {
+- (BOOL)isAuthTokenValid {
 
     NSNumber * authTokenCreatedAtTime = [ALUserDefaultsHandler getAuthTokenCreatedAtTime];
     NSNumber * authTokenValidUptoMins = [ALUserDefaultsHandler getAuthTokenValidUptoMins];
 
     NSTimeInterval timeInSeconds = [[NSDate date] timeIntervalSince1970] * 1000;
 
-    return authTokenCreatedAtTime > 0 && authTokenValidUptoMins > 0 && (timeInSeconds - authTokenCreatedAtTime.doubleValue) / 60000 < authTokenValidUptoMins.doubleValue;
+    BOOL hasValidAuthTokenTime = authTokenCreatedAtTime != nil && authTokenCreatedAtTime.integerValue > 0;
+
+    BOOL hasValidUptoTokenTime = authTokenValidUptoMins != nil && authTokenValidUptoMins.integerValue > 0;
+
+    return hasValidAuthTokenTime && hasValidUptoTokenTime && (timeInSeconds - authTokenCreatedAtTime.doubleValue) / 60000 < authTokenValidUptoMins.doubleValue;
 }
 
--(void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion {
+- (void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion {
     if([self isAuthTokenValid]) {
         completion(nil);
         return;
@@ -70,7 +74,7 @@ static NSString *const VALID_UPTO = @"validUpto";
     }
 }
 
--(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
+- (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
 
     ALAuthClientService * authClientService = [[ALAuthClientService alloc] init];
     [authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {

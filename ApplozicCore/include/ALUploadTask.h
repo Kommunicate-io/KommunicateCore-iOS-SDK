@@ -11,14 +11,14 @@
 
 @interface ALUploadTask : NSObject
 
-@property (nonatomic, copy) NSString * filePath;
+@property (nonatomic, copy) NSString *filePath;
 
-@property (nonatomic, copy) NSString * fileName;
+@property (nonatomic, copy) NSString *fileName;
 
-@property (nonatomic, copy) NSString * identifier;
+@property (nonatomic, copy) NSString *identifier;
 
-@property (nonatomic, strong) ALMessage * message;
+@property (nonatomic, strong) ALMessage *message;
 
-@property (nonatomic, strong) NSString * videoThumbnailName;
+@property (nonatomic, strong) NSString *videoThumbnailName;
 
 @end

@@ -10,20 +10,17 @@
 #import <ApplozicCore/ApplozicCore.h>
 #import "ALUIUtilityClass.h"
 
-@interface ALAudioAttachmentViewController ()
-{
-    AVAudioRecorder * recorder;
-    AVAudioPlayer * player;
+@interface ALAudioAttachmentViewController () {
+    AVAudioRecorder *recorder;
+    AVAudioPlayer *player;
 }
 @end
 
-@implementation ALAudioAttachmentViewController
-{
-    AVAudioSession * session;
+@implementation ALAudioAttachmentViewController {
+    AVAudioSession *session;
 }
 
--(void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     [self.pauseButton setEnabled:NO];
@@ -32,18 +29,18 @@
     [self.sendButton setEnabled:NO];
     
     // Set the audio file
-    NSString * fileName = [NSString stringWithFormat:@"AUD-%f.m4a",[[NSDate date] timeIntervalSince1970] * 1000];
-    NSArray * pathComponents = [NSArray arrayWithObjects:
+    NSString *fileName = [NSString stringWithFormat:@"AUD-%f.m4a",[[NSDate date] timeIntervalSince1970] *1000];
+    NSArray *pathComponents = [NSArray arrayWithObjects:
                                [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],
                                fileName, nil];
     
-    NSURL * outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
+    NSURL *outputFileURL = [NSURL fileURLWithPathComponents:pathComponents];
     
     // Setup audio session
     session = [AVAudioSession sharedInstance];
     [session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker error:nil];
     
-    NSMutableDictionary * recordSetting = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *recordSetting = [[NSMutableDictionary alloc] init];
     
     [recordSetting setValue:[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
     [recordSetting setValue:[NSNumber numberWithFloat:44100.0] forKey:AVSampleRateKey];
@@ -56,59 +53,48 @@
     
 }
 
--(void)navigationBarColor
-{
-    if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
-    {
+- (void)navigationBarColor {
+    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)pauseButtonAction:(id)sender
-{
+- (IBAction)pauseButtonAction:(id)sender {
     [player pause];
 }
 
--(IBAction)playButtonAction:(id)sender
-{
-    if (!recorder.recording)
-    {
+- (IBAction)playButtonAction:(id)sender {
+    if (!recorder.recording) {
         player = [[AVAudioPlayer alloc] initWithContentsOfURL:recorder.url error:nil];
         [player setDelegate:self];
         [player play];
     }
 }
 
--(IBAction)stopButtonAction:(id)sender
-{
+- (IBAction)stopButtonAction:(id)sender {
     [self stopAction];
 }
 
--(void)actionWhenAppInBackground
-{
-    if([recorder isRecording])
-    {
+- (void)actionWhenAppInBackground {
+    if ([recorder isRecording]) {
         [self stopAction];
         [self alertDialog:@"Recording stopped"];
     }
-    if([player isPlaying])
-    {
+    if ([player isPlaying]) {
         [player stop];
         [self alertDialog:@"Player stopped"];
     }
     
 }
 
--(void)stopAction
-{
+- (void)stopAction {
     [recorder stop];
     [self.timer invalidate];
     [session setActive:NO error:nil];
@@ -116,22 +102,18 @@
     [self.recordButton setEnabled:NO];
 }
 
--(IBAction)sendButtonAction:(id)sender
-{
-    NSString * path = [recorder.url path];
+- (IBAction)sendButtonAction:(id)sender {
+    NSString *path = [recorder.url path];
     [self.audioAttchmentDelegate audioAttachment: path];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)recordAction:(id)sender
-{
-    if (player.playing)
-    {
+- (IBAction)recordAction:(id)sender {
+    if (player.playing) {
         [player stop];
     }
     
-    if (!recorder.recording)
-    {
+    if (!recorder.recording) {
         [session setActive:YES error:nil];
         [self.recordButton setTitle:@"PAUSE RECORD" forState:UIControlStateNormal];
         
@@ -139,8 +121,7 @@
         [recorder record];
         self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(recordSessionTimer) userInfo:nil repeats:YES];
     }
-    else
-    {
+    else {
         // PAUSE RECORDING
         [recorder pause];
         [self.recordButton setTitle:@"RECORD" forState:UIControlStateNormal];
@@ -149,20 +130,17 @@
     [self subProcess];
 }
 
--(void)subProcess
-{
+- (void)subProcess {
     [self.stopButton setEnabled:YES];
     [self.playButton setEnabled:NO];
     [self.pauseButton setEnabled:NO];
 }
 
--(IBAction)cancelAction:(id)sender
-{
+- (IBAction)cancelAction:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(void)recordSessionTimer
-{
+- (void)recordSessionTimer {
     float minutes = floor(recorder.currentTime / 60);
     float seconds = recorder.currentTime - (minutes * 60);
     
@@ -170,8 +148,7 @@
     [self.mediaProgressLabel setText: time];
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     [self navigationBarColor];
@@ -188,8 +165,8 @@
     
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver: self
                                                     name: UIApplicationDidEnterBackgroundNotification
                                                   object: nil];
@@ -200,11 +177,9 @@
     
 }
 
--(void)handleAudioSessionInterruption:(NSNotification *)notification
-{
+- (void)handleAudioSessionInterruption:(NSNotification *)notification {
     AVAudioSessionInterruptionType interruptionType = [notification.userInfo[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue];
-    switch (interruptionType)
-    {
+    switch (interruptionType) {
         case AVAudioSessionInterruptionTypeBegan:
         {
             ALSLog(ALLoggerSeverityInfo, @"AUDIO_INTERRUPTION_START : RECORDING_STOPPED");
@@ -222,20 +197,19 @@
     }
 }
 
--(void)alertDialog:(NSString *)msg
-{
+- (void)alertDialog:(NSString *)msg {
     
-    UIAlertController * alert = [UIAlertController
-                                 alertControllerWithTitle:@"Message"
-                                 message:msg
-                                 preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Message"
+                                message:msg
+                                preferredStyle:UIAlertControllerStyleAlert];
     
     
-    UIAlertAction* okButtonAction = [UIAlertAction
-                                actionWithTitle:@"OK"
-                                style:UIAlertActionStyleDefault
-                                handler:^(UIAlertAction * action) {
-                                }];
+    UIAlertAction *okButtonAction = [UIAlertAction
+                                     actionWithTitle:@"OK"
+                                     style:UIAlertActionStyleDefault
+                                     handler:^(UIAlertAction *action) {
+    }];
     
     [alert addAction:okButtonAction];
     
@@ -247,29 +221,27 @@
 #pragma AUDIO DELEGATE
 //=====================================================
 
--(void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)flag
-{
+- (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)flag {
     [self.recordButton setTitle:@"RECORD" forState:UIControlStateNormal];
     [self.stopButton setEnabled:NO];
     [self.playButton setEnabled:YES];
     [self.pauseButton setEnabled:YES];
 }
 
--(void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
-{
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
 
     
-    UIAlertController * alert = [UIAlertController
-                                 alertControllerWithTitle:@"DONE"
-                                 message:@"FINISH PLAYING !!!"
-                                 preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"DONE"
+                                message:@"FINISH PLAYING !!!"
+                                preferredStyle:UIAlertControllerStyleAlert];
     
     
-    UIAlertAction* alertActionButton = [UIAlertAction
+    UIAlertAction *alertActionButton = [UIAlertAction
                                         actionWithTitle:NSLocalizedStringWithDefaultValue(@"okText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"OK" , @"")
                                         style:UIAlertActionStyleDefault
-                                        handler:^(UIAlertAction * action) {
-                                        }];
+                                        handler:^(UIAlertAction *action) {
+    }];
     
     [alert addAction:alertActionButton];
 

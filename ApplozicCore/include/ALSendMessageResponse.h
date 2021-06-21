@@ -15,12 +15,12 @@
 
 @interface ALSendMessageResponse : ALJson
 
-@property (nonatomic, copy) NSString * messageKey;
+@property (nonatomic, copy) NSString *messageKey;
 
 @property (nonatomic, copy) NSNumber *createdAt;
 
-@property (nonatomic, copy) NSNumber * conversationId;
+@property (nonatomic, copy) NSNumber *conversationId;
 
--(BOOL)isSuccess;
+- (BOOL)isSuccess;
 
 @end

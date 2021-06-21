@@ -34,7 +34,7 @@
 
 -(NSDate *)date {
     NSNumber *dateDoublevalue = self.doubleValue;
-    if (!dateDoublevalue || dateDoublevalue.doubleValue < 0) {
+    if (dateDoublevalue == nil || dateDoublevalue.doubleValue < 0) {
         return nil;
     }
 

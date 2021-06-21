@@ -12,9 +12,9 @@
 
 @interface AlChannelInfoModel : ALJson
 
-@property (nonatomic, strong)  NSDictionary * channel;
+@property (nonatomic, strong)  NSDictionary *channel;
 
-@property (nonatomic, strong) NSMutableArray * groupMemberList;
+@property (nonatomic, strong) NSMutableArray *groupMemberList;
 
 
 @end

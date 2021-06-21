@@ -40,7 +40,7 @@ extension PHAsset: AssetSource {
 }
 extension AVAsset: AssetSource {
     
-     var durationSeconds: Int {
+    var durationSeconds: Int {
         return Int(CMTimeGetSeconds(duration))
     }
     func getAVAsset(_ handler: @escaping (AVAsset?) -> Void) {
@@ -80,16 +80,16 @@ extension AVURLAsset {
         let exportVideo = { [weak self] in
             self?.exportMultipleVideos(videoAssets, range: range, exportStarted: { [weak self] in
                 self?.showProgressAlert(on: baseVC)
-                }, completion: { [weak vc = baseVC] paths in
+            }, completion: { [weak vc = baseVC] paths in
 
-                    if paths != nil {
-                        // preventing crash for short video, with the controller that would attempt to dismiss while being presented
-                        // and prevent from Optimization popup being hung because video was optimized faster than Alert VC appearance animation duration
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                            vc?.dismiss(animated: true)
-                        }
+                if paths != nil {
+                    // preventing crash for short video, with the controller that would attempt to dismiss while being presented
+                    // and prevent from Optimization popup being hung because video was optimized faster than Alert VC appearance animation duration
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                        vc?.dismiss(animated: true)
                     }
-                    completion(paths)
+                }
+                completion(paths)
             })
         }
         
@@ -126,7 +126,7 @@ extension ALVideoCoder {
             })
         }))
         var mainProgress: Progress?
-            
+
         let totalDuration = progressItems.reduce(0) { $0 + $1.durationSeconds }
         mainProgress = Progress(totalUnitCount: Int64(totalDuration * koef))
 

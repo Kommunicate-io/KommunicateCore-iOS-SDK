@@ -22,8 +22,7 @@
 @implementation ALAppLocalNotifications
 
 
-+(ALAppLocalNotifications *)appLocalNotificationHandler
-{
++ (ALAppLocalNotifications *)appLocalNotificationHandler {
     static ALAppLocalNotifications * localNotificationHandler = nil;
     static dispatch_once_t onceToken;
     
@@ -35,13 +34,12 @@
     return localNotificationHandler;
 }
 
--(void)dataConnectionNotificationHandler{
+- (void)dataConnectionNotificationHandler{
 
     [self dataConnectionHandler];
 }
 
--(void)dataConnectionHandler
-{
+- (void)dataConnectionHandler {
     [ALApplozicSettings setupSuiteAndMigrate];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:)
@@ -71,36 +69,23 @@
     
 }
 
--(void)reachabilityChanged:(NSNotification*)note
-{
+- (void)reachabilityChanged:(NSNotification*)note {
     ALReachability * reach = [note object];
     
-    if(reach == self.googleReach)
-    {
-        if([reach isReachable])
-        {
+    if (reach == self.googleReach) {
+        if ([reach isReachable]) {
             ALSLog(ALLoggerSeverityInfo, @"========== IF googleReach ============");
-        }
-        else
-        {
+        } else {
             ALSLog(ALLoggerSeverityInfo, @"========== ELSE googleReach ============");
         }
-    }
-    else if (reach == self.localWiFiReach)
-    {
-        if([reach isReachable])
-        {
+    } else if (reach == self.localWiFiReach) {
+        if ([reach isReachable]) {
             ALSLog(ALLoggerSeverityInfo, @"========== IF localWiFiReach ============");
-        }
-        else
-        {
+        } else {
             ALSLog(ALLoggerSeverityInfo, @"========== ELSE localWiFiReach ============");
         }
-    }
-    else if (reach == self.internetConnectionReach)
-    {
-        if([reach isReachable])
-        {
+    } else if (reach == self.internetConnectionReach) {
+        if ([reach isReachable]) {
             ALSLog(ALLoggerSeverityInfo, @"========== IF internetConnectionReach ============");
             [self proactivelyConnectMQTT];
             [ALMessageService syncMessages];
@@ -111,9 +96,7 @@
             ALUserService *userService = [ALUserService new];
             [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
 
-        }
-        else
-        {
+        } else {
             ALSLog(ALLoggerSeverityInfo, @"========== ELSE internetConnectionReach ============");
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NETWORK_DISCONNECTED" object:nil];
         }
@@ -121,34 +104,29 @@
     
 }
 
--(void)proactivelyConnectMQTT
-{
+- (void)proactivelyConnectMQTT {
     ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
     [alMqttConversationService subscribeToConversation];
 }
 
--(void)proactivelyDisconnectMQTT
-{
+- (void)proactivelyDisconnectMQTT {
     ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
     [alMqttConversationService unsubscribeToConversation];
 }
 
--(void)appWillEnterBackground:(NSNotification *)notification
-{
+- (void)appWillEnterBackground:(NSNotification *)notification {
     [self proactivelyDisconnectMQTT];
     [ALLogger saveLogArray];
 }
 
 //receiver
-- (void)onAppDidBecomeActive:(NSNotification *)notification
-{
+- (void)onAppDidBecomeActive:(NSNotification *)notification {
     [self proactivelyConnectMQTT];
     [ALMessageService syncMessages];
 }
 
 
--(void)dealloc
-{
+- (void)dealloc {
     ALSLog(ALLoggerSeverityInfo, @"DEALLOC METHOD CALLED");
 }
 

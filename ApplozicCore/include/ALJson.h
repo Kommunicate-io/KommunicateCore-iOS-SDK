@@ -10,24 +10,24 @@
 
 @interface ALJson : NSObject
 
--(instancetype)initWithJSONString:(NSString *)JSONString;
+- (instancetype)initWithJSONString:(NSString *)JSONString;
 
--(NSDictionary *)dictionary;
+- (NSDictionary *)dictionary;
 
--(NSString *) getStringFromJsonValue:(id) jsonValue;
+- (NSString *)getStringFromJsonValue:(id)jsonValue;
 
--(BOOL ) getBoolFromJsonValue:(id) jsonValue;
+- (BOOL )getBoolFromJsonValue:(id)jsonValue;
 
--(BOOL) validateJsonClass:(NSDictionary *) jsonClass;
+- (BOOL)validateJsonClass:(NSDictionary *)jsonClass;
 
--(BOOL) validateJsonArrayClass:(NSArray *) jsonClass;
+- (BOOL)validateJsonArrayClass:(NSArray *)jsonClass;
 
--(short)getShortFromJsonValue:(id) jsonValue;
+- (short)getShortFromJsonValue:(id)jsonValue;
 
--(NSNumber *) getNSNumberFromJsonValue:(id) jsonValue;
+- (NSNumber *)getNSNumberFromJsonValue:(id)jsonValue;
 
--(int)getIntFromJsonValue:(id) jsonValue;
+- (int)getIntFromJsonValue:(id)jsonValue;
 
--(long)getLongFromJsonValue:(id) jsonValue;
+- (long)getLongFromJsonValue:(id)jsonValue;
 
 @end

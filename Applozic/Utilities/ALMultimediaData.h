@@ -21,7 +21,7 @@ typedef enum{
 @property (nonatomic, strong) NSString * classVideoPath;                     //Stores the video path
 @property (nonatomic, strong) NSData * dataGIF;                         //Stores the GIF data
 
--(ALMultimediaData *) getMultimediaDataOfType:(ALMultimediaType)type withImage:(UIImage *) image withGif:(NSData *) gif withVideo:(NSString *) video;
+- (ALMultimediaData *)getMultimediaDataOfType:(ALMultimediaType)type withImage:(UIImage *)image withGif:(NSData *)gif withVideo:(NSString *) video;
 
 @end
  

@@ -33,9 +33,9 @@ extern NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED;
 extern NSString *const AL_MESSAGE_LIST;
 extern NSString *const AL_MESSAGE_SYNC;
 
-+(ALChannelService *)sharedInstance;
++ (ALChannelService *)sharedInstance;
 
--(void)callForChannelServiceForDBInsertion:(id)theJson;
+- (void)callForChannelServiceForDBInsertion:(id)theJson;
 
 /**
  This method is used to fetch information of channel like channel name, imageUrl of a channel, type of channel and other information.
@@ -46,7 +46,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  */
 
 
--(void)getChannelInformation:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void (^)(ALChannel *alChannel3)) completion;
+- (void)getChannelInformation:(NSNumber *)channelKey
+           orClientChannelKey:(NSString *)clientChannelKey
+               withCompletion:(void (^)(ALChannel *alChannel3)) completion;
 
 /**
  This method you can use to fetch the information of channel from local DB.
@@ -54,7 +56,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param channelKey NSNumber its channelkey or groupId that is required to get the channel information.
  @return it returns ALChannel object it has information of a channel.
  */
--(ALChannel *)getChannelByKey:(NSNumber *)channelKey;
+- (ALChannel *)getChannelByKey:(NSNumber *)channelKey;
 
 
 /**
@@ -63,7 +65,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param channelKey NSNumber its channelkey or groupId that is required to get the channel members userId.
  @return it returns NSMutableArray has users who are in the channel.
  */
--(NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)channelKey;
+- (NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)channelKey;
 
 
 /**
@@ -72,7 +74,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param key NSNumber its channelkey or groupId that is required to get the channel members name.
  @return NSString of channel members name with comma separated in a name.
  */
--(NSString *)stringFromChannelUserList:(NSNumber *)key;
+- (NSString *)stringFromChannelUserList:(NSNumber *)key;
 
 
 /**
@@ -83,7 +85,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param completion ALChannel will have information of the channel.
  */
 
--(void)getChannelInformationByResponse:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey withCompletion:(void (^)(NSError *error,ALChannel *alChannel3,AlChannelFeedResponse *channelResponse)) completion;
+- (void)getChannelInformationByResponse:(NSNumber *)channelKey
+                     orClientChannelKey:(NSString *)clientChannelKey
+                         withCompletion:(void (^)(NSError *error,ALChannel *alChannel3,AlChannelFeedResponse *channelResponse)) completion;
 
 /**
  This method is used to create a channel where it needs below details to pass while creating.
@@ -95,9 +99,11 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param completion if an error is a nil then the group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
  */
 
--(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey
-      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink
-      withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+- (void)createChannel:(NSString *)channelName
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
 
 /**
@@ -116,8 +122,13 @@ extern NSString *const AL_MESSAGE_SYNC;
 
  @param completion if error is nil then group is created successfully it has ALChannel infomration of channel else some error while creating if error is not nil.
  */
--(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink channelType:(short)type andMetaData:(NSMutableDictionary *)metaData
-      withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+- (void)createChannel:(NSString *)channelName
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
 
 /**
@@ -137,9 +148,14 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param metaData extra information you can pass in metadata if you required some other place.
  @param completion if an error is a nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
  */
--(void)createChannel:(NSString *)channelName andParentChannelKey:(NSNumber *)parentChannelKey orClientChannelKey:(NSString *)clientChannelKey
-      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink channelType:(short)type
-         andMetaData:(NSMutableDictionary *)metaData withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+- (void)createChannel:(NSString *)channelName
+  andParentChannelKey:(NSNumber *)parentChannelKey
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
 
 /**
@@ -158,9 +174,14 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param adminUserId if you want to make any member as admin while creating then you can pass userId of that member.
  @param completion if an error is nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
  */
--(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey
-      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink channelType:(short)type
-         andMetaData:(NSMutableDictionary *)metaData adminUser:(NSString *)adminUserId withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+- (void)createChannel:(NSString *)channelName
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+            adminUser:(NSString *)adminUserId
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
 
 /**
@@ -179,9 +200,15 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param adminUserId if you want to make any member as admin while creating then you can pass userId of that member.
  @param completion if an error is a nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
  */
--(void)createChannel:(NSString *)channelName andParentChannelKey:(NSNumber *)parentChannelKey orClientChannelKey:(NSString *)clientChannelKey
-      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink channelType:(short)type
-         andMetaData:(NSMutableDictionary *)metaData  adminUser:(NSString *)adminUserId withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+- (void)createChannel:(NSString *)channelName
+  andParentChannelKey:(NSNumber *)parentChannelKey
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+            adminUser:(NSString *)adminUserId
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
 
 /**
@@ -192,8 +219,10 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param clientChannelKey or if you have your own clientChannelKey then pass this to add a member in a channel.
  @param completion it has error and ALAPIResponse where you can check if an error is not nil else in ALAPIResponse there is the status to check if its success or failed
  */
--(void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
-           withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+- (void)addMemberToChannel:(NSString *)userId
+             andChannelKey:(NSNumber *)channelKey
+        orClientChannelKey:(NSString *)clientChannelKey
+            withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 
 /**
@@ -204,8 +233,10 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param clientChannelKey  or if you have your own clientChannelKey then pass this to add a member in a channel.
  @param completion it has error and ALAPIResponse where you can check if an error is not nil else in ALAPIResponse there is the status to check if its success or failure.
  */
--(void)removeMemberFromChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
-                withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+- (void)removeMemberFromChannel:(NSString *)userId
+                  andChannelKey:(NSNumber *)channelKey
+             orClientChannelKey:(NSString *)clientChannelKey
+                 withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 
 /**
@@ -215,10 +246,11 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param clientChannelKey or if you have your own clientChannelKey then pass it for deleting a channel.
  @param completion it has error and ALAPIResponse where you can check if an error is not nil else in ALAPIResponse there is the status to check if its success or failure.
  */
--(void)deleteChannel:(NSNumber *)channelKey orClientChannelKey:(NSString *)clientChannelKey
-      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+- (void)deleteChannel:(NSNumber *)channelKey
+   orClientChannelKey:(NSString *)clientChannelKey
+       withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
--(BOOL)checkAdmin:(NSNumber *)channelKey;
+- (BOOL)checkAdmin:(NSNumber *)channelKey;
 
 
 
@@ -232,8 +264,10 @@ extern NSString *const AL_MESSAGE_SYNC;
  */
 
 
--(void)leaveChannel:(NSNumber *)channelKey andUserId:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey
-     withCompletion:(void(^)(NSError *error))completion;
+- (void)leaveChannel:(NSNumber *)channelKey
+           andUserId:(NSString *)userId
+  orClientChannelKey:(NSString *)clientChannelKey
+      withCompletion:(void(^)(NSError *error))completion;
 
 /**
  This method is used to add multiple members in multiple channels
@@ -242,12 +276,14 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param channelUsers NSMutableArray pass userIds you  want to add in channels or channel
  @param completion it has error
  */
--(void)addMultipleUsersToChannel:(NSMutableArray* )channelKeys channelUsers:(NSMutableArray *)channelUsers andCompletion:(void(^)(NSError * error))completion;
+- (void)addMultipleUsersToChannel:(NSMutableArray *)channelKeys
+                     channelUsers:(NSMutableArray *)channelUsers
+                    andCompletion:(void(^)(NSError *error))completion;
 
 /**
  This is internal method for sync channel from server
  */
--(void)syncCallForChannel;
+- (void)syncCallForChannel;
 
 
 /**
@@ -272,8 +308,15 @@ extern NSString *const AL_MESSAGE_SYNC;
  */
 
 
--(void)updateChannel:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
-  isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData orChildKeys:(NSMutableArray *)childKeysList orChannelUsers:(NSMutableArray *)channelUsers withCompletion:(void(^)(NSError *error))completion;
+- (void)updateChannel:(NSNumber *)channelKey
+           andNewName:(NSString *)newName
+          andImageURL:(NSString *)imageURL
+   orClientChannelKey:(NSString *)clientChannelKey
+   isUpdatingMetaData:(BOOL)flag
+             metadata:(NSMutableDictionary *)metaData
+          orChildKeys:(NSMutableArray *)childKeysList
+       orChannelUsers:(NSMutableArray *)channelUsers
+       withCompletion:(void(^)(NSError *error))completion;
 
 /**
  This method is used to update channel metadata
@@ -284,10 +327,10 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param completion it has an error where you can check if an error is not nil if it's updated successfully
 
  */
--(void)updateChannelMetaData:(NSNumber *)channelKey
-          orClientChannelKey:(NSString *)clientChannelKey
-                    metadata:(NSMutableDictionary *)metaData
-              withCompletion:(void(^)(NSError *error))completion;
+- (void)updateChannelMetaData:(NSNumber *)channelKey
+           orClientChannelKey:(NSString *)clientChannelKey
+                     metadata:(NSMutableDictionary *)metaData
+               withCompletion:(void(^)(NSError *error))completion;
 
 /**
  This method is used to mark the conversation as read in channel
@@ -296,7 +339,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param completion it has a response and error if an error is nil then Conversation is marked successfully
  */
 
--(void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
 /**
  This method is used to check if the logged in user is left from a channel or not. It will return YES or NO.
@@ -306,7 +349,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @return it will return YES OR NO if the login member is channel or not
 
  */
--(BOOL)isChannelLeft:(NSNumber*)groupID;
+- (BOOL)isChannelLeft:(NSNumber *)groupID;
 
 /**
  This method is used to check if the channel is deleted or not.
@@ -314,7 +357,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param groupId pass the channel key you can get it from  channel.key.
  @return it will return YES OR NO if the channel is deleted or not.
  */
-+(BOOL)isChannelDeleted:(NSNumber *)groupId;
++ (BOOL)isChannelDeleted:(NSNumber *)groupId;
 
 /**
  This method is used to check a channel is closed or not.
@@ -322,7 +365,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param groupId pass the channel key you can get it from  channel.key.
  @return it will return YES OR NO if the conversation Closed in a channel.
  */
-+(BOOL)isConversationClosed:(NSNumber *)groupId;
++ (BOOL)isConversationClosed:(NSNumber *)groupId;
 
 /**
  This method is used to close the channel conversation.
@@ -330,7 +373,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param groupId  pass the channel key you can get it from  channel.key.
  @param completion if error is nil then the  channel is closed.
  */
-+(void)closeGroupConverstion :(NSNumber *) groupId  withCompletion:(void(^)(NSError *error))completion ;
++ (void)closeGroupConverstion:(NSNumber *)groupId withCompletion:(void(^)(NSError *error))completion ;
 
 /**
  This method is used to check if the channel is muted or not.
@@ -338,19 +381,19 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param groupId pass the channel key you can get it from  channel.key.
  @return it will return YES OR NO if the channel is muted or not.
  */
-+(BOOL)isChannelMuted:(NSNumber *)groupId;
++ (BOOL)isChannelMuted:(NSNumber *)groupId;
 
 /**
  This method is internal, used to set channel unread cout to zero
  */
-+(void)setUnreadCountZeroForGroupID:(NSNumber*)channelKey;
++ (void)setUnreadCountZeroForGroupID:(NSNumber *)channelKey;
 
 /**
  This method is used to fetch the total unread count of channels
 
  @return NSNumber the  total unread count of channel
  */
--(NSNumber *)getOverallUnreadCountForChannel;
+- (NSNumber *)getOverallUnreadCountForChannel;
 
 /**
  This method is used to fetch the channel information by channelClientKey.
@@ -358,7 +401,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param clientChannelKey  pass the channel key you can get it from  channel.key.
  @return It wil return the channel information ALChannel object.
  */
--(ALChannel *)fetchChannelWithClientChannelKey:(NSString *)clientChannelKey;
+- (ALChannel *)fetchChannelWithClientChannelKey:(NSString *)clientChannelKey;
 
 /**
  This method is used to check if the logged in user is in channel or not
@@ -366,14 +409,14 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param channelKey pass the channel key you can get it from  channel.key.
  @return it will return YES OR NO if the user is in a channel or not.
  */
--(BOOL)isLoginUserInChannel:(NSNumber *)channelKey;
+- (BOOL)isLoginUserInChannel:(NSNumber *)channelKey;
 
 /**
  This method is used to get all channels for logged in user from local DB
 
  @return it will return the NSMutableArray of AlChannel object.
  */
--(NSMutableArray *)getAllChannelList;
+- (NSMutableArray *)getAllChannelList;
 
 /**
  This method is used to fetch the child channels under the parent key
@@ -381,12 +424,12 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param parentGroupKey Pass parent channelKey to get the channels
  @return it will return the NSMutableArray of AlChannel object.
  */
--(NSMutableArray *)fetchChildChannelsWithParentKey:(NSNumber *)parentGroupKey;
+- (NSMutableArray *)fetchChildChannelsWithParentKey:(NSNumber *)parentGroupKey;
 
 /**
  This method is used for internal purpose.
  */
--(void)processChildGroups:(ALChannel *)alChannel;
+- (void)processChildGroups:(ALChannel *)alChannel;
 
 /**
  This method is used to add child keys to the parent key
@@ -395,8 +438,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param parentKey Pass the parent channelKey
  @param completion if error is nil then its added successfully.
  */
--(void)addChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey
-        withCompletion:(void(^)(id json, NSError *error))completion;
+- (void)addChildKeyList:(NSMutableArray *)childKeyList
+           andParentKey:(NSNumber *)parentKey
+         withCompletion:(void(^)(id json, NSError *error))completion;
 
 /**
  This method is used to remove the child keys from parent channelKey where it was added to the parent
@@ -406,8 +450,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param parentKey Pass the parent channelKey.
  @param completion if error is nil then its removed successfully.
  */
--(void)removeChildKeyList:(NSMutableArray *)childKeyList andParentKey:(NSNumber *)parentKey
-           withCompletion:(void(^)(id json, NSError *error))completion;
+- (void)removeChildKeyList:(NSMutableArray *)childKeyList
+              andParentKey:(NSNumber *)parentKey
+            withCompletion:(void(^)(id json, NSError *error))completion;
 
 
 /**
@@ -418,8 +463,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param completion if an error is nil then its added successfully.
  */
 
--(void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList andParentKey:(NSString *)clientParentKey
-              withCompletion:(void(^)(id json, NSError *error))completion;
+- (void)addClientChildKeyList:(NSMutableArray *)clientChildKeyList
+                 andParentKey:(NSString *)clientParentKey
+               withCompletion:(void(^)(id json, NSError *error))completion;
 
 
 /**
@@ -430,8 +476,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param completion  if an error is nil then its removed successfully.
  */
 
--(void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList andParentKey:(NSString *)clientParentKey
-                 withCompletion:(void(^)(id json, NSError *error))completion;
+- (void)removeClientChildKeyList:(NSMutableArray *)clientChildKeyList
+                    andParentKey:(NSString *)clientParentKey
+                  withCompletion:(void(^)(id json, NSError *error))completion;
 
 
 /**
@@ -447,7 +494,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  */
 
 
--(void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError *error))completion;
+- (void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError *error))completion;
 
 /**
  This method is used to create a broadcast channel.
@@ -456,11 +503,11 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param metaData You can pass extra information in a channel where you can access it later from channel.metaData from the channel object.
  @param completion if an error is nil, Then the channel is created successfully else some error in creating a channel.
  */
--(void)createBroadcastChannelWithMembersList:(NSMutableArray *)memberArray
-                                 andMetaData:(NSMutableDictionary *)metaData
-                              withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+- (void)createBroadcastChannelWithMembersList:(NSMutableArray *)memberArray
+                                  andMetaData:(NSMutableDictionary *)metaData
+                               withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
--(ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey;
+- (ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey;
 
 /**
  This method is used to fetch channel information from channelKeys array or clientChannelKey array
@@ -469,9 +516,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param clientChannelIds  or if you have list of  clientChannelKey then pass to get channel information.
  @param completion if error is nil and channelInfoList count is > 0 then you have channels information in NSMutableArray its type is ALChannel object.
  */
--(void)getChannelInfoByIdsOrClientIds:(NSMutableArray*)channelIds
-                   orClinetChannelIds:(NSMutableArray*) clientChannelIds
-                       withCompletion:(void(^)(NSMutableArray* channelInfoList, NSError *error))completion;
+- (void)getChannelInfoByIdsOrClientIds:(NSMutableArray *)channelIds
+                    orClinetChannelIds:(NSMutableArray *)clientChannelIds
+                        withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
 /**
  This method is used to fetch the list of channel information by Category
@@ -480,8 +527,8 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param completion if an error is a nil and the channelInfoList count is > 0 then you have channels information in NSMutableArray its type is ALChannel object.
 
  */
--(void)getChannelListForCategory:(NSString*)category
-                  withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion;
+- (void)getChannelListForCategory:(NSString *)category
+                   withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
 
 /**
@@ -490,7 +537,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param endTime pass end to to fetch next set of channels
  @param completion if error is nil and channelInfoList count is >0 then it has channel object in array
  */
--(void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray * channelInfoList, NSError * error))completion;
+- (void)getAllChannelsForApplications:(NSNumber*)endTime withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion;
 
 
 /**
@@ -502,7 +549,10 @@ extern NSString *const AL_MESSAGE_SYNC;
 
  @param completion if error is nil and ALAPIResponse has status if its  success  then member is added in contacts group
  */
-+(void) addMemberToContactGroupOfType:(NSString*) contactsGroupId withMembers: (NSMutableArray *)membersArray withGroupType :(short) groupType withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion;
++ (void) addMemberToContactGroupOfType:(NSString *)contactsGroupId
+                           withMembers:(NSMutableArray *)membersArray
+                        withGroupType :(short)groupType
+                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /**
 
@@ -512,7 +562,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param membersArray pass members userId that you want to add
  @param completion if error is nil and ALAPIResponse has status if its  success  then member is added in contacts group
  */
-+(void) addMemberToContactGroup:(NSString*) contactsGroupId withMembers:(NSMutableArray *)membersArray  withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion;
++ (void) addMemberToContactGroup:(NSString *)contactsGroupId
+                     withMembers:(NSMutableArray *)membersArray
+                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /**
  This method is used to get the members from contacts group with the type where it will have members id who are in this contacts group
@@ -521,13 +573,15 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param groupType pass  type as 9 for contacts group
  @param completion if error is nil and ALAPIResponse has status if its  success  then you will get members userId who are in contacts group
  */
-+(void) getMembersFromContactGroupOfType:(NSString *)contactGroupId  withGroupType :(short) groupType withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
++ (void) getMembersFromContactGroupOfType:(NSString *)contactGroupId
+                            withGroupType:(short)groupType
+                           withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
 
 /**
  This method is for internal purpose to get the members by channel name
  */
 
--(NSMutableArray *)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName;
+- (NSMutableArray *)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName;
 
 /**
  This method is used to remove a member from the contacts group.
@@ -536,7 +590,9 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param userId of the user you want to remove the member from the contacts group.
  @param completion  if error is nil and ALAPIResponse has status if its  success  then member is removed from  contacts group.
  */
-+(void) removeMemberFromContactGroup:(NSString*) contactsGroupId withUserId :(NSString*) userId  withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion;
++ (void) removeMemberFromContactGroup:(NSString *)contactsGroupId
+                          withUserId :(NSString *)userId
+                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /**
  This method is used to remove a member from contacts group with type
@@ -546,7 +602,10 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param userId for the user you want to remove from contacts group.
  @param completion  if error is nil and ALAPIResponse has status if its  success  then member is removed from  contacts group.
  */
-+(void) removeMemberFromContactGroupOfType:(NSString*) contactsGroupId  withGroupType:(short) groupType withUserId :(NSString*) userId  withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion;
++ (void) removeMemberFromContactGroupOfType:(NSString *)contactsGroupId
+                              withGroupType:(short) groupType
+                                withUserId :(NSString *)userId
+                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
 /**
  This method is used to get the members from multiple contacts groups
@@ -554,7 +613,7 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param contactGroupIds pass contactGroupIds to get the member userIds.
  @param completion  if error is nil and ALAPIResponse has status if status is succes then you will get the list of members userId
  */
-+(void)getMembersIdsForContactGroups:(NSArray*)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *membersArray)) completion;
++ (void)getMembersIdsForContactGroups:(NSArray *)contactGroupIds withCompletion:(void(^)(NSError *error, NSArray *membersArray)) completion;
 
 
 /**
@@ -576,9 +635,15 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param completion if an error is a nil then a group is created successfully it has ALChannel information of channel else some error while creating if an error is not nil.
  */
 
--(void)createChannel:(NSString *)channelName orClientChannelKey:(NSString *)clientChannelKey
-      andMembersList:(NSMutableArray *)memberArray andImageLink:(NSString *)imageLink channelType:(short)type
-         andMetaData:(NSMutableDictionary *)metaData adminUser:(NSString *)adminUserId withGroupUsers : (NSMutableArray*) groupRoleUsers withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
+- (void)createChannel:(NSString *)channelName
+   orClientChannelKey:(NSString *)clientChannelKey
+       andMembersList:(NSMutableArray *)memberArray
+         andImageLink:(NSString *)imageLink
+          channelType:(short)type
+          andMetaData:(NSMutableDictionary *)metaData
+            adminUser:(NSString *)adminUserId
+       withGroupUsers:(NSMutableArray *)groupRoleUsers
+       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion;
 
 /**
  Returns a dictionary containing required key value pairs to turn off the notifications
@@ -600,8 +665,10 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param clientChannelKey it's your clientChannelKey where you can pass while updating
  @param completion it has error and ALAPIResponse where you can check if an error is not nil else in ALAPIResponse there is the status to check if its success or failed
  */
--(void)leaveChannelWithChannelKey:(NSNumber *)channelKey andUserId:(NSString *)userId orClientChannelKey:(NSString *)clientChannelKey
-                   withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+- (void)leaveChannelWithChannelKey:(NSNumber *)channelKey
+                         andUserId:(NSString *)userId
+                orClientChannelKey:(NSString *)clientChannelKey
+                    withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 /**
  This method is used to update channel information like name, imageUrl etc
@@ -624,8 +691,15 @@ extern NSString *const AL_MESSAGE_SYNC;
 
  @param completion it has error and ALAPIResponse where you can check if error is not nil else in ALAPIResponse there is status to check if its success or failed
  */
--(void)updateChannelWithChannelKey:(NSNumber *)channelKey andNewName:(NSString *)newName andImageURL:(NSString *)imageURL orClientChannelKey:(NSString *)clientChannelKey
-                isUpdatingMetaData:(BOOL)flag metadata:(NSMutableDictionary *)metaData orChildKeys:(NSMutableArray *)childKeysList orChannelUsers:(NSMutableArray *)channelUsers withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
+- (void)updateChannelWithChannelKey:(NSNumber *)channelKey
+                         andNewName:(NSString *)newName
+                        andImageURL:(NSString *)imageURL
+                 orClientChannelKey:(NSString *)clientChannelKey
+                 isUpdatingMetaData:(BOOL)flag
+                           metadata:(NSMutableDictionary *)metaData
+                        orChildKeys:(NSMutableArray *)childKeysList
+                     orChannelUsers:(NSMutableArray *)channelUsers
+                     withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion;
 
 
 /**
@@ -633,7 +707,7 @@ extern NSString *const AL_MESSAGE_SYNC;
 
  @param delegate For real time updates  callback will be triggered for channel update
  */
--(void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+- (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 /**
  This method will update unread count to zero for channel once the conversation notification is received
@@ -642,17 +716,17 @@ extern NSString *const AL_MESSAGE_SYNC;
  @param delegate  is used for updating the callback for real time updates
  */
 
--(void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate: (id<ApplozicUpdatesDelegate>)delegate;
+- (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 
--(void)createChannelWithChannelInfo:(ALChannelInfo*)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
+- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
 
--(void)createChannelEntry:(ALChannel*)channel fromMessageList:(BOOL) isFromMessageList;
+- (void)createChannelEntry:(ALChannel*)channel fromMessageList:(BOOL)isFromMessageList;
 
-- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*) channelFeedsList calledFromMessageList:(BOOL)isFromMessageList;
+- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*)channelFeedsList calledFromMessageList:(BOOL)isFromMessageList;
 
--(void)updateMuteAfterTime:(NSNumber*)notificationAfterTime
-              andChnnelKey:(NSNumber*)channelKey;
+- (void)updateMuteAfterTime:(NSNumber*)notificationAfterTime
+               andChnnelKey:(NSNumber*)channelKey;
 
--(void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError * error))completion;
+- (void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError * error))completion;
 @end

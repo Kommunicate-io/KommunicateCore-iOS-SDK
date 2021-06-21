@@ -25,12 +25,11 @@
 @property (nonatomic) BOOL created;
 @property (nonatomic) BOOL closed;
 
-
--(void)parseMessage:(id) messageJson;
--(id)initWithDictonary:(NSDictionary *)messageDictonary;
--(ALTopicDetail *)getTopicDetail;
-+(NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy;
--(void)setSenderSMSFormat:(NSString*)senderFormatString;
--(void)setReceiverSMSFormat:(NSString*)recieverFormatString;
+- (void)parseMessage:(id)messageJson;
+- (id)initWithDictonary:(NSDictionary *)messageDictonary;
+- (ALTopicDetail *)getTopicDetail;
++ (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy;
+- (void)setSenderSMSFormat:(NSString *)senderFormatString;
+- (void)setReceiverSMSFormat:(NSString *)recieverFormatString;
 
 @end

@@ -10,7 +10,7 @@
 
 @implementation ALChannelOfTwoMetaData
 
--(NSMutableDictionary *)toDict:(ALChannelOfTwoMetaData *) metadata{
+- (NSMutableDictionary *)toDict:(ALChannelOfTwoMetaData *)metadata {
     NSMutableDictionary *metaData = [NSMutableDictionary new];
     [metaData setObject:metadata.title forKey:@"title"];
     [metaData setObject:metadata.price forKey:@"price"];

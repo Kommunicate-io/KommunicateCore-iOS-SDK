@@ -10,10 +10,10 @@
 
 @interface ALConnectionQueueHandler : NSObject
 
-@property (nonatomic,retain) NSMutableArray * mConnectionsArray;
+@property (nonatomic,retain) NSMutableArray *mConnectionsArray;
 
-+(ALConnectionQueueHandler *) sharedConnectionQueueHandler;
++ (ALConnectionQueueHandler *)sharedConnectionQueueHandler;
 
--(NSMutableArray *) getCurrentConnectionQueue;
+- (NSMutableArray *)getCurrentConnectionQueue;
 
 @end

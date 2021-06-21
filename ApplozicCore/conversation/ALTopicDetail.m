@@ -10,14 +10,12 @@
 
 @implementation ALTopicDetail
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary
-{
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];
     return self;
 }
 
--(void)parseMessage:(id) messageJson
-{
+- (void)parseMessage:(id) messageJson {
     self.title = [self getStringFromJsonValue:messageJson[@"title"]];
     self.subtitle = [self getStringFromJsonValue:messageJson[@"subtitle"]];
     self.pId = [self getStringFromJsonValue:messageJson[@"PID"]];
@@ -28,6 +26,4 @@
     self.value2 = [self getStringFromJsonValue:messageJson[@"value2"]];
 
 }
-
-
 @end

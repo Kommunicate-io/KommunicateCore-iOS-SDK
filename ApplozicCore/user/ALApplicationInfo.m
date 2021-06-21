@@ -14,30 +14,26 @@
 @implementation ALApplicationInfo
 
 
--(BOOL)isChatSuspended
-{
+- (BOOL)isChatSuspended {
     BOOL debugflag = [ALUtilityClass isThisDebugBuild];
 
-    if(debugflag)
-    {
+    if (debugflag) {
         return NO;
     }
     if([ALUserDefaultsHandler getUserPricingPackage] == AL_CLOSED
        || [ALUserDefaultsHandler getUserPricingPackage] == AL_BETA
-       || [ALUserDefaultsHandler getUserPricingPackage] == AL_SUSPENDED)
-    {
+       || [ALUserDefaultsHandler getUserPricingPackage] == AL_SUSPENDED) {
         return YES;
     }
     return NO;
 }
 
--(BOOL)showPoweredByMessage
-{
+- (BOOL)showPoweredByMessage {
     BOOL debugflag = [ALUtilityClass isThisDebugBuild];
-    if(debugflag) {
+    if (debugflag) {
         return NO;
     }
-    if([ALUserDefaultsHandler getUserPricingPackage] == AL_STARTER) {
+    if ([ALUserDefaultsHandler getUserPricingPackage] == AL_STARTER) {
         return YES;
     }
     return NO;

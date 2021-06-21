@@ -9,49 +9,45 @@
 #import <Foundation/Foundation.h>
 #import <ApplozicCore/ApplozicCore.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface ALUIUtilityClass : NSObject
 
-+(UIImage *)getImageFromFramworkBundle:(NSString *) UIImageName;
-+(UIImage *)getVOIPMessageImage:(ALMessage *)alMessage;
-+(void) downloadImageUrlAndSet: (NSString *) blobKey
-                     imageView:(UIImageView *) imageView
-                  defaultImage:(NSString *) defaultImage;
++ (UIImage *)getImageFromFramworkBundle:(NSString *) UIImageName;
++ (UIImage *)getVOIPMessageImage:(ALMessage *)alMessage;
++ (void) downloadImageUrlAndSet: (NSString *)blobKey
+                     imageView:(UIImageView *)imageView
+                  defaultImage:(NSString *)defaultImage;
 
 
-+(UIAlertController *)displayLoadingAlertControllerWithText:(NSString *)loadingText;
++ (UIAlertController *)displayLoadingAlertControllerWithText:(NSString *)loadingText;
 
-+(void)dismissAlertController:(UIAlertController *)alertController
++ (void)dismissAlertController:(UIAlertController *)alertController
                withCompletion:(void (^)(BOOL dismissed)) completion;
-+(void)movementAnimation:(UIButton *)button andHide:(BOOL)flag;
++ (void)movementAnimation:(UIButton *)button andHide:(BOOL)flag;
 
-+(void)displayToastWithMessage:(NSString *)toastMessage;
++ (void)displayToastWithMessage:(NSString *)toastMessage;
 
-+(UIView *)setStatusBarStyle;
++ (UIView *)setStatusBarStyle;
 
-+(UIImage *)getNormalizedImage:(UIImage *)rawImage;
++ (UIImage *)getNormalizedImage:(UIImage *)rawImage;
 
-+(id)parsedALChatCostomizationPlistForKey:(NSString *)key;
++ (id)parsedALChatCostomizationPlistForKey:(NSString *)key;
 
-+(void)showAlertMessage:(NSString *)text andTitle:(NSString *)title;
++ (void)showAlertMessage:(NSString *)text andTitle:(NSString *)title;
 
-+(UIImage *)getImageFromFilePath:(NSString *)filePath;
++ (UIImage *)getImageFromFilePath:(NSString *)filePath;
 
-+(UIColor*)colorWithHexString:(NSString*)hex;
++ (UIColor*)colorWithHexString:(NSString*)hex;
 
-+(UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
++ (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
 
-+(UIImage *)subProcessThumbnail:(NSURL *)url;
++ (UIImage *)subProcessThumbnail:(NSURL *)url;
 
-+(void)subVideoImage:(NSURL *)url withCompletion:(void (^)(UIImage *image)) completion;
++ (void)subVideoImage:(NSURL *)url withCompletion:(void (^)(UIImage *image)) completion;
 
-+(void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController;
-+(void)setAlertControllerFrame:(UIAlertController *)alertController andViewController:(UIViewController *)viewController;
-+(NSString *)getNameAlphabets:(NSString *)actualName;
++ (void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController;
++ (void)setAlertControllerFrame:(UIAlertController *)alertController andViewController:(UIViewController *)viewController;
++ (NSString *)getNameAlphabets:(NSString *)actualName;
 
-+(void)openApplicationSettings;
++ (void)openApplicationSettings;
 
 @end
-
-NS_ASSUME_NONNULL_END

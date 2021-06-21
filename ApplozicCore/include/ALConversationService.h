@@ -11,18 +11,17 @@
 
 @interface ALConversationService : NSObject
 
--(ALConversationProxy *)getConversationByKey:(NSNumber *)conversationKey;
+- (ALConversationProxy *)getConversationByKey:(NSNumber *)conversationKey;
 
--(void)addConversations:(NSMutableArray *)conversations;
+- (void)addConversations:(NSMutableArray *)conversations;
 
--(ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *) dbConversation;
+- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation;
 
+- (NSMutableArray*)getConversationProxyListForUserID:(NSString *)userId;
+- (NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber *)channelKey;
 
--(NSMutableArray*)getConversationProxyListForUserID:(NSString*)userId;
--(NSMutableArray*)getConversationProxyListForChannelKey:(NSNumber*)channelKey;
+- (void)createConversation:(ALConversationProxy *)alConversationProxy withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
 
--(void)createConversation:(ALConversationProxy *)alConversationProxy withCompletion:(void(^)(NSError *error,ALConversationProxy * proxy ))completion;
-
--(void)fetchTopicDetails:(NSNumber *)alConversationProxyID withCompletion:(void(^)(NSError *error,ALConversationProxy * proxy))completion;
+- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion;
 
 @end

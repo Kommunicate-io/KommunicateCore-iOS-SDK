@@ -9,10 +9,10 @@
 #import "ALJson.h"
 
 @interface ALMuteRequest : ALJson
-  
+
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic, strong) NSNumber *id;		    //Group unique identifier
-@property (nonatomic, strong) NSString * clientGroupId;		//	Client Group unique identifier
-@property (nonatomic, strong) NSNumber* notificationAfterTime; //Time Interval for which notification has be be disabled
+@property (nonatomic, strong) NSString *clientGroupId;		//	Client Group unique identifier
+@property (nonatomic, strong) NSNumber *notificationAfterTime; //Time Interval for which notification has be be disabled
 
 @end

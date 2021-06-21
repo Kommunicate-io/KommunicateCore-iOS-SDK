@@ -12,5 +12,5 @@
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *price;
 @property (nonatomic, strong) NSString *link;
--(NSMutableDictionary *)toDict:(ALChannelOfTwoMetaData *) metadata;
+- (NSMutableDictionary *)toDict:(ALChannelOfTwoMetaData *)metadata;
 @end

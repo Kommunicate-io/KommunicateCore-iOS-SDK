@@ -13,9 +13,9 @@ static NSString *const AL_RESPONSE_SUCCESS = @"success";
 
 @interface ALAPIResponse : ALJson
 
-@property (nonatomic, strong) NSString * status;
-@property (nonatomic, strong) NSNumber * generatedAt;
+@property (nonatomic, strong) NSString *status;
+@property (nonatomic, strong) NSNumber *generatedAt;
 @property (nonatomic, strong) id response;
-@property (nonatomic, strong) NSString * actualresponse;
+@property (nonatomic, strong) NSString *actualresponse;
 
 @end

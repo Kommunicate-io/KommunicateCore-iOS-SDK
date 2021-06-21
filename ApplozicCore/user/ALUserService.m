@@ -35,8 +35,7 @@ static int CONTACT_PAGE_SIZE = 100;
     NSString * paramString;
 }
 
-+(ALUserService *)sharedInstance
-{
++ (ALUserService *)sharedInstance {
     static ALUserService *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -47,14 +46,13 @@ static int CONTACT_PAGE_SIZE = 100;
 
 
 //1. call this when each message comes
-+ (void)processContactFromMessages:(NSArray *) messagesArr withCompletion:(void(^)(void))completionMark
-{
++ (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark {
     
-    NSMutableOrderedSet* contactIdsArr = [[NSMutableOrderedSet alloc] init ];
-    ALContactService * contactService =  [[ALContactService alloc]init];
+    NSMutableOrderedSet *contactIdsArr = [[NSMutableOrderedSet alloc] init ];
+    ALContactService *contactService =  [[ALContactService alloc]init];
     
-    for(ALMessage* msg in messagesArr) {
-        NSString* contactId = msg.contactIds;
+    for(ALMessage *msg in messagesArr) {
+        NSString *contactId = msg.contactIds;
         if (contactId.length > 0 && ![contactService isContactExist:contactId]) {
             [contactIdsArr addObject:contactId];
         }
@@ -66,7 +64,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }
     
     NSMutableArray *userIdArray = [NSMutableArray arrayWithArray:[contactIdsArr array]];
-    ALUserService * userService = [ALUserService new];
+    ALUserService *userService = [ALUserService new];
     [userService fetchAndupdateUserDetails:userIdArray withCompletion:^(NSMutableArray *userDetailArray, NSError *error) {
         if(error || !userDetailArray){
             completionMark();
@@ -76,13 +74,12 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-+(void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark
-{
++ (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark {
 
     [ALUserClientService userLastSeenDetail:lastSeenAt withCompletion:^(ALLastSeenSyncFeed * messageFeed) {
-         NSMutableArray* lastSeenUpdateArray=   messageFeed.lastSeenArray;
-        ALContactDBService *contactDBService =  [[ALContactDBService alloc]init];
-        for (ALUserDetail * userDetail in lastSeenUpdateArray){
+        NSMutableArray *lastSeenUpdateArray = messageFeed.lastSeenArray;
+        ALContactDBService *contactDBService = [[ALContactDBService alloc]init];
+        for (ALUserDetail *userDetail in lastSeenUpdateArray){
             userDetail.unreadCount = 0;
             [contactDBService updateUserDetail:userDetail];
         }
@@ -92,8 +89,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 }
 
-+(void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark
-{
++ (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark {
     ALUserClientService * userDetailService = [[ALUserClientService alloc] init];
 
     [userDetailService userDetailServerCall:contactId withCompletion:^(ALUserDetail * userDetail) {
@@ -102,12 +98,10 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-+(void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark
-{
++ (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark {
     [self userDetailServerCall:userId withCompletion:^(ALUserDetail *userDetail) {
 
-        if(userDetail)
-        {
+        if (userDetail) {
             userDetail.unreadCount = 0;
             ALContactDBService *contactDB = [ALContactDBService new];
             [contactDB updateUserDetail:userDetail];
@@ -140,32 +134,26 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-+(void)updateUserDisplayName:(ALContact *)alContact
-{
-    if(alContact.userId && alContact.displayName)
-    {
-        ALUserClientService * alUserClientService  = [[ALUserClientService alloc] init];
++ (void)updateUserDisplayName:(ALContact *)alContact {
+    if (alContact.userId && alContact.displayName) {
+        ALUserClientService *alUserClientService  = [[ALUserClientService alloc] init];
         [alUserClientService updateUserDisplayName:alContact withCompletion:^(id theJson, NSError *theError) {
 
-            if(theError)
-            {
+            if (theError) {
                 ALSLog(ALLoggerSeverityError, @"GETTING ERROR in SEVER CALL FOR DISPLAY NAME");
-            }
-            else
-            {
+            } else {
                 ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
                 ALSLog(ALLoggerSeverityInfo, @"RESPONSE_STATUS :: %@", apiResponse.status);
             }
-
         }];
-    }
-    else
-    {
-         return;
+    } else {
+        return;
     }
 }
 
-- (void)updateDisplayNameWith:(NSString *) userId withDisplayName:(NSString *) displayName withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError * error)) completion {
+- (void)updateDisplayNameWith:(NSString *)userId
+              withDisplayName:(NSString *)displayName
+               withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError * error)) completion {
 
     if (!userId || !displayName) {
         NSError * error = [NSError
@@ -173,22 +161,20 @@ static int CONTACT_PAGE_SIZE = 100;
                            code:1
                            userInfo:[NSDictionary dictionaryWithObject:@"UserId or display name details is missing" forKey:NSLocalizedDescriptionKey]];
         completion(nil, error);
+        return;
     }
 
-    ALContact * contact = [[ALContact alloc] init];
+    ALContact *contact = [[ALContact alloc] init];
     contact.userId = userId;
     contact.displayName = displayName;
 
     ALUserClientService * alUserClientService = [[ALUserClientService alloc] init];
     [alUserClientService updateUserDisplayName:contact withCompletion:^(id theJson, NSError *theError) {
 
-        if(theError)
-        {
+        if (theError) {
             ALSLog(ALLoggerSeverityError, @"GETTING ERROR in SEVER CALL FOR DISPLAY NAME");
             completion(nil, theError);
-        }
-        else
-        {
+        } else {
             ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:theJson];
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_STATUS :: %@", apiResponse.status);
             completion(apiResponse, nil);
@@ -196,55 +182,55 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
--(void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion{
+- (void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion {
 
     [ALUserService setUnreadCountZeroForContactId:contactId];
 
-    ALContactDBService * userDBService =[[ALContactDBService alloc] init];
+    ALContactDBService *userDBService =[[ALContactDBService alloc] init];
     NSUInteger count = [userDBService markConversationAsDeliveredAndRead:contactId];
     ALSLog(ALLoggerSeverityInfo, @"Found %ld messages for marking as read.", (unsigned long)count);
 
-    if(count == 0){
+    if (count == 0) {
         return;
     }
     ALUserClientService * clientService = [[ALUserClientService alloc] init];
     [clientService markConversationAsReadforContact:contactId withCompletion:^(NSString *response, NSError * error){
-                completion(response,error);
-    }];
-
-}
-
-+(void)setUnreadCountZeroForContactId:(NSString*)contactId{
-
-    ALContactService * contactService=[[ALContactService alloc] init];
-    ALContact * contact =[contactService loadContactByKey:@"userId" value:contactId];
-    contact.unreadCount=[NSNumber numberWithInt:0];
-    [contactService setUnreadCountInDB:contact];
-
-}
-#pragma mark- Mark message READ
-//===========================================
-+(void)markMessageAsRead:(ALMessage *)alMessage withPairedkeyValue:(NSString *)pairedkeyValue withCompletion:(void (^)(NSString *, NSError *))completion{
-
-    [self markConversationReadInDataBaseWithMessage:alMessage];
-    //Server Call
-    ALUserClientService * clientService = [[ALUserClientService alloc] init];
-    [clientService markMessageAsReadforPairedMessageKey:pairedkeyValue withCompletion:^(NSString * response, NSError * error) {
-        ALSLog(ALLoggerSeverityInfo, @"Response Marking Message :%@",response);
         completion(response,error);
     }];
 
 }
 
-+(void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage {
++ (void)setUnreadCountZeroForContactId:(NSString*)contactId {
+
+    ALContactService *contactService=[[ALContactService alloc] init];
+    ALContact *contact =[contactService loadContactByKey:@"userId" value:contactId];
+    contact.unreadCount=[NSNumber numberWithInt:0];
+    [contactService setUnreadCountInDB:contact];
+}
+#pragma mark- Mark message READ
+//===========================================
++ (void)markMessageAsRead:(ALMessage *)alMessage
+       withPairedkeyValue:(NSString *)pairedkeyValue
+           withCompletion:(void (^)(NSString *, NSError *))completion {
+
+    [self markConversationReadInDataBaseWithMessage:alMessage];
+    //Server Call
+    ALUserClientService *clientService = [[ALUserClientService alloc] init];
+    [clientService markMessageAsReadforPairedMessageKey:pairedkeyValue withCompletion:^(NSString * response, NSError * error) {
+        ALSLog(ALLoggerSeverityInfo, @"Response Marking Message :%@",response);
+        completion(response,error);
+    }];
+}
+
++ (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage {
 
     if (alMessage.groupId != NULL) {
         [ALChannelService setUnreadCountZeroForGroupID:alMessage.groupId];
-        ALChannelDBService * channelDBService = [[ALChannelDBService alloc] init];
+        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
         [channelDBService markConversationAsRead:alMessage.groupId];
     } else {
         [ALUserService setUnreadCountZeroForContactId:alMessage.contactIds];
-        ALContactDBService * contactDBService=[[ALContactDBService alloc] init];
+        ALContactDBService *contactDBService=[[ALContactDBService alloc] init];
         [contactDBService markConversationAsDeliveredAndRead:alMessage.contactIds];
         //  TODO: Mark message read&delivered in DB not whole conversation
     }
@@ -254,15 +240,12 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma BLOCK USER API
 //===============================================================================================
 
--(void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userBlock))completion
-{
+- (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userBlock))completion {
     [ALUserClientService userBlockServerCall:userId withCompletion:^(NSString *json, NSError *error) {
 
-        if(!error)
-        {
+        if (!error) {
             ALAPIResponse *forBlockUserResponse = [[ALAPIResponse alloc] initWithJSONString:json];
-            if([forBlockUserResponse.status isEqualToString:@"success"])
-            {
+            if ([forBlockUserResponse.status isEqualToString:@"success"]) {
                 ALContactDBService *contactDB = [[ALContactDBService alloc] init];
                 [contactDB setBlockUser:userId andBlockedState:YES];
                 completion(error, YES);
@@ -270,7 +253,6 @@ static int CONTACT_PAGE_SIZE = 100;
             }
         }
         completion(error, NO);
-
     }];
 }
 
@@ -278,22 +260,18 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma BLOCK/UNBLOCK USER SYNCHRONIZATION API
 //===============================================================================================
 
--(void)blockUserSync:(NSNumber *)lastSyncTime
-{
+- (void)blockUserSync:(NSNumber *)lastSyncTime {
     [ALUserClientService userBlockSyncServerCall:lastSyncTime withCompletion:^(NSString *json, NSError *error) {
 
-        if(!error)
-        {
-            ALUserBlockResponse * block = [[ALUserBlockResponse alloc] initWithJSONString:(NSString *)json];
+        if (!error) {
+            ALUserBlockResponse *block = [[ALUserBlockResponse alloc] initWithJSONString:(NSString *)json];
             [self updateBlockUserStatusToLocalDB:block];
             [ALUserDefaultsHandler setUserBlockLastTimeStamp:block.generatedAt];
         }
-
     }];
 }
 
--(void)updateBlockUserStatusToLocalDB:(ALUserBlockResponse *)userblock
-{
+- (void)updateBlockUserStatusToLocalDB:(ALUserBlockResponse *)userblock {
     ALContactDBService *dbService = [ALContactDBService new];
     [dbService blockAllUserInList:userblock.blockedUserList];
     [dbService blockByUserInList:userblock.blockByUserList];
@@ -303,16 +281,13 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma UNBLOCK USER API
 //===============================================================================================
 
--(void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion
-{
+- (void)unblockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userUnblock))completion {
 
     [ALUserClientService userUnblockServerCall:userId withCompletion:^(NSString *json, NSError *error) {
 
-        if(!error)
-        {
+        if (!error) {
             ALAPIResponse *forBlockUserResponse = [[ALAPIResponse alloc] initWithJSONString:json];
-            if([forBlockUserResponse.status isEqualToString:@"success"])
-            {
+            if ([forBlockUserResponse.status isEqualToString:@"success"]) {
                 ALContactDBService *contactDB = [[ALContactDBService alloc] init];
                 [contactDB setBlockUser:userId andBlockedState:NO];
                 completion(error, YES);
@@ -322,32 +297,27 @@ static int CONTACT_PAGE_SIZE = 100;
         completion(error, NO);
 
     }];
-
 }
 
--(NSMutableArray *)getListOfBlockedUserByCurrentUser
-{
-    ALContactDBService * dbService = [ALContactDBService new];
-    NSMutableArray * blockedUsersList = [dbService getListOfBlockedUsers];
-
+- (NSMutableArray *)getListOfBlockedUserByCurrentUser {
+    ALContactDBService *dbService = [ALContactDBService new];
+    NSMutableArray *blockedUsersList = [dbService getListOfBlockedUsers];
     return blockedUsersList;
 }
 
--(void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError * error))completion
-{
-    ALUserClientService * clientService = [ALUserClientService new];
-    NSNumber * startTime;
-    if(![ALUserDefaultsHandler isContactServerCallIsDone]){
+- (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError * error))completion {
+    ALUserClientService *clientService = [ALUserClientService new];
+    NSNumber *startTime;
+    if (![ALUserDefaultsHandler isContactServerCallIsDone]) {
         startTime = 0;
-    }else{
+    } else {
         startTime  = [ALApplozicSettings getStartTime];
     }
     NSUInteger pageSize = (NSUInteger)CONTACT_PAGE_SIZE;
 
     [clientService getListOfRegisteredUsers:startTime andPageSize:pageSize withCompletion:^(ALContactsResponse * response, NSError * error) {
 
-        if(error)
-        {
+        if (error) {
             completion(error);
             return;
         }
@@ -364,20 +334,17 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma ONLINE FETCH CONTACT API
 //===============================================================================================
 
--(void)fetchOnlineContactFromServer:(void(^)(NSMutableArray * array, NSError * error))completion
-{
-    ALUserClientService * client = [ALUserClientService new];
+- (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *array, NSError *error))completion {
+    ALUserClientService *client = [ALUserClientService new];
     [client fetchOnlineContactFromServer:[ALApplozicSettings getOnlineContactLimit] withCompletion:^(id json, NSError * error) {
 
-        if(error)
-        {
+        if (error) {
             completion(nil, error);
             return;
         }
 
         NSDictionary * JSONDictionary = (NSDictionary *)json;
-        if(JSONDictionary.count)
-        {
+        if (JSONDictionary.count) {
             NSMutableArray * contactArray = [NSMutableArray new];
             ALUserDetail * userDetail = [ALUserDetail new];
             [userDetail parsingDictionaryFromJSON:JSONDictionary];
@@ -385,14 +352,12 @@ static int CONTACT_PAGE_SIZE = 100;
 
             [client subProcessUserDetailServerCall:self->paramString withCompletion:^(NSMutableArray * userDetailArray, NSError * error) {
 
-                if(error)
-                {
+                if (error) {
                     completion(nil, error);
                     return;
                 }
                 ALContactDBService * contactDB = [ALContactDBService new];
-                for(ALUserDetail * userDetail in userDetailArray)
-                {
+                for (ALUserDetail * userDetail in userDetailArray) {
                     [contactDB updateUserDetail: userDetail];
                     ALContact * contact = [contactDB loadContactByKey:@"userId" value:userDetail.userId];
                     [contactArray addObject:contact];
@@ -407,22 +372,20 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma OVER ALL UNREAD COUNT (CHANNEL + CONTACTS)
 //=========================================================================================================================
 
--(NSNumber *)getTotalUnreadCount
-{
-    ALContactService * contactService = [ALContactService new];
-    NSNumber * contactUnreadCount = [contactService getOverallUnreadCountForContact];
+- (NSNumber *)getTotalUnreadCount {
+    ALContactService *contactService = [ALContactService new];
+    NSNumber *contactUnreadCount = [contactService getOverallUnreadCountForContact];
 
-    ALChannelService * channelService = [ALChannelService new];
-    NSNumber * channelUnreadCount = [channelService getOverallUnreadCountForChannel];
+    ALChannelService *channelService = [ALChannelService new];
+    NSNumber *channelUnreadCount = [channelService getOverallUnreadCountForChannel];
 
     int totalCount = [contactUnreadCount intValue] + [channelUnreadCount intValue];
-    NSNumber * unreadCount = [NSNumber numberWithInt:totalCount];
+    NSNumber *unreadCount = [NSNumber numberWithInt:totalCount];
 
     return unreadCount;
 }
 
--(void)resettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion
-{
+- (void)resettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion {
     [ALUserClientService readCallResettingUnreadCountWithCompletion:^(NSString *json, NSError *error) {
 
         completion(json,error);
@@ -433,18 +396,17 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma UPDATE USER DISPLAY NAME AND PROFILE PICTURE
 //=========================================================================================================================
 
--(void)updateUserDisplayName:(NSString *)displayName andUserImage:(NSString *)imageLink userStatus:(NSString *)status
-              withCompletion:(void (^)(id theJson, NSError * error))completion
-{
+- (void)updateUserDisplayName:(NSString *)displayName
+                 andUserImage:(NSString *)imageLink
+                   userStatus:(NSString *)status
+               withCompletion:(void (^)(id theJson, NSError * error))completion {
     ALUserClientService *clientService = [ALUserClientService new];
     [clientService updateUserDisplayName:displayName andUserImageLink:imageLink userStatus:status metadata: nil withCompletion:^(id theJson, NSError *error) {
-
         completion(theJson, error);
-
     }];
 }
 
--(void) fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray * array, NSError *error))completion {
+- (void)fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray *array, NSError *error))completion {
 
     ALUserDetailListFeed *ob = [ALUserDetailListFeed new];
     [ob setArray:userArray];
@@ -453,53 +415,50 @@ static int CONTACT_PAGE_SIZE = 100;
 
     [clientService subProcessUserDetailServerCallPOST:ob withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
 
-        if(userDetailArray && userDetailArray.count)
-        {
+        if (userDetailArray && userDetailArray.count) {
             [dbService addUserDetailsWithoutUnreadCount:userDetailArray];
         }
         completion(userDetailArray,theError);
     }];
 }
 
--(void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion
-{
+- (void)getUserDetail:(NSString*)userId withCompletion:(void(^)(ALContact *contact))completion {
 
-        ALContactService *contactService = [ALContactService new];
-        ALContactDBService *contactDBService = [ALContactDBService new];
+    ALContactService *contactService = [ALContactService new];
+    ALContactDBService *contactDBService = [ALContactDBService new];
 
-        if(![contactService isContactExist:userId])
-        {
-            ALSLog(ALLoggerSeverityError, @"###contact is not found");
+    if (![contactService isContactExist:userId]) {
+        ALSLog(ALLoggerSeverityError, @"###contact is not found");
 
-            [ALUserService userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
+        [ALUserService userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
 
-                [contactDBService updateUserDetail:alUserDetail];
-                ALContact * alContact = [contactDBService loadContactByKey:@"userId" value:userId];
-                completion(alContact);
-            }];
-        }
-        else
-        {
-            ALSLog(ALLoggerSeverityInfo, @" contact is found");
-
+            [contactDBService updateUserDetail:alUserDetail];
             ALContact * alContact = [contactDBService loadContactByKey:@"userId" value:userId];
             completion(alContact);
-        }
+        }];
+    } else {
+        ALSLog(ALLoggerSeverityInfo, @" contact is found");
+
+        ALContact * alContact = [contactDBService loadContactByKey:@"userId" value:userId];
+        completion(alContact);
+    }
 }
 
--(void)updatePassword:(NSString*)oldPassword withNewPassword :(NSString *) newPassword  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
+- (void)updatePassword:(NSString *)oldPassword
+      withNewPassword :(NSString *)newPassword
+        withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
 
-    if(!oldPassword || !newPassword){
+    if (!oldPassword || !newPassword){
         completion(nil, nil);
+        return;
     }
 
     ALUserClientService *clientService = [ALUserClientService new];
     [clientService updatePassword:oldPassword  withNewPassword: newPassword  withCompletion:^(ALAPIResponse *alAPIResponse, NSError *theError) {
 
-        if(!theError){
+        if (!theError) {
 
-            if([alAPIResponse.status isEqualToString:@"error"])
-            {
+            if([alAPIResponse.status isEqualToString:@"error"]) {
                 NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
                                                          userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN UPDATING PASSWORD "
                                                                                               forKey:NSLocalizedDescriptionKey]];
@@ -508,36 +467,28 @@ static int CONTACT_PAGE_SIZE = 100;
             }
             [ALUserDefaultsHandler setPassword:newPassword];
         }
-
         completion(alAPIResponse, theError);
     }];
-
 }
 
 //==============================================================================================================================================
 #pragma mark - REST UNREAD COUNT + CONVERSATION READ HELPER METHODS
 //==============================================================================================================================================
 
--(void)processResettingUnreadCount
-{
-    ALUserService * userService = [ALUserService new];
+- (void)processResettingUnreadCount {
+    ALUserService *userService = [ALUserService new];
     int count = [[userService getTotalUnreadCount] intValue];
     NSLog(@"CHATVC_UNREAD_COUNT :: %i",count);
-    if(count == 0)
-    {
+    if (count == 0) {
         [userService resettingUnreadCountWithCompletion:^(NSString *json, NSError *error) {
-
             NSLog(@"RESET_UNREAD_COUNT CALL :: %@ and ERROR :: %@",json, error.description);
         }];
     }
 }
 
+- (void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
-
--(void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse* response, NSError * error))completion
-{
-
-    if(!userName){
+    if (!userName) {
         NSError * reponseError = [NSError errorWithDomain:@"Applozic" code:1
                                                  userInfo:[NSDictionary dictionaryWithObject:@"Error userName is nil " forKey:NSLocalizedDescriptionKey]];
         completion(nil,reponseError);
@@ -548,17 +499,15 @@ static int CONTACT_PAGE_SIZE = 100;
 
     [clientService getListOfUsersWithUserName:userName withCompletion:^(ALAPIResponse *response, NSError *error) {
 
-        if(error)
-        {
+        if (error) {
             completion(response,error);
             return;
         }
         ALContactDBService * dbServie = [ALContactDBService new];
-        if([response.status isEqualToString:@"success"]){
+        if ([response.status isEqualToString:@"success"]) {
 
             NSMutableArray * array = (NSMutableArray*)response.response;
-            for(NSDictionary *userDeatils in array)
-            {
+            for (NSDictionary *userDeatils in array) {
                 ALUserDetail *userDeatil = [[ALUserDetail alloc] initWithDictonary:userDeatils];
 
                 userDeatil.unreadCount = 0;
@@ -567,31 +516,26 @@ static int CONTACT_PAGE_SIZE = 100;
         }
         completion(response,error);
     }];
-
 }
-
-
--(void)updateConversationReadWithUserId:(NSString *)userId withDelegate: (id<ApplozicUpdatesDelegate>)delegate{
+- (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     
     [ALUserService setUnreadCountZeroForContactId:userId];
-    if(delegate){
+    if (delegate) {
         [delegate conversationReadByCurrentUser:userId withGroupId:nil];
     }
     NSDictionary *dict = @{@"userId":userId};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_unread_count" object:dict];
-
 }
 
--(void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate withCompletion:(void (^)(NSMutableArray *, NSError *))completion{
+- (void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate withCompletion:(void (^)(NSMutableArray *, NSError *))completion {
     
     ALUserClientService *userClientService = [[ALUserClientService alloc]init];
     [userClientService getMutedUserListWithCompletion:^(id theJson, NSError *error) {
         
-        NSArray * jsonArray = [NSArray arrayWithArray:(NSArray *)theJson];
+        NSArray *jsonArray = [NSArray arrayWithArray:(NSArray *)theJson];
         NSMutableArray * userDetailArray = [NSMutableArray new];
         
-        if(jsonArray.count)
-        {
+        if (jsonArray.count) {
             NSDictionary * jsonDictionary = (NSDictionary *)theJson;
             ALContactDBService *contactDataBase = [[ALContactDBService alloc] init];
             userDetailArray = [contactDataBase addMuteUserDetailsWithDelegate:delegate withNSDictionary:jsonDictionary];
@@ -600,23 +544,21 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
--(void) muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse * response, NSError * error))completion{
+- (void)muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion{
 
     ALUserClientService *userClientService = [[ALUserClientService alloc] init];
     [userClientService muteUser:alMuteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
         
-        if(response && [response.status isEqualToString:@"success"]){
+        if (response && [response.status isEqualToString:@"success"]) {
             ALContactService *contactService = [[ALContactService alloc]init];
-            
             [contactService updateMuteAfterTime:alMuteRequest.notificationAfterTime andUserId:alMuteRequest.userId];
         }
         completion(response,error);
     }];
-    
 }
 
 
--(void)reportUserWithMessageKey:(NSString *) messageKey  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
+- (void)reportUserWithMessageKey:(NSString *)messageKey withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion{
 
     ALUserClientService *userClientService = [[ALUserClientService alloc] init];
     [userClientService reportUserWithMessageKey:messageKey withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
@@ -662,20 +604,20 @@ static int CONTACT_PAGE_SIZE = 100;
 /// @param nextPage If nextPage is NO or false it will get contacts from starting and return the array of contact.
 /// If nextPage is YES or true it will return the next older contacts
 /// @param completion Returns an array of ALContact in case of successfully fetched else it will return NSError.
--(void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
-                                withCompletion:(void(^)(NSMutableArray *contcatArray, NSError * error))completion {
+- (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
+                                 withCompletion:(void(^)(NSMutableArray *contcatArray, NSError *error))completion {
 
     if (![ALUserDefaultsHandler isLoggedIn]) {
-        NSError * error = [NSError
-                           errorWithDomain:@"Applozic"
-                           code:1
-                           userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+        NSError *error = [NSError
+                          errorWithDomain:@"Applozic"
+                          code:1
+                          userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
         completion(nil, error);
         return;
     }
     ALUserClientService * clientService = [ALUserClientService new];
     NSUInteger pageSize = (NSUInteger)CONTACT_PAGE_SIZE;
-    NSNumber * startTime;
+    NSNumber *startTime;
     if (nextPage) {
         startTime = [ALApplozicSettings getStartTime];
     } else {
@@ -691,7 +633,7 @@ static int CONTACT_PAGE_SIZE = 100;
         }
 
         [ALApplozicSettings setStartTime:response.lastFetchTime];
-        ALContactDBService * dbServie = [ALContactDBService new];
+        ALContactDBService *dbServie = [ALContactDBService new];
         NSMutableArray * nextPageContactArray = [dbServie updateFilteredContacts:response
                                                                  withLoadContact:nextPage];
         if (nextPage) {

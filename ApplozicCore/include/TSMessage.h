@@ -128,7 +128,7 @@ typedef NS_ENUM(NSInteger,TSMessageNotificationDuration) {
                                 subtitle:(NSString *)subtitle
                                     type:(TSMessageNotificationType)type
                                 duration:(NSTimeInterval)duration
-                     canBeDismissedByUser:(BOOL)dismissingEnabled;
+                    canBeDismissedByUser:(BOOL)dismissingEnabled;
 
 
 
@@ -196,7 +196,7 @@ typedef NS_ENUM(NSInteger,TSMessageNotificationDuration) {
 + (BOOL)iOS7StyleEnabled;
 
 /** Indicates whether the current navigationBar is hidden by isNavigationBarHidden 
- on the UINavigationController or isHidden on the navigationBar of the current 
+ on the UINavigationController or isHidden on the navigationBar of the current
  UINavigationController */
 + (BOOL)isNavigationBarInNavigationControllerHidden:(UINavigationController *)navController;
 

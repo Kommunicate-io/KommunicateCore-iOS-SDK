@@ -16,22 +16,22 @@
 
 @property (nonatomic, strong) NSString *dateCellText;
 
--(BOOL)checkDateOlder:(NSNumber *)older andNewer:(NSNumber *)newer;
+- (BOOL)checkDateOlder:(NSNumber *)older andNewer:(NSNumber *)newer;
 
--(NSMutableArray *)getUpdatedMessageArray;
+- (NSMutableArray *)getUpdatedMessageArray;
 
--(void)addObjectToMessageArray:(NSMutableArray *)paramMessageArray;
+- (void)addObjectToMessageArray:(NSMutableArray *)paramMessageArray;
 
--(void)addALMessageToMessageArray:(ALMessage *)alMessage;
+- (void)addALMessageToMessageArray:(ALMessage *)alMessage;
 
--(void)removeObjectFromMessageArray:(NSMutableArray *)paramMessageArray;
+- (void)removeObjectFromMessageArray:(NSMutableArray *)paramMessageArray;
 
--(void)removeALMessageFromMessageArray:(ALMessage *)almessage;
+- (void)removeALMessageFromMessageArray:(ALMessage *)almessage;
 
--(void)addLatestObjectToArray:(NSMutableArray *)paramMessageArray;
+- (void)addLatestObjectToArray:(NSMutableArray *)paramMessageArray;
 
--(ALMessage *)getDatePrototype:(NSString *)messageText andAlMessageObject:(ALMessage *)almessage;
+- (ALMessage *)getDatePrototype:(NSString *)messageText andAlMessageObject:(ALMessage *)almessage;
 
--(NSString *)msgAtTop:(ALMessage *)almessage;
+- (NSString *)msgAtTop:(ALMessage *)almessage;
 
 @end

@@ -77,207 +77,204 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 
 @interface ALUserDefaultsHandler : NSObject
 
-+(void) setConversationContactImageVisibility: (BOOL) visibility;
++ (void)setConversationContactImageVisibility:(BOOL)visibility;
 
-+(BOOL) isConversationContactImageVisible;
++ (BOOL)isConversationContactImageVisible;
 
-+(void) setBottomTabBarHidden: (BOOL) visibleStatus;
++ (void)setBottomTabBarHidden:(BOOL)visibleStatus;
 
-+(BOOL) isBottomTabBarHidden;
++ (BOOL)isBottomTabBarHidden;
 
-+(void)setNavigationRightButtonHidden:(BOOL)flagValue;
-+(BOOL)isNavigationRightButtonHidden;
++ (void)setNavigationRightButtonHidden:(BOOL)flagValue;
++ (BOOL)isNavigationRightButtonHidden;
 
-+(void) setBackButtonHidden: (BOOL)flagValue;
++ (void)setBackButtonHidden:(BOOL)flagValue;
 
-+(BOOL) isBackButtonHidden;
++ (BOOL)isBackButtonHidden;
 
-+(BOOL) isLoggedIn;
++ (BOOL)isLoggedIn;
 
-+(void) clearAll;
++ (void)clearAll;
 
-+(NSString *) getApplicationKey;
++ (NSString *)getApplicationKey;
 
-+(void) setApplicationKey: (NSString*) applicationKey;
++ (void)setApplicationKey:(NSString *)applicationKey;
 
-+(void) setEmailVerified: (BOOL) value;
++ (void)setEmailVerified:(BOOL)value;
 
-+(void) setApnDeviceToken: (NSString*) apnDeviceToken;
++ (void)setApnDeviceToken:(NSString *)apnDeviceToken;
 
-+(NSString *) getApnDeviceToken;
++ (NSString *)getApnDeviceToken;
 
-+(void) setBoolForKey_isConversationDbSynced:(BOOL) value;
++ (void)setBoolForKey_isConversationDbSynced:(BOOL)value;
 
-+(BOOL) getBoolForKey_isConversationDbSynced;
++ (BOOL)getBoolForKey_isConversationDbSynced;
 
-+(void) setDeviceKeyString:(NSString*)deviceKeyString;
++ (void)setDeviceKeyString:(NSString *)deviceKeyString;
 
-+(void) setUserKeyString:(NSString*)userKeyString;
++ (void)setUserKeyString:(NSString *)userKeyString;
 
-+(void) setDisplayName:(NSString*)displayName;
++ (void)setDisplayName:(NSString *)displayName;
 
-+(void) setEmailId:(NSString*)emailId;
++ (void)setEmailId:(NSString *)emailId;
 
-+(NSString *)getEmailId;
++ (NSString *)getEmailId;
 
-+(NSString *) getDeviceKeyString;
++ (NSString *)getDeviceKeyString;
 
-+(void) setUserId: (NSString *) userId;
++ (void)setUserId:(NSString *)userId;
 
-+(NSString*)getUserId;
++ (NSString*)getUserId;
 
-+(void) setLastSyncTime: (NSNumber *) lastSyncTime;
++ (void)setLastSyncTime:(NSNumber *)lastSyncTime;
 
-+(void)setServerCallDoneForMSGList:(BOOL) value forContactId:(NSString*)constactId;
++ (void)setServerCallDoneForMSGList:(BOOL)value forContactId:(NSString *)constactId;
 
-+(BOOL)isServerCallDoneForMSGList:(NSString *) contactId;
++ (BOOL)isServerCallDoneForMSGList:(NSString *)contactId;
 
-+(void) setProcessedNotificationIds:(NSMutableArray*) arrayWithIds;
++ (void)setProcessedNotificationIds:(NSMutableArray *)arrayWithIds;
 
-+(NSMutableArray*) getProcessedNotificationIds;
++ (NSMutableArray*)getProcessedNotificationIds;
 
-+(BOOL)isNotificationProcessd:(NSString*)withNotificationId;
++ (BOOL)isNotificationProcessd:(NSString *)withNotificationId;
 
-+(NSNumber *) getLastSeenSyncTime;
++ (NSNumber *)getLastSeenSyncTime;
 
-+(void) setLastSeenSyncTime :(NSNumber*) lastSeenTime;
++ (void)setLastSeenSyncTime:(NSNumber *)lastSeenTime;
 
-+(void) setShowLoadEarlierOption : (BOOL) value forContactId:(NSString*)constactId;
++ (void)setShowLoadEarlierOption:(BOOL)value forContactId:(NSString *)constactId;
 
-+(BOOL)isShowLoadEarlierOption :(NSString*)constactId;
++ (BOOL)isShowLoadEarlierOption:(NSString *)constactId;
 
-+(void)setLastSyncChannelTime:(NSNumber *)lastSyncChannelTime;
++ (void)setLastSyncChannelTime:(NSNumber *)lastSyncChannelTime;
 
-+(NSNumber *)getLastSyncChannelTime;
++ (NSNumber *)getLastSyncChannelTime;
 
-+(NSNumber *)getLastSyncTime;
++ (NSNumber *)getLastSyncTime;
 
-+(NSString *)getUserKeyString;
++ (NSString *)getUserKeyString;
 
-+(NSString *)getDisplayName;
++ (NSString *)getDisplayName;
 
-+(void)setUserBlockLastTimeStamp:(NSNumber *)lastTimeStamp;
++ (void)setUserBlockLastTimeStamp:(NSNumber *)lastTimeStamp;
 
-+(NSNumber *)getUserBlockLastTimeStamp;
++ (NSNumber *)getUserBlockLastTimeStamp;
 
-//+(NSString *)getNotificationTitle;
-//+(void)setNotificationTitle:(NSString *)notificationTitle;
++ (NSString *)getPassword;
++ (void)setPassword:(NSString *)password;
 
-+(NSString *)getPassword;
-+(void )setPassword:(NSString *)password;
++ (void)setAppModuleName:(NSString *)appModuleName;
++ (NSString *)getAppModuleName;
 
-+(void)setAppModuleName:(NSString*)appModuleName;
-+(NSString*)getAppModuleName;
++ (BOOL)getContactViewLoaded;
++ (void)setContactViewLoadStatus:(BOOL)status;
 
-+(BOOL) getContactViewLoaded;
-+(void) setContactViewLoadStatus:(BOOL)status;
++ (void)setServerCallDoneForUserInfo:(BOOL)value ForContact:(NSString *)contactId;
++ (BOOL)isServerCallDoneForUserInfoForContact:(NSString *)contactId;
 
-+(void)setServerCallDoneForUserInfo:(BOOL)value ForContact:(NSString*)contactId;
-+(BOOL)isServerCallDoneForUserInfoForContact:(NSString*)contactId;
++ (void)setBASEURL:(NSString *)baseURL;
++ (NSString *)getBASEURL;
 
-+(void)setBASEURL:(NSString *)baseURL;
-+(NSString *)getBASEURL;
++ (void)setMQTTURL:(NSString *)mqttURL;
++ (NSString *)getMQTTURL;
 
-+(void)setMQTTURL:(NSString *)mqttURL;
-+(NSString *)getMQTTURL;
++ (void)setFILEURL:(NSString *)fileURL;
++ (NSString *)getFILEURL;
 
-+(void)setFILEURL:(NSString *)fileURL;
-+(NSString *)getFILEURL;
++ (void)setMQTTPort:(NSString *)portNumber;
++ (NSString *)getMQTTPort;
 
-+(void)setMQTTPort:(NSString *)portNumber;
-+(NSString *)getMQTTPort;
++ (void)setUserTypeId:(short)type;
++ (short)getUserTypeId;
 
-+(void)setUserTypeId:(short)type;
-+(short)getUserTypeId;
++ (NSNumber *)getLastMessageListTime;
++ (void)setLastMessageListTime:(NSNumber *)lastTime;
 
-+(NSNumber *)getLastMessageListTime;
-+(void)setLastMessageListTime:(NSNumber *)lastTime;
++ (BOOL)getFlagForAllConversationFetched;
++ (void)setFlagForAllConversationFetched:(BOOL)flag;
 
-+(BOOL)getFlagForAllConversationFetched;
-+(void)setFlagForAllConversationFetched:(BOOL)flag;
++ (NSInteger)getFetchConversationPageSize;
++ (void)setFetchConversationPageSize:(NSInteger)limit;
 
-+(NSInteger)getFetchConversationPageSize;
-+(void)setFetchConversationPageSize:(NSInteger)limit;
++ (short)getNotificationMode;
++ (void)setNotificationMode:(short)mode;
 
-+(short)getNotificationMode;
-+(void)setNotificationMode:(short)mode;
++ (short)getUserAuthenticationTypeId;
++ (void)setUserAuthenticationTypeId:(short)type;
 
-+(short)getUserAuthenticationTypeId;
-+(void)setUserAuthenticationTypeId:(short)type;
++ (short)getUnreadCountType;
++ (void)setUnreadCountType:(short)mode;
 
-+(short)getUnreadCountType;
-+(void)setUnreadCountType:(short)mode;
++ (BOOL)isMsgSyncRequired;
++ (void)setMsgSyncRequired:(BOOL)flag;
 
-+(BOOL)isMsgSyncRequired;
-+(void)setMsgSyncRequired:(BOOL)flag;
++ (BOOL)isDebugLogsRequire;
++ (void)setDebugLogsRequire:(BOOL)flag;
 
-+(BOOL)isDebugLogsRequire;
-+(void)setDebugLogsRequire:(BOOL)flag;
++ (BOOL)getLoginUserConatactVisibility;
++ (void)setLoginUserConatactVisibility:(BOOL)flag;
 
-+(BOOL)getLoginUserConatactVisibility;
-+(void)setLoginUserConatactVisibility:(BOOL)flag;
++ (NSString *)getLoggedInUserStatus;
++ (void)setLoggedInUserStatus:(NSString *)status;
 
-+(NSString *)getLoggedInUserStatus;
-+(void)setLoggedInUserStatus:(NSString *)status;
++ (BOOL)isUserLoggedInUserSubscribedMQTT;
++ (void)setLoggedInUserSubscribedMQTT:(BOOL)flag;
 
-+(BOOL)isUserLoggedInUserSubscribedMQTT;
-+(void)setLoggedInUserSubscribedMQTT:(BOOL)flag;
++ (NSString *)getEncryptionKey;
++ (void)setEncryptionKey:(NSString *)encrptionKey;
 
-+(NSString *)getEncryptionKey;
-+(void)setEncryptionKey:(NSString *)encrptionKey;
++ (short)getUserPricingPackage;
++ (void)setUserPricingPackage:(short)pricingPackage;
 
-+(short)getUserPricingPackage;
-+(void)setUserPricingPackage:(short)pricingPackage;
++ (BOOL)getEnableEncryption;
++ (void)setEnableEncryption:(BOOL)flag;
 
-+(BOOL)getEnableEncryption;
-+(void)setEnableEncryption:(BOOL)flag;
++ (void)setGoogleMapAPIKey:(NSString *)googleMapAPIKey;
++ (NSString *)getGoogleMapAPIKey;
 
-+(void) setGoogleMapAPIKey:(NSString *)googleMapAPIKey;
-+(NSString *) getGoogleMapAPIKey;
++ (NSString *)getNotificationSoundFileName;
++ (void)setNotificationSoundFileName:(NSString *)notificationSoundFileName;
 
-+(NSString *) getNotificationSoundFileName;
-+(void) setNotificationSoundFileName:(NSString *) notificationSoundFileName;
++ (BOOL)isContactServerCallIsDone;
++ (void)setContactServerCallIsDone:(BOOL)flag;
 
-+(BOOL)isContactServerCallIsDone;
-+(void)setContactServerCallIsDone:(BOOL)flag;
++ (BOOL)isContactScrollingIsInProgress;
++ (void)setContactScrollingIsInProgress:(BOOL)flag;
 
-+(BOOL)isContactScrollingIsInProgress;
-+(void)setContactScrollingIsInProgress:(BOOL)flag;
++ (void)setLastGroupFilterSyncTime:(NSNumber *)lastSyncTime;
++ (NSNumber *)getLastGroupFilterSyncTIme;
 
-+(void) setLastGroupFilterSyncTime: (NSNumber *) lastSyncTime;
-+(NSNumber *)getLastGroupFilterSyncTIme;
++ (void)setUserRoleType:(short)type;
++ (short)getUserRoleType;
 
-+(void)setUserRoleType:(short)type;
-+(short)getUserRoleType;
++ (void)setPushNotificationFormat:(short)type;
++ (short)getPushNotificationFormat;
++ (void)setUserEncryption:(NSString *)encryptionKey;
++ (NSString*)getUserEncryptionKey;
 
-+(void)setPushNotificationFormat:(short)type;
-+(short)getPushNotificationFormat;
-+(void)setUserEncryption:(NSString*)encryptionKey;
-+(NSString*)getUserEncryptionKey;
++ (void)setLastSyncTimeForMetaData:(NSNumber *)metaDataLastSyncTime;
++ (NSNumber *)getLastSyncTimeForMetaData;
 
-+(void)setLastSyncTimeForMetaData :( NSNumber *) metaDataLastSyncTime;
-+(NSNumber *)getLastSyncTimeForMetaData;
++ (void)disableChat:(BOOL)disable;
++ (BOOL)isChatDisabled;
 
-+(void)disableChat: (BOOL) disable;
-+(BOOL)isChatDisabled;
++ (void)setAuthToken:(NSString *)authToken;
++ (NSString *)getAuthToken;
 
-+(void)setAuthToken:(NSString*)authToken;
-+(NSString*)getAuthToken;
++ (void)setAuthTokenCreatedAtTime:(NSNumber *)createdAtTime;
++ (NSNumber *)getAuthTokenCreatedAtTime;
++ (void)setAuthTokenValidUptoInMins:(NSNumber *)validUptoInMins;
++ (NSNumber *)getAuthTokenValidUptoMins;
 
-+(void)setAuthTokenCreatedAtTime:(NSNumber *) createdAtTime;
-+(NSNumber *)getAuthTokenCreatedAtTime;
-+(void)setAuthTokenValidUptoInMins:(NSNumber *) validUptoInMins;
-+(NSNumber *)getAuthTokenValidUptoMins;
-
-+(void)setInitialMessageListCallDone:(BOOL)flag;
-+(BOOL)isInitialMessageListCallDone;
++ (void)setInitialMessageListCallDone:(BOOL)flag;
++ (BOOL)isInitialMessageListCallDone;
 
 + (void)deactivateLoggedInUser:(BOOL)deactivate;
 + (BOOL)isLoggedInUserDeactivated;
 
-+(void)setChannelListLastSyncGeneratedTime:(NSNumber *)lastSyncGeneratedTime;
-+(NSNumber *)getChannelListLastSyncGeneratedTime;
++ (void)setChannelListLastSyncGeneratedTime:(NSNumber *)lastSyncGeneratedTime;
++ (NSNumber *)getChannelListLastSyncGeneratedTime;
 
-+(void)setVOIPDeviceToken:(NSString *)VOIPDeviceToken;
-+(NSString*) getVOIPDeviceToken;
++ (void)setVOIPDeviceToken:(NSString *)VOIPDeviceToken;
++ (NSString*)getVOIPDeviceToken;
 @end

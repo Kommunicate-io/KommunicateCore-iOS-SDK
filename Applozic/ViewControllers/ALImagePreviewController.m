@@ -16,6 +16,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
 
+    [super viewWillAppear:animated];
     self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"imageViewControllerTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Image", @"");
 
 
@@ -33,9 +34,9 @@
 }
 
 
--(void)sendAttachment{
+- (void)sendAttachment {
     
-    if(self.imageSelectDelegate){
+    if (self.imageSelectDelegate) {
         [self.imageSelectDelegate onSendButtonClick:self.imageFilePath withReplyMessageKey:self.messageKey];
         [self.navigationController popViewControllerAnimated:YES];
     }

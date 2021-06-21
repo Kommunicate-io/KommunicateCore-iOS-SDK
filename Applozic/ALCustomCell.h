@@ -10,5 +10,5 @@
 #import "ALChatCell.h"
 
 @interface ALCustomCell : ALChatCell
--(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize;
+- (instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize;
 @end

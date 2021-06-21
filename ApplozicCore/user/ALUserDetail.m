@@ -25,8 +25,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 }
 
 
--(void)setUserDetails:(NSString *)JSONString
-{
+- (void)setUserDetails:(NSString *)JSONString {
     self.userId = [JSONString valueForKey:@"userId"];
     
     self.connected = [[NSString stringWithFormat:@"%@",[JSONString valueForKey:@"connected"]] intValue];
@@ -52,18 +51,16 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     self.status = [JSONString valueForKey:@"status"];
 }
 
--(void)userDetail
-{
+- (void)userDetail {
     
 }
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary{
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];
     return self;
 }
 
--(void)parseMessage:(id) json;
-{
+- (void)parseMessage:(id)json {
     self.userId = [self getStringFromJsonValue:json[@"userId"]];
     self.connected = [self getBoolFromJsonValue:json[@"connected"]];
     self.lastSeenAtTime = [self getNSNumberFromJsonValue:json[@"lastSeenAtTime"]];
@@ -81,13 +78,11 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 
 }
 
--(NSString *)getDisplayName
-{
+- (NSString *)getDisplayName {
     return (self.displayName && ![self.displayName isEqualToString:@""]) ? self.displayName : self.userId;
 }
 
--(void)parsingDictionaryFromJSON:(NSDictionary *)JSONDictionary
-{
+- (void)parsingDictionaryFromJSON:(NSDictionary *)JSONDictionary {
     self.userIdString = nil;
     NSString * tempString = @"";
     self.keyArray = [NSArray arrayWithArray:[JSONDictionary allKeys]];
@@ -104,8 +99,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     }
 }
 
--(BOOL)isNotificationMuted{
-    
+- (BOOL)isNotificationMuted {
     long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970] ] longValue ]*1000L;
     return (_notificationAfterTime && [_notificationAfterTime longValue]> secsUtc1970);
 }
@@ -114,7 +108,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     return _metadata && [_metadata[AL_DISABLE_USER_CHAT] boolValue];
 }
 
--(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
 
     if (string == nil) {
         return nil;
@@ -124,23 +118,21 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
     NSPropertyListFormat format;
     NSMutableDictionary * metaDataDictionary;
 
-    @try
-    {
+    @try {
         NSError * error;
         metaDataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
                                                                         format:&format
                                                                          error:&error];
-    }
-    @catch(NSException * exp) {
+    } @catch(NSException * exp) {
         ALSLog(ALLoggerSeverityError, @"GETTING ERROR in Meta data Serialization");
     }
     return metaDataDictionary;
 }
 
--(NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString {
+- (NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString {
 
     NSMutableDictionary * existingMetadata = [self getMetaDataDictionary:metadataString];
-
+    
     if (existingMetadata && [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED]) {
 
         NSString * flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];

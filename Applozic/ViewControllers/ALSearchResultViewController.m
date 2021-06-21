@@ -15,9 +15,9 @@
 @interface ALSearchResultViewController()
 
 @property (strong, nonatomic) ALSearchViewModel *searchViewModel;
-@property (strong, nonatomic) NSString * searchInfoText;
-@property (strong, nonatomic) NSString * noSearchResultFoundText;
-@property (strong, nonatomic) UILabel * emptyLabel;
+@property (strong, nonatomic) NSString *searchInfoText;
+@property (strong, nonatomic) NSString *noSearchResultFoundText;
+@property (strong, nonatomic) UILabel *emptyLabel;
 @property (strong, nonatomic)  NSMutableDictionary *colourDictionary;
 
 
@@ -25,7 +25,7 @@
 
 @implementation ALSearchResultViewController
 
--(void)viewDidLoad {
+- (void)viewDidLoad {
     [super viewDidLoad];
     self.searchViewModel = [[ALSearchViewModel alloc] init];
     self.colourDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
@@ -37,7 +37,7 @@
     [self setupView];
 }
 
--(void)setupView {
+- (void)setupView {
     self.mTableView.delegate = self;
     self.mTableView.dataSource = self;
     self.mTableView.estimatedRowHeight = 81.5;
@@ -55,7 +55,7 @@
     self.emptyLabel.frame = frame;
     [self showEmptyViewInfo:self.searchInfoText];
 }
--(void)searchWithKey:(NSString*)key {
+- (void)searchWithKey:(NSString *)key {
     [self removeEmpty];
     [self.mActivityIndicator startAnimating];
     [self clear];
@@ -72,29 +72,29 @@
     }];
 }
 
--(void)removeEmpty {
+- (void)removeEmpty {
     self.mTableView.backgroundView = nil;
 }
 
--(void)clear {
+- (void)clear {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.searchViewModel clear];
         [self.mTableView reloadData];
     });
 }
 
--(void)clearAndShowEmptyView {
+- (void)clearAndShowEmptyView {
     [self showEmptyViewInfo:self.searchInfoText];
     [self clear];
 }
 
--(void)showEmptyViewInfo:(NSString *)infoText {
+- (void)showEmptyViewInfo:(NSString *)infoText {
     self.emptyLabel.text = infoText;
     self.mTableView.backgroundView = self.emptyLabel;
     self.mTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
--(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ALContactCell *contactCell = (ALContactCell *)[tableView dequeueReusableCellWithIdentifier:@"ContactCell"];
     ALMessage *message = [self.searchViewModel messageAtIndexPathWithIndexPath:indexPath];
     [contactCell updateWithMessage:message withColourDictionary:self.colourDictionary];
@@ -115,9 +115,9 @@
         [self launchChatWithMessage: message];
     }
 }
--(void)launchChatWithMessage:(ALMessage *)message {
+- (void)launchChatWithMessage:(ALMessage *)message {
 
-    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic"
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic"
                                                          bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALChatViewController *chatVC = (ALChatViewController *) [storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     chatVC.individualLaunch = YES;
@@ -127,7 +127,7 @@
 
     if (message.groupId != nil) {
         chatVC.channelKey = message.groupId;
-        ALChannelService * channelService  =  [ALChannelService new];
+        ALChannelService *channelService  =  [ALChannelService new];
         [channelService getChannelInformation:message.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
 
             if (alChannel && ![pushAssist.topViewController isKindOfClass:ALChatViewController.class]) {
@@ -137,7 +137,7 @@
     } else {
         chatVC.contactIds = message.to;
     }
-
+    
     if (![pushAssist.topViewController isKindOfClass:ALChatViewController.class]) {
         [self.presentingViewController.navigationController pushViewController:chatVC animated:YES];
     }

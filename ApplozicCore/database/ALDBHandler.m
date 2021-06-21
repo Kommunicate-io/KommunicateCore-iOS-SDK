@@ -15,8 +15,7 @@
 
 @implementation ALDBHandler
 
-+(ALDBHandler *) sharedInstance
-{
++ (ALDBHandler *)sharedInstance {
     static ALDBHandler *sharedMyManager = nil;
     
     static dispatch_once_t onceToken;
@@ -58,7 +57,7 @@
     return _managedObjectModel;
 }
 
--(NSPersistentContainer *)persistentContainer {
+- (NSPersistentContainer *)persistentContainer {
     @synchronized (self) {
         NSURL *storeURL = [ALUtilityClass getApplicationDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
         NSURL *groupStoreURL = [ALUtilityClass getAppsGroupDirectoryWithFilePath:AL_SQLITE_FILE_NAME];
@@ -196,8 +195,8 @@
     }
 }
 
-- (void) saveWithContext:(NSManagedObjectContext*)context
-              completion:(void (^)(NSError*error))completion {
+- (void)saveWithContext:(NSManagedObjectContext *)context
+             completion:(void (^)(NSError*error))completion {
     @try {
         NSError* error;
         if (!context) {
@@ -221,7 +220,7 @@
     }
 }
 
--(NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError: (NSError **)fetchError {
+- (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError {
     if (!self.persistentContainer) {
         return nil;
     }
@@ -235,7 +234,7 @@
     return fetchResultArray;
 }
 
--(NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name {
+- (NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name {
     if (!self.persistentContainer) {
         return nil;
     }
@@ -247,7 +246,7 @@
     return nil;
 }
 
--(NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest {
+- (NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest {
     if (!self.persistentContainer) {
         return 0;
     }
@@ -263,8 +262,8 @@
     return 0;
 }
 
--(NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID {
-    NSManagedObject* managedObject = nil;
+- (NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID {
+    NSManagedObject *managedObject = nil;
     if (!self.persistentContainer) {
         return nil;
     }
@@ -281,7 +280,7 @@
     return managedObject;
 }
 
--(NSManagedObject *)insertNewObjectForEntityForName:(NSString *) entityName {
+- (NSManagedObject *)insertNewObjectForEntityForName:(NSString *) entityName {
     if (!self.persistentContainer) {
         return nil;
     }
@@ -293,7 +292,7 @@
     return nil;
 }
 
--(void)deleteObject:(NSManagedObject *) managedObject {
+- (void)deleteObject:(NSManagedObject *)managedObject {
     if (!self.persistentContainer) {
         return;
     }
@@ -302,14 +301,14 @@
         [context deleteObject:managedObject];
     }
 }
--(NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName withManagedObjectContext:(NSManagedObjectContext *) context {
+- (NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName withManagedObjectContext:(NSManagedObjectContext *)context {
     if (context) {
         return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
     }
     return nil;
 }
 
--(NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError **)fetchError {
+- (NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError **)fetchError {
     NSBatchUpdateResult *batchUpdateResult = nil;
     if (!self.persistentContainer) {
         return nil;
@@ -322,7 +321,7 @@
     return batchUpdateResult;
 }
 
--(BOOL)persistentStoreExistsWithStoreURL:(NSURL *)url {
+- (BOOL)persistentStoreExistsWithStoreURL:(NSURL *)url {
 
     if (url &&
         url.isFileURL &&
@@ -333,7 +332,7 @@
 }
 
 /// get the bundle if its SWIFT_PACKAGE will use the runtime bundle of SPM else will use the bundle from class
--(NSBundle*)getBundle {
+- (NSBundle*)getBundle {
 #if SWIFT_PACKAGE
     return SWIFTPM_MODULE_BUNDLE;
 #else

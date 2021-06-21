@@ -278,7 +278,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             // On iOS 7 and above use a blur layer instead (not yet finished)
             _backgroundBlurView = [[TSBlurView alloc] init];
             self.backgroundBlurView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-//            self.backgroundBlurView.blurTintColor = [UIColor colorWithHexString:current[@"backgroundColor"]];
+            //            self.backgroundBlurView.blurTintColor = [UIColor colorWithHexString:current[@"backgroundColor"]];
             self.backgroundBlurView.blurTintColor = [UIColor blackColor];
             [self addSubview:self.backgroundBlurView];
         }
@@ -302,9 +302,9 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             [self.titleLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
         }
         
-//        [self.titleLabel setShadowColor:[UIColor colorWithHexString:[current valueForKey:@"shadowColor"]]];
-//        [self.titleLabel setShadowOffset:CGSizeMake([[current valueForKey:@"shadowOffsetX"] floatValue],
-//                                                    [[current valueForKey:@"shadowOffsetY"] floatValue])];
+        //        [self.titleLabel setShadowColor:[UIColor colorWithHexString:[current valueForKey:@"shadowColor"]]];
+        //        [self.titleLabel setShadowOffset:CGSizeMake([[current valueForKey:@"shadowOffsetX"] floatValue],
+        //                                                    [[current valueForKey:@"shadowOffsetY"] floatValue])];
 
         self.titleLabel.numberOfLines = 0;
         self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;

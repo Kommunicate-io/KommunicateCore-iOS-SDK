@@ -29,8 +29,8 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
     [super setSelected:selected animated:animated];
 }
 
--(void)updateWithMessage:(ALMessage*) message
-    withColourDictionary:(NSMutableDictionary *)colourDictionary {
+- (void)updateWithMessage:(ALMessage *)message
+     withColourDictionary:(NSMutableDictionary *)colourDictionary {
 
     [self.mUserNameLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:USER_NAME_LABEL_SIZE]];
     [self.mMessageLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:MESSAGE_LABEL_SIZE]];
@@ -72,9 +72,9 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
     [self displayAttachmentMediaType:message];
 }
 
--(void)updateProfileImageAndUnreadCountWithChannel:(ALChannel*) alChannel
-                                         orContact:(ALContact*)contact
-                              withColourDictionary:(NSMutableDictionary *)colourDictionary {
+- (void)updateProfileImageAndUnreadCountWithChannel:(ALChannel *)alChannel
+                                          orContact:(ALContact *)contact
+                               withColourDictionary:(NSMutableDictionary *)colourDictionary {
 
     UILabel* nameIcon = (UILabel*)[self viewWithTag:102];
     nameIcon.textColor = [UIColor whiteColor];
@@ -150,7 +150,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
     }
 }
 
--(void)displayAttachmentMediaType:(ALMessage *)message {
+- (void)displayAttachmentMediaType:(ALMessage *)message {
 
     if ([message isDeletedForAll]) {
         UIColor *subtextColour = [ALApplozicSettings getMessageSubtextColour];
@@ -165,7 +165,7 @@ static const CGFloat IMAGE_NAME_LABEL_SIZE = 14;
         self.imageMarker.image = deletedIcon;
         self.imageNameLabel.textColor = subtextColour;
     } else if (message.fileMeta ||
-        message.contentType == ALMESSAGE_CONTENT_LOCATION) {
+               message.contentType == ALMESSAGE_CONTENT_LOCATION) {
         self.mMessageLabel.hidden = YES;
         self.imageMarker.hidden = NO;
         self.imageNameLabel.hidden = NO;

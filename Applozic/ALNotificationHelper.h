@@ -11,9 +11,12 @@
 
 @interface ALNotificationHelper : NSObject
 
--(BOOL)isApplozicViewControllerOnTop;
+- (BOOL)isApplozicViewControllerOnTop;
 
--(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL) isTapActionDisabled;
+- (void)handlerNotificationClick:(NSString *)contactId
+                     withGroupId:(NSNumber *)groupID
+              withConversationId:(NSNumber *)conversationId
+    notificationTapActionDisable:(BOOL)isTapActionDisabled;
 
 @end
 

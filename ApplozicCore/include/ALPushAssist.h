@@ -13,11 +13,11 @@
 
 @property(nonatomic, readonly, strong) UIViewController *topViewController;
 
--(void)assist:(NSString*)notiMsg and :(NSMutableDictionary*)dict ofUser:(NSString*)userId;
-- (UIViewController*)topViewController ;
--(BOOL)isOurViewOnTop;
--(BOOL)isMessageContainerOnTop;
--(BOOL)isVOIPViewOnTop;
+- (void)assist:(NSString*)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString *)userId;
+- (UIViewController *)topViewController;
+- (BOOL)isOurViewOnTop;
+- (BOOL)isMessageContainerOnTop;
+- (BOOL)isVOIPViewOnTop;
 
 + (BOOL)isViewObjIsMsgContainerVC:(UIViewController *)viewObj;
 

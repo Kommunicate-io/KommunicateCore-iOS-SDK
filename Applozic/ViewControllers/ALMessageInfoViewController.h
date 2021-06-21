@@ -27,9 +27,9 @@
 @property (nonatomic, weak) ALMessage *almessage;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
--(void)setMessage:(ALMessage *)almessage andHeaderHeight:(CGFloat)headerHeight withCompletionHandler:(void(^)(NSError * error))completion;
--(void)setTableCellView:(ALContactCell *)contactCell;
--(UIView *)viewForMessageSection:(UITableView *)tableView;
+- (void)setMessage:(ALMessage *)almessage andHeaderHeight:(CGFloat)headerHeight withCompletionHandler:(void(^)(NSError *error))completion;
+- (void)setTableCellView:(ALContactCell *)contactCell;
+- (UIView *)viewForMessageSection:(UITableView *)tableView;
 
 //=============================================================================================
 #pragma HEADER VIEW

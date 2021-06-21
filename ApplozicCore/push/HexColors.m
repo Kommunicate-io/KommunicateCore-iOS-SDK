@@ -16,11 +16,9 @@
 
 @implementation HXColor (HexColorAddition)
 
-+ (HXColor *)colorWithHexString:(NSString *)hexString
-{
++ (HXColor *)colorWithHexString:(NSString *)hexString {
     // Check for hash and add the missing hash
-    if('#' != [hexString characterAtIndex:0])
-    {
+    if('#' != [hexString characterAtIndex:0]) {
         hexString = [NSString stringWithFormat:@"#%@", hexString];
     }
 
@@ -36,15 +34,13 @@
     return [[self class] colorWithHexString:hexString alpha:alpha];
 }
 
-+ (HXColor *)colorWithHexString:(NSString *)hexString alpha:(CGFloat)alpha
-{
++ (HXColor *)colorWithHexString:(NSString *)hexString alpha:(CGFloat)alpha {
     if (hexString.length == 0) {
         return nil;
     }
 
     // Check for hash and add the missing hash
-    if('#' != [hexString characterAtIndex:0])
-    {
+    if('#' != [hexString characterAtIndex:0]) {
         hexString = [NSString stringWithFormat:@"#%@", hexString];
     }
 
@@ -74,13 +70,11 @@
     return color;
 }
 
-+ (HXColor *)colorWith8BitRed:(NSInteger)red green:(NSInteger)green blue:(NSInteger)blue
-{
++ (HXColor *)colorWith8BitRed:(NSInteger)red green:(NSInteger)green blue:(NSInteger)blue {
     return [[self class] colorWith8BitRed:red green:green blue:blue alpha:1.0];
 }
 
-+ (HXColor *)colorWith8BitRed:(NSInteger)red green:(NSInteger)green blue:(NSInteger)blue alpha:(CGFloat)alpha
-{
++ (HXColor *)colorWith8BitRed:(NSInteger)red green:(NSInteger)green blue:(NSInteger)blue alpha:(CGFloat)alpha {
     HXColor *color = nil;
 #if (TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE)
     color = [HXColor colorWithRed:(float)red/255 green:(float)green/255 blue:(float)blue/255 alpha:alpha];
@@ -91,8 +85,7 @@
     return color;
 }
 
-+ (NSString *)hexStringTransformFromThreeCharacters:(NSString *)hexString
-{
++ (NSString *)hexStringTransformFromThreeCharacters:(NSString *)hexString {
     if(hexString.length == 4)
     {
         hexString = [NSString stringWithFormat:@"#%1$c%1$c%2$c%2$c%3$c%3$c",
@@ -105,8 +98,7 @@
     return hexString;
 }
 
-+ (unsigned)hexValueToUnsigned:(NSString *)hexValue
-{
++ (unsigned)hexValueToUnsigned:(NSString *)hexValue {
     unsigned value = 0;
 
     NSScanner *hexValueScanner = [NSScanner scannerWithString:hexValue];

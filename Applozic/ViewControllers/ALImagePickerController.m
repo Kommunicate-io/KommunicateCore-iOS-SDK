@@ -24,13 +24,13 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if(orientation == UIDeviceOrientationLandscapeRight || orientation == UIDeviceOrientationLandscapeLeft)
+    if (orientation == UIDeviceOrientationLandscapeRight || orientation == UIDeviceOrientationLandscapeLeft) {
         return UIInterfaceOrientationMaskLandscape;
-    else
+    } else {
         return UIInterfaceOrientationMaskPortrait;
+    }
 }
 
 @end

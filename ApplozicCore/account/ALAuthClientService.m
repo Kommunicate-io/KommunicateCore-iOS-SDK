@@ -36,9 +36,9 @@ static NSString *const AL_AUTH_TOKEN_REFRESH_URL = @"/rest/ws/register/refresh/t
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
 
-    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, AL_AUTH_TOKEN_REFRESH_URL];
+    NSString *theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, AL_AUTH_TOKEN_REFRESH_URL];
 
-    NSMutableURLRequest * theRequest = [self createPostRequestWithURL:theUrlString withParamString:theParamString];
+    NSMutableURLRequest *theRequest = [self createPostRequestWithURL:theUrlString withParamString:theParamString];
 
     [ALResponseHandler processRequest:theRequest andTag:@"REFRESH_AUTH_TOKEN_OF_USER" WithCompletionHandler:^(id theJson, NSError *theError) {
         if(theError){
@@ -66,21 +66,21 @@ static NSString *const AL_AUTH_TOKEN_REFRESH_URL = @"/rest/ws/register/refresh/t
 -(NSMutableURLRequest *)createPostRequestWithURL:(NSString *)urlString
                                  withParamString:(NSString *)paramString {
 
-    NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
     [theRequest setTimeoutInterval:600];
     [theRequest setHTTPMethod:@"POST"];
 
     if (paramString != nil) {
-        NSData * thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
         [theRequest setHTTPBody:thePostData];
         [theRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[thePostData length]] forHTTPHeaderField:@"Content-Length"];
     }
     [theRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    NSString * appMoudle = [ALUserDefaultsHandler getAppModuleName];
+    NSString *appMoudle = [ALUserDefaultsHandler getAppModuleName];
     if (appMoudle) {
         [theRequest addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
     }
-    NSString * deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
 
     if (deviceKeyString) {
         [theRequest addValue:deviceKeyString forHTTPHeaderField:@"Device-Key"];

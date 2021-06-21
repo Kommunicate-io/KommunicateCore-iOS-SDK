@@ -63,12 +63,10 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     UIViewController *viewController;
 }
 
--(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+-(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier  {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
-    if(self)
-    {
+    if (self) {
         [self.mDowloadRetryButton addTarget:self action:@selector(downloadRetry) forControlEvents:UIControlEventTouchUpInside];
         [self.mDowloadRetryButton setBackgroundColor:[UIColor clearColor]];
         
@@ -103,11 +101,10 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     return self;
 }
 
--(instancetype) populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize
-{
+-(instancetype) populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize {
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[alMessage.createdAtTime doubleValue]/1000]];
     
-    NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
+    NSString *theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
     [self.replyUIView removeFromSuperview];
@@ -133,12 +130,10 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     [self.mUserProfileImageView setUserInteractionEnabled:YES];
     [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
     
-    if([alMessage isReceivedMessage])
-    {
+    if ([alMessage isReceivedMessage]) {
         [self.mUserProfileImageView setFrame:CGRectMake(USER_PROFILE_PADDING_X, 0, USER_PROFILE_WIDTH, USER_PROFILE_HEIGHT)];
         
-        if([ALApplozicSettings isUserProfileHidden])
-        {
+        if ([ALApplozicSettings isUserProfileHidden]) {
             [self.mUserProfileImageView setFrame:CGRectMake(USER_PROFILE_PADDING_X, 0, 0, USER_PROFILE_HEIGHT)];
         }
         
@@ -149,14 +144,13 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         
         [self.documentName setTextColor:[UIColor grayColor]];
         
-  
+
         CGFloat requiredHeight  = BUBBLE_HEIGHT;
         CGFloat imageViewY = self.mBubleImageView.frame.origin.y + IMAGE_VIEW_PADDING_Y ;
-                [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
                                                   self.mUserProfileImageView.frame.origin.y,
                                                   viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
-          if(alMessage.groupId)
-        {
+        if (alMessage.groupId) {
             [self.mChannelMemberName setText:receiverName];
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary]];
@@ -171,8 +165,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
             
         }
         
-        if(alMessage.isAReplyMessage)
-        {
+        if (alMessage.isAReplyMessage) {
             
             [self processReplyOfChat:alMessage andViewSize:viewSize];
             
@@ -219,61 +212,49 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         
         [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
         
-        if(alContact.contactImageUrl)
-        {
+        if (alContact.contactImageUrl) {
             [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"contact_default_placeholder"];
-        }
-        else
-        {
+        } else {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
             [self.mNameLabel setHidden:NO];
             self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary];
         }
         
-        if (alMessage.imageFilePath == nil)
-        {
+        if (alMessage.imageFilePath == nil) {
             self.mDowloadRetryButton.alpha = 1;
             self.downloadRetryView.alpha = 1;
             self.sizeLabel.alpha = 1;
             [self.sizeLabel setText:[alMessage.fileMeta getTheSize]];
             [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
-        }
-        else
-        {
-             self.mDowloadRetryButton.alpha = 0;
-            self.downloadRetryView.alpha = 0;
-            self.sizeLabel.alpha = 0;
-        }
-        
-        if (alMessage.inProgress == YES)
-        {
-            self.progresLabel.alpha = 1;
+        } else {
             self.mDowloadRetryButton.alpha = 0;
             self.downloadRetryView.alpha = 0;
             self.sizeLabel.alpha = 0;
         }
-        else
-        {
+        
+        if (alMessage.inProgress == YES) {
+            self.progresLabel.alpha = 1;
+            self.mDowloadRetryButton.alpha = 0;
+            self.downloadRetryView.alpha = 0;
+            self.sizeLabel.alpha = 0;
+        } else {
             self.progresLabel.alpha = 0;
         }
         
-    }
-    else
-    {
+    } else {
         [self.mUserProfileImageView setFrame:CGRectMake(viewSize.width - USER_PROFILE_PADDING_X_OUTBOX, 0, 0, USER_PROFILE_HEIGHT)];
         
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getSendMsgColor];
-                
+
         [self.documentName setTextColor:[UIColor whiteColor]];
- 
+
         [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX),
                                                   self.mUserProfileImageView.frame.origin.y,
                                                   viewSize.width - BUBBLE_PADDING_WIDTH, BUBBLE_HEIGHT)];
         [self.mImageView setFrame:CGRectMake(self.mBubleImageView.frame.origin.x,
                                              self.mBubleImageView.frame.origin.y ,
                                              IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT)];
-        if( alMessage.isAReplyMessage)
-        {
+        if (alMessage.isAReplyMessage) {
             
             [self processReplyOfChat:alMessage andViewSize:viewSize];
             
@@ -320,29 +301,24 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         
         [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentSend.png"]];
         
-         msgFrameHeight = self.mBubleImageView.frame.size.height;
+        msgFrameHeight = self.mBubleImageView.frame.size.height;
         
         self.progresLabel.alpha = 0;
         
         self.mDowloadRetryButton.alpha = 0;
         self.downloadRetryView.alpha = 0;
         self.sizeLabel.alpha = 0;
-        if (alMessage.inProgress == YES)
-        {
+        if (alMessage.inProgress == YES) {
             self.progresLabel.alpha = 1;
             //            NSLog(@"calling you progress label....");
-        }
-        else if(!alMessage.imageFilePath && alMessage.fileMeta.blobKey)
-        {
-             self.mDowloadRetryButton.alpha = 1;
+        } else if (!alMessage.imageFilePath && alMessage.fileMeta.blobKey) {
+            self.mDowloadRetryButton.alpha = 1;
             self.downloadRetryView.alpha = 1;
             self.sizeLabel.alpha = 1;
             [self.sizeLabel setText:[alMessage.fileMeta getTheSize]];
             [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"downloadI6.png"] forState:UIControlStateNormal];
-        }
-        else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)
-        {
-              self.mDowloadRetryButton.alpha = 1;
+        } else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey) {
+            self.mDowloadRetryButton.alpha = 1;
             self.downloadRetryView.alpha = 1;
             self.sizeLabel.alpha = 1;
             [self.sizeLabel setText:[alMessage.fileMeta getTheSize]];
@@ -353,18 +329,17 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     [self.documentName setText:alMessage.fileMeta.name];
     [self.mImageView setContentMode:UIViewContentModeScaleAspectFit];
     
-    if(alMessage.imageFilePath != nil && alMessage.fileMeta.blobKey)
-    {
+    if (alMessage.imageFilePath != nil && alMessage.fileMeta.blobKey) {
 
         NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:alMessage.imageFilePath];
         NSString *filePath = documentDirectory.path;
 
-        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
             fileSourceURL = [NSURL fileURLWithPath:documentDirectory.path];
-        }else{
+        } else {
             NSURL *appGroupDirectory =  [ALUtilityClass getAppsGroupDirectoryWithFilePath:alMessage.imageFilePath];
 
-            if(appGroupDirectory){
+            if (appGroupDirectory) {
                 fileSourceURL = [NSURL fileURLWithPath:appGroupDirectory.path];
             }
         }
@@ -380,7 +355,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     
     if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
         self.mMessageStatusImageView.hidden = NO;
-        NSString * imageName = [self getMessageStatusIconName:self.mMessage];
+        NSString *imageName = [self getMessageStatusIconName:self.mMessage];
         self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
     }
     
@@ -388,16 +363,14 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 }
 
 
--(void) addShadowEffects
-{
+-(void) addShadowEffects  {
     self.mBubleImageView.layer.shadowOpacity = 0.3;
     self.mBubleImageView.layer.shadowOffset = CGSizeMake(0, 2);
     self.mBubleImageView.layer.shadowRadius = 1;
     self.mBubleImageView.layer.masksToBounds = NO;
 }
 
--(void) setupProgressValueX:(CGFloat)cooridinateX andY:(CGFloat)cooridinateY
-{
+-(void) setupProgressValueX:(CGFloat)cooridinateX andY:(CGFloat)cooridinateY {
     self.progresLabel = [[KAProgressLabel alloc] init];
     self.progresLabel.cancelButton.frame = CGRectMake(10, 10, 40, 40);
     [self.progresLabel.cancelButton setBackgroundImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DELETEIOSX.png"] forState:UIControlStateNormal];
@@ -414,8 +387,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     [self.contentView addSubview: self.progresLabel];
 }
 
--(void)downloadRetry
-{
+-(void)downloadRetry  {
     [super.delegate downloadRetryButtonActionDelegate:(int)self.tag andMessage:self.mMessage];
 }
 
@@ -423,10 +395,8 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 #pragma mark - UIDocumentInteraction Delegate Methods
 //========================================================================================
 
--(void)suggestionAction
-{
-    if(!fileSourceURL)
-    {
+-(void)suggestionAction  {
+    if (!fileSourceURL) {
         return;
     }
     
@@ -437,36 +407,28 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 #pragma mark - KAProgressLabel Delegate Methods
 //========================================================================================
 
--(void)cancelAction
-{
-    if ([self.delegate respondsToSelector:@selector(stopDownloadForIndex:andMessage:)])
-    {
+-(void)cancelAction  {
+    if ([self.delegate respondsToSelector:@selector(stopDownloadForIndex:andMessage:)]) {
         [self.delegate stopDownloadForIndex:(int)self.tag andMessage:self.mMessage];
     }
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated  {
     [super setSelected:selected animated:animated];
 }
 
--(BOOL)canBecomeFirstResponder
-{
+-(BOOL)canBecomeFirstResponder  {
     return YES;
 }
 
-- (void)dealloc
-{
-    if(super.mMessage.fileMeta)
-    {
+- (void)dealloc  {
+    if (super.mMessage.fileMeta) {
         [super.mMessage.fileMeta removeObserver:self forKeyPath:@"progressValue" context:nil];
     }
 }
 
--(void)setMMessage:(ALMessage *)mMessage
-{
-    if(super.mMessage.fileMeta)
-    {
+-(void)setMMessage:(ALMessage *)mMessage  {
+    if (super.mMessage.fileMeta) {
         [super.mMessage.fileMeta removeObserver:self forKeyPath:@"progressValue" context:nil];
     }
     
@@ -474,22 +436,19 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     [super.mMessage.fileMeta addObserver:self forKeyPath:@"progressValue" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context  {
     ALFileMetaInfo *metaInfo = (ALFileMetaInfo *)object;
     [self setNeedsDisplay];
     self.progresLabel.startDegree = 0;
     self.progresLabel.endDegree = metaInfo.progressValue;
 }
 
--(void)openUserChatVC
-{
+-(void)openUserChatVC  {
     [self.delegate processUserChatView:self.mMessage];
 }
 
 
--(void)processOpenChat
-{
+-(void)processOpenChat  {
     [self.delegate handleTapGestureForKeyBoard];
     [self.delegate openUserChat:self.mMessage];
 }

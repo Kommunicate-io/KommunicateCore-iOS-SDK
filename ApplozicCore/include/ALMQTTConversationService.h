@@ -20,18 +20,18 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 
 @protocol ALMQTTConversationDelegate <NSObject>
 
--(void) syncCall:(ALMessage *) alMessage andMessageList:(NSMutableArray *)messageArray;
--(void) delivered:(NSString *) messageKey contactId:(NSString *)contactId withStatus:(int)status;
--(void) updateStatusForContact:(NSString *)contactId  withStatus:(int)status;
--(void) updateTypingStatus: (NSString *) applicationKey userId: (NSString *) userId status: (BOOL) status;
--(void) updateLastSeenAtStatus: (ALUserDetail *) alUserDetail;
--(void) mqttConnectionClosed;
+- (void)syncCall:(ALMessage *)alMessage andMessageList:(NSMutableArray *)messageArray;
+- (void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status;
+- (void)updateStatusForContact:(NSString *)contactId  withStatus:(int)status;
+- (void)updateTypingStatus:(NSString *) applicationKey userId:(NSString *)userId status:(BOOL)status;
+- (void)updateLastSeenAtStatus:(ALUserDetail *)alUserDetail;
+- (void)mqttConnectionClosed;
 
 @optional
 
--(void) mqttDidConnected;
--(void) reloadDataForUserBlockNotification:(NSString *)userId andBlockFlag:(BOOL)flag;
--(void)updateUserDetail:(NSString *)userId;
+- (void)mqttDidConnected;
+- (void)reloadDataForUserBlockNotification:(NSString *)userId andBlockFlag:(BOOL)flag;
+- (void)updateUserDetail:(NSString *)userId;
 
 @end
 
@@ -48,34 +48,34 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 
 @property (nonatomic, readwrite) MQTTSession *session;
 
--(void) subscribeToConversation;
--(void) subscribeToConversationWithTopic:(NSString *) topic;
+- (void)subscribeToConversation;
+- (void)subscribeToConversationWithTopic:(NSString *)topic;
 
--(void) unsubscribeToConversation;
--(void) unsubscribeToConversationWithTopic:(NSString *) topic;
+- (void)unsubscribeToConversation;
+- (void)unsubscribeToConversationWithTopic:(NSString *)topic;
 
--(BOOL) unsubscribeToConversation: (NSString *)userKey;
+- (BOOL)unsubscribeToConversation:(NSString *)userKey;
 
--(void) sendTypingStatus:(NSString *) applicationKey userID:(NSString *) userId andChannelKey:(NSNumber *)channelKey typing: (BOOL) typing;
+- (void)sendTypingStatus:(NSString *)applicationKey userID:(NSString *)userId andChannelKey:(NSNumber *)channelKey typing:(BOOL)typing;
 
--(void)unSubscribeToChannelConversation:(NSNumber *)channelKey;
--(void)subscribeToChannelConversation:(NSNumber *)channelKey;
+- (void)unSubscribeToChannelConversation:(NSNumber *)channelKey;
+- (void)subscribeToChannelConversation:(NSNumber *)channelKey;
 
--(void)subscribeToOpenChannel:(NSNumber *)channelKey;
--(void)unSubscribeToOpenChannel:(NSNumber *)channelKey;
--(void) syncReceivedMessage :(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary*)nsMutableDictionary;
+- (void)subscribeToOpenChannel:(NSNumber *)channelKey;
+- (void)unSubscribeToOpenChannel:(NSNumber *)channelKey;
+- (void)syncReceivedMessage :(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary*)nsMutableDictionary;
 
--(void) retryConnection;
--(void) retryConnectionWithTopic:(NSString *)topic;
+- (void)retryConnection;
+- (void)retryConnectionWithTopic:(NSString *)topic;
 
--(void)subscribeToConversationWithTopic:(NSString *)topic withCompletionHandler:(void (^)(BOOL subscribed, NSError * error))completion;
+- (void)subscribeToConversationWithTopic:(NSString *)topic withCompletionHandler:(void (^)(BOOL subscribed, NSError * error))completion;
 
 /// For publishing a read status of message using MQTT
 /// @param messageKey Pass the messageKey which is used for identifiying the message.
--(BOOL) messageReadStatusPublishWithMessageKey:(NSString *) messageKey;
+- (BOOL)messageReadStatusPublishWithMessageKey:(NSString *)messageKey;
 
 /// For publishing custom data with topic using MQTT
 /// @param dataString Pass the string of data to publish.
 /// @param topic Pass the topic name to publish on.
--(BOOL) publishCustomData:(NSString *)dataString withTopicName:(NSString *) topic;
+- (BOOL)publishCustomData:(NSString *)dataString withTopicName:(NSString *)topic;
 @end

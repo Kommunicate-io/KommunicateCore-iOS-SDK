@@ -17,8 +17,7 @@
 
 @implementation ALDataNetworkConnection
 
-+(BOOL)checkDataNetworkAvailable
-{
++ (BOOL)checkDataNetworkAvailable {
     SCNetworkReachabilityFlags flags;
     SCNetworkReachabilityRef address;
     address = SCNetworkReachabilityCreateWithName(NULL, "www.google.com" );
@@ -29,27 +28,20 @@
     && !(flags & kSCNetworkReachabilityFlagsConnectionRequired)
     && (flags & kSCNetworkReachabilityFlagsReachable);
     
-    if(canReach)
-    {
+    if (canReach) {
         ALSLog(ALLoggerSeverityInfo, @"NETWORK AVAILABLE");
-    }
-    else
-    {
+    } else {
         ALSLog(ALLoggerSeverityInfo, @"NETWORK ISN'T AVAILABLE");
     }
     
     return canReach;
 }
 
-+(BOOL)noInternetConnectionNotification
-{
-    if(![ALDataNetworkConnection checkDataNetworkAvailable])
-    {
++ (BOOL)noInternetConnectionNotification {
+    if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
         [TSMessage showNotificationWithTitle:@"Unable to connect to Internet" type:TSMessageNotificationTypeError];
         return YES;
-    }
-    else
-    {
+    } else {
         return NO;
     }
 }

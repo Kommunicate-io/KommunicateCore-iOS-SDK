@@ -13,12 +13,9 @@
 @property (nonatomic, strong) NSNumber *iD;
 @property (nonatomic, strong) NSString *topicId;
 @property (nonatomic, strong) NSNumber *groupId;
-@property(nonatomic,strong) NSString * userId;
+@property(nonatomic,strong) NSString *userId;
 @property (nonatomic,retain) NSNumber *created;
-@property(nonatomic,retain) NSNumber * closed;
-
-@property(nonatomic,strong) NSString * topicDetailJson;
-
-
+@property(nonatomic,retain) NSNumber *closed;
+@property(nonatomic,strong) NSString *topicDetailJson;
 
 @end

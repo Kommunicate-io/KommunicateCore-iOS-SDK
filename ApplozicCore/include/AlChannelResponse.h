@@ -22,9 +22,9 @@
 @property (nonatomic, strong) NSNumber *userCount;
 @property (nonatomic, strong) NSNumber *unreadCount;
 @property (nonatomic, strong) ALConversationProxy *conversationProxy;
-@property (nonatomic, strong) NSNumber * notificationAfterTime;
-@property (nonatomic, strong) NSNumber * deletedAtTime;
-@property (nonatomic, strong) NSMutableDictionary * metadata;
+@property (nonatomic, strong) NSNumber *notificationAfterTime;
+@property (nonatomic, strong) NSNumber *deletedAtTime;
+@property (nonatomic, strong) NSMutableDictionary *metadata;
 
 
 @end

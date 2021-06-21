@@ -11,7 +11,7 @@
 
 @interface ALColorUtility : NSObject
 
-+ (UIImage *)imageWithSize:(CGRect)rect WithHexString:(NSString*)stringToConvert;
++ (UIImage *)imageWithSize:(CGRect)rect WithHexString:(NSString *)stringToConvert;
 + (UIColor *)colorWithHexString:(NSString *)stringToConvert;
 + (NSString *)getAlphabetForProfileImage:(NSString *)actualName;
 + (UIColor *)getColorForAlphabet:(NSString *)alphabet colorCodes:(NSMutableDictionary *)dictionary;

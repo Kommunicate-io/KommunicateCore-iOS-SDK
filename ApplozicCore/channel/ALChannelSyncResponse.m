@@ -10,26 +10,21 @@
 
 @implementation ALChannelSyncResponse
 
--(instancetype)initWithJSONString:(NSString *)JSONString
-{
+- (instancetype)initWithJSONString:(NSString *)JSONString {
     self = [super initWithJSONString:JSONString];
     
     self.alChannelArray = [[NSMutableArray alloc] init];
     
-    if([super.status isEqualToString: AL_RESPONSE_SUCCESS])
-    {
+    if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSMutableArray *responseArray = [JSONString valueForKey:@"response"];
         
-        for(NSDictionary *JSONDictionaryObject in responseArray)
-        {
+        for (NSDictionary *JSONDictionaryObject in responseArray) {
             ALChannel *channelObject = [[ALChannel alloc] initWithDictonary:JSONDictionaryObject];
             [self.alChannelArray addObject:channelObject];
         }
         
         return self;
-    }
-    else
-    {
+    } else {
         return nil;
     }
     

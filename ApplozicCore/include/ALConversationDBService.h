@@ -12,18 +12,17 @@
 
 @interface ALConversationDBService : NSObject
 
+- (void)insertConversationProxy:(NSMutableArray *)proxyArray;
 
--(void)insertConversationProxy:(NSMutableArray *)proxyArray;
+- (DB_ConversationProxy *)createConversationProxy:(ALConversationProxy *)conversationProxy;
 
--(DB_ConversationProxy *)createConversationProxy:(ALConversationProxy *)conversationProxy;
+- (DB_ConversationProxy *)getConversationProxyByKey:(NSNumber *)Id;
 
--(DB_ConversationProxy *)getConversationProxyByKey:(NSNumber *)Id;
+- (NSArray*)getConversationProxyListFromDBForUserID:(NSString *)userId;
+- (NSArray*)getConversationProxyListFromDBWithChannelKey:(NSNumber *)channelKey;
 
--(NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId;
--(NSArray*)getConversationProxyListFromDBWithChannelKey:(NSNumber *)channelKey;
+- (void)insertConversationProxyTopicDetails:(NSMutableArray *)proxyArray;
 
--(void)insertConversationProxyTopicDetails:(NSMutableArray*)proxyArray;
-
--(NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId andTopicId:(NSString*)topicId;
+- (NSArray*)getConversationProxyListFromDBForUserID:(NSString *)userId andTopicId:(NSString *)topicId;
 
 @end

@@ -12,8 +12,8 @@
 
 @implementation ALPushNotificationHandler
 
-+(ALPushNotificationHandler *) shared {
-    static ALPushNotificationHandler * handler = nil;
++ (ALPushNotificationHandler *)shared {
+    static ALPushNotificationHandler *handler = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         handler = [[self alloc] init];
@@ -21,7 +21,7 @@
     return handler;
 }
 
--(void)dataConnectionNotificationHandler {
+- (void)dataConnectionNotificationHandler {
     [[NSNotificationCenter defaultCenter]
      addObserver:self
      selector:@selector(thirdPartyNotificationHandler:)
@@ -31,9 +31,8 @@
 
 
 // To DISPLAY THE NOTIFICATION ONLY ...from 3rd Party View.
--(void)thirdPartyNotificationHandler:(NSNotification *)notification
-{
-    if([ALApplozicSettings isSwiftFramework]) {
+- (void)thirdPartyNotificationHandler:(NSNotification *)notification {
+    if ([ALApplozicSettings isSwiftFramework]) {
         return;
     }
 
@@ -42,51 +41,46 @@
     NSNumber *conversationId = nil;
     NSArray *notificationComponents = [notification.object componentsSeparatedByString:@":"];
 
-    if(notificationComponents.count>2)
-    {
+    if (notificationComponents.count>2) {
         NSString *groupIdString = notificationComponents[1];
         groupId = [NSNumber numberWithInt:groupIdString.intValue];
         contactId = notificationComponents[2];
-    } else if(notificationComponents.count == 2) {
+    } else if (notificationComponents.count == 2) {
         NSString *conversationIdString = notificationComponents[1];
         conversationId = [NSNumber numberWithInt:conversationIdString.intValue];
         contactId = notificationComponents[0];
-    }else {
+    } else {
         contactId = notification.object;
     }
     NSDictionary *userInfo = notification.userInfo;
-    NSNumber * updateUI = [userInfo valueForKey:@"updateUI"];
-    NSString * alertValue = [userInfo valueForKey:@"alertValue"];
+    NSNumber *updateUI = [userInfo valueForKey:@"updateUI"];
+    NSString *alertValue = [userInfo valueForKey:@"alertValue"];
 
-    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
-    {
+    if ([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]]) {
         ALSLog(ALLoggerSeverityInfo, @"App launched from Background....Directly opening view from %@",userInfo);
 
-        if(conversationId != nil){
-            ALConversationService * conversationService = [[ALConversationService alloc]init];
+        if (conversationId != nil) {
+            ALConversationService *conversationService = [[ALConversationService alloc]init];
             [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
-                if(error == nil){
+                if (error == nil) {
                     [self notificationTapped:contactId withGroupId:groupId withConversationId: conversationId notificationTapActionDisable:NO]; //
-                }else{
+                } else {
                     ALSLog(ALLoggerSeverityInfo, @"Error in fetching conversation :: %@",error);
                 }
             }];
-        }else{
+        } else {
             [self notificationTapped:contactId withGroupId:groupId withConversationId: conversationId notificationTapActionDisable:NO]; // Directly launching Chat
         }
         return;
     }
 
-    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]])
-    {
-        if( alertValue || alertValue.length >0)
-        {
+    if ([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]]) {
+        if (alertValue || alertValue.length >0) {
             ALSLog(ALLoggerSeverityInfo, @"posting to notification....%@",notification.userInfo);
-            if (groupId && [ALChannelService isChannelMuted:groupId])
-            {
+            if (groupId && [ALChannelService isChannelMuted:groupId]) {
                 return;
             }
-            if(groupId){
+            if (groupId) {
 
                 [[ALChannelService new] getChannelInformation:groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
                     [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:contactId withGroupId:groupId completionHandler:^(BOOL handle) {
@@ -98,11 +92,11 @@
                         }
                     }];
                 }];
-            }else{
-                if(conversationId != nil){
-                    ALConversationService * conversationService = [[ALConversationService alloc]init];
+            } else {
+                if (conversationId != nil) {
+                    ALConversationService *conversationService = [[ALConversationService alloc]init];
                     [conversationService fetchTopicDetails:conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
-                        if(error == nil){
+                        if (error == nil) {
                             [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:contactId withGroupId:groupId completionHandler:^(BOOL handle) {
                                 if (handle) {
                                     [self notificationTapped:contactId
@@ -111,12 +105,12 @@
                                 notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
                                 }
                             }];
-                        }else{
+                        } else {
                             ALSLog(ALLoggerSeverityInfo, @"Error in fetching conversation :: %@",error);
                         }
                     }];
 
-                }else{
+                } else {
                     [ALUtilityClass thirdDisplayNotificationTS:alertValue
                                                andForContactId:contactId
                                                    withGroupId:groupId completionHandler:^(BOOL handle) {
@@ -129,34 +123,32 @@
                     }];
                 }
             }
-        }
-        else
-        {
+        } else {
             ALSLog(ALLoggerSeverityInfo, @"Nil Alert Value");
         }
     }
-    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_BACKGROUND]])
-    {
-        if(alertValue || alertValue.length >0)
-        {
-            ALPushAssist* assitant = [[ALPushAssist alloc] init];
+    if ([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_BACKGROUND]]) {
+        if (alertValue || alertValue.length >0) {
+            ALPushAssist *assitant = [[ALPushAssist alloc] init];
             ALSLog(ALLoggerSeverityInfo, @"APP_STATE_BACKGROUND :: %@",notification.userInfo);
-            if(!assitant.isOurViewOnTop)
-            {
-           //     [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId delegate:self];
+            if (!assitant.isOurViewOnTop) {
+                //     [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId delegate:self];
             }
         }
     }
 }
 
--(void)notificationTapped:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL) isTapActionDisabled
-{
-    ALPushAssist* pushAssistant = [[ALPushAssist alloc] init];
+- (void)notificationTapped:(NSString *)contactId
+               withGroupId:(NSNumber *)groupID
+        withConversationId:(NSNumber *)conversationId
+notificationTapActionDisable:(BOOL)isTapActionDisabled {
+    
+    ALPushAssist *pushAssistant = [[ALPushAssist alloc] init];
     ALSLog(ALLoggerSeverityInfo, @"Chat Launch Contact ID: %@",contactId);
 
-    ALNotificationHelper * notificationHelper = [[ALNotificationHelper alloc]init];
+    ALNotificationHelper *notificationHelper = [[ALNotificationHelper alloc]init];
 
-    if(notificationHelper.isApplozicViewControllerOnTop) {
+    if (notificationHelper.isApplozicViewControllerOnTop) {
         [notificationHelper handlerNotificationClick:contactId withGroupId:groupID withConversationId:conversationId notificationTapActionDisable:isTapActionDisabled];
         return;
     }

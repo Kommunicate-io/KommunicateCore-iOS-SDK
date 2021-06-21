@@ -10,8 +10,7 @@
 
 @implementation ALUserDetailListFeed
 
--(void)setArray:(NSMutableArray *)array
-{
+- (void)setArray:(NSMutableArray *)array {
     self.userIdList = [NSMutableArray arrayWithArray:array];
 }
 

@@ -58,19 +58,15 @@ static NSString *const APPLOZIC_CATEGORY_KEY = @"category";
 
 @interface ALPushNotificationService : NSObject
 
--(BOOL) isApplozicNotification: (NSDictionary *) dictionary;
-
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate>realTimeUpdate;
-
--(BOOL) processPushNotification: (NSDictionary *) dictionary updateUI: (NSNumber*) updateUI;
-
-@property(nonatomic,strong) ALSyncCallService * alSyncCallService;
-
+@property(nonatomic,strong) ALSyncCallService *alSyncCallService;
 @property(nonatomic, readonly, strong) UIViewController *topViewController;
 
--(void)notificationArrivedToApplication:(UIApplication*)application withDictionary:(NSDictionary *)userInfo;
-+(void)applicationEntersForeground;
-+(void)userSync;
--(BOOL) checkForLaunchNotification:(NSDictionary *)dictionary;
--(NSDictionary *)notificationTypes;
+- (BOOL)isApplozicNotification:(NSDictionary *)dictionary;
+- (BOOL)processPushNotification:(NSDictionary *)dictionary updateUI:(NSNumber *)updateUI;
+- (void)notificationArrivedToApplication:(UIApplication *)application withDictionary:(NSDictionary *)userInfo;
++ (void)applicationEntersForeground;
++ (void)userSync;
+- (BOOL)checkForLaunchNotification:(NSDictionary *)dictionary;
+- (NSDictionary *)notificationTypes;
 @end

@@ -20,12 +20,11 @@
     [super didReceiveMemoryWarning];
 }
 
--(void)customNavigationItemClicked:(id)sender withTag:(NSString*)tag{
+- (void)customNavigationItemClicked:(id)sender withTag:(NSString *)tag{
     ALSLog(ALLoggerSeverityInfo, @"baseController ALNavigationController...");
 }
 
--(NSMutableArray*)getCustomButtons
-{
+- (NSMutableArray*)getCustomButtons {
     ALSLog(ALLoggerSeverityInfo, @" Base getCustomButtonView");
     return nil;
 }

@@ -12,8 +12,8 @@
 @protocol ALMapViewControllerDelegate <NSObject>
 
 @optional
--(void)sendGoogleMap:(NSString *)latLongString withCompletion:(void(^)(NSString *message, NSError *error))completion;
--(void)sendGoogleMapOffline:(NSString*)latLongString;
+- (void)sendGoogleMap:(NSString *)latLongString withCompletion:(void(^)(NSString *message, NSError *error))completion;
+- (void)sendGoogleMapOffline:(NSString*)latLongString;
 
 @end
 

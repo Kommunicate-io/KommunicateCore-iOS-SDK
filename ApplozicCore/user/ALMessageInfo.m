@@ -10,17 +10,14 @@
 
 @implementation ALMessageInfo
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary
-{
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];
     return self;
 }
 
--(void)parseMessage:(id) messageJson
-{
+- (void)parseMessage:(id)messageJson {
     self.userId = [self getStringFromJsonValue:messageJson[@"userId"]];
     self.status = [self getShortFromJsonValue:messageJson[@"status"]];
 }
-
 
 @end

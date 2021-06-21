@@ -12,8 +12,8 @@
 
 @interface ALNavigationController : UINavigationController
 
--(void)customNavigationItemClicked:(id)sender withTag:(NSString*)tag;
+- (void)customNavigationItemClicked:(id)sender withTag:(NSString *)tag;
 
--(NSMutableArray*)getCustomButtons;
+- (NSMutableArray*)getCustomButtons;
 
 @end

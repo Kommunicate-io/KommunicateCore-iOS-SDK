@@ -16,12 +16,10 @@
 
 @implementation ALContactMessageBaseCell
 
--(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 
-    if(self)
-    {
+    if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
 
         self.contactProfileImage = [[UIImageView alloc] init];
@@ -60,8 +58,7 @@
 }
 
 
--(instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize {
     self.mUserProfileImageView.alpha = 1;
     self.progresLabel.alpha = 0;
     self.mDowloadRetryButton.alpha = 0;
@@ -84,8 +81,7 @@
     [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
 
 
-    if((!alMessage.imageFilePath && alMessage.fileMeta.blobKey) || (alMessage.imageFilePath && !alMessage.fileMeta.blobKey))
-    {
+    if ((!alMessage.imageFilePath && alMessage.fileMeta.blobKey) || (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)) {
         [super.delegate downloadRetryButtonActionDelegate:(int)self.tag andMessage:self.mMessage];
     }
 
@@ -102,67 +98,55 @@
 #pragma mark - KAProgressLabel Delegate Methods
 //==================================================================================================
 
--(void)cancelAction
-{
-    if ([self.delegate respondsToSelector:@selector(stopDownloadForIndex:andMessage:)])
-    {
+- (void)cancelAction {
+    if ([self.delegate respondsToSelector:@selector(stopDownloadForIndex:andMessage:)]) {
         [self.delegate stopDownloadForIndex:(int)self.tag andMessage:self.mMessage];
     }
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 }
 
--(BOOL)canBecomeFirstResponder
-{
+- (BOOL)canBecomeFirstResponder {
     return YES;
 }
 
--(void)dowloadRetryActionButton
-{
+- (void)dowloadRetryActionButton {
     [super.delegate downloadRetryButtonActionDelegate:(int)self.tag andMessage:self.mMessage];
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     ALFileMetaInfo *metaInfo = (ALFileMetaInfo *)object;
     [self setNeedsDisplay];
     self.progresLabel.startDegree = 0;
     self.progresLabel.endDegree = metaInfo.progressValue;
 }
 
--(void)openUserChatVC
-{
+- (void)openUserChatVC {
     [self.delegate processUserChatView:self.mMessage];
 }
 
-- (void)msgInfo:(id)sender
-{
+- (void)msgInfo:(id)sender {
     [self.delegate showAnimationForMsgInfo:YES];
     UIStoryboard *storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALMessageInfoViewController *msgInfoVC = (ALMessageInfoViewController *)[storyboardM instantiateViewControllerWithIdentifier:@"ALMessageInfoView"];
 
     msgInfoVC.VCardClass = self.vCardClass;
 
-    __weak typeof(ALMessageInfoViewController *) weakObj = msgInfoVC;
+    __weak typeof (ALMessageInfoViewController *) weakObj = msgInfoVC;
 
     [msgInfoVC setMessage:self.mMessage andHeaderHeight:self.msgFrameHeight withCompletionHandler:^(NSError *error) {
 
-        if(!error)
-        {
+        if (!error) {
             [self.delegate loadViewForMedia:weakObj];
-        }
-        else
-        {
+        } else {
             [self.delegate showAnimationForMsgInfo:NO];
         }
     }];
 }
 
--(void)processOpenChat
-{
+- (void)processOpenChat {
     [self.delegate handleTapGestureForKeyBoard];
     [self.delegate openUserChat:self.mMessage];
 }

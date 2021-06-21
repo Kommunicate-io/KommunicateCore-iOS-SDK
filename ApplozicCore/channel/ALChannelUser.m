@@ -10,14 +10,12 @@
 
 @implementation ALChannelUser
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary
-{
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];
     return self;
 }
 
--(void)parseMessage:(id) messageJson
-{
+- (void)parseMessage:(id) messageJson {
     self.role = [self getNSNumberFromJsonValue:messageJson[@"role"]];
     self.userId = [self getStringFromJsonValue:messageJson[@"userId"]];
     self.parentGroupKey = [self getNSNumberFromJsonValue:messageJson[@"parentGroupKey"]];

@@ -21,8 +21,8 @@
 @property (nonatomic, assign) id<ALChatCellDelegate> delegate;
 @property (nonatomic, retain) ALMessage * mMessage;
 
--(void)update:(ALMessage *)message;
--(void)addViewConstraints;
--(void)setupView;
+- (void)update:(ALMessage *)message;
+- (void)addViewConstraints;
+- (void)setupView;
 
 @end

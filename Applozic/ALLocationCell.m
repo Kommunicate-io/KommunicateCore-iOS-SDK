@@ -12,8 +12,7 @@
 #import "ALMessageInfoViewController.h"
 #import "ALUIUtilityClass.h"
 
-@implementation ALLocationCell
-{
+@implementation ALLocationCell {
     CGFloat CELL_HEIGHT;
     CGFloat CELL_WIDTH;
     CGFloat ADJUST_HEIGHT;
@@ -29,15 +28,13 @@
     CGFloat DATE_HEIGHT;
     CGFloat MSG_STATUS_CONSTANT;
     
-    NSURL * theUrl;
+    NSURL *theUrl;
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
-    if (self)
-    {
+    if (self) {
         UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showMaps:)];
         tapper.numberOfTapsRequired = 1;
         [self.frontView addGestureRecognizer:tapper];
@@ -63,20 +60,19 @@
     return self;
 }
 
--(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize {
     [super populateCell:alMessage viewSize:viewSize];
     [self.replyUIView removeFromSuperview];
     
     self.mUserProfileImageView.alpha = 1;
     
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[alMessage.createdAtTime doubleValue]/1000]];
-    NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
+    NSString *theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
     ALContactDBService *theContactDBService = [[ALContactDBService alloc] init];
     ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
     
-    NSString * receiverName = [alContact getDisplayName];
+    NSString *receiverName = [alContact getDisplayName];
     
     self.mMessage = alMessage;
     
@@ -95,16 +91,14 @@
     CELL_WIDTH = viewSize.width - 120;
     CELL_HEIGHT = viewSize.width - 220;
     
-    if([alMessage isReceivedMessage])
-    {
+    if ([alMessage isReceivedMessage]) {
         [self.contentView bringSubviewToFront:self.mChannelMemberName];
         
         USER_PROFILE_ABSCISSA = 8;
         
         self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_ABSCISSA, ZERO, USER_PROFILE_CONSTANT, USER_PROFILE_CONSTANT);
         
-        if([ALApplozicSettings isUserProfileHidden])
-        {
+        if ([ALApplozicSettings isUserProfileHidden]) {
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_ABSCISSA, ZERO, ZERO, USER_PROFILE_CONSTANT);
         }
         
@@ -114,14 +108,13 @@
 
         BUBBLE_ABSCISSA = self.mUserProfileImageView.frame.size.width + ADJUST_USER_PROFILE;
         
-     
-        CGFloat imageViewY = self.mBubleImageView.frame.origin.y + FLOAT_CONSTANT;
-        CGFloat imageHeight = CELL_HEIGHT;      
 
-       self.mBubleImageView.frame = CGRectMake(BUBBLE_ABSCISSA, ZERO, CELL_WIDTH, CELL_HEIGHT);
+        CGFloat imageViewY = self.mBubleImageView.frame.origin.y + FLOAT_CONSTANT;
+        CGFloat imageHeight = CELL_HEIGHT;
+
+        self.mBubleImageView.frame = CGRectMake(BUBBLE_ABSCISSA, ZERO, CELL_WIDTH, CELL_HEIGHT);
         
-        if( alMessage.groupId )
-        {
+        if (alMessage.groupId) {
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary]];
             [self.mChannelMemberName setText:receiverName];
             [self.mChannelMemberName setHidden:NO];
@@ -133,12 +126,11 @@
             imageViewY = imageViewY + self.mChannelMemberName.frame.size.height;
         }
         
-        if( alMessage.isAReplyMessage )
-        {
+        if ( alMessage.isAReplyMessage ) {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
             CELL_HEIGHT = CELL_HEIGHT + self.replyParentView.frame.size.height ;
             imageViewY =  imageViewY + self.replyParentView.frame.size.height;
-        
+
         }
         self.mBubleImageView.frame = CGRectMake(BUBBLE_ABSCISSA, ZERO, CELL_WIDTH, CELL_HEIGHT);
         
@@ -158,22 +150,14 @@
                                                         self.mDateLabel.frame.origin.y,
                                                         MSG_STATUS_CONSTANT, MSG_STATUS_CONSTANT);
         
-        if(alContact.contactImageUrl)
-        {
+        if (alContact.contactImageUrl) {
             [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"contact_default_placeholder"];
-        }
-        else
-        {
+        } else {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
             [self.mNameLabel setHidden:NO];
             self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary];
         }
-        
-
-
-    }
-    else
-    {
+    } else {
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getSendMsgColor];
         USER_PROFILE_ABSCISSA = viewSize.width - 50;
         self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_ABSCISSA, FLOAT_CONSTANT, ZERO, USER_PROFILE_CONSTANT);
@@ -183,16 +167,15 @@
         
         BUBBLE_ABSCISSA = viewSize.width - self.mUserProfileImageView.frame.origin.x + 60;
         self.mBubleImageView.frame = CGRectMake(BUBBLE_ABSCISSA, ZERO, CELL_WIDTH, CELL_HEIGHT);
-    
-        if(alMessage.isAReplyMessage)
-        {
+
+        if (alMessage.isAReplyMessage) {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
             CELL_HEIGHT = CELL_HEIGHT + self.replyParentView.frame.size.height;
             imageViewY = imageViewY + self.replyParentView.frame.size.height;
             
         }
         
-      self.mBubleImageView.frame = CGRectMake(BUBBLE_ABSCISSA, ZERO, CELL_WIDTH, CELL_HEIGHT);
+        self.mBubleImageView.frame = CGRectMake(BUBBLE_ABSCISSA, ZERO, CELL_WIDTH, CELL_HEIGHT);
         
         self.mImageView.frame = CGRectMake(self.mBubleImageView.frame.origin.x + FLOAT_CONSTANT,imageViewY,
                                            self.mBubleImageView.frame.size.width - ADJUST_WIDTH,
@@ -208,7 +191,7 @@
 
         if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
             self.mMessageStatusImageView.hidden = NO;
-            NSString * imageName = [self getMessageStatusIconName:self.mMessage];
+            NSString *imageName = [self getMessageStatusIconName:self.mMessage];
             self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
         }
     }
@@ -219,55 +202,46 @@
     theUrl = nil;
     NSString *latLongArgument = [self formatLocationJson:alMessage];
     
-    if([ALDataNetworkConnection checkDataNetworkAvailable])
-    {
-        NSString * finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
-                               latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
+    if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
+        NSString *finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
+                              latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
         
         theUrl = [NSURL URLWithString:finalURl];
         [self.mImageView sd_setImageWithURL:theUrl];
-    }
-    else
-    {
+    } else {
         [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
     }
     
     [self addShadowEffects];
     
-    if(alMessage.isAReplyMessage)
-    {
+    if (alMessage.isAReplyMessage) {
         [self.contentView bringSubviewToFront:self.replyParentView];
-        
     }
 
     return self;
 }
 
--(void) addShadowEffects
-{
+- (void) addShadowEffects {
     self.mBubleImageView.layer.shadowOpacity = 0.3;
     self.mBubleImageView.layer.shadowOffset = CGSizeMake(0, 2);
     self.mBubleImageView.layer.shadowRadius = 1;
     self.mBubleImageView.layer.masksToBounds = NO;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 }
 
--(NSString*)formatLocationJson:(ALMessage *)locationAlMessage
-{
+- (NSString*)formatLocationJson:(ALMessage *)locationAlMessage {
     NSError *error;
     NSData *objectData = [locationAlMessage.message dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *jsonStringDic = [NSJSONSerialization JSONObjectWithData:objectData
                                                                   options:NSJSONReadingMutableContainers
                                                                     error:&error];
-  
-    NSArray* latLog = [[NSArray alloc] initWithObjects:[jsonStringDic valueForKey:@"lat"],[jsonStringDic valueForKey:@"lon"], nil];
+
+    NSArray *latLog = [[NSArray alloc] initWithObjects:[jsonStringDic valueForKey:@"lat"],[jsonStringDic valueForKey:@"lon"], nil];
     
-    if(!latLog.count)
-    {
+    if (!latLog.count) {
         return [self processMapUrl:locationAlMessage];
     }
     
@@ -275,37 +249,32 @@
     return latLongArgument;
 }
 
--(NSString *)processMapUrl:(ALMessage *)message
-{
-    NSArray * URL_ARRAY = [message.message componentsSeparatedByString:@"="];
-    NSString * coordinate = (NSString *)[URL_ARRAY lastObject];
+- (NSString *)processMapUrl:(ALMessage *)message {
+    NSArray *URL_ARRAY = [message.message componentsSeparatedByString:@"="];
+    NSString *coordinate = (NSString *)[URL_ARRAY lastObject];
     return coordinate;
 }
 
--(void)showMaps:(UITapGestureRecognizer *)sender
-{
-    NSString * URLString = [NSString stringWithFormat:@"https://maps.google.com/maps?q=%@",[self formatLocationJson:super.mMessage]];
-    NSURL * locationURL = [NSURL URLWithString:URLString];
+- (void)showMaps:(UITapGestureRecognizer *)sender {
+    NSString *URLString = [NSString stringWithFormat:@"https://maps.google.com/maps?q=%@",[self formatLocationJson:super.mMessage]];
+    NSURL *locationURL = [NSURL URLWithString:URLString];
     [[UIApplication sharedApplication] openURL:locationURL options:@{} completionHandler:nil];
 }
 
--(void)openUserChatVC
-{
+- (void)openUserChatVC {
     [self.delegate processUserChatView:self.mMessage];
 }
 
 
--(NSString*)getLocationUrl:(ALMessage*)almessage;
-{
+- (NSString*)getLocationUrl:(ALMessage*)almessage {
     NSString *latLongArgument = [self formatLocationJson:almessage];
-    NSString * finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
-                           latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
+    NSString *finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
+                          latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
 
     return finalURl;
 }
 
--(void)processOpenChat
-{
+- (void)processOpenChat {
     [self.delegate handleTapGestureForKeyBoard];
     [self.delegate openUserChat:self.mMessage];
 }
@@ -319,12 +288,9 @@
 
     [msgInfoVC setMessage:self.mMessage andHeaderHeight:msgFrameHeight withCompletionHandler:^(NSError *error) {
 
-        if(!error)
-        {
+        if (!error) {
             [self.delegate loadViewForMedia:weakObj];
-        }
-        else
-        {
+        } else {
             [self.delegate showAnimationForMsgInfo:NO];
         }
     }];

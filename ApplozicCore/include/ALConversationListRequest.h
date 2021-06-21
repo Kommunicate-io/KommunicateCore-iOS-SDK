@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ALConversationListRequest : NSObject
 
-@property(nonatomic,retain) NSNumber * startTimeStamp;
-@property(nonatomic,retain) NSNumber * endTimeStamp;
+@property(nonatomic,retain) NSNumber *startTimeStamp;
+@property(nonatomic,retain) NSNumber *endTimeStamp;
 
 @end
 

@@ -92,7 +92,7 @@ import UIKit
         self.navigationItem.title = NSLocalizedString("imagePreview", tableName: ALApplozicSettings.getLocalizableName(), bundle: Bundle.main, value: "Image Preview", comment: "")
 
         var backImage = UIImage.init(named: "icon_back", in: Bundle(for: ALChatViewController.self), compatibleWith: nil)
-            backImage = backImage?.imageFlippedForRightToLeftLayoutDirection()
+        backImage = backImage?.imageFlippedForRightToLeftLayoutDirection()
         self.navigationItem.rightBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.showShare(_:)))
 
     }
@@ -153,16 +153,16 @@ import UIKit
     }
 
     @objc func showShare(_ sender: Any?) {
-            let activityItems = [self.image]
-            let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-            activityVC.excludedActivityTypes = [
-                .assignToContact,
-                .print,
-                .postToTwitter,
-                .postToWeibo,
-                .mail
-            ]
-            present(activityVC, animated: true)
+        let activityItems = [self.image]
+        let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        activityVC.excludedActivityTypes = [
+            .assignToContact,
+            .print,
+            .postToTwitter,
+            .postToWeibo,
+            .mail
+        ]
+        present(activityVC, animated: true)
     }
 
     func updateMinZoomScaleForSize(size: CGSize) {

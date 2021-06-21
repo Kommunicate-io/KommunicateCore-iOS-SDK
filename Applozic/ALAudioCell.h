@@ -29,13 +29,12 @@
 @property (nonatomic, retain) AVAudioPlayer *audioPlayer;
 
 
--(instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize;
+- (instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize;
 
--(void) getProgressOfTrack;
--(void) mediaButtonAction;
-//-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
--(void) setupProgressValueX:(CGFloat)cooridinateX andY:(CGFloat)cooridinateY;
--(void) dowloadRetryAction;
--(void) cancelAction;
+- (void) getProgressOfTrack;
+- (void) mediaButtonAction;
+- (void) setupProgressValueX:(CGFloat)cooridinateX andY:(CGFloat)cooridinateY;
+- (void) dowloadRetryAction;
+- (void) cancelAction;
 
 @end

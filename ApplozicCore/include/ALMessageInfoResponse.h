@@ -11,8 +11,8 @@
 
 @interface ALMessageInfoResponse : ALAPIResponse
 
-@property(nonatomic, strong) NSMutableArray <ALMessageInfo *> * msgInfoList;
+@property(nonatomic, strong) NSMutableArray <ALMessageInfo *> *msgInfoList;
 
--(instancetype)initWithJSONString:(NSString *)JSONString;
+- (instancetype)initWithJSONString:(NSString *)JSONString;
 
 @end

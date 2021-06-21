@@ -18,7 +18,7 @@ import Foundation
 
     // MARK: Public properties
     
-   @objc  open var viewModel: ALTemplateMessagesViewModel!
+    @objc  open var viewModel: ALTemplateMessagesViewModel!
 
     @objc   public let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -30,11 +30,11 @@ import Foundation
     }()
 
     /// Closure to be executed when a template message is selected
-   @objc  open var messageSelected:((String)->())?
+    @objc  open var messageSelected:((String)->())?
 
     //MARK: Intialization
 
-   @objc public init(frame: CGRect, viewModel: ALTemplateMessagesViewModel) {
+    @objc public init(frame: CGRect, viewModel: ALTemplateMessagesViewModel) {
         super.init(frame: frame)
         self.viewModel = viewModel
         setupViews()
@@ -65,7 +65,7 @@ import Foundation
             self.addSubview(view)
         }
 
-         if #available(iOS 9.0, *) {
+        if #available(iOS 9.0, *) {
             collectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: 0).isActive = true
             collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 0).isActive = true
             collectionView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
@@ -95,7 +95,7 @@ extension ALTemplateMessagesView: UICollectionViewDelegate, UICollectionViewData
 
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let selectedTemplate = viewModel.getTemplateForItemAt(row: indexPath.row) else {return}
-      messageSelected?(selectedTemplate)
+        messageSelected?(selectedTemplate)
 
         //Send a notification (can be used outside the framework)
         let notificationCenter = NotificationCenter()

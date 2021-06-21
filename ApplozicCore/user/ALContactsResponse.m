@@ -12,31 +12,27 @@
 
 @implementation ALContactsResponse
 
--(id)initWithJSONString:(NSString *)JSONString
-{
+- (id)initWithJSONString:(NSString *)JSONString {
     [self parseJsonString:JSONString];
     return self;
 }
 
--(void)parseJsonString:(NSString *)JSONString
-{
-    if((JSONString && [JSONString isKindOfClass:[NSString class]] && JSONString.length ) ||
-        (JSONString && [JSONString isKindOfClass:[NSDictionary class]] && ((NSDictionary*)JSONString).count)){
+- (void)parseJsonString:(NSString *)JSONString {
+    if ((JSONString && [JSONString isKindOfClass:[NSString class]] && JSONString.length) ||
+        (JSONString && [JSONString isKindOfClass:[NSDictionary class]] && ((NSDictionary*)JSONString).count)) {
         NSMutableArray * userDetailArray = [[NSMutableArray alloc] initWithArray:[JSONString valueForKey:@"users"]];
         self.userDetailList = [NSMutableArray new];
 
-        for(NSDictionary * userDictionary in userDetailArray)
-        {
-            ALUserDetail * userDetail = [[ALUserDetail alloc] initWithDictonary:userDictionary];
+        for (NSDictionary *userDictionary in userDetailArray) {
+            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:userDictionary];
             [self.userDetailList addObject:userDetail];
         }
 
         self.lastFetchTime =  [JSONString valueForKey:@"lastFetchTime"];
         [ALApplozicSettings setStartTime:self.lastFetchTime];
-
+        
         self.totalUnreadCount = [JSONString valueForKey:@"totalUnreadCount"];
     }
-
 }
 
 @end

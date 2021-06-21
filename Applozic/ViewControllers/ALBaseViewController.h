@@ -11,10 +11,10 @@
 
 @interface ALBaseViewController : UIViewController <UITextViewDelegate>
 
-@property (nonatomic, strong) NSString * placeHolderTxt;
-@property (nonatomic, retain) UIColor * placeHolderColor;
+@property (nonatomic, strong) NSString *placeHolderTxt;
+@property (nonatomic, retain) UIColor *placeHolderColor;
 @property (nonatomic, retain) UIColor *navColor;
-@property (nonatomic,retain) UIView * mTableHeaderView;
+@property (nonatomic,retain) UIView *mTableHeaderView;
 @property (weak, nonatomic) IBOutlet UITableView *mTableView;
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *mTapGesture;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *mActivityIndicator;
@@ -22,23 +22,22 @@
 @property (strong, nonatomic) IBOutlet UIButton *sendButton;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *checkBottomConstraint;
 @property (weak, nonatomic) IBOutlet UIButton *attachmentOutlet;
-@property (strong, nonatomic) UILabel * label;
-//@property (strong, nonatomic) UILabel * typingLabel;
+@property (strong, nonatomic) UILabel *label;
 @property (nonatomic) BOOL  individualLaunch;
-@property (weak, nonatomic) IBOutlet UIView * typingMessageView;
-@property (nonatomic, strong) NSArray * wordArray;
-@property (strong, nonatomic) UIBarButtonItem * callButton;
-@property (strong, nonatomic) UIBarButtonItem * closeButton;
+@property (weak, nonatomic) IBOutlet UIView *typingMessageView;
+@property (nonatomic, strong) NSArray *wordArray;
+@property (strong, nonatomic) UIBarButtonItem *callButton;
+@property (strong, nonatomic) UIBarButtonItem *closeButton;
 
-@property (strong, nonatomic) UIBarButtonItem * audioCallButton;
-@property (strong, nonatomic) UIBarButtonItem * videoCallButton;
+@property (strong, nonatomic) UIBarButtonItem *audioCallButton;
+@property (strong, nonatomic) UIBarButtonItem *videoCallButton;
 
-@property (strong, nonatomic) NSMutableArray <UIBarButtonItem *> * navRightBarButtonItems;
+@property (strong, nonatomic) NSMutableArray <UIBarButtonItem *> *navRightBarButtonItems;
 
 - (IBAction)sendAction:(id)sender;
--(void) scrollTableViewToBottomWithAnimation:(BOOL) animated;
+- (void) scrollTableViewToBottomWithAnimation:(BOOL) animated;
 - (IBAction)attachmentActionMethod:(id)sender;
--(UIView *)setCustomBackButton;
+- (UIView *)setCustomBackButton;
 
 @property (strong, nonatomic) IBOutlet UIImageView *typeMsgBG;
 
@@ -50,10 +49,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *noConLabel;
 @property (weak, nonatomic) IBOutlet UILabel *typingLabel;
 
--(void)setHeightOfTextViewDynamically;
--(void)setHeightOfTextViewDynamically:(BOOL)scroll;
+- (void)setHeightOfTextViewDynamically;
+- (void)setHeightOfTextViewDynamically:(BOOL)scroll;
 
 @property (weak, nonatomic) IBOutlet UIImageView *beakImageView;
--(void)subProcessSetHeightOfTextViewDynamically;
+- (void)subProcessSetHeightOfTextViewDynamically;
 
 @end

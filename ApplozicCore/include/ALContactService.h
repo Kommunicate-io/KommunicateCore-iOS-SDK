@@ -13,35 +13,35 @@
 
 @interface ALContactService : NSObject
 
--(BOOL)purgeListOfContacts:(NSArray *)contacts;
+- (BOOL)purgeListOfContacts:(NSArray *)contacts;
 
--(BOOL)purgeContact:(ALContact *)contact;
+- (BOOL)purgeContact:(ALContact *)contact;
 
--(BOOL)purgeAllContact;
+- (BOOL)purgeAllContact;
 
--(BOOL)updateListOfContacts:(NSArray *)contacts;
+- (BOOL)updateListOfContacts:(NSArray *)contacts;
 
--(BOOL)updateContact:(ALContact *)contact;
+- (BOOL)updateContact:(ALContact *)contact;
 
--(BOOL)addListOfContacts:(NSArray *)contacts;
+- (BOOL)addListOfContacts:(NSArray *)contacts;
 
--(BOOL)addContact:(ALContact *)userContact;
+- (BOOL)addContact:(ALContact *)userContact;
 
-- (ALContact *)loadContactByKey:(NSString *) key value:(NSString*) value;
+- (ALContact *)loadContactByKey:(NSString *)key value:(NSString *)value;
 
-- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *) contactId value:(NSString*) displayName;
+- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString *)displayName;
 
--(BOOL)setUnreadCountInDB:(ALContact*)contact;
+- (BOOL)setUnreadCountInDB:(ALContact *)contact;
 
--(NSNumber *)getOverallUnreadCountForContact;
+- (NSNumber *)getOverallUnreadCountForContact;
 
--(BOOL) isContactExist:(NSString *) value;
+- (BOOL)isContactExist:(NSString *) value;
 
--(BOOL) updateOrInsert:(ALContact*)contact;
+- (BOOL)updateOrInsert:(ALContact*)contact;
 
--(void) updateOrInsertListOfContacts:(NSMutableArray *)contacts;
+- (void)updateOrInsertListOfContacts:(NSMutableArray *)contacts;
 
--(BOOL)isUserDeleted:(NSString *)userId;
+- (BOOL)isUserDeleted:(NSString *)userId;
 
--(ALUserDetail *)updateMuteAfterTime:(NSNumber*)notificationAfterTime andUserId:(NSString*)userId;
+- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
 @end

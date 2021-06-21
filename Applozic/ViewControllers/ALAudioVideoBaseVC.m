@@ -24,33 +24,27 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
-     [super viewWillDisappear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
 }
 
-+(BOOL)chatRoomEngage
-{
++ (BOOL)chatRoomEngage {
     return chatRoomEngage;
 }
 
-+(void)setChatRoomEngage:(BOOL)flag
-{
++ (void)setChatRoomEngage:(BOOL)flag {
     chatRoomEngage = flag;
 }
 
--(void)dismissAVViewController:(BOOL)animated
-{
+- (void)dismissAVViewController:(BOOL)animated {
 
 }
 
--(void)handleDataConnectivity
-{
+- (void)handleDataConnectivity {
     
 }
 

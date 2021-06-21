@@ -36,20 +36,20 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
 
 @interface ALFriendDeletedMessage()
 
-@property (nonatomic,retain) UIImageView * mUserProfileImageView;
-@property (nonatomic,retain) NSLayoutConstraint * dateLabelHeight;
+@property (nonatomic,retain) UIImageView *mUserProfileImageView;
+@property (nonatomic,retain) NSLayoutConstraint *dateLabelHeight;
 @end
 
 
 @implementation ALFriendDeletedMessage
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style
-             reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style
+              reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     return self;
 }
 
--(void)setupView {
+- (void)setupView {
     [super setupView];
     UIColor *recievedMessageColor = [ALApplozicSettings getReceiveMsgTextColor];
     self.mMessageLabel.textColor = recievedMessageColor;
@@ -69,13 +69,13 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
         self.mBubleImageView.backgroundColor = [UIColor whiteColor];
     }
 
-    UIImage * image = [ALUIUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
+    UIImage *image = [ALUIUtilityClass getImageFromFramworkBundle:@"round_not_interested_white.png"];
     image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.mDeletedIcon.tintColor = recievedMessageColor;
     [self.mDeletedIcon setImage:image];
 }
 
--(void)addViewConstraints {
+- (void)addViewConstraints {
     [super addViewConstraints];
 
     [self.mUserProfileImageView.topAnchor constraintEqualToAnchor:self.contentView.topAnchor constant:USER_PROFILE_TOP_PADDING].active = YES;
@@ -111,10 +111,10 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
 
 }
 
--(void) update:(ALMessage *)message {
+- (void) update:(ALMessage *)message {
     [super update:message];
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[message.createdAtTime doubleValue]/1000]];
-    NSString * theDate = [NSString stringWithFormat:@"%@", [message getCreatedAtTimeChat:today]];
+    NSString *theDate = [NSString stringWithFormat:@"%@", [message getCreatedAtTimeChat:today]];
 
     NSString *fontName = [ALApplozicSettings getFontFace];
     CGSize theDateSize = [ALUtilityClass getSizeForText:theDate maxWidth:DATE_LABEL_WIDTH_PADDING
@@ -126,7 +126,7 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
 +(CGFloat)getDeletedMessageCellHeight:(ALMessage *)alMessage
                          andCellFrame:(CGRect)cellFrame {
 
-    NSString * deletedMessageText =  NSLocalizedStringWithDefaultValue(@"deletedMessageText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"This message has been deleted", @"");
+    NSString *deletedMessageText =  NSLocalizedStringWithDefaultValue(@"deletedMessageText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"This message has been deleted", @"");
     CGSize theTextSize = [ALUIConstant textSizeWithText:deletedMessageText andCellFrame:cellFrame];
     CGFloat height = roundf(theTextSize.height) +
     BUBLE_VIEW_BOTTOM_PADDING +
@@ -136,7 +136,7 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
     25; /// 25 Padding
     CGFloat minimumHeight = 50;
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[alMessage.createdAtTime doubleValue]/1000]];
-    NSString * theDate = [NSString stringWithFormat:@"%@", [alMessage getCreatedAtTimeChat:today]];
+    NSString *theDate = [NSString stringWithFormat:@"%@", [alMessage getCreatedAtTimeChat:today]];
 
     NSString *fontName = [ALApplozicSettings getFontFace];
     CGSize theDateSize = [ALUtilityClass getSizeForText:theDate maxWidth:DATE_LABEL_WIDTH_PADDING

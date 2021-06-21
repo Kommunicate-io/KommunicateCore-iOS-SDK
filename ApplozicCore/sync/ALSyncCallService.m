@@ -16,42 +16,42 @@
 @implementation ALSyncCallService
 
 
--(void) updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status{
+- (void)updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status {
     ALMessageDBService *alMessageDBService = [[ALMessageDBService alloc] init];
     [alMessageDBService updateMessageDeliveryReport:messageKey withStatus:status];
     ALSLog(ALLoggerSeverityInfo, @"delivery report for %@", messageKey);
     //Todo: update ui
 }
 
--(void) updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status {
+- (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status {
     ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
     [messageDBService updateDeliveryReportForContact:contactId withStatus:status];
     //Todo: update ui
 }
 
--(void) syncCall: (ALMessage *) alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate{
+- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     
-    if(delegate){
-        if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
+    if (delegate) {
+        if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION){
             [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
         }
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"MQTT_APPLOZIC_01" object:alMessage];
 }
 
--(void) syncCall: (ALMessage *) alMessage {
+- (void)syncCall:(ALMessage *)alMessage {
     [self syncCall:alMessage withDelegate:nil];
 }
 
--(void) updateConnectedStatus: (ALUserDetail *) alUserDetail {
+- (void)updateConnectedStatus:(ALUserDetail *)alUserDetail {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"userUpdate" object:alUserDetail];
     ALContactDBService* contactDBService = [[ALContactDBService alloc] init];
     [contactDBService updateLastSeenDBUpdate:alUserDetail];
 }
 
--(void)updateTableAtConversationDeleteForContact:(NSString*)contactID
-                                  ConversationID:(NSString *)conversationID
-                                      ChannelKey:(NSNumber *)channelKey{
+- (void)updateTableAtConversationDeleteForContact:(NSString *)contactID
+                                   ConversationID:(NSString *)conversationID
+                                       ChannelKey:(NSNumber *)channelKey {
     
     ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
     [messageDBService deleteAllMessagesByContact:contactID orChannelKey:channelKey];
@@ -60,7 +60,7 @@
     
 }
 
--(void)syncMessageMetadata {
+- (void)syncMessageMetadata {
     [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
         ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
     }];
