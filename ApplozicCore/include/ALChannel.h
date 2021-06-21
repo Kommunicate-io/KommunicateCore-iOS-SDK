@@ -19,7 +19,7 @@ static NSString *const AL_CONVERSATION_ASSIGNEE = @"CONVERSATION_ASSIGNEE";
 
 /*********************
  type = 7 SPECIAL CASE
-*********************/
+ *********************/
 
 typedef enum
 {
@@ -59,30 +59,30 @@ typedef enum {
 @property (nonatomic, strong) ALConversationProxy *conversationProxy;
 @property (nonatomic, strong) NSNumber *parentKey;
 @property (nonatomic, strong) NSString *parentClientKey;
-@property (nonatomic, strong) NSMutableArray * groupUsers;
-@property (nonatomic, strong) NSMutableArray * childKeys;
-@property (nonatomic, strong) NSNumber * notificationAfterTime;
-@property (nonatomic, strong) NSNumber * deletedAtTime;
-@property (nonatomic, strong) NSMutableDictionary * metadata;
+@property (nonatomic, strong) NSMutableArray *groupUsers;
+@property (nonatomic, strong) NSMutableArray *childKeys;
+@property (nonatomic, strong) NSNumber *notificationAfterTime;
+@property (nonatomic, strong) NSNumber *deletedAtTime;
+@property (nonatomic, strong) NSMutableDictionary *metadata;
 /// This is used to categorize the channel based on the metadata value for `CONVERSATION_CATEGORY`
 @property (nonatomic) short category;
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary;
--(void)parseMessage:(id) messageJson;
--(NSNumber *)getChannelMemberParentKey:(NSString *)userId;
--(BOOL) isNotificationMuted;
--(BOOL) isConversationClosed;
--(BOOL) isContextBasedChat;
--(BOOL) isBroadcastGroup;
--(BOOL) isOpenGroup;
--(BOOL)isGroupOfTwo;
--(BOOL)isDeleted;
+- (id)initWithDictonary:(NSDictionary *)messageDictonary;
+- (void)parseMessage:(id) messageJson;
+- (NSNumber *)getChannelMemberParentKey:(NSString *)userId;
+- (BOOL)isNotificationMuted;
+- (BOOL)isConversationClosed;
+- (BOOL)isContextBasedChat;
+- (BOOL)isBroadcastGroup;
+- (BOOL)isOpenGroup;
+- (BOOL)isGroupOfTwo;
+- (BOOL)isDeleted;
 
--(NSString*)getReceiverIdInGroupOfTwo;
+- (NSString*)getReceiverIdInGroupOfTwo;
 
--(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
--(BOOL)isPartOfCategory:(NSString*)category;
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string;
+- (BOOL)isPartOfCategory:(NSString *)category;
 
-+(CONVERSATION_CATEGORY)getConversationCategory:(NSDictionary *)metadata;
++ (CONVERSATION_CATEGORY)getConversationCategory:(NSDictionary *)metadata;
 
 @end

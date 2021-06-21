@@ -10,8 +10,7 @@
 
 @implementation ALMultimediaData
 
-- (ALMultimediaData *)getMultimediaDataOfType:(ALMultimediaType)type withImage:(UIImage *)image withGif:(NSData *)gif withVideo:(NSString *)video
-{
+- (ALMultimediaData *)getMultimediaDataOfType:(ALMultimediaType)type withImage:(UIImage *)image withGif:(NSData *)gif withVideo:(NSString *)video {
     ALMultimediaData * multimediaData = [ALMultimediaData new];
     multimediaData.attachmentType = type;
     multimediaData.classImage = image;

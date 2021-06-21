@@ -32,7 +32,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
 - (IBAction)backButtonAction:(id)sender;
--(void)emptyConversationAlertLabel;
+- (void)emptyConversationAlertLabel;
 // Constants
 
 // IBOutlet
@@ -40,7 +40,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *mActivityIndicator;
 
 // Private Variables
-@property (nonatomic, strong) NSMutableArray * mContactsMessageListArray;
+@property (nonatomic, strong) NSMutableArray *mContactsMessageListArray;
 @property (nonatomic, strong) UIColor *navColor;
 @property (nonatomic, strong) NSNumber *unreadCount;
 @property (strong, nonatomic) UILabel *emptyConversationText;
@@ -67,7 +67,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 @implementation NSLayoutConstraint (Description)
 
--(NSString *)description {
+- (NSString *)description {
     return [NSString stringWithFormat:@"id: %@, constant: %f", self.identifier, self.constant];
 }
 
@@ -80,8 +80,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - VIEW LIFE CYCLE
 //==============================================================================================================================================
 
--(void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     self.extendedLayoutIncludesOpaqueBars = true;
 
@@ -102,26 +101,26 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [self.view addSubview:self.emptyConversationText];
     self.emptyConversationText.hidden = YES;
     
-     if((self.channelKey || self.userIdToLaunch)){
+    if ((self.channelKey || self.userIdToLaunch)) {
         [self createAndLaunchChatView ];
     }
     [_mTableView setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
     self.colourDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
 }
 
--(void)setupNavigationButtons {
+- (void)setupNavigationButtons {
 
     if (self.navigationItem.titleView == nil) {
-        UIColor * itemColor = [ALApplozicSettings getColorForNavigationItem];
+        UIColor *itemColor = [ALApplozicSettings getColorForNavigationItem];
 
-        NSMutableArray * rightSideNavItems = [[NSMutableArray alloc] init];
+        NSMutableArray *rightSideNavItems = [[NSMutableArray alloc] init];
 
-        if(![ALUserDefaultsHandler isNavigationRightButtonHidden]) {
+        if (![ALUserDefaultsHandler isNavigationRightButtonHidden]) {
 
 
             self.startNewButton  = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                                                              target:self
-                                                                                              action:@selector(navigationRightButtonAction)];
+                                                                                 target:self
+                                                                                 action:@selector(navigationRightButtonAction)];
             [self.startNewButton setTintColor:itemColor];
             [self.startNewButton setEnabled:![ALUserDefaultsHandler isLoggedInUserDeactivated]];
             [rightSideNavItems addObject: self.startNewButton];
@@ -129,16 +128,15 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
         }
 
         if (ALApplozicSettings.isMessageSearchEnabled) {
-            UIBarButtonItem * searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                                                                             target:self
-                                                                                             action:@selector(searchButtonAction)];
+            UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                          target:self
+                                                                                          action:@selector(searchButtonAction)];
 
             [searchButton setTintColor:itemColor];
             [rightSideNavItems addObject: searchButton];
         }
 
-        if([ALApplozicSettings isRefreshChatButtonEnabledInMsgVc])
-        {
+        if ([ALApplozicSettings isRefreshChatButtonEnabledInMsgVc]) {
             self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                                target:self
                                                                                action:@selector(refreshMessageList)];
@@ -157,13 +155,11 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }
 }
 
--(void)loadMessages:(NSNotification *)notification
-{
+- (void)loadMessages:(NSNotification *)notification {
     [self.dBService getMessages:self.childGroupList];
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self subscribeToConversationWithCompletionHandler:^(BOOL connected) {
         if (!connected) {
@@ -172,16 +168,14 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }];
     /// Setup the delegate in viewWillAppear
     self.alMqttConversationService.mqttConversationDelegate = self;
-    if([ALApplozicSettings isDropShadowInNavigationBarEnabled])
-    {
+    if ([ALApplozicSettings isDropShadowInNavigationBarEnabled]) {
         [self dropShadowInNavigationBar];
     }
 
     [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
     [self.tabBarController.tabBar setHidden:[ALUserDefaultsHandler isBottomTabBarHidden]];
 
-    if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
-    {
+    if (self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag]) {
         [self intializeSubgroupMessages];
     }
 
@@ -192,7 +186,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [self setupSearchViewController];
 
     //register for notification
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationhandler:) name:@"pushNotification" object:nil];    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationhandler:) name:@"pushNotification" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive)
                                                  name:UIApplicationDidBecomeActiveNotification
@@ -209,35 +203,34 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessages:) name:@"CONVERSATION_DELETION" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCallForUser:) name:@"USER_DETAILS_UPDATE_CALL" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateBroadCastMessages) name:@"BROADCAST_MSG_UPDATE" object:nil];
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationUnreadCount:) name:@"Update_unread_count" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationUnreadCount:) name:@"Update_unread_count" object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keybordDidHideNotification)
-                                                    name:UIKeyboardDidHideNotification
-                                                  object:nil];
+                                                 name:UIKeyboardDidHideNotification
+                                               object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageMetaDataUpdate:)
-                                                   name:AL_MESSAGE_META_DATA_UPDATE object:nil];
+                                                 name:AL_MESSAGE_META_DATA_UPDATE object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLoggedInUserDeactivated:)
                                                  name:ALLoggedInUserDidChangeDeactivateNotification object:nil];
 
 
     [self.navigationController.navigationBar setTitleTextAttributes: @{
-                                                                       NSForegroundColorAttributeName:[UIColor whiteColor],
-                                                                       NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                                                                            size:NAVIGATION_TEXT_SIZE]
-                                                                       }];
+        NSForegroundColorAttributeName:[UIColor whiteColor],
+        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                            size:NAVIGATION_TEXT_SIZE]
+    }];
     
     self.navigationItem.title = NSLocalizedStringWithDefaultValue(@"chatTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], [ALApplozicSettings getTitleForConversationScreen], @"");
     
     
-    if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
-    {
+    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
         [self.navigationController.navigationBar setTitleTextAttributes: @{
-                                                                           NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-                                                                           NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                                                                                size:NAVIGATION_TEXT_SIZE]
-                                                                           }];
+            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:NAVIGATION_TEXT_SIZE]
+        }];
         
         self.navigationController.navigationBar.translucent = NO;
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
@@ -247,29 +240,28 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [self callLastSeenStatusUpdate];
 }
 
--(void)prepareViewController {
+- (void)prepareViewController {
     [self.mActivityIndicator startAnimating];
     self.dBService = [[ALMessageDBService alloc] init];
     self.dBService.delegate = self;
     [self.dBService getMessages:self.childGroupList];
 }
 
--(void)intializeSubgroupMessages
-{
-    ALChannelService * channelService = [ALChannelService new];
+- (void)intializeSubgroupMessages {
+    ALChannelService *channelService = [ALChannelService new];
     self.childGroupList = [[NSMutableArray alloc] initWithArray:[channelService fetchChildChannelsWithParentKey:self.parentGroupKey]];
-//    ALChannel * parentChannel = [channelService getChannelByKey:self.parentGroupKey];
-//    [self.childGroupList addObject:parentChannel];
+    //    ALChannel * parentChannel = [channelService getChannelByKey:self.parentGroupKey];
+    //    [self.childGroupList addObject:parentChannel];
 }
 
 // Channel details update notification
--(void)updateChannelSync:(NSNotification*)notification {
+- (void)updateChannelSync:(NSNotification *)notification {
     ALChannel *channel =  notification.object;
-    ALChannelService * channelService = [[ALChannelService alloc]init];
+    ALChannelService *channelService = [[ALChannelService alloc]init];
     channel =  [channelService getChannelByKey:channel.key];
-    if(channel){
+    if (channel) {
         ALContactCell *contactCell = [self getCellForGroup:channel.key];
-        if(contactCell){
+        if (contactCell) {
             [contactCell updateProfileImageAndUnreadCountWithChannel:channel orContact:nil withColourDictionary:self.colourDictionary];
         }
     }
@@ -277,49 +269,43 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 
 // Update channel/user unread count notification
--(void)updateConversationUnreadCount:(NSNotification*)notification {
+- (void)updateConversationUnreadCount:(NSNotification *)notification {
     NSDictionary *dictionary =  notification.object;
-    if(dictionary){
+    if (dictionary) {
         ALContactCell *cell = nil;
         NSString *userId = [ dictionary objectForKey:@"userId"];
-        if(userId){
+        if (userId) {
             cell = [self getCell:userId];
-        }else{
+        } else {
             NSNumber  *channelKey = [ dictionary objectForKey:@"channelKey"];
             cell = [self getCellForGroup:channelKey];
         }
-        if(cell){
+        if (cell) {
             cell.unreadCountLabel.text = @"";
             [cell.unreadCountLabel setHidden:YES];
         }
     }
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.userIdToLaunch = nil;
     self.channelKey = nil;
-    if(self.detailChatViewController){
+    if (self.detailChatViewController) {
         self.detailChatViewController.isVisible = NO;
     }
-    if([self.mActivityIndicator isAnimating])
-    {
+    if ([self.mActivityIndicator isAnimating]) {
         [self.emptyConversationText setHidden:YES];
-    }
-    else
-    {
+    } else {
         [self emptyConversationAlertLabel];
     }
     
-    if (![ALDataNetworkConnection checkDataNetworkAvailable])
-    {
+    if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
         [self noDataNotificationView];
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.navigationController.view setNeedsLayout];
     [self.navigationController.view layoutIfNeeded];
@@ -337,22 +323,17 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - NAVIGATION SHADOW EFFECTS
 //==============================================================================================================================================
 
--(void)dropShadowInNavigationBar
-{
+- (void)dropShadowInNavigationBar {
     self.navigationController.navigationBar.layer.shadowOpacity = 0.5;
     self.navigationController.navigationBar.layer.shadowOffset = CGSizeMake(0, 0);
     self.navigationController.navigationBar.layer.shadowRadius = 10;
     self.navigationController.navigationBar.layer.masksToBounds = NO;
 }
 
--(void)emptyConversationAlertLabel
-{
-    if(self.mContactsMessageListArray.count == 0)
-    {
+- (void)emptyConversationAlertLabel {
+    if (self.mContactsMessageListArray.count == 0) {
         [self.emptyConversationText setHidden:NO];
-    }
-    else
-    {
+    } else {
         [self.emptyConversationText setHidden:YES];
     }
 }
@@ -361,19 +342,17 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - NAVIGATION RIGHT BUTTON ACTION + CONTACT LAUNCH FOR USER/SUB GROUP
 //==============================================================================================================================================
 
--(void)navigationRightButtonAction {
-    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+- (void)navigationRightButtonAction {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALNewContactsViewController"];
     contactVC.forGroup = [NSNumber numberWithInt:REGULAR_CONTACTS];
-    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
-    {
+    if ([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId) {
         [ALApplozicSettings setContactsGroupId:_contactsGroupId];
     }
     
-    if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
-    {
+    if (self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag]) {
         contactVC.forGroup = [NSNumber numberWithInt:LAUNCH_GROUP_OF_TWO];
-        ALChannelService * channelService = [ALChannelService new];
+        ALChannelService *channelService = [ALChannelService new];
         contactVC.parentChannel = [channelService getChannelByKey:self.parentGroupKey];
         contactVC.childChannels = [[NSMutableArray alloc] initWithArray:[channelService fetchChildChannelsWithParentKey:self.parentGroupKey]];
     }
@@ -383,15 +362,13 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 /************************************  REFRESH CONVERSATION IF RIGHT BUTTON IS REFRESH BUTTON **************************************************/
 
--(void)refreshMessageList
-{
-    NSString * toastMsg = @"Syncing messages with the server,\n it might take few mins!";
+- (void)refreshMessageList {
+    NSString *toastMsg = @"Syncing messages with the server,\n it might take few mins!";
     [self.view makeToast:toastMsg duration:1.0 position:CSToastPositionBottom title:nil];
     
-    [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray  * messageList, NSError *error) {
+    [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray  *messageList, NSError *error) {
         
-        if(error)
-        {
+        if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR: IN REFRESH MSG VC :: %@",error);
             return;
         }
@@ -399,10 +376,10 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }];
 }
 
--(void)setupSearchViewController {
+- (void)setupSearchViewController {
 
     if (self.navigationItem.titleView == nil) {
-        UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
 
         _searchResultVC = (ALSearchResultViewController*)[storyboard instantiateViewControllerWithIdentifier:@"ALSearchViewController"];
 
@@ -412,7 +389,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
         self.searchController.hidesNavigationBarDuringPresentation = NO;
 
         self.customSearchBar = [[ALCustomSearchBar alloc] initWithSearchBar:self.searchController.searchBar];
-        NSString * searchLabel = NSLocalizedStringWithDefaultValue(@"SearchLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Search...", @"");
+        NSString *searchLabel = NSLocalizedStringWithDefaultValue(@"SearchLabelText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Search...", @"");
         self.searchController.searchBar.placeholder = searchLabel;
         if (@available(iOS 13.0, *)) {
             self.searchController.searchBar.searchTextField.backgroundColor = [UIColor whiteColor];
@@ -424,7 +401,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }
 }
 
--(void)searchButtonAction {
+- (void)searchButtonAction {
     [UIView animateWithDuration:0.5 animations:^{
         [self.navigationItem setRightBarButtonItems:nil];
         [self.navigationItem setLeftBarButtonItem:nil];
@@ -435,13 +412,11 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }];
 }
 
--(void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
 
--(void)setUpTableView
-{
+- (void)setUpTableView {
     self.mContactsMessageListArray = [NSMutableArray new];
     self.mTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
@@ -455,22 +430,17 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - ALMessagesDelegate
 //==============================================================================================================================================
 
--(void)reloadTable:(NSNotification*)notification
-{
+- (void)reloadTable:(NSNotification*)notification {
     [self updateMessageList:notification.object];
     [[NSNotificationCenter defaultCenter] removeObserver:@"reloadTable"];
 }
 
--(void)getMessagesArray:(NSMutableArray *)messagesArray
-{
+- (void)getMessagesArray:(NSMutableArray *)messagesArray {
     [self.mActivityIndicator stopAnimating];
     
-    if(messagesArray.count == 0)
-    {
+    if (messagesArray.count == 0) {
         [[self emptyConversationText] setHidden:NO];
-    }
-    else
-    {
+    } else {
         [[self emptyConversationText] setHidden:YES];
     }
     
@@ -479,7 +449,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     ALSLog(ALLoggerSeverityInfo, @"GETTING MESSAGE ARRAY");
 }
 
--(void)didUpdateBroadCastMessages {
+- (void)didUpdateBroadCastMessages {
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.dBService getMessages:nil];
@@ -491,42 +461,33 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - UPDATE MESSAGE LIST
 //==============================================================================================================================================
 
--(void)updateMessageList:(NSMutableArray *)messagesArray
-{
+- (void)updateMessageList:(NSMutableArray *)messagesArray {
     NSUInteger index = 0;
     
-    if(messagesArray.count)
-    {
+    if (messagesArray.count) {
         [self.emptyConversationText setHidden:YES];
     }
 
     BOOL isreloadRequire = NO;
-    for(ALMessage *msg in messagesArray)
-    {
+    for(ALMessage *msg in messagesArray) {
 
         ALContactCell *contactCell;
-        ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
-        ALChannelService * channelService = [[ALChannelService alloc] init];
-        if(msg.groupId)
-        {
+        ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
+        ALChannelService *channelService = [[ALChannelService alloc] init];
+        if (msg.groupId) {
             msg.contactIds = NULL;
             contactCell = [self getCellForGroup:msg.groupId];
-        }
-        else
-        {
+        } else {
             contactCell = [self getCell:msg.contactIds];
         }
         
-        if (msg.contentType == AV_CALL_HIDDEN_NOTIFICATION)
-        {
-//            ALVOIPNotificationHandler *voipHandler = [ALVOIPNotificationHandler sharedManager];
-//            [voipHandler handleAVMsg:msg andViewController:self];
-        }
-        else if(contactCell)
-        {
+        if (msg.contentType == AV_CALL_HIDDEN_NOTIFICATION) {
+            //            ALVOIPNotificationHandler *voipHandler = [ALVOIPNotificationHandler sharedManager];
+            //            [voipHandler handleAVMsg:msg andViewController:self];
+        } else if (contactCell) {
             contactCell.mMessageLabel.text = msg.message;
             ALContact *alContact = nil;
-            ALChannel * channel = nil;
+            ALChannel *channel = nil;
 
             if (msg.groupId != nil) {
                 channel = [channelService getChannelByKey:msg.groupId];
@@ -540,55 +501,37 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
             contactCell.mTimeLabel.text = [msg getCreatedAtTime:isToday];
             [contactCell displayAttachmentMediaType:msg];
             
-        }
-        else
-        {
-           index = [self.mContactsMessageListArray indexOfObjectPassingTest:^BOOL(ALMessage *almessage, NSUInteger idx, BOOL *stop) {
-               
-                   if (msg.groupId)
-                   {
-                       return [almessage.groupId isEqualToNumber:msg.groupId];
-                   }
-                   else
-                   {
-                       if([ALApplozicSettings getSubGroupLaunchFlag])
-                       {
-                           return NO;
-                       }
-                       return [almessage.to isEqualToString:msg.to];
-                   }
-                  }];
+        } else {
+            index = [self.mContactsMessageListArray indexOfObjectPassingTest:^BOOL(ALMessage *almessage, NSUInteger idx, BOOL *stop) {
+
+                if (msg.groupId) {
+                    return [almessage.groupId isEqualToNumber:msg.groupId];
+                } else {
+                    if ([ALApplozicSettings getSubGroupLaunchFlag]) {
+                        return NO;
+                    }
+                    return [almessage.to isEqualToString:msg.to];
+                }
+            }];
 
             isreloadRequire = YES;
-            if (index != NSNotFound)
-            {
+            if (index != NSNotFound) {
                 [self.mContactsMessageListArray replaceObjectAtIndex:index withObject:msg];
-            }
-            else
-            {
-                //No cell founds
-                
-                //if([ALApplozicSettings getSubGroupLaunchFlag])
-                //{
-                    if (msg.groupId)
-                    {
-                        isreloadRequire = NO;
-                        [channelService getChannelInformation:msg.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
-                            
-                            BOOL channelFlag = ([ALApplozicSettings getSubGroupLaunchFlag] && [alChannel.parentKey isEqualToNumber:self.parentGroupKey]);
-                            BOOL categoryFlag =  [ALApplozicSettings getCategoryName] && [alChannel isPartOfCategory:[ALApplozicSettings getCategoryName]];
-                            
-                             if ((channelFlag || categoryFlag) ||
-                                 !([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getCategoryName]))
-                             {
-                                 [self.mContactsMessageListArray insertObject:msg atIndex:0];
-                                 [self.mTableView reloadData];
-                             }
-                         }];
-                    }
-                //}
-                else
-                {
+            } else {
+                if (msg.groupId) {
+                    isreloadRequire = NO;
+                    [channelService getChannelInformation:msg.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
+
+                        BOOL channelFlag = ([ALApplozicSettings getSubGroupLaunchFlag] && [alChannel.parentKey isEqualToNumber:self.parentGroupKey]);
+                        BOOL categoryFlag =  [ALApplozicSettings getCategoryName] && [alChannel isPartOfCategory:[ALApplozicSettings getCategoryName]];
+
+                        if ((channelFlag || categoryFlag) ||
+                            !([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getCategoryName])) {
+                            [self.mContactsMessageListArray insertObject:msg atIndex:0];
+                            [self.mTableView reloadData];
+                        }
+                    }];
+                } else {
                     [self.mContactsMessageListArray insertObject:msg atIndex:0];
                 }
             }
@@ -596,24 +539,21 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
             ALSLog(ALLoggerSeverityInfo, @"contact cell not found ....");
         }
     }
-    if(isreloadRequire)
-    {
+    if (isreloadRequire) {
         [self.mTableView reloadData];
     }
 }
 
--(ALContactCell *)getCell:(NSString *)key
-{
+- (ALContactCell *)getCell:(NSString *)key {
     int index = (int)[self.mContactsMessageListArray indexOfObjectPassingTest:^BOOL(id element, NSUInteger idx, BOOL *stop) {
         
-                         ALMessage *message = (ALMessage*)element;
-                         if([message.contactIds isEqualToString:key] && (message.groupId.intValue == 0 || message.groupId == nil))
-                         {
-                             *stop = YES;
-                             return YES;
-                         }
-                         return NO;
-                     }];
+        ALMessage *message = (ALMessage*)element;
+        if ([message.contactIds isEqualToString:key] && (message.groupId.intValue == 0 || message.groupId == nil)) {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];
     
     NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:1];
     ALContactCell *contactCell = (ALContactCell *)[self.mTableView cellForRowAtIndexPath:path];
@@ -621,18 +561,16 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     return contactCell;
 }
 
--(ALContactCell *)getCellForGroup:(NSNumber *)groupKey
-{
+- (ALContactCell *)getCellForGroup:(NSNumber *)groupKey {
     int index = (int)[self.mContactsMessageListArray indexOfObjectPassingTest:^BOOL(id element,NSUInteger idx,BOOL *stop) {
         
-                         ALMessage *message = (ALMessage*)element;
-                         if([message.groupId isEqualToNumber:groupKey])
-                         {
-                             *stop = YES;
-                             return YES;
-                         }
-                         return NO;
-                     }];
+        ALMessage *message = (ALMessage*)element;
+        if ([message.groupId isEqualToNumber:groupKey]) {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];
     
     NSIndexPath *path = [NSIndexPath indexPathForRow:index inSection:1];
     ALContactCell *contactCell  = (ALContactCell *)[self.mTableView cellForRowAtIndexPath:path];
@@ -640,11 +578,10 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     return contactCell;
 }
 
--(NSIndexPath*) getIndexPathForMessage:(NSString*)messageKey {
+- (NSIndexPath*) getIndexPathForMessage:(NSString*)messageKey {
     int index = (int)[self.mContactsMessageListArray indexOfObjectPassingTest:^BOOL(id element,NSUInteger idx,BOOL *stop) {
         ALMessage *message = (ALMessage*)element;
-        if([message.key isEqualToString:messageKey])
-        {
+        if ([message.key isEqualToString:messageKey]) {
             *stop = YES;
             return YES;
         }
@@ -659,29 +596,21 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - TABLE VIEW DELEGATES METHODS
 //==============================================================================================================================================
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return (self.mTableView == nil) ? 0 : 2;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    switch (section)
-    {
-        case 0:
-        {
-            if([ALApplozicSettings getGroupOption])
-            {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    switch (section) {
+        case 0: {
+            if ([ALApplozicSettings getGroupOption]) {
                 return 1;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }break;
             
-        case 1:
-        {
+        case 1: {
             return self.mContactsMessageListArray.count>0?[self.mContactsMessageListArray count]:0;
         }break;
             
@@ -691,14 +620,11 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ALContactCell *contactCell;
     
-    switch (indexPath.section)
-    {
-        case 0:
-        {
+    switch (indexPath.section) {
+        case 0: {
             //Cell for group button....
             contactCell = (ALContactCell *)[tableView dequeueReusableCellWithIdentifier:@"groupCell"];
             
@@ -713,7 +639,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
             [newBtn sizeToFit];
             [newBtn setTitleColor:[ALApplozicSettings getMessageListTextColor] forState:UIControlStateNormal];
 
-           // Add group button.....
+            // Add group button.....
             UIButton *newBroadCast = (UIButton*)[contactCell viewWithTag:102];
             [newBroadCast addTarget:self action:@selector(createBroadcastGroup:) forControlEvents:UIControlEventTouchUpInside];
             
@@ -728,15 +654,15 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
         }break;
 
-        case 1:
-        {
+        case 1: {
             //Add rest of messageList
             contactCell = (ALContactCell *)[tableView dequeueReusableCellWithIdentifier:@"ContactCell"];
             ALMessage *message = (ALMessage *)self.mContactsMessageListArray[indexPath.row];
             [contactCell updateWithMessage:message withColourDictionary:self.colourDictionary];
         }break;
-                
+
         default:
+            return [[UITableViewCell alloc] init];
             break;
     }
     [contactCell setBackgroundColor:[ALApplozicSettings getMessagesViewBackgroundColour]];
@@ -749,29 +675,23 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 /*********************************************  ACTION ON TAP OF TABLE CELL ******************************************************/
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{    
-    if(indexPath.section != 0)
-    {
-        ALMessage * message = self.mContactsMessageListArray[indexPath.row];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section != 0) {
+        ALMessage *message = self.mContactsMessageListArray[indexPath.row];
         [self createDetailChatViewControllerWithMessage:message];
-        ALContactCell * contactCell = (ALContactCell *)[tableView cellForRowAtIndexPath:indexPath];
+        ALContactCell *contactCell = (ALContactCell *)[tableView cellForRowAtIndexPath:indexPath];
         int count = [contactCell.unreadCountLabel.text intValue];
-        if(count)
-        {
+        if (count) {
             self.detailChatViewController.refresh = YES;
         }
     }
 }
 
--(void)createDetailChatViewController:(NSString *)contactIds
-{
-    if (!(self.detailChatViewController))
-    {
+- (void)createDetailChatViewController:(NSString *)contactIds {
+    if (!(self.detailChatViewController)) {
         self.detailChatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     }
-    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
-    {
+    if ([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId) {
         [ALApplozicSettings setContactsGroupId:_contactsGroupId];
     }
     self.detailChatViewController.contactIds = contactIds;
@@ -780,43 +700,36 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [self.navigationController pushViewController:self.detailChatViewController animated:YES];
 }
 
--(void)createDetailChatViewControllerWithMessage:(ALMessage *)message
-{
+- (void)createDetailChatViewControllerWithMessage:(ALMessage *)message {
     [self createDetailChatViewControllerWithUserId:message.contactIds withGroupId:message.groupId withConversationId:message.conversationId];
 }
 
--(void)createDetailChatViewControllerWithUserId:(NSString *)contactId withGroupId:(NSNumber *)groupId withConversationId:(NSNumber *)conversationId {
+- (void)createDetailChatViewControllerWithUserId:(NSString *)contactId withGroupId:(NSNumber *)groupId withConversationId:(NSNumber *)conversationId {
 
-    if(!(self.detailChatViewController))
-    {
+    if (!(self.detailChatViewController)) {
         self.detailChatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     }
 
     self.detailChatViewController.conversationId = conversationId;
 
-    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
-    {
+    if ([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId) {
         [ALApplozicSettings setContactsGroupId:_contactsGroupId];
     }
 
-    if(groupId)
-    {
+    if (groupId) {
         self.detailChatViewController.channelKey = groupId;
         self.detailChatViewController.contactIds = nil;
 
         ALChannelService *channelService = [[ALChannelService alloc] init];
         ALChannel *alChannel = [channelService getChannelByKey:groupId];
 
-        if(alChannel.type == GROUP_OF_TWO)
-        {
-            NSString* contactId = [alChannel getReceiverIdInGroupOfTwo];
-            ALContactService * contactService = [ALContactService new];
-            ALContact * alContact = [contactService loadContactByKey:@"userId" value:contactId];
+        if (alChannel.type == GROUP_OF_TWO) {
+            NSString *contactId = [alChannel getReceiverIdInGroupOfTwo];
+            ALContactService *contactService = [ALContactService new];
+            ALContact *alContact = [contactService loadContactByKey:@"userId" value:contactId];
             self.detailChatViewController.contactIds = alContact.userId;
         }
-    }
-    else
-    {
+    } else {
         self.detailChatViewController.channelKey = nil;
         self.detailChatViewController.contactIds = contactId;
     }
@@ -825,24 +738,20 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     self.detailChatViewController.alContact = nil;
     self.detailChatViewController.chatViewDelegate = self;
 
-    ALPushAssist * pushAssist = [[ALPushAssist alloc]init];
+    ALPushAssist *pushAssist = [[ALPushAssist alloc]init];
 
-    if(![pushAssist.topViewController isKindOfClass:ALChatViewController.class]){
+    if (![pushAssist.topViewController isKindOfClass:ALChatViewController.class]) {
         [self.navigationController pushViewController:self.detailChatViewController animated:YES];
     }
 
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     CGFloat height = 0;
-    if(indexPath.section == 0)
-    {
+    if (indexPath.section == 0) {
         height = 40.0;
-    }
-    else
-    {
+    } else {
         height = 81.5;
     }
     
@@ -853,37 +762,29 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - TABLE VIEW EDITING METHODS
 //==============================================================================================================================================
 
--(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if(indexPath.section == 0)
-    {
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
         return NO;
-    }
-    else
-    {
+    } else {
         return YES;
     }
 }
 
 /************************************************  DELETE CONVERSATION ON SWIPE ********************************************************/
 
--(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         ALSLog(ALLoggerSeverityInfo, @"DELETE_PRESSED");
-        if(![ALDataNetworkConnection checkDataNetworkAvailable])
-        {
+        if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
             [self noDataNotificationView];
             return;
         }
-        ALMessage * alMessageobj = self.mContactsMessageListArray[indexPath.row];
+        ALMessage *alMessageobj = self.mContactsMessageListArray[indexPath.row];
         
         ALChannelService *channelService = [ALChannelService new];
         
-        if([channelService isChannelLeft:[alMessageobj getGroupId]])
-        {
+        if ([channelService isChannelLeft:[alMessageobj getGroupId]]) {
             
             [self.dBService deleteAllMessagesByContact:nil orChannelKey:[alMessageobj getGroupId]];
             [ALChannelService setUnreadCountZeroForGroupID:[alMessageobj getGroupId]];
@@ -892,29 +793,24 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
         [ALMessageService deleteMessageThread:alMessageobj.contactIds orChannelKey:[alMessageobj getGroupId]
                                withCompletion:^(NSString *string, NSError *error) {
             
-            if(error)
-            {
+            if (error) {
                 ALSLog(ALLoggerSeverityError, @"DELETE_FAILED_CONVERSATION_ERROR_DESCRIPTION :: %@", error.description);
                 [ALUIUtilityClass displayToastWithMessage:@"Delete failed"];
                 return;
             }
-            NSArray * theFilteredArray;
-            if([alMessageobj getGroupId])
-            {
+            NSArray *theFilteredArray;
+            if ([alMessageobj getGroupId]) {
 
                 theFilteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
                                     [NSPredicate predicateWithFormat:@"groupId = %@",[alMessageobj getGroupId]]];
-            }
-            else
-            {
+            } else {
                 theFilteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
                                     [NSPredicate predicateWithFormat:@"contactIds = %@ AND groupId = %@",alMessageobj.contactIds,nil]];
             }
             
             [self subProcessDeleteMessageThread:theFilteredArray];
-                                   
-            if([ALChannelService isChannelDeleted:[alMessageobj getGroupId]])
-            {
+
+            if ([ALChannelService isChannelDeleted:[alMessageobj getGroupId]]) {
                 ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
                 [channelDBService deleteChannel:[alMessageobj getGroupId]];
             }
@@ -922,8 +818,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }
 }
 
--(void)subProcessDeleteMessageThread:(NSArray *)theFilteredArray
-{
+- (void)subProcessDeleteMessageThread:(NSArray *)theFilteredArray {
     ALSLog(ALLoggerSeverityInfo, @"GETTING_FILTERED_ARRAY_COUNT :: %lu", (unsigned long)theFilteredArray.count);
     [self.mContactsMessageListArray removeObjectsInArray:theFilteredArray];
     [self emptyConversationAlertLabel];
@@ -934,16 +829,14 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - NOTIFICATION OBSERVERS
 //==============================================================================================================================================
 
--(void)updateConversationTableNotification:(NSNotification *)notification
-{
-    ALMessage * theMessage = notification.object;
+- (void)updateConversationTableNotification:(NSNotification *)notification {
+    ALMessage *theMessage = notification.object;
     ALSLog(ALLoggerSeverityInfo, @"NOTIFICATION_FOR_TABLE_UPDATE :: %@", theMessage.message);
-    NSArray * theFilteredArray = [self.mContactsMessageListArray
-                                  filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"contactIds = %@", theMessage.contactIds]];
+    NSArray *theFilteredArray = [self.mContactsMessageListArray
+                                 filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"contactIds = %@", theMessage.contactIds]];
     //check for group id also
-    ALMessage * theLatestMessage = theFilteredArray.firstObject;
-    if (theLatestMessage != nil && ![theMessage.createdAtTime isEqualToNumber: theLatestMessage.createdAtTime])
-    {
+    ALMessage *theLatestMessage = theFilteredArray.firstObject;
+    if (theLatestMessage != nil && ![theMessage.createdAtTime isEqualToNumber: theLatestMessage.createdAtTime]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.mContactsMessageListArray removeObject:theLatestMessage];
             [self.mContactsMessageListArray insertObject:theMessage atIndex:0];
@@ -956,19 +849,15 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - VIEW ORIENTATION METHODS
 //==============================================================================================================================================
 
--(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
-{
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
     UIInterfaceOrientation toOrientation = (UIInterfaceOrientation)[[UIDevice currentDevice] orientation];
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone &&
-        (toOrientation == UIInterfaceOrientationLandscapeLeft || toOrientation == UIInterfaceOrientationLandscapeRight))
-    {
+        (toOrientation == UIInterfaceOrientationLandscapeLeft || toOrientation == UIInterfaceOrientationLandscapeRight)) {
         self.mTableViewTopConstraint.constant = - DEFAULT_TOP_LANDSCAPE_CONSTANT;
-    }
-    else
-    {
+    } else {
         self.mTableViewTopConstraint.constant = - DEFAULT_TOP_PORTRAIT_CONSTANT;
     }
     [self.view layoutIfNeeded];
@@ -978,22 +867,18 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - MQTT SERVICE DELEGATE METHODS
 //==============================================================================================================================================
 
--(void)mqttDidConnected
-{
-    if (self.detailChatViewController)
-    {
+- (void)mqttDidConnected {
+    if (self.detailChatViewController) {
         [self.detailChatViewController subscrbingChannel];
     }
 }
 
--(void)updateCallForUser:(NSNotification *)notifyObj
-{
+- (void)updateCallForUser:(NSNotification *)notifyObj {
     NSString *userID = (NSString *)notifyObj.object;
     [self updateUserDetail:userID];
 }
 
--(void)updateUserDetail:(NSString *)userId
-{
+- (void)updateUserDetail:(NSString *)userId {
     ALSLog(ALLoggerSeverityInfo, @"ALMSGVC : USER_DETAIL_CHANGED_CALL_UPDATE");
     [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
 
@@ -1003,24 +888,20 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAIL_OTHER_VC" object:userDetail];
 
-        ALContactCell * contactCell = [self getCell:userId];
-        if(contactCell)
-        {
-            UILabel* nameIcon = (UILabel *)[contactCell viewWithTag:102];
+        ALContactCell *contactCell = [self getCell:userId];
+        if (contactCell) {
+            UILabel*nameIcon = (UILabel *)[contactCell viewWithTag:102];
             [nameIcon setText:[ALColorUtility getAlphabetForProfileImage:[userDetail getDisplayName]]];
             
-            if(userDetail.getDisplayName){
+            if (userDetail.getDisplayName) {
                 contactCell.mUserNameLabel.text = userDetail.getDisplayName;
             }
             
-            NSURL * URL = [NSURL URLWithString:userDetail.imageLink];
-            if(URL)
-            {
+            NSURL *URL = [NSURL URLWithString:userDetail.imageLink];
+            if (URL) {
                 [contactCell.mUserImageView sd_setImageWithURL:URL placeholderImage:nil options:SDWebImageRefreshCached];
                 nameIcon.hidden = YES;
-            }
-            else
-            {
+            } else {
                 nameIcon.hidden = NO;
                 [contactCell.mUserImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
                 contactCell.mUserImageView.backgroundColor = [ALColorUtility getColorForAlphabet:[userDetail getDisplayName] colorCodes:self.colourDictionary];
@@ -1031,26 +912,22 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }];
 }
 
--(void)reloadDataForUserBlockNotification:(NSString *)userId andBlockFlag:(BOOL)flag
-{
+- (void)reloadDataForUserBlockNotification:(NSString *)userId andBlockFlag:(BOOL)flag {
     [self.detailChatViewController checkUserBlockStatus];
     ALPushAssist *pushAssist =  [[ALPushAssist alloc] init];
-    if([pushAssist.topViewController isKindOfClass:[ALMessagesViewController class]])
-    {
+    if ([pushAssist.topViewController isKindOfClass:[ALMessagesViewController class]]) {
         [self.detailChatViewController.label setHidden:YES];
         
-        ALContactCell * contactCell = [self getCell:userId];
-        if(contactCell && [ALApplozicSettings getVisibilityForOnlineIndicator])
-        {
+        ALContactCell *contactCell = [self getCell:userId];
+        if (contactCell && [ALApplozicSettings getVisibilityForOnlineIndicator]) {
             [contactCell.onlineImageMarker setHidden:flag];
         }
     }
 }
 
--(void)syncCall:(ALMessage *)alMessage andMessageList:(NSMutableArray *)messageArray
-{
-    ALPushAssist* top = [[ALPushAssist alloc] init];
-    ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
+- (void)syncCall:(ALMessage *)alMessage andMessageList:(NSMutableArray *)messageArray {
+    ALPushAssist *top = [[ALPushAssist alloc] init];
+    ALNotificationHelper *helper = [[ALNotificationHelper alloc]init];
 
     [self.detailChatViewController setRefresh: YES];
     
@@ -1066,8 +943,8 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
             return;
         }
 
-        ALNotificationView * alnotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
-                                                                           withAlertMessage:alMessage.message];
+        ALNotificationView *alnotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
+                                                                          withAlertMessage:alMessage.message];
 
         [alnotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
             [helper handlerNotificationClick:alMessage.contactIds withGroupId:alMessage.groupId withConversationId:alMessage.conversationId notificationTapActionDisable:[ALApplozicSettings isInAppNotificationTapDisabled]];
@@ -1076,82 +953,65 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 }
 
--(void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status
-{
-    if (messageKey != nil)
-    {
+- (void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status {
+    if (messageKey != nil) {
         [self.detailChatViewController updateDeliveryReport:messageKey withStatus:status];
     }
 }
 
--(void)updateStatusForContact:(NSString *) contactId withStatus:(int)status
-{
-    if([[self.detailChatViewController contactIds] isEqualToString: contactId])
-    {
+- (void)updateStatusForContact:(NSString *) contactId withStatus:(int)status {
+    if ([[self.detailChatViewController contactIds] isEqualToString: contactId]) {
         [self.detailChatViewController updateStatusReportForConversation:status];
     }
 }
 
--(void)updateTypingStatus:(NSString *)applicationKey userId:(NSString *)userId status:(BOOL)status
-{
+- (void)updateTypingStatus:(NSString *)applicationKey userId:(NSString *)userId status:(BOOL)status {
     ALSLog(ALLoggerSeverityInfo, @"==== (MSG_VC) Received typing status %d for: %@ ====", status, userId);
     ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
     ALContact *alContact = [contactDBService loadContactByKey:@"userId" value: userId];
-    if((alContact.block || alContact.blockBy) && !self.detailChatViewController.channelKey)
-    {
+    if ((alContact.block || alContact.blockBy) && !self.detailChatViewController.channelKey) {
         return;
     }
     
-    if ([self.detailChatViewController.contactIds isEqualToString:userId] || self.detailChatViewController.channelKey)
-    {
+    if ([self.detailChatViewController.contactIds isEqualToString:userId] || self.detailChatViewController.channelKey) {
         [self.detailChatViewController showTypingLabel:status userId:userId];
     }
 }
 
--(void)updateLastSeenAtStatus:(ALUserDetail *) alUserDetail
-{
-    if ([self.detailChatViewController.contactIds isEqualToString:alUserDetail.userId])
-    {
+- (void)updateLastSeenAtStatus:(ALUserDetail *) alUserDetail {
+    if ([self.detailChatViewController.contactIds isEqualToString:alUserDetail.userId]) {
         [self.detailChatViewController updateLastSeenAtStatus:alUserDetail];
-    }
-    else if ([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getGroupOfTwoFlag])
-    {
+    } else if ([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getGroupOfTwoFlag]) {
         [self.mTableView reloadData];
-    }
-    else
-    {
+    } else {
         ALContactCell *contactCell = [self getCell:alUserDetail.userId];
         [contactCell.onlineImageMarker setHidden:YES];
-        if(alUserDetail.connected && [ALApplozicSettings getVisibilityForOnlineIndicator])
-        {
+        if (alUserDetail.connected && [ALApplozicSettings getVisibilityForOnlineIndicator]) {
             [contactCell.onlineImageMarker setHidden:NO];
         }
         
-        ALContactDBService * contactDBService = [[ALContactDBService alloc] init];
+        ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
         ALContact *alContact = [contactDBService loadContactByKey:@"userId" value:alUserDetail.userId];
         BOOL isUserDeleted = [contactDBService isUserDeleted:alUserDetail.userId];
-        if(alContact.block || alContact.blockBy || isUserDeleted)
-        {
+        if (alContact.block || alContact.blockBy || isUserDeleted) {
             [contactCell.onlineImageMarker setHidden:YES];
         }
     }
 }
 
--(void)updateLastSeenAtStatusPUSH:(NSNotification*)notification
-{
+- (void)updateLastSeenAtStatusPUSH:(NSNotification*)notification {
     [self updateLastSeenAtStatus:notification.object];
 }
 
--(void)mqttConnectionClosed
-{
+- (void)mqttConnectionClosed {
     if (self.alMqttConversationService) {
         [self.alMqttConversationService retryConnection];
     }
 }
 
--(void)subscribeToConversationWithCompletionHandler:(void (^)(BOOL connected))completion  {
+- (void)subscribeToConversationWithCompletionHandler:(void (^)(BOOL connected))completion  {
 
-    if([ALDataNetworkConnection checkDataNetworkAvailable]) {
+    if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
         if (self.alMqttConversationService) {
             [self.alMqttConversationService subscribeToConversationWithTopic:[ALUserDefaultsHandler getUserKeyString] withCompletionHandler:^(BOOL subscribed, NSError *error) {
                 if (error) {
@@ -1167,7 +1027,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }
 }
 
--(void)keybordDidHideNotification {
+- (void)keybordDidHideNotification {
 
     if ([self.navigationController.visibleViewController isKindOfClass:self.class]
         && [ALApplozicSettings isMessageSearchEnabled]
@@ -1177,42 +1037,36 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }
 }
 
--(void)onAppDidBecomeActive {
+- (void)onAppDidBecomeActive {
     [self callLastSeenStatusUpdate];
     // Check for any new messages in data base for current latest message createdAtTime
     NSMutableArray *messagesArray = self.mContactsMessageListArray;
     if (messagesArray.count > 0) {
-        ALMessage * message = messagesArray.firstObject;
-        ALConversationListRequest * conversationListRequest = [[ALConversationListRequest alloc] init];
+        ALMessage *message = messagesArray.firstObject;
+        ALConversationListRequest *conversationListRequest = [[ALConversationListRequest alloc] init];
         conversationListRequest.endTimeStamp = [NSNumber numberWithLong:(message.createdAtTime.longValue + 1)];
-        NSMutableArray * latestMessageArray = [self.dBService fetchLatestMessagesFromDatabaseWithRequestList:conversationListRequest];
+        NSMutableArray *latestMessageArray = [self.dBService fetchLatestMessagesFromDatabaseWithRequestList:conversationListRequest];
         [self addMessageToListWithMessageArray:latestMessageArray];
     }
 }
 
--(void)callLastSeenStatusUpdate
-{
-    [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray * userDetailArray)
+- (void)callLastSeenStatusUpdate {
+    [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray *userDetailArray)
      {
-         for(ALUserDetail * userDetail in userDetailArray)
-         {
-             [self updateLastSeenAtStatus:userDetail];
-         }
-     }];
+        for(ALUserDetail *userDetail in userDetailArray) {
+            [self updateLastSeenAtStatus:userDetail];
+        }
+    }];
 }
 
--(ALMessage *)getMessageFromAlertValue:(NSString *) alertValue
-{
+- (ALMessage *)getMessageFromAlertValue:(NSString *) alertValue {
     ALMessage *msg = [[ALMessage alloc] init];
     msg.message = alertValue;
     NSArray *myArray = [msg.message componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"]];
     
-    if(myArray.count > 1)
-    {
+    if (myArray.count > 1) {
         alertValue = [NSString stringWithFormat:@"%@", myArray[1]];
-    }
-    else
-    {
+    } else {
         alertValue = myArray[0];
     }
     msg.message = alertValue;
@@ -1220,12 +1074,11 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     return msg;
 }
 
--(void)pushNotificationhandler:(NSNotification *) notification
-{
-    NSString * notificationObject = notification.object;
-    NSString * contactId = nil;
-    NSNumber * conversationId = nil;
-    NSArray * myArray = [notificationObject componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"]];
+- (void)pushNotificationhandler:(NSNotification *) notification {
+    NSString *notificationObject = notification.object;
+    NSString *contactId = nil;
+    NSNumber *conversationId = nil;
+    NSArray *myArray = [notificationObject componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":"]];
     
     if (myArray.count > 2) {
         self.channelKey = @([ myArray[1] intValue]);
@@ -1241,8 +1094,8 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     
     
     NSDictionary *dict = notification.userInfo;
-    NSNumber * updateUI = [dict valueForKey:@"updateUI"];
-    NSString * alertValue = [dict valueForKey:@"alertValue"];
+    NSNumber *updateUI = [dict valueForKey:@"updateUI"];
+    NSString *alertValue = [dict valueForKey:@"alertValue"];
     
     ALMessage *message = [self getMessageFromAlertValue:alertValue];
     message.contactIds = contactId;
@@ -1251,52 +1104,40 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
         message.conversationId = conversationId;
     }
     
-    if (self.isViewLoaded && self.view.window && [updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]])
-    {
+    if (self.isViewLoaded && self.view.window && [updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]]) {
         [self syncCall:message andMessageList:nil];
-    }
-    else if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
-    {
+    } else if ([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]]) {
         [self createDetailChatViewControllerWithMessage:message];
-//      [self.detailChatViewController fetchAndRefresh];
+        //      [self.detailChatViewController fetchAndRefresh];
         [self.detailChatViewController setRefresh: YES];
-    }
-    else if([NSNumber numberWithInt:APP_STATE_BACKGROUND])
-    {
+    } else if ([NSNumber numberWithInt:APP_STATE_BACKGROUND]) {
         /*
          # Synced before already!
          # NSLog(@"APP_STATE_BACKGROUND HANDLER");
-        */
+         */
     }
 }
 
--(void)dealloc
-{
-//    NSLog(@"dealloc called. Unsubscribing with mqtt.");
+- (void)dealloc {
+    //    NSLog(@"dealloc called. Unsubscribing with mqtt.");
     [self.alMqttConversationService unsubscribeToConversation];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAILS_UPDATE_CALL" object:nil];
 }
 
--(IBAction)backButtonAction:(id)sender
-{
-    UIViewController *  uiController = [self.navigationController popViewControllerAnimated:YES];
-    if(!uiController)
-    {
+- (IBAction)backButtonAction:(id)sender {
+    UIViewController *uiController = [self.navigationController popViewControllerAnimated:YES];
+    if (!uiController) {
         [self  dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
--(BOOL)getVisibleState
-{
-    if((self.isViewLoaded && self.view.window) ||
-       (self.detailChatViewController && self.detailChatViewController.isViewLoaded && self.detailChatViewController.view.window))
-    {
+- (BOOL)getVisibleState {
+    if ((self.isViewLoaded && self.view.window) ||
+        (self.detailChatViewController && self.detailChatViewController.isViewLoaded && self.detailChatViewController.view.window)) {
         ALSLog(ALLoggerSeverityInfo, @"VIEW_CONTROLLER IS VISIBLE");
         return YES;
-    }
-    else
-    {
+    } else {
         ALSLog(ALLoggerSeverityInfo, @"VIEW_CONTROLLER IS NOT VISIBLE");
         return NO;
     }
@@ -1306,9 +1147,8 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - CUSTOM NAVIGATION BACK BUTTON
 //==============================================================================================================================================
 
--(UIView *)setCustomBackButton:(NSString *)text
-{
-    UIImage * backImage = [ALUIUtilityClass getImageFromFramworkBundle:@"bbb.png"];
+- (UIView *)setCustomBackButton:(NSString *)text {
+    UIImage *backImage = [ALUIUtilityClass getImageFromFramworkBundle:@"bbb.png"];
     backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:backImage];
     [imageView setFrame:CGRectMake(-10, 0, 30, 30)];
@@ -1331,66 +1171,59 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [view addSubview:imageView];
     [view addSubview:label];
     
-//    UIButton * button = [[UIButton alloc] initWithFrame:view.frame];
-//    [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
+    //    UIButton * button = [[UIButton alloc] initWithFrame:view.frame];
+    //    [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
     
-    UITapGestureRecognizer * backTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back:)];
+    UITapGestureRecognizer *backTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back:)];
     backTap.numberOfTapsRequired = 1;
     [view addGestureRecognizer:backTap];
     
-//    [button addSubview:view];
-//    [view addSubview:button];
+    //    [button addSubview:view];
+    //    [view addSubview:button];
     return view;
 }
 
--(void)back:(id)sender
-{
-    UIViewController *  uiController = [self.navigationController popViewControllerAnimated:YES];
-    if(!uiController)
-    {
+- (void)back:(id)sender {
+    UIViewController *uiController = [self.navigationController popViewControllerAnimated:YES];
+    if (!uiController) {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
--(void)newMessageHandler:(NSNotification *)notification
-{
+- (void)newMessageHandler:(NSNotification *)notification {
 
-    NSMutableArray * messageArray = notification.object;
+    NSMutableArray *messageArray = notification.object;
     [self addMessageToListWithMessageArray:messageArray];
 }
 
--(void)addMessageToListWithMessageArray:(NSMutableArray *)messageArray {
+- (void)addMessageToListWithMessageArray:(NSMutableArray *)messageArray {
 
     if (messageArray.count < 1) {
         return;
     }
-    NSMutableArray * allMessagesArray = [[NSMutableArray alloc]init];
 
-    allMessagesArray = self.mContactsMessageListArray;
+    NSMutableArray *allMessagesArray = self.mContactsMessageListArray;
     ALChannelService *channelService = [[ALChannelService alloc]init];
 
 
-    for(ALMessage *message in messageArray){
+    for(ALMessage *message in messageArray) {
 
         if ([message isVOIPNotificationMessage]) {
             continue;
         }
 
-        NSArray * theFilteredArray;
-        if([message getGroupId])
-        {
+        NSArray *theFilteredArray;
+        if ([message getGroupId]) {
 
             theFilteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
                                 [NSPredicate predicateWithFormat:@"groupId = %@",[message getGroupId]]];
-        }
-        else
-        {
+        } else {
             theFilteredArray = [self.mContactsMessageListArray filteredArrayUsingPredicate:
                                 [NSPredicate predicateWithFormat:@"contactIds = %@ AND groupId = %@",message.contactIds,nil]];
         }
 
 
-        if(message.groupId){
+        if (message.groupId) {
 
             ALChannel *channel =  [channelService getChannelByKey:message.groupId];
 
@@ -1399,21 +1232,20 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
             BOOL ignoreMessageAddingFlag =  (channelFlag || categoryFlag || !([ALApplozicSettings getSubGroupLaunchFlag] || [ALApplozicSettings getCategoryName]));
 
-            if (!ignoreMessageAddingFlag)
-            {
+            if (!ignoreMessageAddingFlag) {
                 continue;
             }
         }
 
 
         NSUInteger index = 0;
-        if(theFilteredArray.count){
-            ALMessage * firstMessage = theFilteredArray.firstObject;
+        if (theFilteredArray.count) {
+            ALMessage *firstMessage = theFilteredArray.firstObject;
             index = [allMessagesArray indexOfObject:firstMessage];
-            if(index != NSNotFound ){
+            if (index != NSNotFound ) {
                 allMessagesArray[index] = message;
             }
-        }else{
+        } else {
             [allMessagesArray addObject:message];
         }
 
@@ -1431,43 +1263,36 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - CREATE GROUP METHOD
 //==============================================================================================================================================
 
--(IBAction)createGroup:(id)sender
-{
-    if(![ALDataNetworkConnection checkDataNetworkAvailable])
-    {
+- (IBAction)createGroup:(id)sender {
+    if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
         [self noDataNotificationView];
         return;
     }
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
     
-    ALGroupCreationViewController * groupCreation = (ALGroupCreationViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALGroupCreationViewController"];
+    ALGroupCreationViewController *groupCreation = (ALGroupCreationViewController *)[storyboard instantiateViewControllerWithIdentifier:@"ALGroupCreationViewController"];
     
     groupCreation.isViewForUpdatingGroup = NO;
     
-    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
-    {
+    if ([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId) {
         [ALApplozicSettings setContactsGroupId:_contactsGroupId];
     }
     
-    if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
-    {
+    if (self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag]) {
         groupCreation.parentChannelKey = self.parentGroupKey;
     }
     
     [self.navigationController pushViewController:groupCreation animated:YES];
 }
 
--(void)noDataNotificationView
-{
-    ALNotificationView * notification = [ALNotificationView new];
+- (void)noDataNotificationView {
+    ALNotificationView *notification = [ALNotificationView new];
     [notification noDataConnectionNotificationView];
 }
 
--(void)createAndLaunchChatView
-{
-    if (!(self.detailChatViewController))
-    {
+- (void)createAndLaunchChatView {
+    if (!(self.detailChatViewController)) {
         self.detailChatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ALChatViewController"];
     }
     
@@ -1479,26 +1304,23 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [self.navigationController pushViewController:self.detailChatViewController animated:YES];
 }
 
--(void)insertChannelMessage:(NSNumber *)channelKey
-{
-    ALMessage * channelMessage = [ALMessage new];
+- (void)insertChannelMessage:(NSNumber *)channelKey {
+    ALMessage *channelMessage = [ALMessage new];
     channelMessage.groupId = channelKey;
-    NSMutableArray * grpMesgArray = [[NSMutableArray alloc] initWithObjects:channelMessage, nil];
+    NSMutableArray *grpMesgArray = [[NSMutableArray alloc] initWithObjects:channelMessage, nil];
     [self updateMessageList:grpMesgArray];
 }
 
 - (IBAction)createBroadcastGroup:(id)sender {
     
-    if(![ALDataNetworkConnection checkDataNetworkAvailable])
-    {
+    if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
         [self noDataNotificationView];
         return;
     }
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:[self class]]];
 
-    if([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId)
-    {
+    if ([ALApplozicSettings isContactsGroupEnabled ] && _contactsGroupId) {
         [ALApplozicSettings setContactsGroupId:_contactsGroupId];
     }
     ALNewContactsViewController *contactVC = (ALNewContactsViewController *)[storyboard
@@ -1507,7 +1329,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [self.navigationController pushViewController:contactVC animated:YES];
 }
 
--(void)onLoggedInUserDeactivated:(NSNotification *)notification {
+- (void)onLoggedInUserDeactivated:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
 
     if (!userInfo ||
@@ -1522,8 +1344,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - CHAT VIEW DELEGATE FOR PUSH Custom VC
 //==============================================================================================================================================
 
--(void)handleCustomActionFromChatVC:(UIViewController *)chatViewController andWithMessage:(ALMessage *)alMessage
-{
+- (void)handleCustomActionFromChatVC:(UIViewController *)chatViewController andWithMessage:(ALMessage *)alMessage {
     [self.messagesViewDelegate handleCustomActionFromMsgVC:chatViewController andWithMessage:alMessage];
 }
 
@@ -1531,10 +1352,8 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 #pragma mark - TABLE SCROLL DELEGATE METHOD
 //==============================================================================================================================================
 
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    if(self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag])
-    {
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if (self.parentGroupKey && [ALApplozicSettings getSubGroupLaunchFlag]) {
         ALSLog(ALLoggerSeverityInfo, @"NOT REQUIRE FOR PARENT GROUP");
         return;
     }
@@ -1548,29 +1367,23 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     float h = size.height;
     float reload_distance = 10;
     
-    if(y > (h - reload_distance))
-    {
-       [self fetchMoreMessages:scrollView];
+    if (y > (h - reload_distance)) {
+        [self fetchMoreMessages:scrollView];
     }
 }
 
--(void)fetchMoreMessages:(UIScrollView*)aScrollView
-{
+- (void)fetchMoreMessages:(UIScrollView*)aScrollView {
     [self.mActivityIndicator startAnimating];
     [self.mTableView setUserInteractionEnabled:NO];
     
-    if(![ALUserDefaultsHandler getFlagForAllConversationFetched])
-    {
+    if (![ALUserDefaultsHandler getFlagForAllConversationFetched]) {
         [self.dBService fetchConversationfromServerWithCompletion:^(BOOL flag) {
-           
+
             [self.mActivityIndicator stopAnimating];
             [self.mTableView setUserInteractionEnabled:YES];
         }];
-    }
-    else
-    {
-        if([ALApplozicSettings getVisibilityForNoMoreConversationMsgVC])
-        {
+    } else {
+        if ([ALApplozicSettings getVisibilityForNoMoreConversationMsgVC]) {
             [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
             [TSMessage showNotificationWithTitle:NSLocalizedStringWithDefaultValue(@"noMoreConversations", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No more conversations", @"")
                                             type:TSMessageNotificationTypeWarning];
@@ -1602,13 +1415,13 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [self setupNavigationButtons];
 }
 
--(void)onMessageMetaDataUpdate:(NSNotification *)notification {
+- (void)onMessageMetaDataUpdate:(NSNotification *)notification {
     if (self.mContactsMessageListArray.count == 0) {
         return;
     }
     
     ALMessage *message = (ALMessage *)notification.object;
-    NSIndexPath * path = [self getIndexPathForMessage:message.key];
+    NSIndexPath *path = [self getIndexPathForMessage:message.key];
     if ([self isValidIndexPath:path]) {
         ALMessage *alMessage = self.mContactsMessageListArray[path.row];
         if ([alMessage.key isEqualToString:message.key]) {
@@ -1618,19 +1431,19 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     }
 }
 
--(BOOL)isValidIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)isValidIndexPath:(NSIndexPath *)indexPath {
     return self.mTableView &&
     indexPath.row != -1 &&
     indexPath.section < [self.mTableView numberOfSections] &&
     indexPath.row < [self.mTableView numberOfRowsInSection:indexPath.section];
 }
 
--(void)reloadDataWithMessageKey:(NSString *)messageKey
-                     andMessage:(ALMessage *)alMessage
-             withValidIndexPath:(NSIndexPath *)path {
+- (void)reloadDataWithMessageKey:(NSString *)messageKey
+                      andMessage:(ALMessage *)alMessage
+              withValidIndexPath:(NSIndexPath *)path {
     NSInteger newCount = self.mContactsMessageListArray.count;
     NSInteger oldCount = [self.mTableView numberOfRowsInSection:path.section];
-    ALMessage * message = self.mContactsMessageListArray[path.row];
+    ALMessage *message = self.mContactsMessageListArray[path.row];
     if ([message.key isEqualToString:messageKey]) {
         self.mContactsMessageListArray[path.row] = alMessage;
     }

@@ -23,25 +23,25 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 - (NSError *)saveContext;
 
-+(ALDBHandler *) sharedInstance;
++ (ALDBHandler *)sharedInstance;
 
-- (void)saveWithContext:(NSManagedObjectContext*)context
-                       completion:(void (^)(NSError*error))completion;
+- (void)saveWithContext:(NSManagedObjectContext *)context
+             completion:(void (^)(NSError*error))completion;
 
--(NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError;
+- (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError;
 
--(NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name;
+- (NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name;
 
--(NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest;
+- (NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest;
 
--(NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID;
+- (NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID;
 
--(NSManagedObject *)insertNewObjectForEntityForName:(NSString *) entityName;
+- (NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName;
 
--(NSManagedObject *)insertNewObjectForEntityForName:(NSString *) entityName withManagedObjectContext:(NSManagedObjectContext *) context;
+- (NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName withManagedObjectContext:(NSManagedObjectContext *)context;
 
--(void) deleteObject:(NSManagedObject *) managedObject;
+- (void)deleteObject:(NSManagedObject *)managedObject;
 
--(NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError: (NSError **)fetchError;
+- (NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError: (NSError **)fetchError;
 
 @end

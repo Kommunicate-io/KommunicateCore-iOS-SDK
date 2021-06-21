@@ -15,11 +15,11 @@
 
 @optional
 
--(void)updateBytesDownloaded:(NSUInteger) bytesReceived;
--(void)updateBytesUploaded:(NSUInteger) bytesSent;
--(void)uploadDownloadFailed:(ALMessage*)alMessage;
--(void)uploadCompleted:(ALMessage *) alMessage;
--(void)DownloadCompleted:(ALMessage *) alMessage;
+- (void)updateBytesDownloaded:(NSUInteger)bytesReceived;
+- (void)updateBytesUploaded:(NSUInteger)bytesSent;
+- (void)uploadDownloadFailed:(ALMessage *)alMessage;
+- (void)uploadCompleted:(ALMessage *)alMessage;
+- (void)DownloadCompleted:(ALMessage *)alMessage;
 
 @end
 
@@ -27,20 +27,19 @@
 
 @property (strong, nonatomic) id <MessageServiceWrapperDelegate> messageServiceDelegate;
 
--(void)sendTextMessage:(NSString*)text andtoContact:(NSString*)toContactId;
+- (void)sendTextMessage:(NSString *)text andtoContact:(NSString *)toContactId;
 
--(void)sendTextMessage:(NSString*)messageText andtoContact:(NSString*)contactId orGroupId:(NSNumber*)channelKey;
+- (void)sendTextMessage:(NSString *)messageText andtoContact:(NSString *)contactId orGroupId:(NSNumber *)channelKey;
 
--(void) sendMessage:(ALMessage *)alMessage
+- (void)sendMessage:(ALMessage *)alMessage
 withAttachmentAtLocation:(NSString *)attachmentLocalPath
 andWithStatusDelegate:(id)statusDelegate
      andContentType:(short)contentype;
 
--(void) downloadMessageAttachment:(ALMessage*)alMessage;
+- (void)downloadMessageAttachment:(ALMessage*)alMessage;
 
--(ALMessage *)createMessageEntityOfContentType:(int)contentType
-                                      toSendTo:(NSString*)to
-                                      withText:(NSString*)text;
-
+- (ALMessage *)createMessageEntityOfContentType:(int)contentType
+                                       toSendTo:(NSString *)to
+                                       withText:(NSString *)text;
 
 @end

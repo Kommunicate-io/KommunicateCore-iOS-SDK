@@ -13,8 +13,8 @@
 
 @property (nonatomic) BOOL isThumbnail;
 
-@property (nonatomic, copy) NSString * fileName;
+@property (nonatomic, copy) NSString *fileName;
 
-@property (nonatomic, strong) ALMessage * message;
+@property (nonatomic, strong) ALMessage *message;
 
 @end

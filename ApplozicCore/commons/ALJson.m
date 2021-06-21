@@ -13,13 +13,12 @@
 
 @implementation ALJson
 
--(instancetype) init {
+- (instancetype)init {
     self = [super init];
     return self;
 }
 
-- (instancetype)initWithJSONString:(NSString *)JSONString
-{
+- (instancetype)initWithJSONString:(NSString *)JSONString {
     self = [super init];
     if (self) {
         
@@ -45,68 +44,57 @@
     unsigned int count = 0;
     NSMutableDictionary *dictionary = [NSMutableDictionary new];
     objc_property_t *properties = class_copyPropertyList([self class], &count);
-@try {
-   
-    for (int i = 0; i < count; i++) {
-        
-        NSString *key = [NSString stringWithUTF8String:property_getName(properties[i])];
-        id value = [self valueForKey:key];
-        
-        if (value == nil) {
-            // nothing todo
-        }
-        else if ([value isKindOfClass:[NSNumber class]]
-                 || [value isKindOfClass:[NSString class]]
-                 || [value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:[NSMutableArray class]] || [value isKindOfClass:[NSArray class]]) {
-            // TODO: extend to other types
-            [dictionary setObject:value forKey:key];
-        }
-        else if ([value isKindOfClass:[NSObject class]]) {
-            if ([value isKindOfClass:[ALFileMetaInfo class]]) {
-                [dictionary setObject:[value dictionary] forKey:key];
+    @try {
+
+        for (int i = 0; i < count; i++) {
+
+            NSString *key = [NSString stringWithUTF8String:property_getName(properties[i])];
+            id value = [self valueForKey:key];
+
+            if (value == nil) {
+                // nothing todo
+            } else if ([value isKindOfClass:[NSNumber class]]
+                       || [value isKindOfClass:[NSString class]]
+                       || [value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:[NSMutableArray class]] || [value isKindOfClass:[NSArray class]]) {
+                // TODO: extend to other types
+                [dictionary setObject:value forKey:key];
+            } else if ([value isKindOfClass:[NSObject class]]) {
+                if ([value isKindOfClass:[ALFileMetaInfo class]]) {
+                    [dictionary setObject:[value dictionary] forKey:key];
+                }
+
+            } else {
+                ALSLog(ALLoggerSeverityInfo, @"Invalid type for %@ (%@)", NSStringFromClass([self class]), key);
             }
-            
         }
-        else {
-            ALSLog(ALLoggerSeverityInfo, @"Invalid type for %@ (%@)", NSStringFromClass([self class]), key);
-        }
-    }
-    free(properties);
-}
-    @catch (NSException *exception) {
+        free(properties);
+    } @catch (NSException *exception) {
         ALSLog(ALLoggerSeverityInfo, @"Exception in ALJson %@",exception);
     }
     return dictionary;
 }
 
 
--(BOOL) validateJsonClass:(NSDictionary *) jsonClass
-{
+-(BOOL)validateJsonClass:(NSDictionary *)jsonClass {
     
     if ([NSStringFromClass([jsonClass class]) isEqual:@"NSNUll"] || jsonClass == nil) {
-        
         return NO;
     }
     
     return YES;
-    
 }
 
--(BOOL) validateJsonArrayClass:(NSArray *) jsonClass
-{
+-(BOOL)validateJsonArrayClass:(NSArray *)jsonClass {
     
     if ([NSStringFromClass([jsonClass class]) isEqual:@"NSNUll"] || jsonClass == nil) {
-        
         return NO;
     }
     
     return YES;
     
 }
--(NSString *) getStringFromJsonValue:(id) jsonValue
-{
-    if (jsonValue != [NSNull null] && jsonValue != nil)
-    {
+- (NSString *)getStringFromJsonValue:(id)jsonValue {
+    if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [NSString stringWithFormat:@"%@",jsonValue];
     }
     
@@ -114,51 +102,41 @@
 }
 
 
--(BOOL ) getBoolFromJsonValue:(id) jsonValue
-{
-    if (jsonValue != [NSNull null] && jsonValue != nil)
-    {
+- (BOOL)getBoolFromJsonValue:(id)jsonValue {
+    if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [jsonValue boolValue];
     }
     
     return NO;
 }
 
--(short)getShortFromJsonValue:(id) jsonValue
-{
+- (short)getShortFromJsonValue:(id)jsonValue {
 
-    if(jsonValue != [NSNull null] && jsonValue != nil)
-    {
+    if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [jsonValue shortValue];
     }
     return 0;
 }
 
--(NSNumber *)getNSNumberFromJsonValue:(id) jsonValue
-{
+-(NSNumber *)getNSNumberFromJsonValue:(id)jsonValue {
     
-    if(jsonValue != [NSNull null] && jsonValue != nil)
-    {
+    if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [NSNumber numberWithDouble:[jsonValue doubleValue]];
     }
     return 0;
 }
 
--(long)getLongFromJsonValue:(id) jsonValue
-{
+-(long)getLongFromJsonValue:(id)jsonValue {
     
-    if(jsonValue != [NSNull null] && jsonValue != nil)
-    {
+    if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [jsonValue longValue];
     }
     return 0;
 }
 
--(int)getIntFromJsonValue:(id) jsonValue
-{
+-(int)getIntFromJsonValue:(id)jsonValue {
     
-    if(jsonValue != [NSNull null] && jsonValue != nil)
-    {
+    if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [jsonValue intValue];
     }
     return 0;

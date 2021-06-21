@@ -18,19 +18,19 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
 
 @implementation ALRequestHandler
 
-+(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *) urlString
-                                           paramString:(NSString *) paramString {
++ (NSMutableURLRequest *)createGETRequestWithUrlString:(NSString *)urlString
+                                           paramString:(NSString *)paramString {
     return [self createGETRequestWithUrlString:urlString
                                    paramString:paramString
                                       ofUserId:nil];
 }
 
-+(NSMutableURLRequest *) createGETRequestWithUrlString:(NSString *) urlString
-                                           paramString:(NSString *) paramString
-                                              ofUserId:(NSString *) userId {
++ (NSMutableURLRequest *)createGETRequestWithUrlString:(NSString *)urlString
+                                           paramString:(NSString *)paramString
+                                              ofUserId:(NSString *)userId {
 
-    NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] init];
-    NSURL * theUrl = nil;
+    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] init];
+    NSURL *theUrl = nil;
     if (paramString != nil) {
         theUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@",urlString,paramString]];
     } else {
@@ -44,23 +44,23 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     return theRequest;
 }
 
-+(NSMutableURLRequest *) createPOSTRequestWithUrlString:(NSString *) urlString
-                                            paramString:(NSString *) paramString {
++ (NSMutableURLRequest *)createPOSTRequestWithUrlString:(NSString *)urlString
+                                            paramString:(NSString *)paramString {
     return [self createPOSTRequestWithUrlString:urlString
                                     paramString:paramString
                                        ofUserId:nil];
 }
 
-+(NSMutableURLRequest *) createPOSTRequestWithUrlString:(NSString *) urlString
-                                            paramString:(NSString *) paramString
++ (NSMutableURLRequest *)createPOSTRequestWithUrlString:(NSString *)urlString
+                                            paramString:(NSString *)paramString
                                                ofUserId:(NSString *)userId {
 
-    NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
     [theRequest setTimeoutInterval:600];
     [theRequest setHTTPMethod:@"POST"];
 
     if (paramString != nil) {
-        NSData * thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
         if([ALUserDefaultsHandler getEncryptionKey] && ![urlString hasSuffix:REGISTER_USER_STRING] && ![urlString hasSuffix:@"rest/ws/register/update"]) {
             NSData *postData = [thePostData AES128EncryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
             NSData *base64Encoded = [postData base64EncodedDataWithOptions:0];
@@ -74,10 +74,10 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     return theRequest;
 }
 
-+(NSMutableURLRequest *) createGETRequestWithUrlStringWithoutHeader:(NSString *) urlString
-                                                        paramString:(NSString *) paramString {
-    NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] init];
-    NSURL * theUrl = nil;
++ (NSMutableURLRequest *)createGETRequestWithUrlStringWithoutHeader:(NSString *)urlString
+                                                        paramString:(NSString *)paramString {
+    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] init];
+    NSURL *theUrl = nil;
     if (paramString != nil) {
         theUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@",urlString,paramString]];
     } else {
@@ -90,9 +90,9 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     return theRequest;
 }
 
-+(NSMutableURLRequest *) createPatchRequestWithUrlString:(NSString *) urlString
-                                             paramString:(NSString *) paramString {
-    NSMutableURLRequest * theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
++ (NSMutableURLRequest *)createPatchRequestWithUrlString:(NSString *)urlString
+                                             paramString:(NSString *)paramString {
+    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
 
     NSURL *theUrl = nil;
     if (paramString != nil) {
@@ -109,17 +109,17 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     return theRequest;
 }
 
-+(void) addGlobalHeader:(NSMutableURLRequest*) request
++ (void)addGlobalHeader:(NSMutableURLRequest*)request
                ofUserId:(NSString *)userId {
     
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
-    NSString * appMoudle = [ALUserDefaultsHandler getAppModuleName];
+    NSString *appMoudle = [ALUserDefaultsHandler getAppModuleName];
     if (appMoudle) {
         [request addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
     }
     
-    NSString * deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
     if (deviceKeyString) {
         [request addValue:deviceKeyString forHTTPHeaderField:@"Device-Key"];
     }

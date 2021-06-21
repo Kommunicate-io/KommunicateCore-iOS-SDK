@@ -10,20 +10,16 @@
 
 @implementation ALChannelUserX
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary
-{
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];
     return self;
 }
 
--(void)parseMessage:(id) messageJson
-{
-    
+- (void)parseMessage:(id) messageJson {
 }
 
 
--(BOOL)isAdminUser{
-    
+- (BOOL)isAdminUser {
     return  self.role.intValue == ADMIN;
 }
 

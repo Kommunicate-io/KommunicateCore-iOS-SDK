@@ -26,12 +26,12 @@
 @implementation ALMessageDBService
 
 //Add message APIS
--(NSMutableArray *) addMessageList:(NSMutableArray*) messageList
+- (NSMutableArray *)addMessageList:(NSMutableArray *)messageList
              skipAddingMessageInDb:(BOOL)skip {
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
 
     ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-    for (ALMessage * theMessage in messageList) {
+    for (ALMessage *theMessage in messageList) {
 
         if (skip && !theMessage.fileMeta) {
             [messageArray addObject:theMessage];
@@ -50,7 +50,7 @@
             }
 
         } else if (message != nil) {
-            DB_Message* dbMessage = (DB_Message*)message;
+            DB_Message *dbMessage = (DB_Message*)message;
             if (dbMessage && [dbMessage.replyMessageType intValue] == AL_REPLY_BUT_HIDDEN) {
                 int replyType = (dbMessage.metadata && [dbMessage.metadata containsString:AL_MESSAGE_REPLY_KEY]) ? AL_A_REPLY : AL_NOT_A_REPLY;
                 [self updateMessageReplyType:dbMessage.key replyType: [NSNumber numberWithInt:replyType] hideFlag:NO];
@@ -58,8 +58,8 @@
         }
     }
 
-    NSError * error = [theDBHandler saveContext];
-    if(error){
+    NSError *error = [theDBHandler saveContext];
+    if (error) {
         ALSLog(ALLoggerSeverityError, @"Unable to save error :%@",error);
     }
 
@@ -67,12 +67,12 @@
 }
 
 
--(DB_Message*)addMessage:(ALMessage*) message {
-    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-    DB_Message* dbMessag = [self createMessageEntityForDBInsertionWithMessage:message];
+- (DB_Message*)addMessage:(ALMessage *)message {
+    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
+    DB_Message *dbMessag = [self createMessageEntityForDBInsertionWithMessage:message];
 
     if (dbMessag) {
-        NSError * error = [theDBHandler saveContext];
+        NSError *error = [theDBHandler saveContext];
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Failed to save the message :%@",error);
@@ -84,11 +84,11 @@
             dbMessag.status = [NSNumber numberWithInt:READ];
         }
         if (message.isAReplyMessage) {
-            NSString * messageReplyId = [message.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
-            DB_Message * replyMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageReplyId];
+            NSString *messageReplyId = [message.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
+            DB_Message *replyMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageReplyId];
             if (replyMessage) {
                 replyMessage.replyMessageType = [NSNumber numberWithInt:AL_A_REPLY];
-                NSError * error = [theDBHandler saveContext];
+                NSError *error = [theDBHandler saveContext];
                 if (error) {
                     ALSLog(ALLoggerSeverityError, @"Failed to update the reply type in the message :%@",error);
                 }
@@ -100,36 +100,36 @@
     return dbMessag;
 }
 
--(NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID {
-    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
+- (NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID {
+    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     NSManagedObject *obj = [theDBHandler existingObjectWithID:objectID];
     return obj;
 }
 
--(void)updateDeliveryReportForContact:(NSString *)contactId
-                           withStatus:(int)status {
+- (void)updateDeliveryReportForContact:(NSString *)contactId
+                            withStatus:(int)status {
 
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_Message"];
 
     if (entity) {
 
-        NSMutableArray * predicateArray = [[NSMutableArray alloc] init];
+        NSMutableArray *predicateArray = [[NSMutableArray alloc] init];
 
-        NSPredicate * predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@",contactId];
+        NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@",contactId];
         [predicateArray addObject:predicate1];
 
-        NSPredicate * predicate3 = [NSPredicate predicateWithFormat:@"status != %i and sentToServer ==%@",
-                                    DELIVERED_AND_READ,[NSNumber numberWithBool:YES]];
+        NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"status != %i and sentToServer ==%@",
+                                   DELIVERED_AND_READ,[NSNumber numberWithBool:YES]];
         [predicateArray addObject:predicate3];
 
-        NSCompoundPredicate * resultantPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicateArray];
+        NSCompoundPredicate *resultantPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicateArray];
 
         [fetchRequest setEntity:entity];
         [fetchRequest setPredicate:resultantPredicate];
-        NSError * fetchError = nil;
+        NSError *fetchError = nil;
         NSArray *result = [dbHandler executeFetchRequest:fetchRequest withError:&fetchError];
 
         if (result.count > 0) {
@@ -148,12 +148,12 @@
 }
 
 //update Message APIS
--(void)updateMessageDeliveryReport:(NSString*)messageKeyString
-                        withStatus:(int)status {
+- (void)updateMessageDeliveryReport:(NSString *)messageKeyString
+                         withStatus:(int)status {
 
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
 
-    NSManagedObject* message = [self getMessageByKey:@"key"  value:messageKeyString];
+    NSManagedObject *message = [self getMessageByKey:@"key"  value:messageKeyString];
 
     if (message) {
         [message setValue:@(status) forKey:@"status"];
@@ -166,11 +166,10 @@
     }
 }
 
-
--(void)updateMessageSyncStatus:(NSString*) keyString{
+- (void)updateMessageSyncStatus:(NSString *)keyString {
 
     ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
-    NSManagedObject* message = [self getMessageByKey:@"keyString" value:keyString];
+    NSManagedObject *message = [self getMessageByKey:@"keyString" value:keyString];
     if (message) {
         [message setValue:@"1" forKey:@"isSent"];
         NSError *error = [dbHandler saveContext];
@@ -183,12 +182,11 @@
     }
 }
 
-
 //Delete Message APIS
 
--(void) deleteMessageByKey:(NSString*) keyString {
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
-    NSManagedObject* message = [self getMessageByKey:@"key" value:keyString];
+- (void)deleteMessageByKey:(NSString *)keyString {
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
+    NSManagedObject *message = [self getMessageByKey:@"key" value:keyString];
 
     if (message) {
         [dbHandler deleteObject:message];
@@ -201,9 +199,9 @@
     }
 }
 
--(void) deleteAllMessagesByContact: (NSString*) contactId
+- (void)deleteAllMessagesByContact:(NSString *)contactId
                       orChannelKey:(NSNumber *)key {
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_Message"];
 
@@ -239,8 +237,8 @@
 }
 
 //Generic APIS
--(BOOL) isMessageTableEmpty {
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+- (BOOL)isMessageTableEmpty {
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
     NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_Message"];
     if (entity) {
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -254,7 +252,7 @@
 }
 
 - (void)deleteAllObjectsInCoreData {
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
     NSArray *allEntities = dbHandler.managedObjectModel.entities;
     if (allEntities.count) {
         for (NSEntityDescription *entityDescription in allEntities) {
@@ -283,15 +281,15 @@
     }
 }
 
-- (NSManagedObject *)getMessageByKey:(NSString *) key value:(NSString*) value{
+- (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString *)value {
 
     //Runs at MessageList viewing/opening...ONLY FIRST TIME AND if delete an msg
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [dbHandler entityDescriptionWithEntityForName:@"DB_Message"];
     if (entity) {
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K = %@",key,value];
-        NSPredicate * resultPredicate=[NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]];
+        NSPredicate *resultPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate]];
         [fetchRequest setEntity:entity];
         [fetchRequest setPredicate:resultPredicate];
         NSError *fetchError = nil;
@@ -308,10 +306,10 @@
 #pragma mark - ALMessagesViewController DB Operations.
 //------------------------------------------------------------------------------------------------------------------
 
--(void)getMessages:(NSMutableArray *)subGroupList
-{
-    if ([self isMessageTableEmpty] || [ALApplozicSettings getCategoryName] || ![ALUserDefaultsHandler isInitialMessageListCallDone])  // db is not synced
-    {
+- (void)getMessages:(NSMutableArray *)subGroupList {
+    if ([self isMessageTableEmpty] ||
+        [ALApplozicSettings getCategoryName] ||
+        ![ALUserDefaultsHandler isInitialMessageListCallDone]) {
         [self fetchAndRefreshFromServer:subGroupList];
     } else  { /// Db is synced
         /// Fetch data from db
@@ -323,8 +321,8 @@
     }
 }
 
--(void)fetchAndRefreshFromServer:(NSMutableArray *)subGroupList {
-    [self syncConverstionDBWithCompletion:^(BOOL success, NSMutableArray * theArray) {
+- (void)fetchAndRefreshFromServer:(NSMutableArray *)subGroupList {
+    [self syncConverstionDBWithCompletion:^(BOOL success, NSMutableArray *theArray) {
 
         if (success) {
             /// save data into the db
@@ -333,7 +331,7 @@
             [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
             /// add default contacts
             /// fetch data from db
-            if(subGroupList && [ALApplozicSettings getSubGroupLaunchFlag]) {
+            if (subGroupList && [ALApplozicSettings getSubGroupLaunchFlag]) {
                 [self fetchSubGroupConversations:subGroupList];
             } else {
                 [self fetchConversationsGroupByContactId];
@@ -342,8 +340,8 @@
     }];
 }
 
--(void)fetchAndRefreshQuickConversationWithCompletion:(void (^)( NSMutableArray *, NSError *))completion {
-    NSString * deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
+- (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)( NSMutableArray *, NSError *))completion {
+    NSString *deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
 
     [ALMessageService getLatestMessageForUser:deviceKeyString withCompletion:^(NSMutableArray *messageArray, NSError *error) {
         if (error) {
@@ -361,31 +359,30 @@
 #pragma mark -  Helper methods
 //------------------------------------------------------------------------------------------------------------------
 
--(void)syncConverstionDBWithCompletion:(void(^)(BOOL success , NSMutableArray * theArray)) completion {
+- (void)syncConverstionDBWithCompletion:(void(^)(BOOL success , NSMutableArray *theArray)) completion {
     [ALMessageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"%@",error);
             completion(NO,nil);
-            return ;
+            return;
         }
         completion(YES, messages);
     }];
 }
 
 
--(void)getLatestMessagesWithCompletion:(void(^)( NSMutableArray * theArray,NSError *error)) completion {
+- (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
     [ALMessageService getMessagesListGroupByContactswithCompletionService:^(NSMutableArray *messages, NSError *error) {
         completion(messages, error);
     }];
 }
 
--(NSArray*)getMessageList:(int)messageCount
-  messageTypeOnlyReceived:(BOOL)received {
+- (NSArray *)getMessageList:(int)messageCount messageTypeOnlyReceived:(BOOL)received {
 
     // Get the latest record
-    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
-    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    ALDBHandler *theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [theRequest setResultType:NSDictionaryResultType];
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
     if(received) {
@@ -396,7 +393,7 @@
         [theRequest setPredicate:[NSPredicate predicateWithFormat:@"deletedFlag == %@ AND contentType != %i AND msgHidden == %@",@(NO), ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
     }
 
-    NSArray * theArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
+    NSArray *theArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
     /// Trim the message list
     if (theArray.count > 0) {
         return [theArray subarrayWithRange:NSMakeRange(0, MIN(messageCount, theArray.count))];
@@ -405,12 +402,11 @@
     return nil;
 }
 
--(void)fetchConversationsGroupByContactId {
+- (void)fetchConversationsGroupByContactId {
     [self fetchLatestConversationsGroupByContactId :NO];
 }
 
-
--(NSMutableArray*)fetchLatestConversationsGroupByContactId:(BOOL)isFetchOnCreatedAtTime {
+- (NSMutableArray *)fetchLatestConversationsGroupByContactId:(BOOL)isFetchOnCreatedAtTime {
 
     ALConversationListRequest *conversationListRequest = [[ALConversationListRequest alloc] init];
 
@@ -423,19 +419,19 @@
     return sortedArray;
 }
 
--(NSMutableArray *)fetchLatestMessagesFromDatabaseWithRequestList:(ALConversationListRequest *) conversationListRequest {
+- (NSMutableArray *)fetchLatestMessagesFromDatabaseWithRequestList:(ALConversationListRequest *)conversationListRequest {
 
     NSPredicate *predicateCreatedAt;
     if (conversationListRequest.endTimeStamp
-        && !conversationListRequest.startTimeStamp) {
+        && conversationListRequest.startTimeStamp == nil) {
         predicateCreatedAt = [NSPredicate predicateWithFormat:@"createdAt < %@",conversationListRequest.endTimeStamp];
-    } else if (conversationListRequest.startTimeStamp) {
+    } else if (conversationListRequest.startTimeStamp != nil) {
         predicateCreatedAt = [NSPredicate predicateWithFormat:@"createdAt >= %@",conversationListRequest.startTimeStamp];
     }
 
-    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *theDbHandler = [ALDBHandler sharedInstance];
     /// get all unique contacts
-    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [theRequest setResultType:NSDictionaryResultType];
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
     if (predicateCreatedAt) {
@@ -445,8 +441,8 @@
     [theRequest setPropertiesToFetch:[NSArray arrayWithObjects:@"groupId", nil]];
     [theRequest setReturnsDistinctResults:YES];
 
-    NSError * fetchError = nil;
-    NSArray * theArray = [theDbHandler executeFetchRequest:theRequest withError:&fetchError];
+    NSError *fetchError = nil;
+    NSArray *theArray = [theDbHandler executeFetchRequest:theRequest withError:&fetchError];
     NSMutableArray *messagesArray = [NSMutableArray new];
     if (theArray.count > 0) {
         /// get latest record
@@ -468,7 +464,7 @@
 
             NSArray * groupMsgArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
             if (groupMsgArray.count > 0) {
-                DB_Message * theMessageEntity = groupMsgArray.firstObject;
+                DB_Message *theMessageEntity = groupMsgArray.firstObject;
                 if (groupMsgArray.count) {
                     ALMessage * theMessage = [self createMessageEntity:theMessageEntity];
                     [messagesArray addObject:theMessage];
@@ -477,7 +473,7 @@
         }
     }
     /// Find all message only have contact ...
-    NSFetchRequest * theRequest1 = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    NSFetchRequest *theRequest1 = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [theRequest1 setResultType:NSDictionaryResultType];
     NSPredicate *groupRemovePredicate = [NSPredicate predicateWithFormat:@"groupId=%d OR groupId=nil",0];
 
@@ -492,7 +488,7 @@
     [theRequest1 setPropertiesToFetch:[NSArray arrayWithObjects:@"contactId", nil]];
     [theRequest1 setReturnsDistinctResults:YES];
 
-    NSArray * userMsgArray = [theDbHandler executeFetchRequest:theRequest1 withError:nil];
+    NSArray *userMsgArray = [theDbHandler executeFetchRequest:theRequest1 withError:nil];
 
     if (userMsgArray.count > 0) {
         for (NSDictionary * theDictionary in userMsgArray) {
@@ -523,12 +519,12 @@
 }
 
 
--(DB_Message *) createMessageEntityForDBInsertionWithMessage:(ALMessage *) theMessage {
+- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)theMessage {
 
     //Runs at MessageList viewing/opening... ONLY FIRST TIME
-    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
 
-    DB_Message * theMessageEntity = (DB_Message *)[theDBHandler insertNewObjectForEntityForName:@"DB_Message"];
+    DB_Message *theMessageEntity = (DB_Message *)[theDBHandler insertNewObjectForEntityForName:@"DB_Message"];
 
     if (theMessageEntity) {
         theMessageEntity.contactId = theMessage.contactIds;
@@ -559,7 +555,7 @@
         theMessageEntity.replyMessageType = theMessage.messageReplyType;
         theMessageEntity.source = theMessage.source;
 
-        if (theMessage.getGroupId) {
+        if (theMessage.getGroupId != nil) {
             theMessageEntity.groupId = theMessage.groupId;
         }
         if (theMessage.fileMeta != nil) {
@@ -570,9 +566,9 @@
     return theMessageEntity;
 }
 
--(DB_FileMetaInfo *) createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *) fileInfo {
-    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
-    DB_FileMetaInfo * fileMetaInfo = (DB_FileMetaInfo *)[theDBHandler insertNewObjectForEntityForName:@"DB_FileMetaInfo"];
+- (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo {
+    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
+    DB_FileMetaInfo *fileMetaInfo = (DB_FileMetaInfo *)[theDBHandler insertNewObjectForEntityForName:@"DB_FileMetaInfo"];
 
     if (fileMetaInfo) {
         fileMetaInfo.blobKeyString = fileInfo.blobKey;
@@ -590,12 +586,12 @@
     return fileMetaInfo;
 }
 
--(ALMessage *) createMessageEntity:(DB_Message *) theEntity {
+- (ALMessage *)createMessageEntity:(DB_Message *)theEntity {
 
     if (!theEntity) {
         return nil;
     }
-    ALMessage * theMessage = [ALMessage new];
+    ALMessage *theMessage = [ALMessage new];
 
     theMessage.msgDBObjectId = [theEntity objectID];
     theMessage.key = theEntity.key;
@@ -628,7 +624,7 @@
 
     /// file meta info
     if (theEntity.fileMetaInfo) {
-        ALFileMetaInfo * theFileMeta = [ALFileMetaInfo new];
+        ALFileMetaInfo *theFileMeta = [ALFileMetaInfo new];
         theFileMeta.blobKey = theEntity.fileMetaInfo.blobKeyString;
         theFileMeta.thumbnailBlobKey = theEntity.fileMetaInfo.thumbnailBlobKeyString;
         theFileMeta.contentType = theEntity.fileMetaInfo.contentType;
@@ -645,9 +641,8 @@
     return theMessage;
 }
 
--(void) updateFileMetaInfo:(ALMessage *) almessage
-{
-    DB_Message * db_Message = (DB_Message*)[self getMeesageById:almessage.msgDBObjectId];
+- (void) updateFileMetaInfo:(ALMessage *)almessage {
+    DB_Message *db_Message = (DB_Message*)[self getMeesageById:almessage.msgDBObjectId];
     if (db_Message) {
         almessage.fileMetaKey = almessage.fileMeta.key;
         db_Message.fileMetaInfo.blobKeyString = almessage.fileMeta.blobKey;
@@ -664,40 +659,40 @@
 }
 
 
--(NSMutableArray *)getMessageListForContactWithCreatedAt:(MessageListRequest *)messageListRequest
-{
-    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
-    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+- (NSMutableArray *)getMessageListForContactWithCreatedAt:(MessageListRequest *)messageListRequest {
+    ALDBHandler *theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate1;
 
     if ([ALApplozicSettings getContextualChatOption] &&
-        messageListRequest.conversationId &&
-        messageListRequest.conversationId != 0) {
-        if (messageListRequest.channelKey) {
+        messageListRequest.conversationId != nil &&
+        messageListRequest.conversationId.integerValue != 0) {
+        if (messageListRequest.channelKey != nil) {
             predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@ && conversationId = %i",messageListRequest.channelKey,messageListRequest.conversationId];
         } else {
             predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && conversationId = %i",messageListRequest.userId,messageListRequest.conversationId];
         }
-    } else if (messageListRequest.channelKey) {
+    } else if (messageListRequest.channelKey != nil) {
         predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@",messageListRequest.channelKey];
     } else {
         predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil ",messageListRequest.userId];
     }
 
-    NSPredicate* predicateDeletedCheck=[NSPredicate predicateWithFormat:@"deletedFlag == NO"];
+    NSPredicate *predicateDeletedCheck=[NSPredicate predicateWithFormat:@"deletedFlag == NO"];
 
     NSPredicate *predicateForHiddenMessages = [NSPredicate predicateWithFormat:@"msgHidden == %@", @(NO)];
 
     NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"createdAt < 0"];
 
-    NSCompoundPredicate * compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicate2, predicateDeletedCheck,predicateForHiddenMessages]];;
+    NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicate2, predicateDeletedCheck,predicateForHiddenMessages]];;
 
-    if (messageListRequest.endTimeStamp) {
+    if (messageListRequest.endTimeStamp
+        != nil) {
         NSPredicate *predicateForEndTimeStamp= [NSPredicate predicateWithFormat:@"createdAt < %@",messageListRequest.endTimeStamp];
         compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicateForEndTimeStamp, predicateDeletedCheck,predicateForHiddenMessages]];
     }
 
-    if (messageListRequest.startTimeStamp) {
+    if (messageListRequest.startTimeStamp != nil) {
         NSPredicate *predicateCreatedAtForStartTime  = [NSPredicate predicateWithFormat:@"createdAt >= %@",messageListRequest.startTimeStamp];
         compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1, predicateCreatedAtForStartTime, predicateDeletedCheck,predicateForHiddenMessages]];
     }
@@ -706,44 +701,44 @@
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
     theRequest.fetchLimit = 200;
 
-    NSArray * messageArray =  [theDbHandler executeFetchRequest:theRequest withError:nil];
-    NSMutableArray * msgArray =  [[NSMutableArray alloc]init];
+    NSArray *messageArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
+    NSMutableArray *msgArray = [[NSMutableArray alloc]init];
     if (messageArray.count) {
         for (DB_Message * theEntity in messageArray) {
-            ALMessage * theMessage = [self createMessageEntity:theEntity];
+            ALMessage *theMessage = [self createMessageEntity:theEntity];
             [msgArray addObject:theMessage];
         }
     }
     return msgArray;
 }
 
--(NSMutableArray *)getAllMessagesWithAttachmentForContact:(NSString *)contactId
-                                            andChannelKey:(NSNumber *)channelKey
-                                onlyDownloadedAttachments: (BOOL )onlyDownloaded {
-    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
-    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+- (NSMutableArray *)getAllMessagesWithAttachmentForContact:(NSString *)contactId
+                                             andChannelKey:(NSNumber *)channelKey
+                                 onlyDownloadedAttachments:(BOOL)onlyDownloaded {
+    ALDBHandler *theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate1;
 
-    if (channelKey) {
-        predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@",channelKey];
+    if (channelKey != nil) {
+        predicate1 = [NSPredicate predicateWithFormat:@"groupId = %@", channelKey];
     } else {
-        predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@",contactId];
+        predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@", contactId];
     }
 
-    NSPredicate* predicateDeletedCheck=[NSPredicate predicateWithFormat:@"deletedFlag == NO"];
+    NSPredicate *predicateDeletedCheck =[NSPredicate predicateWithFormat:@"deletedFlag == NO"];
 
     NSPredicate *predicateForFileMeta = [NSPredicate predicateWithFormat:@"fileMetaInfo != nil"];
-    NSMutableArray* predicates = [[NSMutableArray alloc] initWithArray: @[predicate1, predicateDeletedCheck, predicateForFileMeta]];
+    NSMutableArray *predicates = [[NSMutableArray alloc] initWithArray: @[predicate1, predicateDeletedCheck, predicateForFileMeta]];
 
     if (onlyDownloaded) {
         NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"filePath != nil"];
         [predicates addObject:predicate2];
     }
 
-    theRequest.predicate =[NSCompoundPredicate andPredicateWithSubpredicates:predicates];
+    theRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
 
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
-    NSArray * messages =  [theDbHandler executeFetchRequest:theRequest withError:nil];
+    NSArray *messages =  [theDbHandler executeFetchRequest:theRequest withError:nil];
     NSMutableArray * msgArray =  [[NSMutableArray alloc]init];
     if (messages.count > 0) {
         for (DB_Message * theEntity in messages) {
@@ -756,22 +751,22 @@
 }
 
 
--(NSMutableArray *)getPendingMessages {
+- (NSMutableArray *)getPendingMessages {
 
-    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
-    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    ALDBHandler *theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     theRequest.predicate = [NSPredicate predicateWithFormat:@"sentToServer = %@ and type= %@ and deletedFlag = %@",@"0",@"5",@(NO)];
 
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES]]];
 
-    NSArray * messages =  [theDbHandler executeFetchRequest:theRequest withError:nil];
+    NSArray *messages = [theDbHandler executeFetchRequest:theRequest withError:nil];
 
-    NSMutableArray * msgArray = [[NSMutableArray alloc]init];
+    NSMutableArray *msgArray = [[NSMutableArray alloc]init];
 
     if (messages.count > 0) {
-        for (DB_Message * theEntity in messages) {
-            ALMessage * theMessage = [self createMessageEntity:theEntity];
-            if([theMessage.groupId isEqualToNumber:[NSNumber numberWithInt:0]]) {
+        for (DB_Message *theEntity in messages) {
+            ALMessage *theMessage = [self createMessageEntity:theEntity];
+            if ([theMessage.groupId isEqualToNumber:[NSNumber numberWithInt:0]]) {
                 ALSLog(ALLoggerSeverityInfo, @"groupId is coming as 0..setting it null" );
                 theMessage.groupId = NULL;
             }
@@ -783,10 +778,10 @@
     return msgArray;
 }
 
--(NSUInteger)getMessagesCountFromDBForUser:(NSString *)userId {
-    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
-    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil",userId];
+- (NSUInteger)getMessagesCountFromDBForUser:(NSString *)userId {
+    ALDBHandler *theDbHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil",userId];
     [theRequest setPredicate:predicate];
     NSUInteger count = [theDbHandler countForFetchRequest:theRequest];
     return count;
@@ -797,7 +792,7 @@
 #pragma mark GET LATEST MESSAGE FOR USER/CHANNEL
 //============================================================================================================
 
--(ALMessage *)getLatestMessageForUser:(NSString *)userId {
+- (ALMessage *)getLatestMessageForUser:(NSString *)userId {
     ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactId = %@ and groupId = nil and deletedFlag = %@",userId,@(NO)];
@@ -809,16 +804,16 @@
     NSArray *messagesArray = [dbHandler executeFetchRequest:request withError:&fetchError];
 
     if(messagesArray.count) {
-        DB_Message * dbMessage = [messagesArray objectAtIndex:0];
-        ALMessage * alMessage = [self createMessageEntity:dbMessage];
+        DB_Message *dbMessage = [messagesArray objectAtIndex:0];
+        ALMessage *alMessage = [self createMessageEntity:dbMessage];
         return alMessage;
     }
 
     return nil;
 }
 
--(ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey
-                excludeChannelOperations:(BOOL)flag {
+- (ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey
+                 excludeChannelOperations:(BOOL)flag {
     ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
 
@@ -837,8 +832,8 @@
     NSArray *messagesArray = [dbHandler executeFetchRequest:request withError:&fetchError];
 
     if(messagesArray.count) {
-        DB_Message * dbMessage = [messagesArray objectAtIndex:0];
-        ALMessage * alMessage = [self createMessageEntity:dbMessage];
+        DB_Message *dbMessage = [messagesArray objectAtIndex:0];
+        ALMessage *alMessage = [self createMessageEntity:dbMessage];
         return alMessage;
     }
 
@@ -848,8 +843,8 @@
 
 /////////////////////////////  FETCH CONVERSATION WITH PAGE SIZE  /////////////////////////////
 
--(void)fetchConversationfromServerWithCompletion:(void(^)(BOOL flag))completionHandler {
-    [self syncConverstionDBWithCompletion:^(BOOL success, NSMutableArray * theArray) {
+- (void)fetchConversationfromServerWithCompletion:(void(^)(BOOL flag))completionHandler {
+    [self syncConverstionDBWithCompletion:^(BOOL success, NSMutableArray *theArray) {
 
         if (!success) {
             completionHandler(success);
@@ -869,11 +864,11 @@
  FETCH LATEST MESSSAGE FOR SUB GROUPS
  ************************************/
 
--(void)fetchSubGroupConversations:(NSMutableArray *)subGroupList {
-    NSMutableArray * subGroupMsgArray = [NSMutableArray new];
+- (void)fetchSubGroupConversations:(NSMutableArray *)subGroupList {
+    NSMutableArray *subGroupMsgArray = [NSMutableArray new];
 
-    for(ALChannel * alChannel in subGroupList) {
-        ALMessage * alMessage = [self getLatestMessageForChannel:alChannel.key excludeChannelOperations:NO];
+    for (ALChannel *alChannel in subGroupList) {
+        ALMessage *alMessage = [self getLatestMessageForChannel:alChannel.key excludeChannelOperations:NO];
         if (alMessage) {
             [subGroupMsgArray addObject:alMessage];
             if (alChannel.type == GROUP_OF_TWO) {
@@ -896,11 +891,11 @@
 }
 
 
--(void) updateMessageReplyType:(NSString*)messageKeyString replyType : (NSNumber *) type hideFlag:(BOOL)flag {
+- (void)updateMessageReplyType:(NSString *)messageKeyString replyType:(NSNumber *)type hideFlag:(BOOL)flag {
 
-    ALDBHandler * dbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
 
-    DB_Message * replyMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKeyString];
+    DB_Message *replyMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKeyString];
 
     if (replyMessage) {
         replyMessage.replyMessageType = type;
@@ -914,14 +909,14 @@
 }
 
 
--(ALMessage*) getMessageByKey:(NSString*)messageKey {
-    DB_Message * dbMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKey];
-    return  [self createMessageEntity:dbMessage];
+- (ALMessage*)getMessageByKey:(NSString*)messageKey {
+    DB_Message *dbMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKey];
+    return [self createMessageEntity:dbMessage];
 }
 
--(void) updateMessageSentDetails:(NSString*)messageKeyString withCreatedAtTime : (NSNumber *) createdAtTime withDbMessage:(DB_Message *) dbMessage {
+- (void)updateMessageSentDetails:(NSString*)messageKeyString withCreatedAtTime:(NSNumber *)createdAtTime withDbMessage:(DB_Message *)dbMessage {
 
-    if(!dbMessage){
+    if (!dbMessage) {
         return;
     }
 
@@ -936,30 +931,30 @@
     [theDBHandler saveContext];
 }
 
--(void) getLatestMessages:(BOOL)isNextPage withCompletionHandler: (void(^)(NSMutableArray * messageList, NSError *error)) completion {
+- (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
 
     if (!isNextPage) {
 
-        if ([self isMessageTableEmpty] || ![ALUserDefaultsHandler isInitialMessageListCallDone])  // db is not synced
-        {
-            [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray * theArray,NSError *error) {
+        if ([self isMessageTableEmpty] ||
+            ![ALUserDefaultsHandler isInitialMessageListCallDone]) {
+            [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray *theArray, NSError *error) {
                 completion(theArray,error);
             }];
         } else {
             completion([self fetchLatestConversationsGroupByContactId:NO],nil);
         }
     } else {
-        [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray * theArray,NSError *error) {
+        [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray *theArray, NSError *error) {
             completion(theArray,error);
 
         }];
     }
 }
 
--(void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray * theArray,NSError *error)) completion {
+- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
 
-    if(![ALUserDefaultsHandler getFlagForAllConversationFetched]){
-        [self getLatestMessagesWithCompletion:^(NSMutableArray * theArray,NSError *error) {
+    if (![ALUserDefaultsHandler getFlagForAllConversationFetched]) {
+        [self getLatestMessagesWithCompletion:^(NSMutableArray *theArray, NSError *error) {
 
             if (!error) {
                 // save data into the db
@@ -968,40 +963,41 @@
                 [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts
                 //fetch data from db
-                completion([self fetchLatestConversationsGroupByContactId:YES],error);
-                return ;
-            }else{
-                completion(nil,error);
+                completion([self fetchLatestConversationsGroupByContactId:YES], error);
+                return;
+            } else {
+                completion(nil, error);
             }
         }];
     } else {
-        completion(nil,nil);
+        completion(nil, nil);
     }
 }
 
 
--(void) getLatestMessages:(BOOL)isNextPage withOnlyGroups:(BOOL)isGroup withCompletionHandler: (void(^)(NSMutableArray * messageList, NSError *error)) completion{
+- (void)getLatestMessages:(BOOL)isNextPage
+           withOnlyGroups:(BOOL)isGroup
+    withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
 
     if (!isNextPage) {
 
-        if ([self isMessageTableEmpty] || ![ALUserDefaultsHandler isInitialMessageListCallDone])  // db is not synced
-        {
-            [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray * theArray,NSError *error) {
+        if ([self isMessageTableEmpty] ||
+            ![ALUserDefaultsHandler isInitialMessageListCallDone]) {
+            [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray *theArray, NSError *error) {
                 completion(theArray,error);
             }];
         } else {
             completion([self fetchLatestMesssagesFromDb:isGroup],nil);
         }
     } else {
-        [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray * theArray,NSError *error) {
-            completion(theArray,error);
-
+        [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray *theArray, NSError *error) {
+            completion(theArray, error);
         }];
     }
 }
 
--(void)fetchLatestMesssagesFromServer:(BOOL) isGroupMesssages
-                       withCompletion:(void(^)(NSMutableArray * theArray,NSError *error)) completion {
+- (void)fetchLatestMesssagesFromServer:(BOOL)isGroupMesssages
+                        withCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
 
     if(![ALUserDefaultsHandler getFlagForAllConversationFetched]){
         [self getLatestMessagesWithCompletion:^(NSMutableArray * theArray,NSError *error) {
@@ -1024,9 +1020,9 @@
     }
 }
 
--(NSMutableArray*)fetchLatestMesssagesFromDb :(BOOL) isGroupMessages {
+- (NSMutableArray *)fetchLatestMesssagesFromDb:(BOOL)isGroupMessages {
 
-    NSMutableArray *messagesArray = [NSMutableArray new];
+    NSMutableArray *messagesArray = nil;
 
     if (isGroupMessages) {
         messagesArray =  [self getLatestMessagesForGroup];
@@ -1042,13 +1038,13 @@
     return sortedArray;
 }
 
--(NSMutableArray *) getLatestMessagesForContact {
+- (NSMutableArray *)getLatestMessagesForContact {
 
-    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *theDbHandler = [ALDBHandler sharedInstance];
     NSMutableArray *messagesArray = [NSMutableArray new];
 
     // Find all message only have contact ...
-    NSFetchRequest * theRequest1 = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    NSFetchRequest *theRequest1 = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [theRequest1 setResultType:NSDictionaryResultType];
     [theRequest1 setPredicate:[NSPredicate predicateWithFormat:@"groupId=%d OR groupId=nil",0]];
     [theRequest1 setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
@@ -1063,9 +1059,9 @@
         return messagesArray;
     }
 
-    for (NSDictionary * theDictionary in userMsgArray) {
+    for (NSDictionary *theDictionary in userMsgArray) {
 
-        NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+        NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
         [theRequest setPredicate:[NSPredicate predicateWithFormat:@"contactId = %@ and groupId=nil and deletedFlag == %@ AND contentType != %i AND msgHidden == %@",theDictionary[@"contactId"],@(NO),ALMESSAGE_CONTENT_HIDDEN,@(NO)]];
 
         [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
@@ -1074,21 +1070,21 @@
         NSArray *fetchArray = [theDbHandler executeFetchRequest:theRequest withError:nil];
 
         if (fetchArray.count) {
-            DB_Message * theMessageEntity = fetchArray.firstObject;
-            ALMessage * theMessage = [self createMessageEntity:theMessageEntity];
+            DB_Message *theMessageEntity = fetchArray.firstObject;
+            ALMessage *theMessage = [self createMessageEntity:theMessageEntity];
             [messagesArray addObject:theMessage];
         }
     }
     return messagesArray;
 }
 
--(NSMutableArray*) getLatestMessagesForGroup {
+- (NSMutableArray *)getLatestMessagesForGroup {
 
-    ALDBHandler * theDbHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *theDbHandler = [ALDBHandler sharedInstance];
     NSMutableArray *messagesArray = [NSMutableArray new];
 
     // get all unique contacts
-    NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [theRequest setResultType:NSDictionaryResultType];
     [theRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
     [theRequest setPropertiesToFetch:[NSArray arrayWithObjects:@"groupId", nil]];
@@ -1103,8 +1099,8 @@
     }
 
     // get latest record
-    for (NSDictionary * theDictionary in messageArray) {
-        NSFetchRequest * theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
+    for (NSDictionary *theDictionary in messageArray) {
+        NSFetchRequest *theRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
 
         if ([theDictionary[@"groupId"] intValue]==0) {
             continue;
@@ -1132,7 +1128,7 @@
     return messagesArray;
 }
 
--(ALMessage *)handleMessageFailedStatus:(ALMessage *)message {
+- (ALMessage *)handleMessageFailedStatus:(ALMessage *)message {
     if (!message.msgDBObjectId) {
         return nil;
     }
@@ -1149,10 +1145,10 @@
     return message;
 }
 
--(ALMessage*)writeDataAndUpdateMessageInDb:(NSData*)data
-                               withMessage:(ALMessage *)message
-                              withFileFlag:(BOOL)isFile {
-    ALMessage * messageObject = message;
+- (ALMessage *)writeDataAndUpdateMessageInDb:(NSData *)data
+                                 withMessage:(ALMessage *)message
+                                withFileFlag:(BOOL)isFile {
+    ALMessage *messageObject = message;
     DB_Message *messageEntity = (DB_Message*)[self getMessageByKey:@"key" value:messageObject.key];
 
     NSData *imageData;
@@ -1162,10 +1158,10 @@
         imageData = [ALUtilityClass compressImage: data];
     }
 
-    NSString * docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSArray *componentsArray = [messageObject.fileMeta.name componentsSeparatedByString:@"."];
     NSString *fileExtension = [componentsArray lastObject];
-    NSString * filePath;
+    NSString *filePath;
 
     if (isFile) {
         filePath = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_local.%@", messageObject.key,fileExtension]];
@@ -1175,7 +1171,7 @@
             UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, nil, nil);
         }
 
-        NSString * fileName = [NSString stringWithFormat:@"%@_local.%@", messageObject.key, fileExtension];
+        NSString *fileName = [NSString stringWithFormat:@"%@_local.%@", messageObject.key, fileExtension];
         if (messageEntity) {
             messageEntity.inProgress = [NSNumber numberWithBool:NO];
             messageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
@@ -1189,7 +1185,7 @@
 
         filePath  = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_thumbnail_local.%@", messageObject.key, fileExtension]];
 
-        NSString * fileName =  [NSString stringWithFormat:@"%@_thumbnail_local.%@", messageObject.key, fileExtension];
+        NSString *fileName =  [NSString stringWithFormat:@"%@_thumbnail_local.%@", messageObject.key, fileExtension];
         if (messageEntity) {
             messageEntity.fileMetaInfo.thumbnailFilePath = fileName;
         } else {
@@ -1207,17 +1203,17 @@
 }
 
 
--(DB_Message*)addAttachmentMessage:(ALMessage*)message{
+- (DB_Message*)addAttachmentMessage:(ALMessage *)message {
 
-    ALDBHandler * theDBHandler = [ALDBHandler sharedInstance];
+    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
-    DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:message];
+    DB_Message *theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:message];
 
     if (theMessageEntity) {
         message.msgDBObjectId = [theMessageEntity objectID];
         theMessageEntity.inProgress = [NSNumber numberWithBool:YES];
         theMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
-        NSError * error = [theDBHandler saveContext];
+        NSError *error = [theDBHandler saveContext];
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Failed to save the Attachment Message : %@", message.key);

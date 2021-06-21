@@ -16,20 +16,20 @@
 
 @protocol ALChatCellDelegate <NSObject>
 
--(void) deleteMessasgeforAll:(ALMessage *) message;
--(void) deleteMessageFromView:(ALMessage *) message;
--(void) loadView:(UIViewController *)launch;
--(void) showAnimation:(BOOL)flag;
--(void) processALMessage:(ALMessage *) message;
--(void) processForwardMessage:(ALMessage *) message;
--(void)messageReport:(ALMessage *)alMessage;
+- (void) deleteMessasgeforAll:(ALMessage *) message;
+- (void) deleteMessageFromView:(ALMessage *) message;
+- (void) loadView:(UIViewController *)launch;
+- (void) showAnimation:(BOOL)flag;
+- (void) processALMessage:(ALMessage *) message;
+- (void) processForwardMessage:(ALMessage *) message;
+- (void)messageReport:(ALMessage *)alMessage;
 
 @optional
 
--(void)openUserChat:(ALMessage *)alMessage;
--(void)processMessageReply:(ALMessage *) message;
--(void)scrollToReplyMessage:(ALMessage*)message;
--(void)handleTapGestureForKeyBoard;
+- (void)openUserChat:(ALMessage *)alMessage;
+- (void)processMessageReply:(ALMessage *) message;
+- (void)scrollToReplyMessage:(ALMessage *)message;
+- (void)handleTapGestureForKeyBoard;
 
 @end
 
@@ -41,15 +41,15 @@
 
 @property (retain, nonatomic) UILabel *mDateLabel;
 
-@property (nonatomic,retain) UIImageView * mBubleImageView;
+@property (nonatomic,retain) UIImageView *mBubleImageView;
 
-@property (nonatomic,retain) UIImageView * mUserProfileImageView;
+@property (nonatomic,retain) UIImageView *mUserProfileImageView;
 
-@property (nonatomic, retain) ALMessage * mMessage;
+@property (nonatomic, retain) ALMessage *mMessage;
 
 @property (nonatomic, retain) UIImageView *mMessageStatusImageView;
 
--(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize;
+- (instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize;
 
 @property (nonatomic, assign) id<ALChatCellDelegate> delegate;
 
@@ -57,11 +57,11 @@
 
 @property (retain, nonatomic) UILabel *mNameLabel;
 
-@property (retain, nonatomic) MessageReplyView * replyUIView;
+@property (retain, nonatomic) MessageReplyView *replyUIView;
 
-@property (retain, nonatomic) UIView * replyParentView;
+@property (retain, nonatomic) UIView *replyParentView;
 
-@property (nonatomic, strong) ALChannel * channel;
+@property (nonatomic, strong) ALChannel *channel;
 
 @property (strong, nonatomic)  NSMutableDictionary *colourDictionary;
 

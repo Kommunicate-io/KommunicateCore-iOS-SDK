@@ -17,7 +17,7 @@
 
 @interface ALUserProfileVC ()
 
-@property (nonatomic, retain) UIImagePickerController * mImagePicker;
+@property (nonatomic, retain) UIImagePickerController *mImagePicker;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (strong, nonatomic) IBOutlet UISwitch *notificationToggle;
 @property (strong, nonatomic) IBOutlet UILabel *userStatusLabel;
@@ -35,17 +35,15 @@
 - (IBAction)editButtonAction:(id)sender;
 @end
 
-@implementation ALUserProfileVC
-{
+@implementation ALUserProfileVC {
     NSString *mainFilePath;
     NSString *imageLinkFromServer;
     
-    ALContact * myContact;
-    ALContactService * alContactService;
+    ALContact *myContact;
+    ALContactService *alContactService;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     alContactService = [[ALContactService alloc] init];
@@ -67,7 +65,7 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)fetchLoginUserDetails {
+- (void)fetchLoginUserDetails {
     NSString *loginUserId = [ALUserDefaultsHandler getUserId];
     [self.activityIndicator startAnimating];
 
@@ -79,7 +77,7 @@
     }];
 }
 
--(void)setupViewWithContact:(ALContact *)contact {
+- (void)setupViewWithContact:(ALContact *)contact {
 
     if (contact.contactImageUrl) {
         [self.profileImage sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl] placeholderImage:self.placeHolderImage];
@@ -96,8 +94,7 @@
     [self.notificationToggle setOn:(!checkMode) animated:YES];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     [self addNotificationObserver];
@@ -105,8 +102,7 @@
     self.mImagePicker.delegate = self;
     self.mImagePicker.allowsEditing = YES;
     
-    if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
-    {
+    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
         self.navigationController.navigationBar.translucent = NO;
         [self commonNavBarTheme:self.navigationController];
     }
@@ -139,7 +135,7 @@
     [self.mobileNotification setText:NSLocalizedStringWithDefaultValue(@"mobileNotificationsTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Mobile Notifications", @"")];
 }
 
--(void)addNotificationObserver {
+- (void)addNotificationObserver {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(showMQTTNotification:)
                                                  name:@"MQTT_APPLOZIC_01"
@@ -155,8 +151,7 @@
                                                  name:@"USER_DETAIL_OTHER_VC" object:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MQTT_APPLOZIC_01" object:nil];
@@ -165,8 +160,7 @@
 
 }
 
--(void)commonNavBarTheme:(UINavigationController *)navigationController
-{
+- (void)commonNavBarTheme:(UINavigationController *)navigationController {
     [navigationController.navigationBar setTitleTextAttributes: @{
         NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
         NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -178,25 +172,22 @@
     [navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
 }
 
--(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     [self commonNavBarTheme:navigationController];
 }
 
--(void)showMQTTNotification:(NSNotification *)notifyObject
-{
-    ALMessage * alMessage = (ALMessage *)notifyObject.object;
+- (void)showMQTTNotification:(NSNotification *)notifyObject {
+    ALMessage *alMessage = (ALMessage *)notifyObject.object;
     
     BOOL flag = (alMessage.groupId && [ALChannelService isChannelMuted:alMessage.groupId]);
     
-    if (![alMessage.type isEqualToString:@"5"] && !flag && ![alMessage isMsgHidden])
-    {
-        ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
-                                                                           withAlertMessage:alMessage.message];
+    if (![alMessage.type isEqualToString:@"5"] && !flag && ![alMessage isMsgHidden]) {
+        ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
+                                                                          withAlertMessage:alMessage.message];
 
         [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
 
-            ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
+            ALNotificationHelper *helper = [[ALNotificationHelper alloc]init];
 
             if ([helper isApplozicViewControllerOnTop]) {
 
@@ -207,37 +198,31 @@
     }
 }
 
--(void)handleAPNS:(NSNotification *)notification
-{
-    NSString * contactId = notification.object;
+- (void)handleAPNS:(NSNotification *)notification {
+    NSString *contactId = notification.object;
     ALSLog(ALLoggerSeverityInfo, @"USER_PROFILE_VC_NOTIFICATION_OBJECT : %@",contactId);
     NSDictionary *dict = notification.userInfo;
-    NSNumber * updateUI = [dict valueForKey:@"updateUI"];
-    NSString * alertValue = [dict valueForKey:@"alertValue"];
+    NSNumber *updateUI = [dict valueForKey:@"updateUI"];
+    NSString *alertValue = [dict valueForKey:@"alertValue"];
     
     ALPushAssist *pushAssist = [ALPushAssist new];
     
-    NSArray * myArray = [contactId componentsSeparatedByString:@":"];
-    NSNumber * channelKey = nil;
-    if(myArray.count > 2)
-    {
+    NSArray *myArray = [contactId componentsSeparatedByString:@":"];
+    NSNumber *channelKey = nil;
+    if (myArray.count > 2) {
         channelKey = @([myArray[1] intValue]);
     }
     
-    if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && [pushAssist.topViewController isKindOfClass:[ALUserProfileVC class]])
-    {
+    if ([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_ACTIVE]] && [pushAssist.topViewController isKindOfClass:[ALUserProfileVC class]]) {
         ALSLog(ALLoggerSeverityInfo, @"######## USER PROFILE VC : APP_STATE_ACTIVE #########");
         
         ALMessage *alMessage = [[ALMessage alloc] init];
         alMessage.message = alertValue;
         NSArray *myArray = [alMessage.message componentsSeparatedByString:@":"];
         
-        if(myArray.count > 1)
-        {
+        if (myArray.count > 1) {
             alertValue = [NSString stringWithFormat:@"%@", myArray[1]];
-        }
-        else
-        {
+        } else {
             alertValue = myArray[0];
         }
         
@@ -245,17 +230,16 @@
         alMessage.contactIds = contactId;
         alMessage.groupId = channelKey;
         
-        if ((channelKey && [ALChannelService isChannelMuted:alMessage.groupId]) || [alMessage isMsgHidden])
-        {
+        if ((channelKey && [ALChannelService isChannelMuted:alMessage.groupId]) || [alMessage isMsgHidden]) {
             return;
         }
         
-        ALNotificationView * alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
-                                                                           withAlertMessage:alMessage.message];
+        ALNotificationView *alNotification = [[ALNotificationView alloc] initWithAlMessage:alMessage
+                                                                          withAlertMessage:alMessage.message];
 
         [alNotification showNativeNotificationWithcompletionHandler:^(BOOL show) {
 
-            ALNotificationHelper * helper = [[ALNotificationHelper alloc]init];
+            ALNotificationHelper *helper = [[ALNotificationHelper alloc]init];
 
             if ([helper isApplozicViewControllerOnTop]) {
 
@@ -263,91 +247,20 @@
             }
         }];
 
-    }
-    else if([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]])
-    {
+    } else if ([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_INACTIVE]]) {
         ALSLog(ALLoggerSeverityInfo, @"######## USER PROFILE VC : APP_STATE_INACTIVE #########");
         
         [self.tabBarController setSelectedIndex:0];
         UINavigationController *navVC = (UINavigationController *)self.tabBarController.selectedViewController;
         ALMessagesViewController *msgVC = (ALMessagesViewController *)[[navVC viewControllers] objectAtIndex:0];
-        if(channelKey)
-        {
+        if (channelKey) {
             msgVC.channelKey = channelKey;
-        }
-        else
-        {
+        } else {
             msgVC.channelKey = nil;
         }
         [msgVC createDetailChatViewController:contactId];
     }
 }
-
-//#pragma mark - Table view data source   [newContactCell.contactPersonImageView sd_setImageWithURL:[NSURL URLWithString:contact.contactImageUrl]];
-//
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//#warning Incomplete implementation, return the number of sections
-//    return 0;
-//}
-//
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//#warning Incomplete implementation, return the number of rows
-//    return 0;
-//}
-
-/*
- - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
- UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseIdentifier" forIndexPath:indexPath];
- 
- // Configure the cell...
- 
- return cell;
- }
- */
-
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- } else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 - (IBAction)uploadImageAction:(id)sender {
     [self uploadImage];
@@ -356,8 +269,7 @@
 - (IBAction)notificationToggle:(id)sender {
     
     BOOL flag = [self.notificationToggle isOn];
-    if([ALDataNetworkConnection noInternetConnectionNotification])
-    {
+    if ([ALDataNetworkConnection noInternetConnectionNotification]) {
         [self.notificationToggle setOn:(!flag) animated:YES];
         return;
     }
@@ -365,8 +277,7 @@
     [self.activityIndicator startAnimating];
     
     short modeValue = 2;
-    if(flag)
-    {
+    if (flag) {
         modeValue = 0;
     }
     
@@ -374,15 +285,12 @@
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE :: %@",response.message);
         ALSLog(ALLoggerSeverityError, @"RESPONSE_ERROR :: %@",error.description);
-        if(!error)
-        {
+        if (!error) {
             
             [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"notificationStatusUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Notification setting updated!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert", @"")];
             [ALUserDefaultsHandler setNotificationMode:modeValue];
             [self.notificationToggle setOn:flag animated:YES];
-        }
-        else
-        {
+        } else {
             [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"unableToUpdateText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to update!!!", @"") andTitle:NSLocalizedStringWithDefaultValue(@"alertText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Alert", @"")];
             [self.notificationToggle setOn:(!flag) animated:YES];
         }
@@ -390,9 +298,8 @@
     }];
 }
 
--(void)uploadImage
-{
-    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+- (void)uploadImage {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     
     [ALUIUtilityClass setAlertControllerFrame:alertController andViewController:self];
@@ -412,38 +319,30 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
--(void)uploadByPhotos
-{
+- (void)uploadByPhotos {
     self.mImagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     self.mImagePicker.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeImage];
     [self presentViewController:self.mImagePicker animated:YES completion:nil];
 }
 
--(void)uploadByCamera
-{
-    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera])
-    {
+- (void)uploadByCamera {
+    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
         [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                if (granted)
-                {
+                if (granted) {
                     self.mImagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
                     self.mImagePicker.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *) kUTTypeImage, nil];
                     [self presentViewController:self.mImagePicker animated:YES completion:nil];
-                }
-                else
-                {
+                } else {
                     [ALUIUtilityClass permissionPopUpWithMessage:
                      NSLocalizedStringWithDefaultValue(@"permissionPopMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Enable Camera Permission", @"")
-                                             andViewController:self];
+                                               andViewController:self];
                 }
             });
         }];
-    }
-    else
-    {
+    } else {
         
         [ALUIUtilityClass showAlertMessage:NSLocalizedStringWithDefaultValue(@"permissionNotAvailableMessageForCamera", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Camera is not Available !!!", @"") andTitle:@"OOPS !!!"];
     }
@@ -453,11 +352,10 @@
 #pragma IMAGE PICKER DELEGATES
 //==============================================================================================================================
 
--(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
-{
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     
-    UIImage * rawImage = [info valueForKey:UIImagePickerControllerEditedImage];
-    UIImage * normalImage = [ALUIUtilityClass getNormalizedImage:rawImage];
+    UIImage *rawImage = [info valueForKey:UIImagePickerControllerEditedImage];
+    UIImage *normalImage = [ALUIUtilityClass getNormalizedImage:rawImage];
     [self.profileImage setImage:normalImage];
     
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -467,17 +365,16 @@
 }
 
 
--(void)confirmUserForProfileImage:(UIImage *)image
-{
+- (void)confirmUserForProfileImage:(UIImage *)image {
     
     image = [image getCompressedImageLessThanSize:1];
     
-    UIAlertController * alert = [UIAlertController alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"confirmationText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirmation" , @"") message:NSLocalizedStringWithDefaultValue(@"areYouSureText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure?" , @"")
-                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"confirmationText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Confirmation" , @"") message:NSLocalizedStringWithDefaultValue(@"areYouSureText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Are you sure?" , @"")
+                                                            preferredStyle:UIAlertControllerStyleAlert];
     
     [ALUIUtilityClass setAlertControllerFrame:alert andViewController:self];
     
-    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"CANCEL" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"CANCEL" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
 
         if (self->myContact.contactImageUrl) {
             [self.profileImage sd_setImageWithURL:[NSURL URLWithString:self->myContact.contactImageUrl] placeholderImage:self.placeHolderImage];
@@ -486,22 +383,21 @@
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     
-    UIAlertAction* upload = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"uploadOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Upload" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+    UIAlertAction *upload = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"uploadOption", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Upload" , @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         
-        if(![ALDataNetworkConnection checkDataNetworkAvailable])
-        {
+        if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
             [self showNoDataNotification];
             return;
         }
         
-        NSString * uploadUrl = [KBASE_URL stringByAppendingString:AL_IMAGE_UPLOAD_URL];
+        NSString *uploadUrl = [KBASE_URL stringByAppendingString:AL_IMAGE_UPLOAD_URL];
 
         [self.activityIndicator startAnimating];
 
-        ALHTTPManager * manager = [[ALHTTPManager alloc]init];
-        [manager uploadProfileImage:image withFilePath:self->mainFilePath uploadURL:uploadUrl withCompletion:^(NSData * _Nullable data, NSError *error) {
+        ALHTTPManager *manager = [[ALHTTPManager alloc]init];
+        [manager uploadProfileImage:image withFilePath:self->mainFilePath uploadURL:uploadUrl withCompletion:^(NSData *_Nullable data, NSError *error) {
 
-            if(error == nil){
+            if (error == nil) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *imageLinkFromServer = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                     ALSLog(ALLoggerSeverityInfo, @"PROFILE IMAGE URL :: %@",imageLinkFromServer);
@@ -511,7 +407,7 @@
 
                         ALSLog(ALLoggerSeverityInfo, @"SERVER_RESPONSE_IMAGE_UPDATE :: %@",(NSString *)theJson);
                         ALSLog(ALLoggerSeverityError, @"ERROR :: %@",error.description);
-                        if(!error)
+                        if (!error)
                         {
                             ALSLog(ALLoggerSeverityInfo, @"IMAGE_UPDATED_SUCCESSFULLY");
 
@@ -536,14 +432,12 @@
     
 }
 
--(void)showNoDataNotification
-{
-    ALNotificationView * notification = [ALNotificationView new];
+- (void)showNoDataNotification {
+    ALNotificationView *notification = [ALNotificationView new];
     [notification noDataConnectionNotificationView];
 }
 
--(NSString *)getImageFilePath:(UIImage *)image
-{
+- (NSString *)getImageFilePath:(UIImage *)image {
     NSString *filePath = [ALImagePickerHandler saveImageToDocDirectory:image];
     return filePath;
 }
@@ -601,13 +495,11 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
--(IBAction)editButtonAction:(id)sender
-{
+- (IBAction)editButtonAction:(id)sender {
     [self alertViewForStatus];
 }
 
--(void)alertViewForStatus
-{
+- (void)alertViewForStatus {
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle: NSLocalizedStringWithDefaultValue(@"yorStatusAlertTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Your Status" , @"")
                                                                              message:
@@ -619,9 +511,7 @@
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         
         textField.placeholder = NSLocalizedStringWithDefaultValue(@"alertProfileStatusMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Write status here..." , @"");
-        
-        
-        
+
     }];
     
     
@@ -635,12 +525,10 @@
                                                       handler:^(UIAlertAction *action) {
 
         UITextField *statusField = alertController.textFields.firstObject;
-        if(statusField.text.length && ![statusField.text isEqualToString:self.userStatusLabel.text])
-        {
+        if (statusField.text.length && ![statusField.text isEqualToString:self.userStatusLabel.text]) {
 
-            NSString * statusText = statusField.text;
-            if(statusText.length >= 256)
-            {
+            NSString *statusText = statusField.text;
+            if (statusText.length >= 256) {
                 statusText = [statusText substringToIndex:255];
             }
 
@@ -655,8 +543,7 @@
                 ALSLog(ALLoggerSeverityInfo, @"SERVER_RESPONSE_STATUS_UPDATE :: %@", (NSString *)theJson);
                 ALSLog(ALLoggerSeverityError, @"ERROR :: %@",error.description);
 
-                if(!error)
-                {
+                if (!error) {
                     self->myContact.userStatus = statusText;
                     ALSLog(ALLoggerSeverityInfo, @"USER_STATUS_UPDATED_SUCCESSFULLY  %@", self->myContact.userStatus);
                     [self->alContactService updateContact:self->myContact];
@@ -675,7 +562,7 @@
     
 }
 
--(void)updateUser:(NSNotification *)userUpdateNotification {
+- (void)updateUser:(NSNotification *)userUpdateNotification {
     dispatch_async(dispatch_get_main_queue(), ^{
         ALUserDetail *userDetail = (ALUserDetail *)userUpdateNotification.object;
         if ([userDetail.userId isEqualToString:[ALUserDefaultsHandler getUserId]]) {

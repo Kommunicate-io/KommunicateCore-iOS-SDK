@@ -21,14 +21,14 @@ import Foundation
 
     /// If true then the template will be shown
     /// irrespective of the message type of last message.
-   @objc   open var showInAllCases: Bool = true
+    @objc   open var showInAllCases: Bool = true
 
     @objc  open var onlyShowWhenLastMessageIsText: Bool = false
     @objc  open var onlyShowWhenLastMessageIsImage: Bool = false
-   @objc   open var onlyShowWhenLastMessageIsVideo: Bool = false
+    @objc   open var onlyShowWhenLastMessageIsVideo: Bool = false
 
     /// If set to false then the message will not be sent.
-   @objc   open var sendMessageOnSelection: Bool = true
+    @objc   open var sendMessageOnSelection: Bool = true
 
     @objc  public init(identifier: String, text: String) {
         self.identifier = identifier
@@ -37,13 +37,13 @@ import Foundation
 }
 
 extension ALTemplateMessageModel {
-
+    
     /// Json will be parsed and mapped to the model.
     public convenience init?(json: [String: Any]) {
         guard let identifier = json["identifier"] as? String,
-            let text = json["text"] as? String
-            else {
-                return nil
+              let text = json["text"] as? String
+        else {
+            return nil
         }
         self.init(identifier: identifier, text: text)
 

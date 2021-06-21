@@ -19,14 +19,12 @@
 
 @synthesize membersName = _membersName;
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary
-{
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];
     return self;
 }
 
--(void)parseMessage:(id) messageJson
-{
+- (void)parseMessage:(id) messageJson {
     self.key = [self getNSNumberFromJsonValue:messageJson[@"id"]];
     self.clientChannelKey = [self getStringFromJsonValue:messageJson[@"clientGroupId"]];
     self.name = [self getStringFromJsonValue:messageJson[@"name"]];
@@ -34,7 +32,6 @@
     self.adminKey = [self getStringFromJsonValue:messageJson[@"adminId"]];
     self.unreadCount = [self getNSNumberFromJsonValue:messageJson[@"unreadCount"]];
     self.userCount = [self getNSNumberFromJsonValue:messageJson[@"userCount"]];
-//    self.membersName = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersName"]];
     [self setMembersName: [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersName"]]];
     self.membersId = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"membersId"]];
     
@@ -42,7 +39,7 @@
     self.type = [self getShortFromJsonValue:messageJson[@"type"]];
     
     self.metadata = [[NSMutableDictionary alloc] initWithDictionary:[messageJson objectForKey:@"metadata"]];
-   
+
     self.childKeys = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"childKeys"]];
     
     self.notificationAfterTime = [self getNSNumberFromJsonValue:messageJson[@"notificationAfterTime"]];
@@ -52,11 +49,11 @@
     self.parentKey = [self getNSNumberFromJsonValue:messageJson[@"parentKey"]];
     self.parentClientKey = [self getStringFromJsonValue:messageJson[@"parentClientGroupId"]];
     
-    NSDictionary * channelDetailGroup = [messageJson objectForKey:@"groupUsers"];
-    NSMutableArray * userArray = [NSMutableArray new];
+    NSDictionary *channelDetailGroup = [messageJson objectForKey:@"groupUsers"];
+    NSMutableArray *userArray = [NSMutableArray new];
 
-    for(NSDictionary* dict in channelDetailGroup){
-        ALChannelUser * channelUser = [[ALChannelUser alloc] initWithDictonary:dict];
+    for (NSDictionary *dict in channelDetailGroup) {
+        ALChannelUser *channelUser = [[ALChannelUser alloc] initWithDictonary:dict];
         [userArray addObject:channelUser];
     }
     self.groupUsers = userArray;
@@ -69,138 +66,116 @@
     }
 }
 
--(NSNumber *)getChannelMemberParentKey:(NSString *)userId
-{
-    for(ALChannelUser * channelUser in self.groupUsers)
-    {
-        if(userId && [userId isEqualToString:channelUser.userId])
-        {
+- (NSNumber *)getChannelMemberParentKey:(NSString *)userId {
+    for (ALChannelUser * channelUser in self.groupUsers) {
+        if (userId && [userId isEqualToString:channelUser.userId]) {
             return channelUser.parentGroupKey;
         }
     }
-    
     return nil;
 }
 
--(BOOL)isNotificationMuted{
-    
+- (BOOL)isNotificationMuted {
     long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970] ] longValue ]*1000L;
-    if(_notificationAfterTime){
+    if (_notificationAfterTime != nil) {
         return ([_notificationAfterTime longValue]> secsUtc1970);
-    }
-    else {
+    } else {
         return ([self isGroupMutedByDefault]);
     }
 }
 
--(void)setMembersName:(NSMutableArray *)membersName {
+- (void)setMembersName:(NSMutableArray *)membersName {
     _membersName = membersName;
 }
 
--(NSMutableArray *)membersName
-{
-//    return _membersName ? _membersName : self.membersId;
+- (NSMutableArray *)membersName {
     return self.membersId;
 }
 
--(NSString*)getReceiverIdInGroupOfTwo{
+- (NSString*)getReceiverIdInGroupOfTwo {
     
-    if(self.type!=GROUP_OF_TWO){
+    if (self.type!=GROUP_OF_TWO) {
         return nil;
     }
     
-    for(NSString* userId in self.membersName)
-    {
-        if(!([userId isEqualToString:[ALUserDefaultsHandler getUserId]]) ){
+    for (NSString* userId in self.membersName) {
+        if (!([userId isEqualToString:[ALUserDefaultsHandler getUserId]])) {
             return userId;
         }
     }
     return nil;
 }
 
--(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string
-{
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
 
     if (!string) {
         return nil;
     }
-
-    NSData * data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
     NSMutableDictionary * dictionary;
 
-    @try
-    {
+    @try {
         NSError * error;
         dictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
-                                                                        format:&format
-                                                                         error:&error];
-        if(!dictionary)
-        {
-//            NSLog(@"ERROR: COULD NOT PARSE META-DATA : %@", error.description);
-        }
-    }
-    @catch(NSException * exp)
-    {
-//         NSLog(@"METADATA_DICTIONARY_EXCEPTION :: %@", exp.description);
+                                                                format:&format
+                                                                 error:&error];
+    } @catch(NSException * exp) {
     }
     
     return dictionary;
 }
 
--(BOOL)isGroupMutedByDefault{
+- (BOOL)isGroupMutedByDefault {
     
-    if( _metadata && [_metadata  valueForKey:AL_CHANNEL_DEFAULT_MUTE] ){
-        
+    if (_metadata && [_metadata  valueForKey:AL_CHANNEL_DEFAULT_MUTE]) {
         return ([ [_metadata  valueForKey:AL_CHANNEL_DEFAULT_MUTE] isEqualToString:@"true"]);
     }
     return NO;
 }
 
 
--(BOOL)isConversationClosed{
+- (BOOL)isConversationClosed {
 
-    if( _metadata && [_metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] ){
-
+    if (_metadata && [_metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS]) {
         return ([ [_metadata  valueForKey:AL_CHANNEL_CONVERSATION_STATUS] isEqualToString:@"CLOSE"]);
     }
     return NO;
 }
 
--(BOOL)isBroadcastGroup{
+- (BOOL)isBroadcastGroup {
     return  self.type == BROADCAST;
 }
 
--(BOOL)isOpenGroup {
+- (BOOL)isOpenGroup {
     return self.type == OPEN;
 }
 
--(BOOL)isGroupOfTwo {
+- (BOOL)isGroupOfTwo {
     return self.type == GROUP_OF_TWO;
 }
 
--(BOOL)isPartOfCategory:(NSString*)category{
+- (BOOL)isPartOfCategory:(NSString *)category {
     
-    if( _metadata && [_metadata  valueForKey:AL_CATEGORY] ){
+    if ( _metadata && [_metadata  valueForKey:AL_CATEGORY]) {
         return ([ [_metadata  valueForKey:AL_CATEGORY] isEqualToString:category]);
     }
     return NO;
 }
 
--(BOOL)isContextBasedChat{
+- (BOOL)isContextBasedChat {
     
-    if(_metadata && [_metadata  valueForKey:AL_CONTEXT_BASED_CHAT] ){
+    if (_metadata && [_metadata  valueForKey:AL_CONTEXT_BASED_CHAT]) {
         return ([ [_metadata  valueForKey:AL_CONTEXT_BASED_CHAT] isEqualToString:@"true"]);
     }
     return NO;
 }
 
--(BOOL)isDeleted {
+- (BOOL)isDeleted {
     return self.deletedAtTime != nil && self.deletedAtTime.longValue > 0;
 }
 
-+ (CONVERSATION_CATEGORY)getConversationCategory:(NSDictionary *)metadata
-{
++ (CONVERSATION_CATEGORY)getConversationCategory:(NSDictionary *)metadata {
     NSString *status = [metadata objectForKey:AL_CHANNEL_CONVERSATION_STATUS];
     NSString *assignee = [metadata valueForKey:AL_CONVERSATION_ASSIGNEE];
 

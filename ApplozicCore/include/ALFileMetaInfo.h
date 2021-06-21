@@ -13,22 +13,22 @@
 
 @interface ALFileMetaInfo : ALJson
 
-@property (nonatomic,copy) NSString * key;
-@property (nonatomic,copy) NSString * userKey;
-@property (nonatomic, copy) NSString * blobKey;
-@property (nonatomic,copy) NSString * thumbnailBlobKey;
-@property (nonatomic,copy) NSString * thumbnailFilePath;
-@property (nonatomic,copy) NSString * name;
+@property (nonatomic,copy) NSString *key;
+@property (nonatomic,copy) NSString *userKey;
+@property (nonatomic, copy) NSString *blobKey;
+@property (nonatomic,copy) NSString *thumbnailBlobKey;
+@property (nonatomic,copy) NSString *thumbnailFilePath;
+@property (nonatomic,copy) NSString *name;
 @property (nonatomic,copy)NSString *url;
-@property (nonatomic,copy) NSString * size;
-@property (nonatomic,copy) NSString * contentType;
-@property (nonatomic,copy) NSString * thumbnailUrl;
-@property (nonatomic,copy) NSNumber * createdAtTime;
+@property (nonatomic,copy) NSString *size;
+@property (nonatomic,copy) NSString *contentType;
+@property (nonatomic,copy) NSString *thumbnailUrl;
+@property (nonatomic,copy) NSNumber *createdAtTime;
 
 @property (nonatomic, assign) CGFloat progressValue;
 
--(NSString *) getTheSize;
+- (NSString *)getTheSize;
 
--(ALFileMetaInfo *) populate:( NSDictionary *)dict;
+- (ALFileMetaInfo *)populate:(NSDictionary *)dict;
 
 @end

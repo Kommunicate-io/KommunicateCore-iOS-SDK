@@ -11,19 +11,16 @@
 @implementation ALConversationCreateResponse
 
 
--(instancetype)initWithJSONString :(NSString *)JSONString{
+- (instancetype)initWithJSONString:(NSString *)JSONString{
     
     self = [super initWithJSONString:JSONString];
     
-    if([super.status isEqualToString: AL_RESPONSE_SUCCESS])
-    {
+    if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSDictionary *JSONDictionary = [[JSONString valueForKey:@"response"] valueForKey:@"conversationPxy"];
         self.alConversationProxy = [[ALConversationProxy alloc] initWithDictonary:JSONDictionary];
         
         return self;
-    }
-    else
-    {
+    } else {
         return nil;
     }
     

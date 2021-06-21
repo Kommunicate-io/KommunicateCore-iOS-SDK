@@ -19,36 +19,25 @@ static NSString * const AL_TRUE = @"true";
 
 @implementation ALMessage
 
--(NSNumber *)getGroupId
-{
-    if([self.groupId isEqualToNumber:[NSNumber numberWithInt:0]])
-    {
+- (NSNumber *)getGroupId {
+    if ([self.groupId isEqualToNumber:[NSNumber numberWithInt:0]]) {
         return nil;
-    }
-    else
-    {
+    } else {
         return self.groupId;
     }
 }
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary
-{
-    @try
-    {
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
+    @try {
         [self parseMessage:messageDictonary];
-    }
-    @catch (NSException *exception)
-    {
+    } @catch (NSException *exception) {
         ALSLog(ALLoggerSeverityError, @"EXCEPTION : MSG_PARSING :: %@",exception.description);
+    } @finally {
     }
-    @finally
-    { }
-
     return self;
 }
 
--(void)parseMessage:(id) messageJson
-{
+- (void)parseMessage:(id) messageJson {
 
     // key String
 
@@ -163,7 +152,7 @@ static NSString * const AL_TRUE = @"true";
 }
 
 
--(NSString *)getCreatedAtTime:(BOOL)today {
+- (NSString *)getCreatedAtTime:(BOOL)today {
 
     NSString *formattedStr = today?@"hh:mm a":@"dd MMM";
 
@@ -171,87 +160,72 @@ static NSString * const AL_TRUE = @"true";
 
     NSDate *currentTime = [[NSDate alloc] init];
 
-    NSDate *msgDate = [[NSDate alloc] init];
-    msgDate = [NSDate dateWithTimeIntervalSince1970:self.createdAtTime.doubleValue/1000];
+    NSDate *msgDate = [NSDate dateWithTimeIntervalSince1970:self.createdAtTime.doubleValue/1000];
     NSTimeInterval difference = [currentTime timeIntervalSinceDate:msgDate];
 
     float minutes;
-    if(difference <= 3600)
-    {
-        if(difference <= 60)
-        {
+    if (difference <= 3600) {
+        if(difference <= 60) {
             formattedDateStr = NSLocalizedStringWithDefaultValue(@"justNow", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Just Now", @"");
-
-        }
-        else
-        {
+        } else {
             minutes = difference/60;
             formattedDateStr = [NSString stringWithFormat:@"%.0f", minutes];
             formattedDateStr = [formattedDateStr stringByAppendingString:@" m"];
         }
-    }
-    else if(difference <= 7200)
-    {
+    } else if(difference <= 7200) {
         minutes = (difference - 3600)/60;
         formattedDateStr = [NSString stringWithFormat:@"%.0f", minutes];
         NSString *hour = @"1h ";
         formattedDateStr = [hour stringByAppendingString:formattedDateStr];
         formattedDateStr = [formattedDateStr stringByAppendingString:@"m"];
-    }
-    else
-    {
+    } else {
         formattedDateStr = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedStr];
     }
 
     return formattedDateStr;
 }
 
--(NSString *)getCreatedAtTimeChat:(BOOL)today {
+- (NSString *)getCreatedAtTimeChat:(BOOL)today {
 
     NSString *formattedStr = @"hh:mm a";
     NSString *formattedDateStr = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedStr];
 
     return formattedDateStr;
-
 }
--(BOOL)isDownloadRequired{
+- (BOOL)isDownloadRequired {
 
     //TODO:check for SD card
     return (self.fileMeta && !self.imageFilePath);
 }
 
--(BOOL)isUploadRequire{
+- (BOOL)isUploadRequire {
     //TODO:check for SD card
     return ( (self.imageFilePath && !self.fileMeta && [self.type  isEqualToString:@"5"])
             || self.isUploadFailed==YES );
 }
 
 
--(BOOL)isHiddenMessage
-{
+- (BOOL)isHiddenMessage {
     return ((self.contentType == ALMESSAGE_CONTENT_HIDDEN) || [self isVOIPNotificationMessage]
             || [self isPushNotificationMessage] || [self isMessageCategoryHidden]
             || self.getReplyType== AL_REPLY_BUT_HIDDEN || self.isMsgHidden );
 }
 
--(BOOL)isVOIPNotificationMessage
-{
+- (BOOL)isVOIPNotificationMessage {
     return (self.contentType == AV_CALL_HIDDEN_NOTIFICATION);
 }
 
-
--(BOOL)isToIgnoreUnreadCountIncrement
-{
+- (BOOL)isToIgnoreUnreadCountIncrement {
     return (self.contentType == AV_CALL_MESSAGE);
 }
 
--(BOOL)isResetUnreadCountMessage {
+- (BOOL)isResetUnreadCountMessage {
     return (self.groupId && self.isChannelContentTypeMessage &&
             self.metadata && [self.metadata  valueForKey:AL_RESET_UNREAD_COUNT]
             && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:ALUserDefaultsHandler.getUserId]);
 }
 
--(NSString*)getLastMessage {
+- (NSString*)getLastMessage {
 
     if (self.contentType == ALMESSAGE_CONTENT_LOCATION) {
         return NSLocalizedStringWithDefaultValue(@"location", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Location", @"");
@@ -283,10 +257,9 @@ static NSString * const AL_TRUE = @"true";
 }
 
 
--(NSMutableDictionary *)getMetaDataDictionary:(NSString *)string
-{
+- (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
 
-    if(string == nil){
+    if (string == nil) {
         return nil;
     }
 
@@ -298,54 +271,43 @@ static NSString * const AL_TRUE = @"true";
         return nil;
     }
 
-    @try
-    {
+    @try {
         NSError * error;
         metaDataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
                                                                         format:&format
                                                                          error:&error];
-    }
-    @catch(NSException * exp)
-    {
-        //         NSLog(@"METADATA_DICTIONARY_EXCEPTION :: %@", exp.description);
+    } @catch(NSException * exp) {
     }
 
     return metaDataDictionary;
 }
 
--(NSString *)getVOIPMessageText
-{
+- (NSString *)getVOIPMessageText {
     NSString *msgType = (NSString *)[self.metadata objectForKey:@"MSG_TYPE"];
     BOOL flag = [[self.metadata objectForKey:@"CALL_AUDIO_ONLY"] boolValue];
 
     NSString * text = self.message;
 
-    if([msgType isEqualToString:@"CALL_MISSED"])
-    {
+    if ([msgType isEqualToString:@"CALL_MISSED"]) {
         text = flag ? @"Missed Audio Call" : @"Missed Video Call";
-    }
-    else if([msgType isEqualToString:@"CALL_END"])
-    {
+    } else if([msgType isEqualToString:@"CALL_END"]) {
         text = flag ? @"Audio Call" : @"Video Call";
-    }
-    else if([msgType isEqualToString:@"CALL_REJECTED"])
-    {
+    } else if([msgType isEqualToString:@"CALL_REJECTED"]) {
         text = @"Call Busy";
     }
 
     return text;
 }
 
--(BOOL)isMsgHidden
-{
+- (BOOL)isMsgHidden {
     BOOL hide = [[self.metadata objectForKey:@"hide"] boolValue];
 
     // Check messages that we need to hide
     NSArray *keys = [ALApplozicSettings metadataKeysToHideMessages];
-    if(keys != nil) {
-        for(NSString *key in keys) {
+    if (keys != nil) {
+        for (NSString *key in keys) {
             // If this key is present then it's a hidden message
-            if([self.metadata objectForKey:key] != nil) {
+            if ([self.metadata objectForKey:key] != nil) {
                 return true;
             }
         }
@@ -353,76 +315,63 @@ static NSString * const AL_TRUE = @"true";
     return hide;
 }
 
--(BOOL)isPushNotificationMessage
-{
+- (BOOL)isPushNotificationMessage {
     return (self.metadata && [self.metadata valueForKey:@"category"] &&
             [ [self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_PUSHNNOTIFICATION]);
 }
 
--(BOOL)isMessageCategoryHidden
-{
+- (BOOL)isMessageCategoryHidden {
     return (self.metadata && [self.metadata valueForKey:@"category"] &&
             [ [self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_HIDDEN]);
 }
 
-
--(BOOL)isAReplyMessage
-{
+- (BOOL)isAReplyMessage {
     return (self.metadata && [self.metadata valueForKey:AL_MESSAGE_REPLY_KEY] );
 }
 
--(BOOL)isSentMessage
-{
+- (BOOL)isSentMessage {
     return [self.type isEqualToString:AL_OUT_BOX];
 }
--(BOOL)isReceivedMessage
-{
-    return [self.type isEqualToString:AL_IN_BOX];
 
+- (BOOL)isReceivedMessage {
+    return [self.type isEqualToString:AL_IN_BOX];
 }
 
--(BOOL)isLocationMessage
-{
+- (BOOL)isLocationMessage {
     return (self.contentType ==ALMESSAGE_CONTENT_LOCATION);
 }
--(BOOL)isContactMessage
-{
-    return (self.contentType ==ALMESSAGE_CONTENT_VCARD);
 
+- (BOOL)isContactMessage {
+    return (self.contentType ==ALMESSAGE_CONTENT_VCARD);
 }
 
--(BOOL)isLinkMessage
-{
+- (BOOL)isLinkMessage {
     return (_metadata && [_metadata  valueForKey:@"linkMessage"] && [ [_metadata  valueForKey:@"linkMessage"] isEqualToString:@"true"]);
 }
 
--(BOOL)isChannelContentTypeMessage
-{
+- (BOOL)isChannelContentTypeMessage {
     return (self.contentType == ALMESSAGE_CHANNEL_NOTIFICATION);
 }
 
--(BOOL)isDocumentMessage
-{
+- (BOOL)isDocumentMessage {
     return (self.contentType ==ALMESSAGE_CONTENT_ATTACHMENT) &&
     !([self.fileMeta.contentType hasPrefix:@"video"]|| [self.fileMeta.contentType hasPrefix:@"audio"] || [self.fileMeta.contentType hasPrefix:@"image"] );
 
 }
 
--(BOOL)hasAttachment {
+- (BOOL)hasAttachment {
     return self.fileMeta != nil || self.imageFilePath != nil;
 }
 
--(BOOL)isSilentNotification{
+- (BOOL)isSilentNotification {
 
-    if( _metadata && [_metadata  valueForKey:@"show"] ){
-
+    if (_metadata && [_metadata  valueForKey:@"show"]) {
         return ([ [_metadata  valueForKey:@"show"] isEqualToString:@"false"]);
     }
     return NO;
 }
 
--(ALReplyType)getReplyType
-{
+- (ALReplyType)getReplyType {
     switch ([self.messageReplyType intValue])
     {
 
@@ -439,7 +388,7 @@ static NSString * const AL_TRUE = @"true";
     }
 }
 
--(BOOL)isDeletedForAll {
+- (BOOL)isDeletedForAll {
     return self.metadata &&
     [self.metadata valueForKey:AL_DELETE_MESSAGE_FOR_KEY] &&
     [[self.metadata valueForKey:AL_DELETE_MESSAGE_FOR_KEY] isEqualToString:AL_TRUE];
@@ -466,12 +415,12 @@ static NSString * const AL_TRUE = @"true";
         _groupId = builder.groupId;
         _source = AL_SOURCE_IOS;
         _metadata = builder.metadata; // EXAMPLE FOR META DATA
-        if(builder.imageFilePath){
+        if (builder.imageFilePath) {
             _imageFilePath = builder.imageFilePath.lastPathComponent;
             _fileMeta = [self getFileMetaInfo];
             //File Meta Creation
             _fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", builder.imageFilePath];
-            if(builder.to){
+            if (builder.to) {
                 _fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",builder.to, builder.imageFilePath];
             }
         }
@@ -480,8 +429,7 @@ static NSString * const AL_TRUE = @"true";
     return self;
 }
 
--(ALFileMetaInfo *)getFileMetaInfo
-{
+- (ALFileMetaInfo *)getFileMetaInfo {
     ALFileMetaInfo *info = [ALFileMetaInfo new];
     
     info.blobKey = nil;
@@ -503,19 +451,19 @@ static NSString * const AL_TRUE = @"true";
     return [[ALMessage alloc] initWithBuilder:alMessageBuilder];
 }
 
--(BOOL)isNotificationDisabled{
+- (BOOL)isNotificationDisabled {
     
     ALChannel *channel;
     
     ALContact *contact;
     
-    if(self.groupId){
+    if (self.groupId != nil) {
         
         ALChannelService *channelService = [[ALChannelService alloc] init];
         
         channel =  [channelService getChannelByKey:self.groupId];
         
-    }else{
+    } else {
         
         ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
         
@@ -534,18 +482,18 @@ static NSString * const AL_TRUE = @"true";
             || (contact && [contact isNotificationMuted]));
 }
 
--(void)setAsDeletedForAll {
+- (void)setAsDeletedForAll {
     if (!self.metadata) {
         self.metadata = [[NSMutableDictionary alloc] init];
     }
     [self.metadata setValue:AL_TRUE forKey:AL_DELETE_MESSAGE_FOR_KEY];
 }
 
--(BOOL)isMessageSentToServer {
+- (BOOL)isMessageSentToServer {
     return self.status.intValue != 0;
 }
 
--(NSMutableDictionary *)combineMetadata:(NSMutableDictionary *) messageMetadata {
+- (NSMutableDictionary *)combineMetadata:(NSMutableDictionary *) messageMetadata {
     if (!self.metadata) {
         return messageMetadata;
     }

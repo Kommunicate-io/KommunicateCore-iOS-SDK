@@ -12,16 +12,16 @@
 
 @interface DB_FileMetaInfo : NSManagedObject
 
-@property (nonatomic, retain) NSString * blobKeyString;
-@property (nonatomic, retain) NSString * thumbnailBlobKeyString;
-@property (nonatomic, retain) NSString * thumbnailFilePath;
-@property (nonatomic, retain) NSString * contentType;
-@property (nonatomic, retain) NSNumber * createdAtTime;
-@property (nonatomic, retain) NSString * key;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * size;
-@property (nonatomic, retain) NSString * suUserKeyString;
-@property (nonatomic, retain) NSString * thumbnailUrl;
-@property (nonatomic, retain) NSString * url;
+@property (nonatomic, retain) NSString *blobKeyString;
+@property (nonatomic, retain) NSString *thumbnailBlobKeyString;
+@property (nonatomic, retain) NSString *thumbnailFilePath;
+@property (nonatomic, retain) NSString *contentType;
+@property (nonatomic, retain) NSNumber *createdAtTime;
+@property (nonatomic, retain) NSString *key;
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *size;
+@property (nonatomic, retain) NSString *suUserKeyString;
+@property (nonatomic, retain) NSString *thumbnailUrl;
+@property (nonatomic, retain) NSString *url;
 
 @end

@@ -16,6 +16,6 @@
 
 @interface ALContactMessageCell : ALContactMessageBaseCell
 
--(instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize;
+- (instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize;
 
 @end

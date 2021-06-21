@@ -22,9 +22,9 @@
 @property (nonatomic, strong) NSNumber *userCount;
 @property (nonatomic, strong) NSNumber *unreadCount;
 @property (nonatomic) BOOL isLeft;
-@property (nonatomic, strong) NSNumber* notificationAfterTime;
-@property (nonatomic, strong) NSNumber* deletedAtTime;
-@property (nonatomic, retain) NSString * metadata;
+@property (nonatomic, strong) NSNumber *notificationAfterTime;
+@property (nonatomic, strong) NSNumber *deletedAtTime;
+@property (nonatomic, retain) NSString *metadata;
 @property (nonatomic) short category;
 
 @end

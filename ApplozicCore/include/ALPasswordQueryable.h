@@ -15,9 +15,9 @@ extern NSString * const AL_KEYCHAIN_GROUPS_ACCESS_KEY;
 
 @interface ALPasswordQueryable : NSObject <ALSecureStoreQueryable>
 
-- (nonnull instancetype)init NS_UNAVAILABLE;
+-(nonnull instancetype)init NS_UNAVAILABLE;
 
-- (nonnull instancetype)initWithService:(NSString * _Nonnull)service;
+-(nonnull instancetype)initWithService:(NSString * _Nonnull)service;
 @property (nonatomic) NSString *serviceString;
 @property (nonatomic) NSString *appKeychainAcessGroup;
 

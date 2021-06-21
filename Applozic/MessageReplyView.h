@@ -16,7 +16,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *replyMessageText;
 @property (retain, nonatomic) IBOutlet UIImageView *attachmentImage;
 
--(UIView*)populateUI:(ALMessage*)alMessage withSuperView:(UIView*)superView;
--(CGFloat)getWidthRequired:(ALMessage*)alMessage andViewSize:(CGSize)viewSize;
+- (UIView*)populateUI:(ALMessage*)alMessage withSuperView:(UIView *)superView;
+- (CGFloat)getWidthRequired:(ALMessage*)alMessage andViewSize:(CGSize)viewSize;
 
 @end

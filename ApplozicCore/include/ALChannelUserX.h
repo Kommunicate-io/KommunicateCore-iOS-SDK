@@ -31,7 +31,7 @@ typedef enum
 @property (nonatomic, copy) NSManagedObjectID *channelUserXDBObjectId;
 @property (nonatomic, strong) NSNumber *role;
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary;
--(BOOL)isAdminUser;
+- (id)initWithDictonary:(NSDictionary *)messageDictonary;
+- (BOOL)isAdminUser;
 
 @end

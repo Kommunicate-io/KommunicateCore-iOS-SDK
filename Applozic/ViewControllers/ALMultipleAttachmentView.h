@@ -12,7 +12,7 @@
 @protocol ALMUltipleAttachmentDelegate <NSObject>
 @required
 
--(void) multipleAttachmentProcess:(NSMutableArray *)attachmentPathArray andText:(NSString *)messageText;
+- (void)multipleAttachmentProcess:(NSMutableArray *)attachmentPathArray andText:(NSString *)messageText;
 
 @end
 

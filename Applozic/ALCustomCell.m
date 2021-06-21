@@ -10,8 +10,7 @@
 
 @implementation ALCustomCell
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self  = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processKeyBoardHideTap)];
@@ -20,8 +19,7 @@
     return self;
 }
 
--(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize {
     [super populateCell:alMessage viewSize:viewSize];
 
     [self.mMessageLabel setFont:[UIFont fontWithName:[ALApplozicSettings getCustomMessageFont]
@@ -64,8 +62,7 @@
     return self;
 }
 
--(void) processKeyBoardHideTap
-{
+- (void)processKeyBoardHideTap {
     [self.delegate handleTapGestureForKeyBoard];
 }
 

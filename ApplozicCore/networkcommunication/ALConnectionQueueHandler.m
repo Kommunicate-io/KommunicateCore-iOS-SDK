@@ -10,35 +10,32 @@
 
 @implementation ALConnectionQueueHandler
 
-+(ALConnectionQueueHandler *)sharedConnectionQueueHandler
-{
++ (ALConnectionQueueHandler *)sharedConnectionQueueHandler {
     static ALConnectionQueueHandler * sharedHandler = nil;
     
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-    
+
         sharedHandler = [[self alloc] init];
-    
+
     });
     
     return sharedHandler;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     
     if (self) {
-    
+
         _mConnectionsArray = [[NSMutableArray alloc] init];
     }
     
     return self;
 }
 
--(NSMutableArray *)getCurrentConnectionQueue
-{
+- (NSMutableArray *)getCurrentConnectionQueue {
     return _mConnectionsArray;
 }
 

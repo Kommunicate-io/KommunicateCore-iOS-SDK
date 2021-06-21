@@ -3,28 +3,23 @@
 
 @implementation NSData (AES)
 
-- (NSData *)AES128EncryptedDataWithKey:(NSString *)key
-{
+- (NSData *)AES128EncryptedDataWithKey:(NSString *)key {
     return [self AES128EncryptedDataWithKey:key iv:nil];
 }
 
-- (NSData *)AES128DecryptedDataWithKey:(NSString *)key
-{
+- (NSData *)AES128DecryptedDataWithKey:(NSString *)key {
     return [self AES128DecryptedDataWithKey:key iv:nil];
 }
 
-- (NSData *)AES128EncryptedDataWithKey:(NSString *)key iv:(NSString *)iv
-{
+- (NSData *)AES128EncryptedDataWithKey:(NSString *)key iv:(NSString *)iv {
     return [self AES128Operation:kCCEncrypt key:key iv:iv];
 }
 
-- (NSData *)AES128DecryptedDataWithKey:(NSString *)key iv:(NSString *)iv
-{
+- (NSData *)AES128DecryptedDataWithKey:(NSString *)key iv:(NSString *)iv {
     return [self AES128Operation:kCCDecrypt key:key iv:iv];
 }
 
-- (NSData *)AES128Operation:(CCOperation)operation key:(NSString *)key iv:(NSString *)iv
-{
+- (NSData *)AES128Operation:(CCOperation)operation key:(NSString *)key iv:(NSString *)iv {
     char keyPtr[kCCKeySizeAES128 + 1];
     bzero(keyPtr, sizeof(keyPtr));
     [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];

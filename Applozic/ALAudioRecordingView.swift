@@ -223,7 +223,7 @@ import AVFoundation
             return
         }
         if slideView.frame.origin.x <= recordingViewStartLocation,
-            redDot.frame.origin.x + (location.x - previousGestureLocation) <= redDotStartLocation{
+           redDot.frame.origin.x + (location.x - previousGestureLocation) <= redDotStartLocation{
             
             recordingView.frame.origin.x = recordingView.frame.origin.x + (location.x - previousGestureLocation)
             redDot.frame.origin.x = redDot.frame.origin.x + (location.x - previousGestureLocation)

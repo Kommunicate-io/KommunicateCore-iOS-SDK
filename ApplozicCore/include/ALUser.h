@@ -42,7 +42,7 @@ typedef enum
 @property NSString *roleName;
 @property short deviceType;
 @property NSString *imageLink;
-@property NSString * appModuleName;
+@property NSString *appModuleName;
 @property short userTypeId;
 @property short notificationMode;
 @property short authenticationTypeId;
@@ -50,10 +50,10 @@ typedef enum
 @property short deviceApnsType;
 @property short pushNotificationFormat;
 @property BOOL enableEncryption;
-@property NSNumber* contactType;
-@property NSMutableArray * features;
-@property NSString* notificationSoundFileName;
-@property NSMutableDictionary * metadata;
+@property NSNumber *contactType;
+@property NSMutableArray *features;
+@property NSString *notificationSoundFileName;
+@property NSMutableDictionary *metadata;
 
 -(instancetype)initWithUserId:(NSString *)userId
                      password:(NSString *)password

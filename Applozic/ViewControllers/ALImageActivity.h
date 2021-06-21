@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol ALImageActivityDelegate <NSObject>
--(void)showContactsToShareImage;
+- (void)showContactsToShareImage;
 @end
 
 @interface ALImageActivity : UIActivity

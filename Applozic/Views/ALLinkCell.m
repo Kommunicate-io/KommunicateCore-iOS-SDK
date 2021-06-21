@@ -49,8 +49,7 @@ static CGFloat const USER_PROFILE_PADDING_X = 5;
 static CGFloat const USER_PROFILE_PADDING_X_OUTBOX = 50;
 static CGFloat const USER_PROFILE_HEIGHT = 45;
 
-@implementation ALLinkCell
-{
+@implementation ALLinkCell {
     CGFloat msgFrameHeight;
     NSURL * theUrl;
 }
@@ -68,20 +67,17 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 }
 
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 
-    if(self)
-    {
+    if (self) {
         self.mImageView.contentMode = UIViewContentModeScaleAspectFit;
         [self.contentView addSubview:self.mImageView];
     }
     return self;
 }
 
--(instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize {
     [super populateCell:alMessage viewSize:viewSize];
 
     self.mUserProfileImageView.alpha = 1;
@@ -95,9 +91,9 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
     NSString *linkText = nil;
 
-    if([alMessage.metadata  valueForKey:@"text"]){
+    if ([alMessage.metadata  valueForKey:@"text"]){
         linkText = [alMessage.metadata  valueForKey:@"text"];
-    }else{
+    } else {
         linkText = [alMessage.metadata  valueForKey:@"linkURL"];
     }
 
@@ -129,13 +125,10 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
         [self.contentView bringSubviewToFront:self.mChannelMemberName];
 
-        if([ALApplozicSettings isUserProfileHidden])
-        {
+        if ([ALApplozicSettings isUserProfileHidden]) {
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0, 0,
                                                           45);
-        }
-        else
-        {
+        } else {
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0,
                                                           45,45);
         }
@@ -162,8 +155,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         self.mBubleImageView.layer.masksToBounds = NO;
 
 
-        if(alMessage.getGroupId)
-        {
+        if (alMessage.getGroupId) {
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setText:receiverName];
 
@@ -179,8 +171,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         }
 
 
-        if(alMessage.isAReplyMessage)
-        {
+        if (alMessage.isAReplyMessage) {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
 
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
@@ -198,8 +189,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
 
-        if(linkText.length > 0)
-        {
+        if (linkText.length > 0) {
             self.imageWithText.textColor = [ALApplozicSettings getReceiveMsgTextColor];
 
             self.mBubleImageView.frame = CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
@@ -215,9 +205,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
             [self.contentView bringSubviewToFront:self.mDateLabel];
             [self.contentView bringSubviewToFront:self.mMessageStatusImageView];
-        }
-        else
-        {
+        } else {
             [self.imageWithText setHidden:YES];
         }
 
@@ -232,21 +220,14 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
                                                         MSG_STATUS_WIDTH, MSG_STATUS_HEIGHT);
 
 
-        if(alContact.contactImageUrl)
-        {
+        if (alContact.contactImageUrl) {
             [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"contact_default_placeholder"];
-        }
-        else
-        {
+        } else {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
             [self.mNameLabel setHidden:NO];
             self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary];
         }
-
-
-    }
-    else
-    { //Sent Message
+    } else { //Sent Message
 
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getSendMsgColor];
 
@@ -269,8 +250,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         [self.mBubleImageView setFrame:CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + 60),
                                                   0, viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
 
-        if(alMessage.isAReplyMessage)
-        {
+        if (alMessage.isAReplyMessage) {
             [self processReplyOfChat:alMessage andViewSize:viewSize ];
 
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
@@ -288,8 +268,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
                                            self.mBubleImageView.frame.size.width - IMAGE_VIEW_PADDING_WIDTH,
                                            imageViewHeight);
 
-        if(linkText.length > 0)
-        {
+        if (linkText.length > 0) {
 
 
             [self.imageWithText setHidden:NO];
@@ -307,9 +286,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
             [self.contentView bringSubviewToFront:self.mDateLabel];
             [self.contentView bringSubviewToFront:self.mMessageStatusImageView];
 
-        }
-        else
-        {
+        } else {
             [self.imageWithText setHidden:YES];
         }
 
@@ -338,27 +315,23 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:linkText];
 
-    if (alMessage.metadata != NULL && [alMessage.metadata  valueForKey:@"linkURL"])
-    {
+    if (alMessage.metadata != NULL && [alMessage.metadata  valueForKey:@"linkURL"]) {
         @try {
-
             NSRange foundRange = [[alMessage.metadata  valueForKey:@"text"] rangeOfString:[alMessage.metadata  valueForKey:@"text"]];
 
             if (foundRange.location != NSNotFound && [alMessage.metadata  valueForKey:@"linkURL"]) {
                 [attributedString  addAttribute:NSLinkAttributeName value:[alMessage.metadata  valueForKey:@"linkURL"] range:foundRange];
             }
 
-        }
-        @catch (NSException *exception) {
+        } @catch (NSException *exception) {
         }
     }
 
     self.imageWithText.attributedText = attributedString;
 
-    if (alMessage.metadata != NULL && [alMessage.metadata  valueForKey:@"link"])
-    {
+    if (alMessage.metadata != NULL && [alMessage.metadata  valueForKey:@"link"]) {
         [self setInImageView:[NSURL URLWithString:[alMessage.metadata  valueForKey:@"link"]]];
-    }else{
+    } else {
         
         self.mImageView.hidden = YES ;
     }
@@ -367,7 +340,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
 }
 
--(void) setInImageView:(NSURL*)url{
+- (void)setInImageView:(NSURL*)url{
     NSString *stringUrl = url.absoluteString;
     if (stringUrl != nil && [stringUrl localizedCaseInsensitiveContainsString:@"gif"]) {
         UIImage *image = [UIImage animatedImageWithAnimatedGIFURL:url];
@@ -378,20 +351,17 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
 }
 
--(void)processOpenChat
-{
+- (void)processOpenChat {
     [self processKeyBoardHideTap];
     [self.delegate openUserChat:self.mMessage];
 }
 
--(void) processKeyBoardHideTap
-{
+- (void)processKeyBoardHideTap {
     [self.delegate handleTapGestureForKeyBoard];
 }
 
 
--(void) delete:(id)sender
-{
+- (void)delete:(id)sender {
     //UI
     ALSLog(ALLoggerSeverityInfo, @"message to deleteUI %@",self.mMessage.message);
     [self.delegate deleteMessageFromView:self.mMessage];
@@ -403,28 +373,22 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     }];
 }
 
--(void) messageForward:(id)sender
-{
+- (void)messageForward:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processForwardMessage:self.mMessage];
-
 }
 
 
--(void) messageReply:(id)sender
-{
+- (void)messageReply:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processMessageReply:self.mMessage];
-
 }
 
--(void)openUserChatVC
-{
+- (void)openUserChatVC {
     [self.delegate processUserChatView:self.mMessage];
 }
 
-- (void)msgInfo:(id)sender
-{
+- (void)msgInfo:(id)sender {
     [self.delegate showAnimationForMsgInfo:YES];
     UIStoryboard *storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALMessageInfoViewController *msgInfoVC = (ALMessageInfoViewController *)[storyboardM instantiateViewControllerWithIdentifier:@"ALMessageInfoView"];
@@ -434,43 +398,35 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     __weak typeof(ALMessageInfoViewController *) weakObj = msgInfoVC;
     [msgInfoVC setMessage:self.mMessage andHeaderHeight:msgFrameHeight withCompletionHandler:^(NSError *error) {
 
-        if(!error)
-        {
+        if (!error) {
             [self.delegate loadViewForMedia:weakObj];
-        }
-        else
-        {
+        } else {
             [self.delegate showAnimationForMsgInfo:NO];
         }
     }];
 }
 
--(BOOL)isForwardMenuEnabled:(SEL) action;
-{
+- (BOOL)isForwardMenuEnabled:(SEL) action; {
     return ([ALApplozicSettings isForwardOptionEnabled] && action == @selector(messageForward:));
 }
 
--(BOOL)isMessageReplyMenuEnabled:(SEL) action
-{
+- (BOOL)isMessageReplyMenuEnabled:(SEL) action {
 
     return ([ALApplozicSettings isReplyOptionEnabled] && action == @selector(messageReply:));
-
 }
 
--(BOOL) canPerformAction:(SEL)action withSender:(id)sender
-{
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Action: %@", NSStringFromSelector(action));
 
-    if(self.mMessage.groupId){
+    if (self.mMessage.groupId) {
         ALChannelService *channelService = [[ALChannelService alloc] init];
         ALChannel *channel =  [channelService getChannelByKey:self.mMessage.groupId];
-        if(channel && channel.type == OPEN){
+        if (channel && channel.type == OPEN){
             return NO;
         }
     }
 
-    if([self.mMessage isSentMessage] && self.mMessage.groupId)
-    {
+    if ([self.mMessage isSentMessage] && self.mMessage.groupId) {
         return (self.mMessage.isDownloadRequired? (action == @selector(delete:) || action == @selector(msgInfo:)):(action == @selector(delete:)|| action == @selector(msgInfo:)|| action == @selector(messageForward:) || [self isMessageReplyMenuEnabled:action]));
     }
 

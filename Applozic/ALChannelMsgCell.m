@@ -10,8 +10,7 @@
 
 @implementation ALChannelMsgCell
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self  = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processKeyBoardHideTap)];
@@ -22,8 +21,7 @@
     return self;
 }
 
--(UIFont *)getDynamicFontWithDefaultSize:(CGFloat)size fontName:(NSString *)fontName
-{
+- (UIFont *)getDynamicFontWithDefaultSize:(CGFloat)size fontName:(NSString *)fontName {
     UIFont *defaultFont = [UIFont fontWithName:fontName size:size];
     if (!defaultFont) {
         defaultFont = [UIFont systemFontOfSize:size];
@@ -37,8 +35,7 @@
     return defaultFont;
 }
 
--(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize {
     [super populateCell:alMessage viewSize:viewSize];
     
     [self.mMessageLabel setFont:[self getDynamicFontWithDefaultSize:[ALApplozicSettings getChannelCellTextFontSize] fontName:[ALApplozicSettings getCustomMessageFont]]];
@@ -78,8 +75,7 @@
     return self;
 }
 
--(void) processKeyBoardHideTap
-{
+- (void)processKeyBoardHideTap {
     [self.delegate handleTapGestureForKeyBoard];
 }
 

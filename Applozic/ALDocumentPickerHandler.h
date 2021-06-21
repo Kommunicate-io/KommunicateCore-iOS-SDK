@@ -15,9 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ALDocumentPickerHandler : NSObject
 
--(void)showDocumentPickerViewController:(id<UIDocumentPickerDelegate>) pickerDelegate;
+- (void)showDocumentPickerViewController:(id<UIDocumentPickerDelegate>)pickerDelegate;
 
-+(NSString *)saveFile:(NSURL *)fileUrl;
++ (NSString *)saveFile:(NSURL *)fileUrl;
 
 @end
 

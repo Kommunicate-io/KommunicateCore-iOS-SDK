@@ -21,7 +21,7 @@
 @property (nonatomic) CGFloat msgFrameHeight;
 @property (nonatomic, strong) ALVCardClass *vCardClass;
 
--(instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize;
+- (instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize;
 
 @end
 

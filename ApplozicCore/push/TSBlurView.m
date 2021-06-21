@@ -18,8 +18,7 @@
 @implementation TSBlurView
 
 
-- (UIToolbar *)toolbar
-{
+- (UIToolbar *)toolbar {
     if (_toolbar == nil) {
         _toolbar = [[UIToolbar alloc] initWithFrame:self.bounds];
         _toolbar.userInteractionEnabled = NO;
@@ -33,15 +32,13 @@
     return _toolbar;
 }
 
-- (void)setBlurTintColor:(UIColor *)blurTintColor
-{
+- (void)setBlurTintColor:(UIColor *)blurTintColor {
     if ([self.toolbar respondsToSelector:@selector(setBarTintColor:)]) {
         [self.toolbar performSelector:@selector(setBarTintColor:) withObject:blurTintColor];
     }
 }
 
-- (UIColor *)blurTintColor
-{
+- (UIColor *)blurTintColor {
     if ([self.toolbar respondsToSelector:@selector(barTintColor)]) {
         return [self.toolbar performSelector:@selector(barTintColor)];
     }

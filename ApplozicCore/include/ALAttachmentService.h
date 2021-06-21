@@ -21,13 +21,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
 
-+(ALAttachmentService *)sharedInstance;
++ (ALAttachmentService *)sharedInstance;
 
--(void)sendMessageWithAttachment:(ALMessage*) attachmentMessage withDelegate:(id<ApplozicUpdatesDelegate>) delegate withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
+                     withDelegate:(id<ApplozicUpdatesDelegate>)delegate
+           withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
--(void) downloadMessageAttachment:(ALMessage*)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
--(void) downloadImageThumbnail:(ALMessage*)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
 
 @end
 

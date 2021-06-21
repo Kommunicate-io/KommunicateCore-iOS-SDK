@@ -13,7 +13,7 @@
 
 @implementation ALNotificationHelper
 
--(BOOL)isApplozicViewControllerOnTop {
+- (BOOL)isApplozicViewControllerOnTop {
 
     ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
     NSString* topViewControllerName = NSStringFromClass(alPushAssist.topViewController.class);
@@ -39,7 +39,10 @@
     return isApplozicVCOnTop;
 }
 
--(void)handlerNotificationClick:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId notificationTapActionDisable:(BOOL)isTapActionDisabled {
+- (void)handlerNotificationClick:(NSString *)contactId
+                     withGroupId:(NSNumber *)groupID
+              withConversationId:(NSNumber *)conversationId
+    notificationTapActionDisable:(BOOL)isTapActionDisabled {
 
     ALPushAssist * alPushAssist = [[ALPushAssist alloc]init];
     if (isTapActionDisabled || [alPushAssist isVOIPViewOnTop]) {
@@ -88,7 +91,9 @@
 
 }
 
--(void)openConversationViewFromListVC:(NSString *)contactId withGroupId:(NSNumber *)groupID withConversationId:(NSNumber *)conversationId {
+- (void)openConversationViewFromListVC:(NSString *)contactId
+                           withGroupId:(NSNumber *)groupID
+                    withConversationId:(NSNumber *)conversationId {
     dispatch_async(dispatch_get_main_queue(), ^{
 
         ALPushAssist *alPushAssist = [[ALPushAssist alloc] init];
@@ -103,9 +108,9 @@
 
 }
 
--(void)checkControllerAndDismissIfRequired:(UIViewController*)viewController withCompletion:(void(^)(BOOL handleClick))completion {
+- (void)checkControllerAndDismissIfRequired:(UIViewController*)viewController withCompletion:(void(^)(BOOL handleClick))completion {
 
-    if(![self isApplozicViewControllerOnTop]){
+    if (![self isApplozicViewControllerOnTop]) {
         completion(NO);
         return;
     }
@@ -116,8 +121,8 @@
         return;
     }
 
-    if (viewController.navigationController != nil
-        && [viewController.navigationController popViewControllerAnimated:NO] != nil) {
+    if (viewController.navigationController != nil &&
+        [viewController.navigationController popViewControllerAnimated:NO] != nil) {
         completion(YES);
         return;
     }

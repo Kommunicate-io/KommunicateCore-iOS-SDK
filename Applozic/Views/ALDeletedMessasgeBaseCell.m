@@ -10,8 +10,8 @@
 
 @implementation ALDeletedMessasgeBaseCell
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style
-             reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style
+              reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 
     if (self) {
@@ -21,7 +21,7 @@
     return self;
 }
 
--(void)setupView {
+- (void)setupView {
 
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.mBubleImageView = [[UIImageView alloc] init];
@@ -69,11 +69,10 @@
     self.backgroundColor = [UIColor clearColor];
 }
 
--(void)addViewConstraints {
+- (void)addViewConstraints {
 }
 
--(UIFont *)getDynamicFontWithDefaultSize:(CGFloat)size fontName:(NSString *)fontName
-{
+- (UIFont *)getDynamicFontWithDefaultSize:(CGFloat)size fontName:(NSString *)fontName {
     UIFont *defaultFont = [UIFont fontWithName:fontName size:size];
     if (!defaultFont) {
         defaultFont = [UIFont systemFontOfSize:size];
@@ -88,7 +87,7 @@
 }
 
 
--(void)update:(ALMessage *)message {
+- (void)update:(ALMessage *)message {
     self.mMessage = message;
 
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[message.createdAtTime doubleValue]/1000]];
@@ -100,7 +99,7 @@
     self.mMessageLabel.text = deletedMessageText;
 }
 
--(void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
+- (void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
 
     UIView * superView = [longPressGestureRecognizer.view superview];
     UIView * gestureView = longPressGestureRecognizer.view;
@@ -124,17 +123,17 @@
     [sharedMenuController setMenuVisible:YES animated:YES];
 }
 
--(BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
 
     if (self.channel &&
         self.channel.type == OPEN) {
         return NO;
     }
-
+    
     return action == @selector(delete:);
 }
 
--(void) delete:(id)sender {
+- (void) delete:(id)sender {
     //UI
     ALSLog(ALLoggerSeverityInfo, @"Message to deleteUI %@",self.mMessage.message);
     [self.delegate deleteMessageFromView:self.mMessage];
@@ -146,7 +145,7 @@
     }];
 }
 
--(BOOL)canBecomeFirstResponder {
+- (BOOL)canBecomeFirstResponder {
     return YES;
 }
 

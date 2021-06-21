@@ -16,11 +16,11 @@
 
 - (IBAction)sendLocation:(id)sender;
 
-@property (nonatomic, strong) CLGeocoder * geocoder;
-@property (nonatomic, strong) CLPlacemark * placemark;
-@property (nonatomic, strong) NSString * addressLabel;
-@property (nonatomic, strong) NSString * longX;
-@property (nonatomic, strong) NSString * lattY;
+@property (nonatomic, strong) CLGeocoder *geocoder;
+@property (nonatomic, strong) CLPlacemark *placemark;
+@property (nonatomic, strong) NSString *addressLabel;
+@property (nonatomic, strong) NSString *longX;
+@property (nonatomic, strong) NSString *lattY;
 @end
 
 @implementation ALMapViewController
@@ -39,8 +39,7 @@
     //[self.locationManager requestAlwaysAuthorization];
     [self.locationManager requestWhenInUseAuthorization];
     
-    if([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)])
-    {
+    if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
         [self.locationManager requestWhenInUseAuthorization];
     }
     
@@ -56,21 +55,20 @@
     
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [self.tabBarController.tabBar setHidden: YES];
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [self.tabBarController.tabBar setHidden: YES];
     [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
     [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
     [self.navigationController.navigationBar setBackgroundColor: [ALApplozicSettings getColorForNavigation]];
     
-    if (![ALDataNetworkConnection checkDataNetworkAvailable])
-    {
-        [TSMessage showNotificationInViewController:self title:@"" subtitle:        NSLocalizedStringWithDefaultValue(@"noInternetMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No Internet", @"")
+    if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
+        [TSMessage showNotificationInViewController:self title:@"" subtitle:NSLocalizedStringWithDefaultValue(@"noInternetMessage", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"No Internet", @"")
                                                type:TSMessageNotificationTypeError duration:1.0 canBeDismissedByUser:NO];
     }
 }
@@ -88,26 +86,24 @@
     _sendLocationButton.enabled=YES;
     region = self.mapKitView.region;
     
-    NSString * lat = [NSString stringWithFormat:@"%.8f",region.center.latitude];
-    NSString * lon = [NSString stringWithFormat:@"%.8f",region.center.longitude];
-    NSDictionary * latLongDic = [[NSDictionary alloc] initWithObjectsAndKeys:lat,@"lat",lon,@"lon", nil];
+    NSString *lat = [NSString stringWithFormat:@"%.8f",region.center.latitude];
+    NSString *lon = [NSString stringWithFormat:@"%.8f",region.center.longitude];
+    NSDictionary *latLongDic = [[NSDictionary alloc] initWithObjectsAndKeys:lat,@"lat",lon,@"lon", nil];
     
     NSString *jsonString = [self createJson:latLongDic];
     
     [self.sendLocationButton setEnabled:NO];
     
-    if([ALDataNetworkConnection checkDataNetworkAvailable]){
+    if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
         [self.controllerDelegate sendGoogleMap:jsonString withCompletion:^(NSString *message, NSError *error) {
             
-            if(!error)
+            if (!error)
             {
                 [self.navigationController popViewControllerAnimated:YES];
                 [self.sendLocationButton setEnabled:YES];
             }
         }];
-    }
-    else
-    {
+    } else {
         [self.controllerDelegate sendGoogleMapOffline:jsonString];
         [self.navigationController popViewControllerAnimated:YES];
         [self.sendLocationButton setEnabled:YES];
@@ -115,14 +111,14 @@
     
 }
 
--(NSString *)createJson:(NSDictionary *)latLongDic{
+- (NSString *)createJson:(NSDictionary *)latLongDic {
     
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:latLongDic
                                                        options:NSJSONWritingPrettyPrinted
                                                          error:&error];
     
-    if (! jsonData) {
+    if (!jsonData) {
         ALSLog(ALLoggerSeverityError, @"Got an error: %@", error);
         return nil;
     } else {
@@ -131,58 +127,54 @@
     }
 }
 
-- (void)requestAlwaysAuthorization
-{
+- (void)requestAlwaysAuthorization {
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
     // If the status is denied or only granted for when in use, display an alert
-    if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusDenied)
-    {
+    if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusDenied) {
         NSString *title;
         title = (status == kCLAuthorizationStatusDenied) ? @"Location services are off" : @"Background location is not enabled";
         NSString *message = @"To use background location you must turn on 'Always' in the Location Services Settings";
 
-        UIAlertController * uiAlertController = [UIAlertController
-                                                 alertControllerWithTitle:title
-                                                 message:message
-                                                 preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *uiAlertController = [UIAlertController
+                                                alertControllerWithTitle:title
+                                                message:message
+                                                preferredStyle:UIAlertControllerStyleAlert];
 
-        UIAlertAction* settingButton = [UIAlertAction
+        UIAlertAction *settingButton = [UIAlertAction
                                         actionWithTitle:NSLocalizedStringWithDefaultValue(@"settings", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Settings", @"")
                                         style:UIAlertActionStyleDefault
-                                        handler:^(UIAlertAction * action) {
+                                        handler:^(UIAlertAction *action) {
             NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
             [[UIApplication sharedApplication] openURL:settingsURL options:@{} completionHandler:nil];
 
         }];
 
-        UIAlertAction* cancelButton = [UIAlertAction
-                                   actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"")
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action) {
+        UIAlertAction *cancelButton = [UIAlertAction
+                                       actionWithTitle:NSLocalizedStringWithDefaultValue(@"cancelOptionText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Cancel", @"")
+                                       style:UIAlertActionStyleDefault
+                                       handler:^(UIAlertAction *action) {
 
-                                   }];
+        }];
         [uiAlertController addAction:settingButton];
         [uiAlertController addAction:cancelButton];
 
         [self.presentedViewController.navigationController presentViewController:uiAlertController animated:YES completion:nil];
-    }
-    else if (status == kCLAuthorizationStatusNotDetermined) {
+    } else if (status == kCLAuthorizationStatusNotDetermined) {
         // The user has not enabled any location services. Request background authorization.
         [locationManager requestAlwaysAuthorization];
     }
 }
 
--(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     CLLocation *newLocation = [locations lastObject];
     
     self.lattY = [NSString stringWithFormat:@"%f",newLocation.coordinate.latitude];
     self.longX = [NSString stringWithFormat:@"%f",newLocation.coordinate.longitude];
     
-    [self.geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+    [self.geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray<CLPlacemark *> *_Nullable placemarks, NSError *_Nullable error) {
         
-        if (error == nil && [placemarks count] > 0)
-        {
+        if (error == nil && [placemarks count] > 0) {
             self.placemark = [placemarks lastObject];
             self.addressLabel = [NSString stringWithFormat:@"Address: %@\n%@ %@, %@, %@\n",
                                  self.placemark.thoroughfare,
@@ -190,9 +182,7 @@
                                  self.placemark.administrativeArea,
                                  self.placemark.country];
             
-        }
-        else
-        {
+        } else {
             ALSLog(ALLoggerSeverityInfo, @"inside GEOCODER");
         }
         
@@ -202,25 +192,23 @@
 
 #pragma mark - MKMapViewDelegate Methods
 
--(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
     
     [self.mapKitView setRegion:MKCoordinateRegionMake(userLocation.coordinate, MKCoordinateSpanMake(0.002f, 0.002f)) animated:YES];
     
 }
 
 //~ Currently inactive ~//
--(void)formMapURL{
+- (void)formMapURL {
     
     //static map location
-    NSString * staticMapLocationURL=[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%.8f,%.8f&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%.8f,%.8f&key=%@",region.center.latitude, region.center.longitude,region.center.latitude, region.center.longitude,[ALUserDefaultsHandler getGoogleMapAPIKey]];
+    NSString *staticMapLocationURL=[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%.8f,%.8f&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%.8f,%.8f&key=%@",region.center.latitude, region.center.longitude,region.center.latitude, region.center.longitude,[ALUserDefaultsHandler getGoogleMapAPIKey]];
     
-    if([ALDataNetworkConnection checkDataNetworkAvailable])
-    {
-        NSURL* staticImageURL=[NSURL URLWithString:staticMapLocationURL];
+    if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
+        NSURL *staticImageURL=[NSURL URLWithString:staticMapLocationURL];
         [self.mapView sd_setImageWithURL:staticImageURL];
-    }
-    else{
-        UIImage * offlineMapImage = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"];
+    } else {
+        UIImage *offlineMapImage = [ALUIUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"];
         [self.mapView setImage:offlineMapImage];
         
     }

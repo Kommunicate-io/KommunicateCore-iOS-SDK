@@ -10,9 +10,9 @@
 
 @interface ALContactsResponse : ALJson
 
-@property (nonatomic, strong) NSNumber * lastFetchTime;
-@property (nonatomic, strong) NSNumber * totalUnreadCount;
+@property (nonatomic, strong) NSNumber *lastFetchTime;
+@property (nonatomic, strong) NSNumber *totalUnreadCount;
 
-@property (nonatomic, strong) NSMutableArray * userDetailList;
+@property (nonatomic, strong) NSMutableArray *userDetailList;
 
 @end

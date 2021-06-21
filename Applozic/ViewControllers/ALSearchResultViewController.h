@@ -14,7 +14,7 @@
 
 @property (strong, nonatomic) IBOutlet UITableView *mTableView;
 
--(void)clearAndShowEmptyView;
--(void)searchWithKey:(NSString*)key;
+- (void)clearAndShowEmptyView;
+- (void)searchWithKey:(NSString *)key;
 
 @end

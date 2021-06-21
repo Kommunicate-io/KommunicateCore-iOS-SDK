@@ -13,6 +13,6 @@
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic, strong) NSNumber *groupRole;
     
--(id)initWithDictonary:(NSDictionary *)messageDictonary;
+- (id)initWithDictonary:(NSDictionary *)messageDictonary;
 
 @end

@@ -16,17 +16,16 @@
 
 @implementation ALUIConstant
 
-+(CGSize) getFrameSize
-{
++ (CGSize) getFrameSize {
     CGSize PHONE_SIZE = [UIScreen mainScreen].bounds.size;
     return PHONE_SIZE;
 }
 
-+(CGSize)textSize:(ALMessage *)theMessage andCellFrame:(CGRect)cellFrame {
-   return [self textSizeWithText:theMessage.message andCellFrame:cellFrame];
++ (CGSize)textSize:(ALMessage *)theMessage andCellFrame:(CGRect)cellFrame {
+    return [self textSizeWithText:theMessage.message andCellFrame:cellFrame];
 }
 
-+(CGSize)textSizeWithText:(NSString *)text andCellFrame:(CGRect)cellFrame {
++ (CGSize)textSizeWithText:(NSString *)text andCellFrame:(CGRect)cellFrame {
     CGSize theTextSize = [ALUtilityClass getSizeForText:text
                                                maxWidth:cellFrame.size.width - 115
                                                    font:[ALApplozicSettings getFontFace]
@@ -40,41 +39,34 @@
 #pragma ChatViewController TABLE CELL HEIGHT CONSTANTS
 //=========================================================================================================
 
-+(CGFloat)getLocationCellHeight:(CGRect)cellFrame
-{
++ (CGFloat)getLocationCellHeight:(CGRect)cellFrame {
     CGFloat HEIGHT = cellFrame.size.width - 140;
     return HEIGHT;
 }
 
-+(CGFloat)getDateCellHeight
-{
++ (CGFloat)getDateCellHeight {
     CGFloat HEIGHT = 30;
     return HEIGHT;
 }
 
-+(CGFloat)getAudioCellHeight
-{
++ (CGFloat)getAudioCellHeight {
     CGFloat HEIGHT = 130;
     return HEIGHT;
 }
 
-+(CGFloat)getContactCellHeight:(ALMessage*)message
-{
++ (CGFloat)getContactCellHeight:(ALMessage*)message {
     CGFloat HEIGHT = (message.isSentMessage && ALApplozicSettings.isAddContactButtonForSenderDisabled) ? 210 : 265;
     return HEIGHT;
 }
 
-+(CGFloat)getDocumentCellHeight
-{
++ (CGFloat)getDocumentCellHeight {
     CGFloat HEIGHT = 130;
     return HEIGHT;
 }
 
-+(CGFloat)getVideoCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
-{
++ (CGFloat)getVideoCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame {
     CGFloat HEIGHT = cellFrame.size.width - 60;
-    if(alMessage.message.length > 0)
-    {
+    if (alMessage.message.length > 0) {
         CGSize theTextSize = [self textSize:alMessage andCellFrame:cellFrame];
         HEIGHT = theTextSize.height + HEIGHT;
     }
@@ -82,11 +74,9 @@
     return HEIGHT;
 }
 
-+(CGFloat)getImageCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame  // NEED CHECK AGAIN image & image with text
-{
++ (CGFloat)getImageCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame {
     CGFloat HEIGHT = cellFrame.size.width - 70;
-    if(alMessage.message.length > 0)
-    {
+    if (alMessage.message.length > 0) {
         CGSize theTextSize = [self textSize:alMessage andCellFrame:cellFrame];
         HEIGHT = theTextSize.height + HEIGHT;
     }
@@ -95,8 +85,7 @@
 }
 
 
-+(CGFloat)getLinkCelllHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
-{
++ (CGFloat)getLinkCelllHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame {
 
     CGFloat cellPadding = 70;
     CGFloat widthPadding = 115;
@@ -104,14 +93,13 @@
     CGFloat HEIGHT = cellFrame.size.width - cellPadding;
     NSString *linkText = nil;
 
-    if([alMessage.metadata valueForKey:@"text"]){
+    if ([alMessage.metadata valueForKey:@"text"]){
         linkText = [alMessage.metadata valueForKey:@"text"];
-    }else{
+    } else {
         linkText = [alMessage.metadata valueForKey:@"linkURL"];
     }
 
-    if(linkText)
-    {
+    if (linkText) {
 
         CGSize theTextSize =   [ALUtilityClass getSizeForText:linkText
                                                      maxWidth:cellFrame.size.width - widthPadding
@@ -125,16 +113,14 @@
 }
 
 
-+(CGFloat)getChatCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame  // NEED CHECK AGAIN TEXT CELL
-{
++ (CGFloat)getChatCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame {
     CGSize theTextSize = [self textSize:alMessage andCellFrame:cellFrame];
     CGFloat HEIGHT = theTextSize.height + 70;
     
     return HEIGHT;
 }
 
-+(CGFloat)getCustomChatCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
-{
++ (CGFloat)getCustomChatCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame {
     CGSize theTextSize = [ALUtilityClass getSizeForText:alMessage.message
                                                maxWidth:cellFrame.size.width - 115
                                                    font:[ALApplozicSettings getCustomMessageFont]
@@ -145,31 +131,28 @@
     return HEIGHT;
 }
 
-+(CGFloat)getVOIPCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
-{
++ (CGFloat)getVOIPCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame {
     CGSize theTextSize = [ALUtilityClass getSizeForText:[alMessage getVOIPMessageText]
                                                maxWidth:cellFrame.size.width - 115
                                                    font:[ALApplozicSettings getCustomMessageFont]
                                                fontSize:[ALApplozicSettings getCustomMessageFontSize]];
-                                            // WORKING FOR NOW BUT NEED TO CHANGE FONT & FONT-SIZE FOR VOIP TEXT BEFORE RELEASE
+    // WORKING FOR NOW BUT NEED TO CHANGE FONT & FONT-SIZE FOR VOIP TEXT BEFORE RELEASE
     
     CGFloat HEIGHT = theTextSize.height + 40;
     return HEIGHT;
 }
 
-+(CGFloat)getChannelMsgCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
-{
++ (CGFloat)getChannelMsgCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame {
     CGSize theTextSize = [ALUtilityClass getSizeForText:alMessage.message
                                                maxWidth:cellFrame.size.width - 115
                                                    font:[ALApplozicSettings getCustomMessageFont]
                                                fontSize:[ALApplozicSettings getChannelCellTextFontSize]];
     
-    CGFloat HEIGHT = theTextSize.height + 30;    
+    CGFloat HEIGHT = theTextSize.height + 30;
     return HEIGHT;
 }
 
-+ (CGFloat) getCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame
-{
++ (CGFloat) getCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame {
     
     CGFloat replyViewHeight = 70;
     CGFloat heightOfCell;
@@ -179,61 +162,36 @@
         } else {
             return [ALFriendDeletedMessage getDeletedMessageCellHeight:alMessage andCellFrame:cellFrame];
         }
-    }
-    else if(alMessage.contentType == ALMESSAGE_CONTENT_LOCATION)
-    {
+    } else if (alMessage.contentType == ALMESSAGE_CONTENT_LOCATION) {
         heightOfCell = [self getLocationCellHeight:cellFrame];
-    }
-    else if([alMessage isLinkMessage])
-    {
+    } else if ([alMessage isLinkMessage]) {
         heightOfCell = [self getLinkCelllHeight:alMessage andCellFrame:cellFrame] ;
-    }
-    else if([alMessage.type isEqualToString:@"100"])
-    {
+    } else if ([alMessage.type isEqualToString:@"100"]) {
         heightOfCell=  [self getDateCellHeight];
-    }
-    else if(alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION)
-    {
+    } else if (alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
         if ([alMessage isMsgHidden]){
             heightOfCell= 0;
         }
         heightOfCell = [self getChannelMsgCellHeight:alMessage andCellFrame:cellFrame];
-    }
-    else if ([alMessage.fileMeta.contentType hasPrefix:@"video"])
-    {
+    } else if  ([alMessage.fileMeta.contentType hasPrefix:@"video"]) {
         heightOfCell= [self getVideoCellHeight:alMessage andCellFrame:cellFrame];
-    }
-    else if ([alMessage.fileMeta.contentType hasPrefix:@"audio"])
-    {
+    } else if  ([alMessage.fileMeta.contentType hasPrefix:@"audio"]) {
         heightOfCell = [self getAudioCellHeight] ;
-    }
-    else if ([alMessage.fileMeta.contentType hasPrefix:@"image"])
-    {
+    } else if  ([alMessage.fileMeta.contentType hasPrefix:@"image"]) {
         heightOfCell = [self getImageCellHeight:alMessage andCellFrame:cellFrame] ;
-    }
-    else if (alMessage.contentType == AV_CALL_MESSAGE)
-    {
+    } else if  (alMessage.contentType == AV_CALL_MESSAGE) {
         return [self getVOIPCellHeight:alMessage andCellFrame:cellFrame];
-    }
-    else if (alMessage.contentType == ALMESSAGE_CONTENT_CUSTOM)
-    {
+    } else if  (alMessage.contentType == ALMESSAGE_CONTENT_CUSTOM) {
         heightOfCell = [self getCustomChatCellHeight:alMessage andCellFrame:cellFrame];
-    }
-    else if (alMessage.contentType == ALMESSAGE_CONTENT_DEFAULT)
-    {
+    } else if  (alMessage.contentType == ALMESSAGE_CONTENT_DEFAULT) {
         heightOfCell =[self getChatCellHeight:alMessage andCellFrame:cellFrame];
-    }
-    else if (alMessage.contentType == (short)ALMESSAGE_CONTENT_VCARD)
-    {
+    } else if  (alMessage.contentType == (short)ALMESSAGE_CONTENT_VCARD) {
         heightOfCell = [self getContactCellHeight:alMessage];
-    }
-    else
-    {
+    } else {
         heightOfCell= [self getDocumentCellHeight];
     }
     
-    if(alMessage.isAReplyMessage)
-    {
+    if (alMessage.isAReplyMessage) {
         heightOfCell = heightOfCell + replyViewHeight;
     }
     return heightOfCell;

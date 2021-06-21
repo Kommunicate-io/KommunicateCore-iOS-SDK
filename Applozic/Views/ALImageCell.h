@@ -17,7 +17,7 @@
 
 @interface ALImageCell : ALMediaBaseCell
 
--(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize;
+- (instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize;
 
 @property(strong,nonatomic) UITapGestureRecognizer *tapperForLocationMap;
 

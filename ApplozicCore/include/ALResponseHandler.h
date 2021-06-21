@@ -9,13 +9,15 @@
 
 @interface ALResponseHandler : NSObject
 
-+(void) processRequest:(NSMutableURLRequest *) theRequest andTag:(NSString *)tag WithCompletionHandler:(void(^)(id theJson , NSError * theError))reponseCompletion;
++ (void) processRequest:(NSMutableURLRequest *)theRequest
+                 andTag:(NSString *)tag
+  WithCompletionHandler:(void(^)(id theJson , NSError *theError))reponseCompletion;
 
-+(void)authenticateAndProcessRequest:(NSMutableURLRequest *)theRequest
-                              andTag:(NSString *)tag
-               WithCompletionHandler:(void (^)(id, NSError *))completion;
++ (void)authenticateAndProcessRequest:(NSMutableURLRequest *)theRequest
+                               andTag:(NSString *)tag
+                WithCompletionHandler:(void (^)(id, NSError *))completion;
 
-+(void)authenticateRequest:(NSMutableURLRequest *)request
-            WithCompletion:(void (^)(NSMutableURLRequest *urlRequest, NSError *error)) completion;
++ (void)authenticateRequest:(NSMutableURLRequest *)request
+             WithCompletion:(void (^)(NSMutableURLRequest *urlRequest, NSError *error))completion;
 
 @end

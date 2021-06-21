@@ -10,7 +10,7 @@
 
 @interface ALApplicationInfo : NSObject
 
--(BOOL)isChatSuspended;
--(BOOL)showPoweredByMessage;
+- (BOOL)isChatSuspended;
+- (BOOL)showPoweredByMessage;
 
 @end

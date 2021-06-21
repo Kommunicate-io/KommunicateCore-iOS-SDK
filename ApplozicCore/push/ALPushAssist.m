@@ -17,51 +17,44 @@
 
 @implementation ALPushAssist
 // WHEN NON-APPLOZIC VIEWs OPENED
--(void)assist:(NSString*)notiMsg and :(NSMutableDictionary*)dict ofUser:(NSString*)userId{
+- (void)assist:(NSString *)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString*)userId {
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"showNotificationAndLaunchChat"
-                                                             object:notiMsg
-                                                           userInfo:dict];
+                                                        object:notiMsg
+                                                      userInfo:dict];
 
 }
 
--(void)dealloc{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:@"showNotificationAndLaunchChat"];
 }
 
--(BOOL) isOurViewOnTop
-{
-    NSArray * VCList = [ALApplozicSettings getListOfViewControllers];
-    if(VCList)
-    {
-        for (NSString * className in VCList)
-        {
-            if([self.topViewController isKindOfClass:NSClassFromString(className)])
-            {
+- (BOOL) isOurViewOnTop {
+    NSArray *VCList = [ALApplozicSettings getListOfViewControllers];
+    if (VCList) {
+        for (NSString * className in VCList) {
+            if ([self.topViewController isKindOfClass:NSClassFromString(className)]) {
                 return YES;
             }
         }
     }
-
     return [self isVOIPViewOnTop] || [self isMessageContainerOnTop];
 }
 
--(BOOL)isMessageContainerOnTop
-{
+- (BOOL)isMessageContainerOnTop {
     return ([self.topViewController isKindOfClass:NSClassFromString([ALApplozicSettings getMsgContainerVC])]);
 }
 
--(BOOL)isVOIPViewOnTop
-{
+- (BOOL)isVOIPViewOnTop {
     ALSLog(ALLoggerSeverityInfo, @"VOIP_VIEW : %@",self.topViewController);
     return ([self.topViewController isKindOfClass:NSClassFromString([ALApplozicSettings getAudioVideoClassName])]);
 }
 
-- (UIViewController*)topViewController {
+- (UIViewController *)topViewController {
     return [self topViewControllerWithRootViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
 }
 
-- (UIViewController*)topViewControllerWithRootViewController:(UIViewController*)rootViewController {
+- (UIViewController *)topViewControllerWithRootViewController:(UIViewController *)rootViewController {
     
     if ([rootViewController isKindOfClass:[UITabBarController class]]) {
         
@@ -84,8 +77,7 @@
     }
 }
 
-+ (BOOL)isViewObjIsMsgContainerVC:(UIViewController *)viewObj
-{
++ (BOOL)isViewObjIsMsgContainerVC:(UIViewController *)viewObj {
     return ([viewObj isKindOfClass:NSClassFromString([ALApplozicSettings getMsgContainerVC])]);
 }
 

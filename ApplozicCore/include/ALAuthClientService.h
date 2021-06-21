@@ -10,5 +10,5 @@
 #import "ALAPIResponse.h"
 
 @interface ALAuthClientService : NSObject
--(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
+- (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 @end

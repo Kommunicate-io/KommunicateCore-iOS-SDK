@@ -19,9 +19,9 @@
 
 @property (nonatomic, strong) CNContact * alCNContact;
 
--(NSString *)saveContactToDocDirectory:(CNContact *)contact;
--(void)vCardParser:(NSString *)filePath;
--(void)addContact:(ALVCardClass *)alVcard;
+- (NSString *)saveContactToDocDirectory:(CNContact *)contact;
+- (void)vCardParser:(NSString *)filePath;
+- (void)addContact:(ALVCardClass *)alVcard;
 
 
 @end

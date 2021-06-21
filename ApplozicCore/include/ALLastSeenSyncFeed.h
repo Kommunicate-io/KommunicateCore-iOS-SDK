@@ -12,11 +12,10 @@
 
 @interface ALLastSeenSyncFeed : ALJson
 
--(instancetype)initWithJSONString:(NSString*)lastSeenResponse;
+@property(nonatomic) NSMutableArray <ALUserDetail *>*lastSeenArray;
 
-@property(nonatomic)  NSMutableArray <ALUserDetail *>* lastSeenArray ;
+- (instancetype)initWithJSONString:(NSString *)lastSeenResponse;
 
--(void)populateLastSeenDetail:(NSMutableArray *)jsonString;
-
+- (void)populateLastSeenDetail:(NSMutableArray *)jsonString;
 
 @end

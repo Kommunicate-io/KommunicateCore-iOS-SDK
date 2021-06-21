@@ -12,18 +12,15 @@
 
 static CGFloat const DATE_LABEL_SIZE = 12;
 
-@implementation ALMediaBaseCell
-{
+@implementation ALMediaBaseCell {
     float heightLocation;
-    UITapGestureRecognizer * tapForUserChatView;
+    UITapGestureRecognizer *tapForUserChatView;
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
-    if(self)
-    {
+    if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.backgroundColor = [UIColor clearColor];
         
@@ -54,7 +51,7 @@ static CGFloat const DATE_LABEL_SIZE = 12;
         self.replyParentView.backgroundColor = [UIColor greenColor];
         [self.replyParentView setUserInteractionEnabled:YES];
         
-        UITapGestureRecognizer * replyViewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureForReplyView:)];
+        UITapGestureRecognizer *replyViewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureForReplyView:)];
         replyViewTapGesture.numberOfTapsRequired=1;
         [self.replyParentView addGestureRecognizer:replyViewTapGesture];
         
@@ -107,20 +104,14 @@ static CGFloat const DATE_LABEL_SIZE = 12;
         self.mChannelMemberName.font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
         self.mChannelMemberName.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.mChannelMemberName];
-        
 
-
-
-        if (IS_IPHONE_5)
-        {
+        if (IS_IPHONE_5) {
             heightLocation = 180.0;
         }
-        if(IS_IPHONE_6)
-        {
+        if (IS_IPHONE_6) {
             heightLocation = 220.0;
         }
-        if (IS_IPHONE_6_PLUS)
-        {
+        if (IS_IPHONE_6_PLUS) {
             heightLocation = 280.0;
         }
         
@@ -144,7 +135,7 @@ static CGFloat const DATE_LABEL_SIZE = 12;
         self.frontView.backgroundColor = [UIColor clearColor];
         self.frontView.alpha = 1.0;
 
-        UILongPressGestureRecognizer * menuTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
+        UILongPressGestureRecognizer *menuTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
         menuTapGesture.minimumPressDuration = 1.0;
         menuTapGesture.cancelsTouchesInView = NO;
         [self.frontView addGestureRecognizer:menuTapGesture];
@@ -154,59 +145,51 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     return self;
 }
 
--(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage*)alMessage viewSize:(CGSize)viewSize {
     self.mMessage = alMessage;
     return self;
 }
 
--(void) dowloadRetryButtonAction
-{
+- (void) dowloadRetryButtonAction {
     [self.delegate downloadRetryButtonActionDelegate:(int)self.tag andMessage:self.mMessage];
 }
 
--(void)setupProgress{
+- (void)setupProgress{
 
 }
 
--(void)hidePlayButtonOnUploading
-{
+- (void)hidePlayButtonOnUploading {
     
 }
 
--(void)cancelAction{
+- (void)cancelAction {
 
 }
 
--(void)openUserChatVC
-{
+- (void)openUserChatVC {
     
 }
 
--(void)processForwardMessage
-{
+- (void)processForwardMessage {
     [self.delegate processForwardMessage:self.mMessage];
 }
 
 
--(void)processMessageReply
-{
+- (void)processMessageReply {
     [self.delegate processMessageReply:self.mMessage];
     
 }
 
--(void)processReplyOfChat:(ALMessage*)almessage andViewSize:(CGSize)viewSize
-{
+- (void)processReplyOfChat:(ALMessage*)almessage andViewSize:(CGSize)viewSize {
     
-    if(!almessage.isAReplyMessage)
-    {
+    if (!almessage.isAReplyMessage) {
         return;
     }
     
-    NSString * messageReplyId = [almessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
-    ALMessage * replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
+    NSString *messageReplyId = [almessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
+    ALMessage *replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
     
-    if(replyMessage == nil){
+    if (replyMessage == nil){
         return;
     }
     
@@ -220,13 +203,10 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     CGFloat replyWidthRequired = [self.replyUIView getWidthRequired:replyMessage andViewSize:viewSize];
     
     
-    if( (self.mBubleImageView.frame.size.width) > replyWidthRequired )
-    {
+    if ((self.mBubleImageView.frame.size.width) > replyWidthRequired) {
         replyWidthRequired = (self.mBubleImageView.frame.size.width);
         ALSLog(ALLoggerSeverityInfo, @"replyWidthRequired is less from parent one : %f", replyWidthRequired);
-    }
-    else
-    {
+    } else {
         replyWidthRequired = replyWidthRequired;
         ALSLog(ALLoggerSeverityInfo, @"replyWidthRequired is grater from parent one : %f", replyWidthRequired);
         
@@ -235,22 +215,21 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     CGFloat bubbleXposition = self.mBubleImageView.frame.origin.x +5;
     
     
-    if(almessage.groupId && almessage.isReceivedMessage)
-    {
+    if (almessage.groupId && almessage.isReceivedMessage) {
         self.replyParentView.frame =
         CGRectMake( bubbleXposition ,
                    self.mChannelMemberName.frame.origin.y + self.mChannelMemberName.frame.size.height,
                    replyWidthRequired-10,
                    60);
         
-    }else if(!almessage.groupId & !almessage.isSentMessage  ){
+    } else if (!almessage.groupId & !almessage.isSentMessage){
         self.replyParentView.frame =
         CGRectMake( bubbleXposition -1 ,
                    self.mBubleImageView.frame.origin.y+3 ,
                    replyWidthRequired-10,
                    60);
         
-    }else{
+    } else {
         self.replyParentView.frame =
         CGRectMake( bubbleXposition,
                    self.mBubleImageView.frame.origin.y +3,
@@ -270,13 +249,13 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     [self.replyParentView addSubview:self.replyUIView];
 }
 
--(void)tapGestureForReplyView:(id)sender{
+- (void)tapGestureForReplyView:(id)sender{
     
     [self.delegate scrollToReplyMessage:self.mMessage];
     
 }
 
--(NSString *)getMessageStatusIconName:(ALMessage *)alMessage {
+- (NSString *)getMessageStatusIconName:(ALMessage *)alMessage {
 
     switch (alMessage.status.intValue) {
         case DELIVERED_AND_READ :
@@ -298,20 +277,20 @@ static CGFloat const DATE_LABEL_SIZE = 12;
 }
 
 
--(BOOL)canBecomeFirstResponder {
+- (BOOL)canBecomeFirstResponder {
     return YES;
 }
 
--(void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
+- (void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
 
-    UIView * superView = [longPressGestureRecognizer.view superview];
-    UIView * gestureView = longPressGestureRecognizer.view;
+    UIView *superView = [longPressGestureRecognizer.view superview];
+    UIView *gestureView = longPressGestureRecognizer.view;
 
     if (!superView || !gestureView || !self.canBecomeFirstResponder) {
         return;
     }
 
-    UIMenuController * sharedMenuController =  [UIMenuController sharedMenuController] ;
+    UIMenuController *sharedMenuController =  [UIMenuController sharedMenuController] ;
 
     if (![gestureView canBecomeFirstResponder] ||
         sharedMenuController.isMenuVisible) {
@@ -321,16 +300,16 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     [gestureView becomeFirstResponder];
     [self processKeyBoardHideTap];
 
-    UIMenuItem * messageForwardMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
-    UIMenuItem * messageReplyMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
+    UIMenuItem *messageForwardMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+    UIMenuItem *messageReplyMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
 
     if ([self.mMessage.type isEqualToString:AL_IN_BOX]) {
 
-        UIMenuItem * messageReportMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"ReportMessageOption",
-                                                                                                                 [ALApplozicSettings getLocalizableName],
-                                                                                                                 [NSBundle mainBundle],
-                                                                                                                 @"Report", @"")
-                                                                        action:@selector(messageReport:)];
+        UIMenuItem *messageReportMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"ReportMessageOption",
+                                                                                                                [ALApplozicSettings getLocalizableName],
+                                                                                                                [NSBundle mainBundle],
+                                                                                                                @"Report", @"")
+                                                                       action:@selector(messageReport:)];
 
         [sharedMenuController setMenuItems: @[messageForwardMenuItem,
                                               messageReplyMenuItem,
@@ -338,9 +317,9 @@ static CGFloat const DATE_LABEL_SIZE = 12;
 
     } else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]) {
 
-        UIMenuItem * deleteForAllMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"deleteForAll", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Delete for all", @"") action:@selector(deleteMessageForAll:)];
+        UIMenuItem *deleteForAllMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"deleteForAll", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Delete for all", @"") action:@selector(deleteMessageForAll:)];
 
-        UIMenuItem * msgInfoMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
+        UIMenuItem *msgInfoMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
 
         [sharedMenuController setMenuItems: @[msgInfoMenuItem,
                                               messageReplyMenuItem,
@@ -352,7 +331,7 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     [sharedMenuController setMenuVisible:YES animated:YES];
 }
 
--(BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
 
     if ([self.mMessage isSentMessage] &&
         action == @selector(messageReport:)) {
@@ -363,7 +342,7 @@ static CGFloat const DATE_LABEL_SIZE = 12;
         return action == @selector(messageReport:);
     }
 
-    /// Check only for sent message 
+    /// Check only for sent message
     if (![self.mMessage isMessageSentToServer]
         && [self.mMessage isSentMessage]) {
         return action == @selector(delete:);
@@ -387,40 +366,40 @@ static CGFloat const DATE_LABEL_SIZE = 12;
     return isActionMenuOptionEnabled;
 }
 
--(BOOL)isMessageReplyMenuEnabled:(SEL) action {
+- (BOOL)isMessageReplyMenuEnabled:(SEL) action {
     return ([ALApplozicSettings isReplyOptionEnabled] &&
             action == @selector(messageReply:));
 }
 
--(BOOL)isForwardMenuEnabled:(SEL) action {
+- (BOOL)isForwardMenuEnabled:(SEL) action {
     return ([ALApplozicSettings isForwardOptionEnabled] &&
             action == @selector(messageForward:));
 }
 
--(BOOL)isMessageDeleteForAllMenuEnabled:(SEL) action {
+- (BOOL)isMessageDeleteForAllMenuEnabled:(SEL) action {
     return ([ALApplozicSettings isMessageDeleteForAllEnabled] &&
             action == @selector(deleteMessageForAll:));
 }
 
--(void) messageForward:(id)sender {
+- (void)messageForward:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self processForwardMessage];
 }
 
--(void) processKeyBoardHideTap {
+- (void) processKeyBoardHideTap {
     [self.delegate handleTapGestureForKeyBoard];
 }
 
--(void) messageReply:(id)sender {
+- (void) messageReply:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Message reply option is pressed");
     [self processMessageReply];
 }
 
--(void) messageReport:(id)sender {
+- (void) messageReport:(id)sender {
     [self.delegate messageReport:self.mMessage];
 }
 
--(void) delete:(id)sender {
+- (void) delete:(id)sender {
     //UI
     ALSLog(ALLoggerSeverityInfo, @"message to deleteUI %@",self.mMessage.message);
     [self.delegate deleteMessageFromView:self.mMessage];
@@ -441,18 +420,15 @@ static CGFloat const DATE_LABEL_SIZE = 12;
 
     [msgInfoVC setMessage:self.mMessage andHeaderHeight:self.mBubleImageView.frame.size.height withCompletionHandler:^(NSError *error) {
 
-        if(!error)
-        {
+        if (!error) {
             [self.delegate loadViewForMedia:weakObj];
-        }
-        else
-        {
+        } else {
             [self.delegate showAnimationForMsgInfo:NO];
         }
     }];
 }
 
--(void)deleteMessageForAll:(id)sender {
+- (void)deleteMessageForAll:(id)sender {
     [self.delegate deleteMessasgeforAll:self.mMessage];
 }
 

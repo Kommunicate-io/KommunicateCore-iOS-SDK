@@ -10,10 +10,10 @@
 
 @interface ALUserDetailListFeed : ALJson
 
-@property (nonatomic, strong) NSMutableArray * userIdList;
+@property (nonatomic, strong) NSMutableArray *userIdList;
 
 @property (nonatomic) BOOL contactSync;
 
--(void)setArray:(NSMutableArray *)array;
+- (void)setArray:(NSMutableArray *)array;
 
 @end

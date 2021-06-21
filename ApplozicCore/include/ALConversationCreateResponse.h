@@ -12,6 +12,6 @@
 
 @interface ALConversationCreateResponse : ALAPIResponse
 
-@property (nonatomic, strong) ALConversationProxy * alConversationProxy;
--(instancetype)initWithJSONString :(NSString *)JSONString;
+@property (nonatomic, strong) ALConversationProxy *alConversationProxy;
+- (instancetype)initWithJSONString:(NSString *)JSONString;
 @end

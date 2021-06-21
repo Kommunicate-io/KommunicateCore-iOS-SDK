@@ -22,9 +22,9 @@ typedef enum {
 @property (nonatomic, strong) NSString *baseRoomId;
 @property (nonatomic) BOOL callForAudio;
 
-+(BOOL)chatRoomEngage;
-+(void)setChatRoomEngage:(BOOL)flag;
--(void)dismissAVViewController:(BOOL)animated;
--(void)handleDataConnectivity;
++ (BOOL)chatRoomEngage;
++ (void)setChatRoomEngage:(BOOL)flag;
+- (void)dismissAVViewController:(BOOL)animated;
+- (void)handleDataConnectivity;
 
 @end

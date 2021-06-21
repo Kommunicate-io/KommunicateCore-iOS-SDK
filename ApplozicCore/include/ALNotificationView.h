@@ -11,29 +11,28 @@
 
 @interface ALNotificationView : UILabel
 
+@property (retain ,nonatomic) NSString *contactId;
 
-@property (retain ,nonatomic) NSString * contactId;
+@property (retain ,nonatomic) NSString *checkContactId;
 
-@property (retain ,nonatomic) NSString * checkContactId;
+@property (retain, nonatomic) NSNumber *groupId;
 
-@property (retain, nonatomic) NSNumber * groupId;
+@property (retain, nonatomic) NSNumber *conversationId;
 
-@property (retain, nonatomic) NSNumber * conversationId;
+@property (retain, nonatomic) ALMessage *alMessageObject;
 
--(instancetype)initWithAlMessage:(ALMessage*)alMessage  withAlertMessage: (NSString *) alertMessage;
+- (instancetype)initWithAlMessage:(ALMessage *)alMessage withAlertMessage: (NSString *)alertMessage;
 
--(void)showNativeNotificationWithcompletionHandler:(void (^)(BOOL))handler;
+- (void)showNativeNotificationWithcompletionHandler:(void (^)(BOOL))handler;
 
--(void)showGroupLeftMessage;
+- (void)showGroupLeftMessage;
 
-+(void)showLocalNotification:(NSString *)text;
++ (void)showLocalNotification:(NSString *)text;
 
-@property (retain, nonatomic) ALMessage * alMessageObject;
+- (void)noDataConnectionNotificationView;
 
--(void)noDataConnectionNotificationView;
-
-+(void)showNotification:(NSString *)message;
-+(void)showPromotionalNotifications:(NSString *)text;
++ (void)showNotification:(NSString *)message;
++ (void)showPromotionalNotifications:(NSString *)text;
 
 
 @end

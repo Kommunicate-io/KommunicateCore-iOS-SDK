@@ -9,18 +9,16 @@
 #import "ALGroupUser.h"
 
 @implementation ALGroupUser
-    
--(id)initWithDictonary:(NSDictionary *)messageDictonary
-    {
-        [self parseMessage:messageDictonary];
-        return self;
-    }
-    
--(void)parseMessage:(id) messageJson
-    {
-        self.groupRole = [self getNSNumberFromJsonValue:messageJson[@"groupRole"]];
-        self.userId = [self getStringFromJsonValue:messageJson[@"userId"]];
-    }
+
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
+    [self parseMessage:messageDictonary];
+    return self;
+}
+
+- (void)parseMessage:(id) messageJson {
+    self.groupRole = [self getNSNumberFromJsonValue:messageJson[@"groupRole"]];
+    self.userId = [self getStringFromJsonValue:messageJson[@"userId"]];
+}
 
 
 @end

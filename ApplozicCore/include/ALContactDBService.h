@@ -17,50 +17,49 @@
 
 @interface ALContactDBService : NSObject
 
--(BOOL)purgeListOfContacts:(NSArray *)contacts;
+- (BOOL)purgeListOfContacts:(NSArray *)contacts;
 
--(BOOL)purgeContact:(ALContact *)contact;
+- (BOOL)purgeContact:(ALContact *)contact;
 
--(BOOL)purgeAllContact;
+- (BOOL)purgeAllContact;
 
--(BOOL)updateListOfContacts:(NSArray *)contacts;
+- (BOOL)updateListOfContacts:(NSArray *)contacts;
 
--(BOOL)updateContact:(ALContact *)contact;
+- (BOOL)updateContact:(ALContact *)contact;
 
--(BOOL)addListOfContacts:(NSArray *)contacts;
+- (BOOL)addListOfContacts:(NSArray *)contacts;
 
--(BOOL)addContact:(ALContact *)userContact;
+- (BOOL)addContact:(ALContact *)userContact;
 
--(void) updateConnectedStatus: (NSString *) userId lastSeenAt:(NSNumber *) lastSeenAt  connected: (BOOL) connected;
+- (void)updateConnectedStatus:(NSString *)userId lastSeenAt:(NSNumber *)lastSeenAt connected:(BOOL)connected;
 
-- (DB_CONTACT *)getContactByKey:(NSString *) key value:(NSString*) value;
+- (DB_CONTACT *)getContactByKey:(NSString *)key value:(NSString *)value;
 
-- (ALContact *)loadContactByKey:(NSString *) key value:(NSString*) value;
+- (ALContact *)loadContactByKey:(NSString *)key value:(NSString *)value;
 
--(void)addUserDetails:(NSMutableArray *)userDetails;
+- (void)addUserDetails:(NSMutableArray *)userDetails;
 
+- (BOOL)updateUserDetail:(ALUserDetail *)userDetail;
 
--(BOOL)updateUserDetail:(ALUserDetail *)userDetail;
+- (BOOL)updateLastSeenDBUpdate:(ALUserDetail *)userDetail;
 
--(BOOL)updateLastSeenDBUpdate:(ALUserDetail *)userDetail;
-
--(NSUInteger)markConversationAsDeliveredAndRead:(NSString*)contactId;
+- (NSUInteger)markConversationAsDeliveredAndRead:(NSString *)contactId;
 - (NSArray *)getUnreadMessagesForIndividual:(NSString *)contactId;
--(BOOL)setBlockUser:(NSString *)userId andBlockedState:(BOOL)flag;
--(BOOL)setBlockByUser:(NSString *)userId andBlockedByState:(BOOL)flag;
--(void)blockAllUserInList:(NSMutableArray *)userList;
--(void)blockByUserInList:(NSMutableArray *)userList;
--(NSMutableArray *)getListOfBlockedUsers;
+- (BOOL)setBlockUser:(NSString *)userId andBlockedState:(BOOL)flag;
+- (BOOL)setBlockByUser:(NSString *)userId andBlockedByState:(BOOL)flag;
+- (void)blockAllUserInList:(NSMutableArray *)userList;
+- (void)blockByUserInList:(NSMutableArray *)userList;
+- (NSMutableArray *)getListOfBlockedUsers;
 
--(BOOL)setUnreadCountDB:(ALContact*)contact;
+- (BOOL)setUnreadCountDB:(ALContact *)contact;
 
--(NSMutableArray*)updateFilteredContacts:(ALContactsResponse *)contactsResponse withLoadContact:(BOOL)isLoadContactFromDb;
+- (NSMutableArray *)updateFilteredContacts:(ALContactsResponse *)contactsResponse withLoadContact:(BOOL)isLoadContactFromDb;
 
--(NSMutableArray *)getAllContactsFromDB;
--(NSNumber *)getOverallUnreadCountForContactsFromDB;
--(BOOL)isUserDeleted:(NSString *)userId;
--(void)addUserDetailsWithoutUnreadCount:(NSMutableArray *)userDetails;
--(ALUserDetail *)updateMuteAfterTime:(NSNumber*)notificationAfterTime andUserId:(NSString*)userId;
--(NSMutableArray *)addMuteUserDetailsWithDelegate:(id<ApplozicUpdatesDelegate>)delegate withNSDictionary :(NSDictionary *)jsonNSDictionary;
--(BOOL)addOrUpdateMetadataWithUserId:(NSString *) userId withMetadataKey:(NSString *) key withMetadataValue:(NSString *) value;
+- (NSMutableArray *)getAllContactsFromDB;
+- (NSNumber *)getOverallUnreadCountForContactsFromDB;
+- (BOOL)isUserDeleted:(NSString *)userId;
+- (void)addUserDetailsWithoutUnreadCount:(NSMutableArray *)userDetails;
+- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
+- (NSMutableArray *)addMuteUserDetailsWithDelegate:(id<ApplozicUpdatesDelegate>)delegate withNSDictionary:(NSDictionary *)jsonNSDictionary;
+- (BOOL)addOrUpdateMetadataWithUserId:(NSString *)userId withMetadataKey:(NSString *)key withMetadataValue:(NSString *)value;
 @end

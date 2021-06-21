@@ -12,18 +12,15 @@
 
 @interface ALAppLocalNotifications : NSObject
 
-+(ALAppLocalNotifications *)appLocalNotificationHandler;
-
--(void)dataConnectionNotificationHandler;
-
--(void)reachabilityChanged:(NSNotification*)note;
-
-@property(strong) ALReachability * googleReach;
-@property(strong) ALReachability * localWiFiReach;
-@property(strong) ALReachability * internetConnectionReach;
+@property(strong) ALReachability *googleReach;
+@property(strong) ALReachability *localWiFiReach;
+@property(strong) ALReachability *internetConnectionReach;
 @property (nonatomic) BOOL flag;
 
--(void)proactivelyConnectMQTT;
--(void)proactivelyDisconnectMQTT;
++ (ALAppLocalNotifications *)appLocalNotificationHandler;
+- (void)dataConnectionNotificationHandler;
+- (void)reachabilityChanged:(NSNotification *)note;
+- (void)proactivelyConnectMQTT;
+- (void)proactivelyDisconnectMQTT;
 
 @end

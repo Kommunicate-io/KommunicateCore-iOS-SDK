@@ -13,14 +13,12 @@
 
 @implementation ALConversationProxy
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary
-{
+- (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];
     return self;
 }
 
-
--(ALConversationProxy *) convertAlConversationProxy:(DB_ConversationProxy *) dbConversation{
+- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
     ALConversationProxy * alConversationProxy = [[ALConversationProxy alloc] init];
     
@@ -35,10 +33,7 @@
     return alConversationProxy;
 }
 
-
-
--(void)parseMessage:(id) messageJson
-{
+- (void)parseMessage:(id)messageJson {
     self.created = [self getBoolFromJsonValue:messageJson[@"created"]];
     self.Id = [self getNSNumberFromJsonValue:messageJson[@"id"]];
     self.topicId = [self getStringFromJsonValue:messageJson[@"topicId"]];
@@ -47,8 +42,8 @@
     self.topicDetailJson =[self getStringFromJsonValue:messageJson[@"topicDetail"]];
 }
 
--(ALTopicDetail*)getTopicDetail {
-    if(!self.topicDetailJson){
+- (ALTopicDetail *)getTopicDetail {
+    if (!self.topicDetailJson) {
         return nil;
     }
 
@@ -60,9 +55,9 @@
     return (self.topicDetailJson)?[[ALTopicDetail alloc] initWithDictonary:json]: nil;
 }
 
-+(NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy{
++ (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy {
     
-    NSMutableDictionary * requestDict = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *requestDict = [[NSMutableDictionary alloc] init];
     [requestDict setValue:alConversationProxy.topicId forKey:@"topicId"];
     [requestDict setValue:alConversationProxy.userId forKey:@"userId"];
     [requestDict setValue:alConversationProxy.topicDetailJson forKey:@"topicDetail"];
@@ -72,35 +67,31 @@
     
     [requestDict setValue:alConversationProxy.fallBackTemplatesListArray forKey:@"fallBackTemplatesList"];
     return requestDict;
- 
+
 }
 
 
 
--(void)setSenderSMSFormat:(NSString*)senderFormatString{
+- (void)setSenderSMSFormat:(NSString *)senderFormatString {
     
     self.fallBackTemplateForSENDER = [[NSMutableDictionary alloc] init];
     self.fallBackTemplateForSENDER = [self SMSFormatWithUserID:[ALUserDefaultsHandler getUserId]
                                                      andString:senderFormatString];
 }
 
--(void)setReceiverSMSFormat:(NSString*)recieverFormatString{
+- (void)setReceiverSMSFormat:(NSString *)recieverFormatString {
     self.fallBackTemplateForRECEIVER = [[NSMutableDictionary alloc] init];
     self.fallBackTemplateForRECEIVER = [self SMSFormatWithUserID:self.userId
                                                        andString:recieverFormatString];
 }
 
--(NSMutableDictionary *)SMSFormatWithUserID:(NSString*)userID andString:(NSString*)string{
+- (NSMutableDictionary *)SMSFormatWithUserID:(NSString *)userID andString:(NSString *)string {
     
-    NSMutableDictionary * fallBackTemplatesListDictionary = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *fallBackTemplatesListDictionary = [[NSMutableDictionary alloc] init];
     [fallBackTemplatesListDictionary setValue:string forKey:@"fallBackTemplate"];
     [fallBackTemplatesListDictionary setValue:userID forKey:@"userId"];
     
     return fallBackTemplatesListDictionary;
 }
-
-
-
-
 
 @end

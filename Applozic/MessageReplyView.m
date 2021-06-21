@@ -35,23 +35,19 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
  @param superView parent views
  @return retruns UIViews
  */
--(UIView*)populateUI:(ALMessage*)alMessage withSuperView:(UIView*)superView
-{
+- (UIView*)populateUI:(ALMessage *)alMessage withSuperView:(UIView *)superView {
     
     NSString * messageReplyId = [alMessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
-  //  NSString *attachmentType;
-    if(messageReplyId)
-    {
+    if (messageReplyId) {
         
         ALMessage * replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
         
         CGRect frame = superView.frame;
         
-        if(replyMessage.fileMeta || replyMessage.isLocationMessage || replyMessage.isContactMessage)
-        {
+        if (replyMessage.fileMeta || replyMessage.isLocationMessage || replyMessage.isContactMessage) {
             [self buildAttachentPreview:frame];
             [superView addSubview:self.attachmentImage];
-        }else{
+        } else {
             [self.attachmentImage setHidden:YES];
         }
         [self buildDisplayNameView:frame];
@@ -72,46 +68,45 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
  @param viewSize  viewWidth
  @return returns total width required
  */
--(CGFloat) getWidthRequired:(ALMessage *)replyMessage andViewSize:(CGSize)viewSize
-{
+- (CGFloat)getWidthRequired:(ALMessage *)replyMessage andViewSize:(CGSize)viewSize {
     
-  
-    if( (replyMessage.fileMeta && replyMessage.message.length==0) ||  replyMessage.isContactMessage || replyMessage.isLocationMessage)
-    {
+
+    if ((replyMessage.fileMeta &&
+         replyMessage.message.length == 0) ||
+        replyMessage.isContactMessage ||
+        replyMessage.isLocationMessage) {
         replyMessage.message = [self getMessageText:replyMessage];
     }
     
-    CGFloat maxWidth =  viewSize.width-(115);
+    CGFloat maxWidth =  viewSize.width- (115);
     
-    if(replyMessage.fileMeta)
-    {
-        maxWidth = viewSize.width-(115) -( REPLY_VIEW_PADDING + ATTACHMENT_PREVIEW_WIDTH);
+    if (replyMessage.fileMeta) {
+        maxWidth = viewSize.width- (115) - ( REPLY_VIEW_PADDING + ATTACHMENT_PREVIEW_WIDTH);
     }
     CGSize size = [ALUtilityClass getSizeForText:replyMessage.message maxWidth:maxWidth
                                             font:FONT_NAME
                                         fontSize:FONT_SIZE];
     ALContact * senderContact = [[ALContactService new] loadContactByKey:@"userId" value:replyMessage.to];
     
-    if(replyMessage.isSentMessage)
-    {
+    if (replyMessage.isSentMessage) {
         senderContact.displayName = SENT_MESSAGE_DISPLAY_NAME;
     }
     
     
     CGSize contactNameSize = [ALUtilityClass getSizeForText:senderContact.getDisplayName maxWidth:maxWidth
-                              font:FONT_NAME
-                          fontSize:15];
+                                                       font:FONT_NAME
+                                                   fontSize:15];
     
     
-    if(contactNameSize.width > size.width)
-    {
+    if (contactNameSize.width > size.width) {
         size = contactNameSize;
-         size.width  =  size.width +10;
+        size.width  =  size.width +10;
     }
     
     
-    if(replyMessage.fileMeta || replyMessage.isLocationMessage || replyMessage.isContactMessage)
-    {
+    if (replyMessage.fileMeta ||
+        replyMessage.isLocationMessage ||
+        replyMessage.isContactMessage) {
         size.width = size.width + 2*REPLY_VIEW_PADDING + ATTACHMENT_PREVIEW_WIDTH;
     }
     return size.width;
@@ -124,10 +119,9 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
 
  @param frame frame where UILabel should be added
  */
--(void)buildMessageTextView: (CGRect)frame
-{
+- (void)buildMessageTextView:(CGRect)frame {
     self.replyMessageText = [[UILabel alloc]init];
-    self.replyMessageText.numberOfLines =3;
+    self.replyMessageText.numberOfLines = 3;
     [self.replyMessageText setFont:[UIFont fontWithName:FONT_NAME size:FONT_SIZE]];
     
     
@@ -143,12 +137,11 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
  
  @param frame frame where UILabel should be added
  */
--(void)buildAttachentPreview: (CGRect)frame
-{
-    self.attachmentImage =  [[UIImageView alloc] initWithFrame:CGRectMake(frame.size.width - ATTACHMENT_PREVIEW_WIDTH,
-                                                                          0,
-                                                                          ATTACHMENT_PREVIEW_WIDTH,
-                                                                          frame.size.height)];
+- (void)buildAttachentPreview: (CGRect)frame {
+    self.attachmentImage = [[UIImageView alloc] initWithFrame:CGRectMake(frame.size.width - ATTACHMENT_PREVIEW_WIDTH,
+                                                                         0,
+                                                                         ATTACHMENT_PREVIEW_WIDTH,
+                                                                         frame.size.height)];
     
     
     self.attachmentImage.clipsToBounds = YES;
@@ -160,8 +153,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
  
  @param frame frame where UILabel should be added
  */
--(void)buildDisplayNameView: (CGRect)frame
-{
+- (void)buildDisplayNameView:(CGRect)frame {
     self.contactName = [[UILabel alloc]init];
     self.contactName.frame =  CGRectMake(REPLY_VIEW_PADDING,
                                          REPLY_VIEW_PADDING,
@@ -170,107 +162,88 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
     [self.contactName setFont:[UIFont fontWithName:FONT_NAME size:15]];
 }
 
--(void)pouplateValues:(ALMessage*)replyMessage
-{
+- (void)pouplateValues:(ALMessage *)replyMessage {
     replyMessage.message = [self getMessageText:replyMessage];
     
-    if(replyMessage.isSentMessage)
-    {
+    if (replyMessage.isSentMessage) {
         self.contactName.text = SENT_MESSAGE_DISPLAY_NAME;
-    }
-    else
-    {
+    } else {
         ALContact * senderContact = [[ALContactService new] loadContactByKey:@"userId" value:replyMessage.to];
         self.contactName.text =senderContact.getDisplayName;
     }
     
     self.replyMessageText.text = replyMessage.message;
     
-    if(replyMessage.isContactMessage)
-    {
+    if (replyMessage.isContactMessage) {
         [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_person.png"]];
-        
-    }
-    else if(replyMessage.isLocationMessage)
-    {
-        if([ALDataNetworkConnection checkDataNetworkAvailable])
-        {
+    } else if (replyMessage.isLocationMessage) {
+        if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
             NSString * finalURl = [ALUtilityClass getLocationUrl:replyMessage size:self.attachmentImage.frame];
             NSURL *url = [NSURL URLWithString:finalURl]  ;
             [self.attachmentImage sd_setImageWithURL:url];
-        }
-        else
-        {
+        } else {
             [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_map_no_data.png"]];
         }
         
-    }
-    
-    else if(replyMessage.fileMeta)
-    {
-        if(replyMessage.isDocumentMessage){
-            
+    } else if (replyMessage.fileMeta) {
+        if (replyMessage.isDocumentMessage) {
             [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
             return;
         }
-        if([replyMessage.fileMeta.contentType hasPrefix:@"audio"])
-        {
+        if ([replyMessage.fileMeta.contentType hasPrefix:@"audio"]) {
             [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_mic.png"]];
             return;
-        }else if([replyMessage.fileMeta.contentType hasPrefix:@"video"]){
+        } else if ([replyMessage.fileMeta.contentType hasPrefix:@"video"]) {
 
-            if(replyMessage.imageFilePath){
-
+            if (replyMessage.imageFilePath) {
                 NSURL * theUrl;
                 NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 
                 NSString * filePath = [docDirPath stringByAppendingPathComponent:replyMessage.imageFilePath];
-                if(![[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
                     NSURL *docAppGroupURL = [ALUtilityClass getAppsGroupDirectory];
 
-                    if(docAppGroupURL != nil){
+                    if (docAppGroupURL != nil) {
                         [docAppGroupURL URLByAppendingPathComponent:replyMessage.imageFilePath];
                         theUrl = [NSURL fileURLWithPath:docAppGroupURL.path];
                     }
-                }else{
+                } else {
                     theUrl = [NSURL fileURLWithPath:filePath];
                 }
 
                 [ALUIUtilityClass subVideoImage:theUrl withCompletion:^(UIImage *image) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
                         [self.attachmentImage setImage:image];
                         return;
                     });
                 }];
-            }else{
+            } else {
                 [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_video.png"]];
             }
             return;
-        }else if([replyMessage.fileMeta.contentType hasPrefix:@"image"]){
-            if ( replyMessage.imageFilePath != NULL)
-            {
+        } else if ([replyMessage.fileMeta.contentType hasPrefix:@"image"]) {
+            if (replyMessage.imageFilePath != NULL) {
 
                 NSURL * theUrl;
                 NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 
                 NSString * filePath = [docDirPath stringByAppendingPathComponent:replyMessage.imageFilePath];
-                if(![[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
                     NSURL *docAppGroupURL = [ALUtilityClass getAppsGroupDirectory];
 
-                    if(docAppGroupURL != nil){
-                      [docAppGroupURL URLByAppendingPathComponent:replyMessage.imageFilePath];
+                    if (docAppGroupURL != nil) {
+                        [docAppGroupURL URLByAppendingPathComponent:replyMessage.imageFilePath];
                         theUrl = [NSURL fileURLWithPath:docAppGroupURL.path];
                     }
-                }else{
+                } else {
                     theUrl = [NSURL fileURLWithPath:filePath];
                 }
 
                 [self setImage:theUrl];
-            }
-            else if (replyMessage.fileMeta.thumbnailBlobKey) {
+            } else if (replyMessage.fileMeta.thumbnailBlobKey) {
                 ALMessageClientService * messageClientService = [[ALMessageClientService alloc]init];
                 [messageClientService downloadImageUrl:replyMessage.fileMeta.thumbnailBlobKey withCompletion:^(NSString *fileURL, NSError *error) {
-                    if(error)
+                    if (error)
                     {
                         ALSLog(ALLoggerSeverityError, @"ERROR GETTING DOWNLOAD URL : %@", error);
                         return;
@@ -282,7 +255,7 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
                 NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath: replyMessage.fileMeta.thumbnailFilePath];
                 NSString *filePath = documentDirectory.path;
 
-                if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+                if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
                     [self setImage:[NSURL fileURLWithPath:filePath]];
                 } else {
                     [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
@@ -292,42 +265,31 @@ static NSString *const SENT_MESSAGE_DISPLAY_NAME = @"You";
             } else {
                 [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"ic_action_camera.png"]];
             }
-        }else{
+        } else {
             [self.attachmentImage setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"documentReceive.png"]];
         }
     }
 
 }
 
--(void) setImage:(NSURL *) url{
+- (void) setImage:(NSURL *) url{
     [self.attachmentImage sd_setImageWithURL:url];
 }
 
--(NSString*)getMessageText:(ALMessage*)replyMessage{
- 
-    if(replyMessage.isLocationMessage)
-    {
+- (NSString*)getMessageText:(ALMessage*)replyMessage {
+
+    if (replyMessage.isLocationMessage) {
         return @"Location";
-    }
-    else if(replyMessage.message.length >0 )
-    {
+    } else if (replyMessage.message.length >0 ) {
         return replyMessage.message;
     }
-    if(replyMessage.isContactMessage)
-    {
-       return @"Contact";
-        
-    }
-    else if([replyMessage.fileMeta.contentType hasPrefix:@"audio"])
-    {
+    if (replyMessage.isContactMessage) {
+        return @"Contact";
+    } else if ([replyMessage.fileMeta.contentType hasPrefix:@"audio"]) {
         return @"Audio";
-    }
-    else if([replyMessage.fileMeta.contentType hasPrefix:@"video"])
-    {
+    } else if ([replyMessage.fileMeta.contentType hasPrefix:@"video"]) {
         return @"Video";
-    }
-    else if([replyMessage.fileMeta.contentType hasPrefix:@"image"])
-    {
+    } else if ([replyMessage.fileMeta.contentType hasPrefix:@"image"]) {
         return @"Image";
     }
     return @"Attachment";

@@ -14,7 +14,7 @@
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic) short status;
 
--(id)initWithDictonary:(NSDictionary *)messageDictonary;
--(void)parseMessage:(id) messageJson;
+- (id)initWithDictonary:(NSDictionary *)messageDictonary;
+- (void)parseMessage:(id)messageJson;
 
 @end

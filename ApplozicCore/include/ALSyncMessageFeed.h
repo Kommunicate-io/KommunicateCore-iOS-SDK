@@ -15,7 +15,7 @@
 
 @property(nonatomic,copy) NSString *currentSyncTime;
 
-@property(nonatomic) NSMutableArray * messagesList;
+@property(nonatomic) NSMutableArray *messagesList;
 
 @property(nonatomic) NSMutableArray *deliveredMessageKeys;
 

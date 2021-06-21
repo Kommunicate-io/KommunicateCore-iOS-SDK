@@ -18,21 +18,21 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
 @implementation ALConversationClientService
 
 
-+(void)createConversation:(ALConversationProxy*)alConversationProxy
-           withCompletion:(void(^)(NSError *error, ALConversationCreateResponse *response))completion {
-
-    NSString * theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CONVERSATION_URL];
++ (void)createConversation:(ALConversationProxy *)alConversationProxy
+            withCompletion:(void(^)(NSError *error, ALConversationCreateResponse *response))completion {
     
-    NSDictionary * dictionaryToSend = [NSDictionary dictionaryWithDictionary:[ALConversationProxy getDictionaryForCreate:alConversationProxy]];
-
+    NSString *theUrlString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CONVERSATION_URL];
+    
+    NSDictionary *dictionaryToSend = [NSDictionary dictionaryWithDictionary:[ALConversationProxy getDictionaryForCreate:alConversationProxy]];
+    
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionaryToSend options:0 error:&error];
     NSString *theParamString = [[NSString alloc] initWithData:postdata encoding: NSUTF8StringEncoding];
     NSMutableURLRequest *theRequest = [ALRequestHandler createPOSTRequestWithUrlString:theUrlString paramString:theParamString];
     [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"CREATE_CONVERSATION" WithCompletionHandler:^(id theJson, NSError *theError) {
-
+        
         ALConversationCreateResponse *response = nil;
-
+        
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CREATE_CONVERSATION %@", theError);
         } else {
@@ -43,14 +43,14 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
     }];
 }
 
-+(void)fetchTopicDetails:(NSNumber *)alConversationProxyID
-           andCompletion:(void (^)(NSError *, ALAPIResponse *))completion {
++ (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
+            andCompletion:(void (^)(NSError *, ALAPIResponse *))completion {
     
-    NSString * theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL, FETCH_CONVERSATION_DETAILS];
-    NSString * theParamString = [NSString stringWithFormat:@"id=%@",alConversationProxyID];
+    NSString *theUrlString = [NSString stringWithFormat:@"%@%@",KBASE_URL, FETCH_CONVERSATION_DETAILS];
+    NSString *theParamString = [NSString stringWithFormat:@"id=%@",alConversationProxyID];
     
     NSMutableURLRequest *theRequest =  [ALRequestHandler createGETRequestWithUrlString:theUrlString paramString:theParamString];
-
+    
     [ALResponseHandler authenticateAndProcessRequest:theRequest andTag:@"FETCH_TOPIC_DETAILS" WithCompletionHandler:^(id theJson, NSError *theError) {
         
         ALAPIResponse *response = nil;

@@ -15,10 +15,10 @@
 
 + (SearchResultCache *) shared;
 
--(void) saveChannels: (NSMutableArray<ALChannel *> *) channels;
--(void) saveUserDetails: (NSMutableArray<ALUserDetail *> *) userDetails;
+- (void)saveChannels:(NSMutableArray<ALChannel *> *)channels;
+- (void)saveUserDetails:(NSMutableArray<ALUserDetail *> *)userDetails;
 
--(ALChannel *) getChannelWithId: (NSNumber *) key;
--(ALContact *) getContactWithId: (NSString *) key;
+- (ALChannel *)getChannelWithId:(NSNumber *)key;
+- (ALContact *)getContactWithId:(NSString *)key;
 
 @end

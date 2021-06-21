@@ -20,24 +20,22 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 @interface ALBaseViewController ()
 
-@property (nonatomic,retain) UIButton * rightViewButton;
--(void)parseRestrictedWordFile;
+@property (nonatomic,retain) UIButton *rightViewButton;
+- (void)parseRestrictedWordFile;
 
 @end
 
-@implementation ALBaseViewController
-{
+@implementation ALBaseViewController {
     CGFloat typingIndicatorHeight;
     CGRect tempFrame;
     
     CGRect keyboardEndFrame;
     CGFloat navigationWidth;
     int paddingForTextMessageViewHeight;
-    ALApplicationInfo * applicationInfo;
-    ALRegisterUserClientService * registerUserClientService;
+    ALApplicationInfo *applicationInfo;
+    ALRegisterUserClientService *registerUserClientService;
 }
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     [self setUpTableView];
@@ -45,17 +43,9 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     
     self.sendMessageTextView.clipsToBounds = YES;
     self.sendMessageTextView.layer.cornerRadius = sendTextViewCornerRadius;
-//    self.sendMessageTextView.frame.size.height/5;
-    
+
     self.sendMessageTextView.textContainer.lineBreakMode = NSLineBreakByCharWrapping;
-//    self.sendMessageTextView.textContainerInset = UIEdgeInsetsMake(self.attachmentOutlet.frame.origin.x, // Top
-//                                                                   self.attachmentOutlet.frame.size.width,// Left
-//                                                                   self.attachmentOutlet.frame.origin.y, // Bottom
-//                                                                   self.attachmentOutlet.frame.size.width/4);   // Right
     self.sendMessageTextView.delegate = self;
-/*    self.placeHolderTxt = @"Write a Message...";
-    self.sendMessageTextView.text = self.placeHolderTxt;
-    */
     self.placeHolderColor = [ALApplozicSettings getPlaceHolderColor];
     self.sendMessageTextView.textColor = self.placeHolderColor;
     self.sendMessageTextView.backgroundColor = [ALApplozicSettings getMsgTextViewBGColor];
@@ -85,17 +75,15 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     if ([applicationInfo isChatSuspended]) {
         registerUserClientService = [[ALRegisterUserClientService alloc] init];
         [registerUserClientService syncAccountStatusWithCompletion:^(ALRegistrationResponse *response, NSError *error) {
-            if(error || !response.isRegisteredSuccessfully) {
+            if (error || !response.isRegisteredSuccessfully) {
                 ALSLog(ALLoggerSeverityError, @"Failed to sync the account status");
             }
         }];
     }
 }
 
--(void)parseRestrictedWordFile
-{
-    if(![ALApplozicSettings getMessageAbuseMode])
-    {
+- (void)parseRestrictedWordFile {
+    if (![ALApplozicSettings getMessageAbuseMode]) {
         return;
     }
     
@@ -106,15 +94,13 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     NSError *error = nil;
     NSString *fileString = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
     ALSLog(ALLoggerSeverityError, @"ERROR(IF-ANY) WHILE IMPORT WORD FILE :: %@",error.description);
-    if (!error)
-    {
+    if (!error) {
         self.wordArray = [NSArray arrayWithArray:[fileString componentsSeparatedByString:@","]];
     }
 }
 
--(void)setUpTableView
-{
-    UIButton * mLoadEarlierMessagesButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+- (void)setUpTableView {
+    UIButton *mLoadEarlierMessagesButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     mLoadEarlierMessagesButton.frame = CGRectMake(self.view.frame.size.width/2-90, 15, 180, 30);
     [mLoadEarlierMessagesButton setTitle:@"Load Earlier" forState:UIControlStateNormal];
     [mLoadEarlierMessagesButton setBackgroundColor:[UIColor whiteColor]];
@@ -125,12 +111,11 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 }
 
--(void)setUpTheming
-{
+- (void)setUpTheming {
     
-    UIBarButtonItem * barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton]];
-    UIBarButtonItem * refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                                    target:self action:@selector(refreshTable:)];
+    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self setCustomBackButton]];
+    UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                                                   target:self action:@selector(refreshTable:)];
     
     self.callButton = [[UIBarButtonItem alloc] initWithCustomView:[self customCallButtonView]];
     self.closeButton = [[UIBarButtonItem alloc] initWithCustomView:[self customCloseButtonView]];
@@ -140,31 +125,27 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
         self.videoCallButton = [[UIBarButtonItem alloc] initWithCustomView:[self videoCallButtonUIView]];
     }
     
-    if(self.individualLaunch)
-    {
+    if (self.individualLaunch) {
         [self.navigationItem setLeftBarButtonItem:barButtonItem];
     }
     
     self.navRightBarButtonItems = [NSMutableArray new];
     
 
-    if(![ALApplozicSettings isRefreshButtonHidden])
-    {
+    if (![ALApplozicSettings isRefreshButtonHidden]) {
         [self.navRightBarButtonItems addObject:refreshButton];
     }
     
-    if([ALApplozicSettings getCustomNavigationControllerClassName])
-    {
-       ALNavigationController * customnavController = (ALNavigationController*)self.navigationController;
-       
-       NSMutableArray * customButtons = [customnavController getCustomButtons];
-       
-       for(UIView* buttonView in customButtons)
-       {
-           UIBarButtonItem * barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonView];
-           [self.navRightBarButtonItems addObject:barButtonItem];
-       }
-       
+    if ([ALApplozicSettings getCustomNavigationControllerClassName]) {
+        ALNavigationController *customnavController = (ALNavigationController*)self.navigationController;
+
+        NSMutableArray *customButtons = [customnavController getCustomButtons];
+
+        for (UIView *buttonView in customButtons) {
+            UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonView];
+            [self.navRightBarButtonItems addObject:barButtonItem];
+        }
+
     }
     self.navigationItem.rightBarButtonItems = [self.navRightBarButtonItems mutableCopy];
     
@@ -180,73 +161,69 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [self.typingLabel setFont:[UIFont fontWithName:[ALApplozicSettings getFontFace] size:TYPING_LABEL_SIZE]];
     self.typingLabel.textAlignment = NSTextAlignmentLeft;
 
-    if([ALApplozicSettings isDropShadowInNavigationBarEnabled])
-    {
+    if ([ALApplozicSettings isDropShadowInNavigationBarEnabled]) {
         [self dropShadowInNavigationBar];
     }
     
 }
 
--(void)dropShadowInNavigationBar
-{
+- (void)dropShadowInNavigationBar {
     self.navigationController.navigationBar.layer.shadowOpacity = 0.5;
     self.navigationController.navigationBar.layer.shadowOffset = CGSizeMake(0, 0);
     self.navigationController.navigationBar.layer.shadowRadius = 10;
     self.navigationController.navigationBar.layer.masksToBounds = NO;
 }
 
--(void)loadChatView {
+- (void)loadChatView {
     
 }
 
--(void)postMessage {
+- (void)postMessage {
     
 }
 
--(void)back:(id)sender {
+- (void)back:(id)sender {
     
-    UIViewController *  uiController = [self.navigationController popViewControllerAnimated:YES];
-    if(!uiController ){
-        if(self.individualLaunch){
+    UIViewController *uiController = [self.navigationController popViewControllerAnimated:YES];
+    if (!uiController ){
+        if (self.individualLaunch){
             [self  dismissViewControllerAnimated:YES completion:nil];
         }
     }
 }
 
--(void)refreshTable:(id)sender {
+- (void)refreshTable:(id)sender {
     
 }
 
--(void)attachmentAction{
+- (void)attachmentAction{
     
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self registerForKeyboardNotifications];
 
     [self.navigationController.navigationBar setTitleTextAttributes: @{
-                                                                       NSForegroundColorAttributeName:[UIColor whiteColor],
-                                                                       NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                                                                            size:NAVIGATION_TEXT_SIZE]
-                                                                       }];
+        NSForegroundColorAttributeName:[UIColor whiteColor],
+        NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                            size:NAVIGATION_TEXT_SIZE]
+    }];
     
-    if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
-    {
+    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
         
         [self.navigationController.navigationBar setTitleTextAttributes: @{
-                                                                           NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
-                                                                           NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
-                                                                                                               size:NAVIGATION_TEXT_SIZE]
-                                                                           }];
+            NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
+            NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
+                                                size:NAVIGATION_TEXT_SIZE]
+        }];
         self.navigationController.navigationBar.translucent = NO;
         [self.navigationController.navigationBar setBarTintColor:[ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor:[ALApplozicSettings getColorForNavigationItem]];
-    
+
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.label setTextColor:[ALApplozicSettings getColorForNavigationItem]];
-       
+
     }
 
     [self sendButtonUI];
@@ -256,43 +233,39 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     paddingForTextMessageViewHeight  = 2;
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     /*  CHECK PRICING PACKAGE */
     [self checkPricingPackageAndShowMessage];
 }
 
--(void)checkPricingPackageAndShowMessage
-{
-    if([applicationInfo isChatSuspended]) {
+- (void)checkPricingPackageAndShowMessage {
+    if ([applicationInfo isChatSuspended]) {
         [ALUIUtilityClass showAlertMessage:@"Please Contact Applozic to activate chat in your app" andTitle:@"ALERT"];
     }
     
 }
 
--(void)sendButtonUI
-{
+- (void)sendButtonUI {
     [self.sendButton setBackgroundColor:[ALApplozicSettings getColorForSendButton]];
-   self.sendButton.layer.cornerRadius = sendTextViewCornerRadius + 5;
+    self.sendButton.layer.cornerRadius = sendTextViewCornerRadius + 5;
     self.sendButton.layer.masksToBounds = YES;
     
     [self.typingMessageView sendSubviewToBack:self.typeMsgBG];
-    UIImage * image = [[ALUIUtilityClass getImageFromFramworkBundle:@"TYMSGBG.png"]
-                       resizableImageWithCapInsets:UIEdgeInsetsMake(20, 20, 10, 20)];
+    UIImage *image = [[ALUIUtilityClass getImageFromFramworkBundle:@"TYMSGBG.png"]
+                      resizableImageWithCapInsets:UIEdgeInsetsMake(20, 20, 10, 20)];
     
     [self.typeMsgBG setImage:image];
     [self.typingMessageView setBackgroundColor:[ALApplozicSettings getColorForTypeMsgBackground]];
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [self removeRegisteredKeyboardNotifications];
 }
 
 // Setting up keyboard notifications.
-- (void)registerForKeyboardNotifications
-{
+- (void)registerForKeyboardNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyBoardWillShow:)
                                                  name:UIKeyboardWillShowNotification object:nil];
@@ -302,8 +275,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
                                                  name:UIKeyboardWillHideNotification object:nil];
 }
 
-- (void)removeRegisteredKeyboardNotifications
-{
+- (void)removeRegisteredKeyboardNotifications {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
                                                   object:nil];
@@ -314,9 +286,8 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 #pragma mark - Keyboard Post Notifacations
 //------------------------------------------------------------------------------------------------------------------
 
--(void) keyBoardWillShow:(NSNotification *) notification
-{
-    NSString * theAnimationDuration = [self handleKeyboardNotification:notification];
+- (void)keyBoardWillShow:(NSNotification *) notification {
+    NSString *theAnimationDuration = [self handleKeyboardNotification:notification];
 
     self.checkBottomConstraint.constant = -1 * keyboardEndFrame.size.height +
     self.bottomLayoutGuide.length;
@@ -331,54 +302,44 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     }];
 }
 
--(void) keyBoardWillHide:(NSNotification *) notification
-{
-    NSString * theAnimationDuration = [self handleKeyboardNotification:notification];
+- (void) keyBoardWillHide:(NSNotification *) notification {
+    NSString *theAnimationDuration = [self handleKeyboardNotification:notification];
     
     self.checkBottomConstraint.constant = 0;
-//    self.noConversationLabel.frame = tempFrame;
-    
+
     [UIView animateWithDuration:theAnimationDuration.doubleValue animations:^{
         [self.view layoutIfNeeded];
         
     }];
-  
+
 }
 
--(NSString *)handleKeyboardNotification:(NSNotification *) notification{
+- (NSString *)handleKeyboardNotification:(NSNotification *)notification {
     
-    NSDictionary * theDictionary = notification.userInfo;
-    NSString * theAnimationDuration = [theDictionary valueForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSDictionary *theDictionary = notification.userInfo;
+    NSString *theAnimationDuration = [theDictionary valueForKey:UIKeyboardAnimationDurationUserInfoKey];
     
     keyboardEndFrame = [(NSValue *)[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    
-//    self.typingLabel.frame = CGRectMake(0,
-//                                        keyboardEndFrame.origin.y - (self.typingMessageView.frame.size.height + typingIndicatorHeight + navigationWidth),
-//                                        self.view.frame.size.width, typingIndicatorHeight);
     return theAnimationDuration;
 }
 
--(void)setHeightOfTextViewDynamically
-{
+- (void)setHeightOfTextViewDynamically {
     
     [self setHeightOfTextViewDynamically:YES];
     
 }
 
--(void)setHeightOfTextViewDynamically:(BOOL)scroll
-{
+- (void)setHeightOfTextViewDynamically:(BOOL)scroll {
     
     [self subProcessSetHeightOfTextViewDynamically];
-    if(scroll)
-    {
+    if (scroll) {
         [self scrollTableViewToBottomWithAnimation:YES];
     }
     [self.view layoutIfNeeded];
     
 }
 
--(void)subProcessSetHeightOfTextViewDynamically
-{
+- (void)subProcessSetHeightOfTextViewDynamically {
     
     CGSize sizeThatFitsTextView = [self.sendMessageTextView sizeThatFits:CGSizeMake(self.sendMessageTextView.frame.size.width, self.sendMessageTextView.frame.size.height)];
     self.textViewHeightConstraint.constant =  sizeThatFitsTextView.height;
@@ -386,7 +347,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     self.textMessageViewHeightConstaint.constant = (self.typingMessageView.frame.size.height-self.sendMessageTextView.frame.size.height) + sizeThatFitsTextView.height + paddingForTextMessageViewHeight;
 }
 
--(void) scrollTableViewToBottomWithAnimation:(BOOL) animated {
+- (void) scrollTableViewToBottomWithAnimation:(BOOL) animated {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.mTableView.contentSize.height > self.mTableView.frame.size.height) {
             CGPoint offset = CGPointMake(0, self.mTableView.contentSize.height - self.mTableView.frame.size.height);
@@ -415,13 +376,11 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 }
 
 
-- (IBAction)sendAction:(id)sender
-{
+- (IBAction)sendAction:(id)sender {
     NSCharacterSet *charsToTrim = [NSCharacterSet characterSetWithCharactersInString:@"  \n\""];
     self.sendMessageTextView.text = [self.sendMessageTextView.text stringByTrimmingCharactersInSet:charsToTrim];
-  
-    if(self.sendMessageTextView.text.length > 0)
-    {
+
+    if (self.sendMessageTextView.text.length > 0) {
         [self postMessage];
     }
     
@@ -435,8 +394,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
 
 // SET CUSTOM BUTTON FOR CALL
 
--(UIView *)customCallButtonView
-{
+- (UIView *)customCallButtonView {
     UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUIUtilityClass getImageFromFramworkBundle:@"PhoneIcon.png"]];
     [imageView setFrame:CGRectMake(0, 0, 20, 20)];
     [imageView setTintColor:[UIColor whiteColor]];
@@ -446,15 +404,14 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [view addSubview:imageView];
     [view setBackgroundColor:[UIColor clearColor]];
     
-    UITapGestureRecognizer * phoneIconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(phoneCallMethod)];
+    UITapGestureRecognizer *phoneIconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(phoneCallMethod)];
     phoneIconTap.numberOfTapsRequired = 1;
     [view addGestureRecognizer:phoneIconTap];
     
     return view;
 }
 
--(UIView *)customCloseButtonView
-{
+- (UIView *)customCloseButtonView {
     UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUIUtilityClass getImageFromFramworkBundle:@"ic_clear_white.png"]];
     [imageView setFrame:CGRectMake(0, 0, 20, 20)];
     [imageView setTintColor:[UIColor whiteColor]];
@@ -464,14 +421,14 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [view addSubview:imageView];
     [view setBackgroundColor:[UIColor clearColor]];
     
-    UITapGestureRecognizer * iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeConversation)];
+    UITapGestureRecognizer *iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeConversation)];
     iconTap.numberOfTapsRequired = 1;
     [view addGestureRecognizer:iconTap];
     
     return view;
 }
 
--(UIView *)customViewForButtonWithImage:(NSString *)imageName {
+- (UIView *)customViewForButtonWithImage:(NSString *)imageName {
     UIImageView *imageView = [[UIImageView alloc] initWithImage: [ALUIUtilityClass getImageFromFramworkBundle:imageName]];
     [imageView setFrame:CGRectMake(0, 0, 25, 25)];
     [imageView setTintColor:[ALApplozicSettings getColorForNavigationItem]];
@@ -483,41 +440,40 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     return view;
 }
 
--(UIView *)audioCallButtonUIView {
+- (UIView *)audioCallButtonUIView {
     UIView *audioButtonView =  [self customViewForButtonWithImage:@"phone_call_white.png"];
-    UITapGestureRecognizer * iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(audioCallAction)];
+    UITapGestureRecognizer *iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(audioCallAction)];
     iconTap.numberOfTapsRequired = 1;
     [audioButtonView addGestureRecognizer:iconTap];
     return audioButtonView;
 }
 
--(UIView *)videoCallButtonUIView {
+- (UIView *)videoCallButtonUIView {
     UIView *videoCallButtonView =  [self customViewForButtonWithImage:@"video_call_icon_white.png"];
-    UITapGestureRecognizer * iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(videoCallAction)];
+    UITapGestureRecognizer *iconTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(videoCallAction)];
     iconTap.numberOfTapsRequired = 1;
     [videoCallButtonView addGestureRecognizer:iconTap];
     return videoCallButtonView;
 }
 
--(void)phoneCallMethod {
+- (void)phoneCallMethod {
 
 }
 
--(void)closeConversation {
+- (void)closeConversation {
     
 }
 
--(void)audioCallAction {
+- (void)audioCallAction {
 
 }
 
--(void)videoCallAction {
+- (void)videoCallAction {
 
 }
 
--(UIView *)setCustomBackButton
-{
-    UIImage * backImage = [ALUIUtilityClass getImageFromFramworkBundle:@"bbb.png"];
+- (UIView *)setCustomBackButton {
+    UIImage *backImage = [ALUIUtilityClass getImageFromFramworkBundle:@"bbb.png"];
     backImage = [backImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:backImage];
     [imageView setFrame:CGRectMake(-10, 0, 30, 30)];
@@ -538,11 +494,7 @@ static CGFloat const sendTextViewCornerRadius = 15.0f;
     [view addSubview:imageView];
     [view addSubview:label];
     
-//    UIButton *button=[[UIButton alloc] initWithFrame:view.frame];
-//    [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
-//    [view addSubview:button];
-    
-    UITapGestureRecognizer * backTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back:)];
+    UITapGestureRecognizer *backTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back:)];
     backTap.numberOfTapsRequired = 1;
     [view addGestureRecognizer:backTap];
 

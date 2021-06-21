@@ -88,8 +88,8 @@
     completionHandler(NSURLSessionResponseAllow);
 }
 
--(void)startSession:(NSURLSession *) session
-        withRequest:(NSURLRequest *) urlRequest {
+- (void)startSession:(NSURLSession *) session
+         withRequest:(NSURLRequest *) urlRequest {
 
     [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:session];
 
@@ -99,7 +99,7 @@
     }
 }
 
--(void)uploadTheVideo:(ALMessage *)message {
+- (void)uploadTheVideo:(ALMessage *)message {
     NSMutableArray * urlSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
 
     for (NSURLSession *session in urlSessionArray) {
@@ -177,7 +177,7 @@
     }
 }
 
--(NSURLSession*)configureSessionWithMessage:(ALMessage *)message {
+-(NSURLSession *)configureSessionWithMessage:(ALMessage *)message {
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"VIDEO_THUMBNAIL,%@",message.key]];
 
     if (ALApplozicSettings.getShareExtentionGroup) {
@@ -189,17 +189,17 @@
     return session;
 }
 
--(void)handleUploadFailedStateWithMessage:(ALMessage *)message {
+- (void)handleUploadFailedStateWithMessage:(ALMessage *)message {
     ALMessage *failedMessage = [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
     if (self.attachmentProgressDelegate) {
         [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:failedMessage]];
     }
 }
 
--(NSData*)requestUploadBodyDataWithFilePath:(NSString *)filePath
-                                withRequest: (NSMutableURLRequest *)urlRequest
-                                   withName:(NSString *)name
-                            withContentType:(NSString *)type {
+- (NSData *)requestUploadBodyDataWithFilePath:(NSString *)filePath
+                                  withRequest: (NSMutableURLRequest *)urlRequest
+                                     withName:(NSString *)name
+                              withContentType:(NSString *)type {
 
     //Create boundary, it can be anything
     NSString *boundary = @"------ApplogicBoundary4QuqLuM1cE5lMwCy";
@@ -210,16 +210,15 @@
     NSMutableData *body = [NSMutableData data];
 
     NSString* FileParamConstant;
-    if(ALApplozicSettings.isS3StorageServiceEnabled){
+    if (ALApplozicSettings.isS3StorageServiceEnabled) {
         FileParamConstant = @"file";
-    }else{
+    } else {
         FileParamConstant = @"files[]";
     }
     NSData *imageData = [[NSData alloc]initWithContentsOfFile:filePath];
     ALSLog(ALLoggerSeverityInfo, @"Attachment data length: %f",imageData.length/1024.0);
     //Assuming data is not nil we add this to the multipart form
-    if (imageData)
-    {
+    if (imageData) {
         [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", FileParamConstant,name] dataUsingEncoding:NSUTF8StringEncoding]];
 

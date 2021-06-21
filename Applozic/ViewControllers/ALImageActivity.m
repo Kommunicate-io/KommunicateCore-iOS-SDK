@@ -13,51 +13,34 @@
 @implementation ALImageActivity
 
 
-- (NSString *)activityType
-{
+- (NSString *)activityType {
     return @"com.applozic.framework";
 }
 
-- (NSString *)activityTitle
-{
+- (NSString *)activityTitle {
     return @"Forward Image";
 }
 
-- (UIImage *)activityImage
-{
-    // Note: These images need to have a transparent background and I recommend these sizes:
-    // iPadShare@2x should be 126 px, iPadShare should be 53 px, iPhoneShare@2x should be 100
-    // px, and iPhoneShare should be 50 px. I found these sizes to work for what I was making.
-    
-//    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-//    {
-//        return [ALUtilityClass getImageFromFramworkBundle:@"forwardActivity.png"];
-//    }
-//    else
-//    {
-//        return [ALUtilityClass getImageFromFramworkBundle:@""];
-//    }
+- (UIImage *)activityImage {
+
     return [ALUIUtilityClass getImageFromFramworkBundle:@"forwardActivity.png"];
 }
 
-- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems
-{
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems {
     ALSLog(ALLoggerSeverityInfo, @"%s", __FUNCTION__);
     return YES;
 }
 
-- (void)prepareWithActivityItems:(NSArray *)activityItems
-{
+- (void)prepareWithActivityItems:(NSArray *)activityItems {
     ALSLog(ALLoggerSeverityInfo, @"%s",__FUNCTION__);
 }
 
-- (UIViewController *)activityViewController
-{
+- (UIViewController *)activityViewController {
     ALSLog(ALLoggerSeverityInfo, @"%s",__FUNCTION__);
     return nil;
 }
 
-- (void)performActivity{
+- (void)performActivity {
     //TODO: Open Recent Chats...
     ALSLog(ALLoggerSeverityInfo, @"TODO: Open Recent Chats");
 

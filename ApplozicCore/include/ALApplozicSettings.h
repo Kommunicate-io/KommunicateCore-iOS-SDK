@@ -161,474 +161,474 @@ static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.A
 
 @interface ALApplozicSettings : NSObject
 
-@property (strong, nonatomic) NSUserDefaults * userDefaults;
+@property (strong, nonatomic) NSUserDefaults *userDefaults;
 
 
-+(void)setFontFace:(NSString *)fontFace;
-+(NSString *)getFontFace;
-
-// works with font face for iOS 11, uses system font face for iOS 10, being ignored for versions below
-+(void)setChatCellFontTextStyle:(NSString *)fontTextStyle;
-+(NSString *)getChatCellFontTextStyle;
++ (void)setFontFace:(NSString *)fontFace;
++ (NSString *)getFontFace;
 
 // works with font face for iOS 11, uses system font face for iOS 10, being ignored for versions below
-+(void)setChatChannelCellFontTextStyle:(NSString *)fontTextStyle;
-+(NSString *)getChatChannelCellFontTextStyle;
++ (void)setChatCellFontTextStyle:(NSString *)fontTextStyle;
++ (NSString *)getChatCellFontTextStyle;
 
-+(void)setUserProfileHidden: (BOOL)flag;
+// works with font face for iOS 11, uses system font face for iOS 10, being ignored for versions below
++ (void)setChatChannelCellFontTextStyle:(NSString *)fontTextStyle;
++ (NSString *)getChatChannelCellFontTextStyle;
 
-+(BOOL)isUserProfileHidden;
++ (void)setUserProfileHidden:(BOOL)flag;
 
-+(void)setColorForSendMessages:(UIColor *)sendMsgColor ;
++ (BOOL)isUserProfileHidden;
 
-+(void)setColorForReceiveMessages:(UIColor *)receiveMsgColor;
++ (void)setColorForSendMessages:(UIColor *)sendMsgColor;
 
-+(UIColor *)getSendMsgColor;
++ (void)setColorForReceiveMessages:(UIColor *)receiveMsgColor;
 
-+(UIColor *)getReceiveMsgColor;
++ (UIColor *)getSendMsgColor;
 
-+(void)setColorForNavigation:(UIColor *)barColor;
++ (UIColor *)getReceiveMsgColor;
 
-+(UIColor *)getColorForNavigation;
++ (void)setColorForNavigation:(UIColor *)barColor;
 
-+(void)setColorForNavigationItem:(UIColor *)barItemColor;
++ (UIColor *)getColorForNavigation;
 
-+(UIColor *)getColorForNavigationItem;
++ (void)setColorForNavigationItem:(UIColor *)barItemColor;
 
-+(void)hideRefreshButton:(BOOL)state;
++ (UIColor *)getColorForNavigationItem;
 
-+(BOOL)isRefreshButtonHidden;
++ (void)hideRefreshButton:(BOOL)state;
 
-+(void)setTitleForConversationScreen:(NSString *)titleText;
++ (BOOL)isRefreshButtonHidden;
 
-+(NSString *)getTitleForConversationScreen;
++ (void)setTitleForConversationScreen:(NSString *)titleText;
 
-+(void)setTitleForBackButtonMsgVC:(NSString *)backButtonTitle;
-+(NSString *)getTitleForBackButtonMsgVC;
++ (NSString *)getTitleForConversationScreen;
 
-+(NSString *)getTitleForBackButtonChatVC;
-+(void)setTitleForBackButtonChatVC:(NSString *)backButtonTitle;
++ (void)setTitleForBackButtonMsgVC:(NSString *)backButtonTitle;
++ (NSString *)getTitleForBackButtonMsgVC;
 
-+(void)setNotificationTitle:(NSString *)notificationTitle;
++ (NSString *)getTitleForBackButtonChatVC;
++ (void)setTitleForBackButtonChatVC:(NSString *)backButtonTitle;
 
-+(NSString *)getNotificationTitle;
++ (void)setNotificationTitle:(NSString *)notificationTitle;
 
-+(void)setMaxImageSizeForUploadInMB:(NSInteger)maxFileSize;
++ (NSString *)getNotificationTitle;
 
-+(NSInteger)getMaxImageSizeForUploadInMB;
++ (void)setMaxImageSizeForUploadInMB:(NSInteger)maxFileSize;
 
-+(void) setMaxCompressionFactor:(double)maxCompressionRatio;
++ (NSInteger)getMaxImageSizeForUploadInMB;
 
-+(double) getMaxCompressionFactor;
++ (void)setMaxCompressionFactor:(double)maxCompressionRatio;
 
-+(void)setGroupOption:(BOOL)option;
++ (double)getMaxCompressionFactor;
 
-+(BOOL)getGroupOption;
++ (void)setGroupOption:(BOOL)option;
 
-+(void)setMultipleAttachmentMaxLimit:(NSInteger)limit;
++ (BOOL)getGroupOption;
 
-+(NSInteger)getMultipleAttachmentMaxLimit;
++ (void)setMultipleAttachmentMaxLimit:(NSInteger)limit;
 
-+(void)setFilterContactsStatus:(BOOL)flag;
++ (NSInteger)getMultipleAttachmentMaxLimit;
 
-+(BOOL)getFilterContactsStatus;
++ (void)setFilterContactsStatus:(BOOL)flag;
 
-+(void)setStartTime:(NSNumber *)startTime;
++ (BOOL)getFilterContactsStatus;
 
-+(NSNumber *)getStartTime;
++ (void)setStartTime:(NSNumber *)startTime;
 
-+(void)setChatWallpaperImageName:(NSString*)imageName;
++ (NSNumber *)getStartTime;
 
-+(NSString *)getChatWallpaperImageName;
++ (void)setChatWallpaperImageName:(NSString*)imageName;
 
-+(void)setCustomMessageBackgroundColor:(UIColor *)color;
++ (NSString *)getChatWallpaperImageName;
 
-+(UIColor *)getCustomMessageBackgroundColor;
++ (void)setCustomMessageBackgroundColor:(UIColor *)color;
 
-+(void)setCustomMessageTextColor:(UIColor *)color;
-+(UIColor *)getCustomMessageTextColor;
++ (UIColor *)getCustomMessageBackgroundColor;
 
-+(void)setGroupExitOption:(BOOL)option;
-+(BOOL)getGroupExitOption;
++ (void)setCustomMessageTextColor:(UIColor *)color;
++ (UIColor *)getCustomMessageTextColor;
 
-+(void)setGroupMemberAddOption:(BOOL)option;
-+(BOOL)getGroupMemberAddOption;
++ (void)setGroupExitOption:(BOOL)option;
++ (BOOL)getGroupExitOption;
 
-+(void)setGroupMemberRemoveOption:(BOOL)option;
-+(BOOL)getGroupMemberRemoveOption;
++ (void)setGroupMemberAddOption:(BOOL)option;
++ (BOOL)getGroupMemberAddOption;
 
-+(void)setOnlineContactLimit:(NSInteger)limit;
-+(NSInteger)getOnlineContactLimit;
++ (void)setGroupMemberRemoveOption:(BOOL)option;
++ (BOOL)getGroupMemberRemoveOption;
 
-+(NSString *)getCustomClassName;
-+(void)setCustomClassName:(NSString *)className;
++ (void)setOnlineContactLimit:(NSInteger)limit;
++ (NSInteger)getOnlineContactLimit;
+
++ (NSString *)getCustomClassName;
++ (void)setCustomClassName:(NSString *)className;
 
 // When a user taps on title view in ALChatViewController  with this option you can receive notification with name thirdPartyDetailVCNotification with options to show custom group detail VC
 // might be blocked by "setGroupInfoDisabled" and "setReceiverUserProfileOption"
-+(BOOL)getOptionToPushNotificationToShowCustomGroupDetalVC;
-+(void)setOptionToPushNotificationToShowCustomGroupDetalVC:(BOOL)option;
++ (BOOL)getOptionToPushNotificationToShowCustomGroupDetalVC;
++ (void)setOptionToPushNotificationToShowCustomGroupDetalVC:(BOOL)option;
 
-+(void)setContextualChat:(BOOL)option;
-+(BOOL)getContextualChatOption;
++ (void)setContextualChat:(BOOL)option;
++ (BOOL)getContextualChatOption;
 
-+(void)setCallOption:(BOOL)flag;
-+(BOOL)getCallOption;
++ (void)setCallOption:(BOOL)flag;
++ (BOOL)getCallOption;
 
 // Enable/Diable Notification Sound
-+(void)enableNotificationSound;
-+(void)disableNotificationSound;
++ (void)enableNotificationSound;
++ (void)disableNotificationSound;
 // Enable/Diable Notification Complete
-+(void)enableNotification;
-+(void)disableNotification;
++ (void)enableNotification;
++ (void)disableNotification;
 
-+(UIColor *)getColorForSendButton;
-+(void)setColorForSendButton:(UIColor *)color;
++ (UIColor *)getColorForSendButton;
++ (void)setColorForSendButton:(UIColor *)color;
 
-+(UIColor *)getColorForTypeMsgBackground;
-+(void)setColorForTypeMsgBackground:(UIColor *)viewColor;
++ (UIColor *)getColorForTypeMsgBackground;
++ (void)setColorForTypeMsgBackground:(UIColor *)viewColor;
 
-+(UIColor *)getBGColorForTypingLabel;
-+(void)setBGColorForTypingLabel:(UIColor *)bgColor;
++ (UIColor *)getBGColorForTypingLabel;
++ (void)setBGColorForTypingLabel:(UIColor *)bgColor;
 
-+(UIColor *)getTextColorForTypingLabel;
-+(void)setTextColorForTypingLabel:(UIColor *)txtColor;
++ (UIColor *)getTextColorForTypingLabel;
++ (void)setTextColorForTypingLabel:(UIColor *)txtColor;
 
-+(NSString *)getEmptyConversationText;
-+(void)setEmptyConversationText:(NSString *)text;
++ (NSString *)getEmptyConversationText;
++ (void)setEmptyConversationText:(NSString *)text;
 
-+(BOOL)getVisibilityNoConversationLabelChatVC;
-+(void)setVisibilityNoConversationLabelChatVC:(BOOL)flag;
++ (BOOL)getVisibilityNoConversationLabelChatVC;
++ (void)setVisibilityNoConversationLabelChatVC:(BOOL)flag;
 
-+(BOOL)getVisibilityForOnlineIndicator;
-+(void)setVisibilityForOnlineIndicator:(BOOL)flag;
++ (BOOL)getVisibilityForOnlineIndicator;
++ (void)setVisibilityForOnlineIndicator:(BOOL)flag;
 
-+(BOOL)getVisibilityForNoMoreConversationMsgVC;
-+(void)setVisibilityForNoMoreConversationMsgVC:(BOOL)flag;
++ (BOOL)getVisibilityForNoMoreConversationMsgVC;
++ (void)setVisibilityForNoMoreConversationMsgVC:(BOOL)flag;
 
-+(BOOL)isRefreshChatButtonEnabledInMsgVc;
-+(void)enableRefreshChatButtonInMsgVc:(BOOL)flag;
++ (BOOL)isRefreshChatButtonEnabledInMsgVc;
++ (void)enableRefreshChatButtonInMsgVc:(BOOL)flag;
 
-+(UIColor *)getColorForToastText;
-+(void)setColorForToastText:(UIColor *)toastTextColor;
++ (UIColor *)getColorForToastText;
++ (void)setColorForToastText:(UIColor *)toastTextColor;
 
-+(UIColor *)getColorForToastBackground;
-+(void)setColorForToastBackground:(UIColor *)toastBGColor;
++ (UIColor *)getColorForToastBackground;
++ (void)setColorForToastBackground:(UIColor *)toastBGColor;
 
-+(UIColor *)getSendMsgTextColor;
-+(void)setSendMsgTextColor:(UIColor *)sendMsgColor;
++ (UIColor *)getSendMsgTextColor;
++ (void)setSendMsgTextColor:(UIColor *)sendMsgColor;
 
-+(UIColor *)getReceiveMsgTextColor;
-+(void)setReceiveMsgTextColor:(UIColor *)receiveMsgColor;
++ (UIColor *)getReceiveMsgTextColor;
++ (void)setReceiveMsgTextColor:(UIColor *)receiveMsgColor;
 
-+(UIColor *)getMsgTextViewBGColor;
-+(void)setMsgTextViewBGColor:(UIColor *)color;
++ (UIColor *)getMsgTextViewBGColor;
++ (void)setMsgTextViewBGColor:(UIColor *)color;
 
-+(UIColor *)getPlaceHolderColor;
-+(void)setPlaceHolderColor:(UIColor *)color;
++ (UIColor *)getPlaceHolderColor;
++ (void)setPlaceHolderColor:(UIColor *)color;
 
-+(UIColor *)getUnreadCountLabelBGColor;
-+(void)setUnreadCountLabelBGColor:(UIColor *)color;
++ (UIColor *)getUnreadCountLabelBGColor;
++ (void)setUnreadCountLabelBGColor:(UIColor *)color;
 
-+(UIColor *)getStatusBarBGColor;
-+(void)setStatusBarBGColor:(UIColor *)color;
++ (UIColor *)getStatusBarBGColor;
++ (void)setStatusBarBGColor:(UIColor *)color;
 
-+(UIStatusBarStyle)getStatusBarStyle;
-+(void)setStatusBarStyle:(UIStatusBarStyle)style;
++ (UIStatusBarStyle)getStatusBarStyle;
++ (void)setStatusBarStyle:(UIStatusBarStyle)style;
 
-+(void)setMaxTextViewLines:(int)numberOfLines;
-+(int)getMaxTextViewLines;
++ (void)setMaxTextViewLines:(int)numberOfLines;
++ (int)getMaxTextViewLines;
 
-+(void)setAbuseWarningText:(NSString *)warningText;
-+(NSString *)getAbuseWarningText;
++ (void)setAbuseWarningText:(NSString *)warningText;
++ (NSString *)getAbuseWarningText;
 
-+(BOOL)getMessageAbuseMode;
-+(void)setMessageAbuseMode:(BOOL)flag;
++ (BOOL)getMessageAbuseMode;
++ (void)setMessageAbuseMode:(BOOL)flag;
 
-+(UIColor *)getDateColor;
-+(void)setDateColor:(UIColor *)dateColor;
++ (UIColor *)getDateColor;
++ (void)setDateColor:(UIColor *)dateColor;
 
-+(UIColor *)getMsgDateColor;
-+(void)setMsgDateColor:(UIColor *)dateColor;
++ (UIColor *)getMsgDateColor;
++ (void)setMsgDateColor:(UIColor *)dateColor;
 
-+(BOOL)getReceiverUserProfileOption;
-+(void)setReceiverUserProfileOption:(BOOL)flag;
++ (BOOL)getReceiverUserProfileOption;
++ (void)setReceiverUserProfileOption:(BOOL)flag;
 
-+(float)getCustomMessageFontSize;
-+(void)setCustomMessageFontSize:(float)fontSize;
++ (float)getCustomMessageFontSize;
++ (void)setCustomMessageFontSize:(float)fontSize;
 
-+(NSString *)getCustomMessageFont;
-+(void)setCustomMessageFont:(NSString *)font;
++ (NSString *)getCustomMessageFont;
++ (void)setCustomMessageFont:(NSString *)font;
 
-+(void) setGroupInfoDisabled:(BOOL)flag;
-+(BOOL) isGroupInfoDisabled;
++ (void) setGroupInfoDisabled:(BOOL)flag;
++ (BOOL) isGroupInfoDisabled;
 
-+(void) setGroupInfoEditDisabled:(BOOL)flag;
-+(BOOL) isGroupInfoEditDisabled;
++ (void) setGroupInfoEditDisabled:(BOOL)flag;
++ (BOOL) isGroupInfoEditDisabled;
 
-+(void)setGroupOfTwoFlag:(BOOL)flag;
-+(BOOL)getGroupOfTwoFlag;
++ (void)setGroupOfTwoFlag:(BOOL)flag;
++ (BOOL)getGroupOfTwoFlag;
 
-+(void)setBroadcastGroupEnable:(BOOL)flag;
-+(BOOL)isBroadcastGroupEnable;
++ (void)setBroadcastGroupEnable:(BOOL)flag;
++ (BOOL)isBroadcastGroupEnable;
 
-+(void) setContactTypeToFilter:(NSMutableArray*)arrayWithIds;
-+(NSMutableArray*) getContactTypeToFilter;
++ (void) setContactTypeToFilter:(NSMutableArray *)arrayWithIds;
++ (NSMutableArray*) getContactTypeToFilter;
 
-+(NSString *)getCustomNavigationControllerClassName;
-+(void)setNavigationControllerClassName:(NSString *)className;
++ (NSString *)getCustomNavigationControllerClassName;
++ (void)setNavigationControllerClassName:(NSString *)className;
 
-+(BOOL)getSubGroupLaunchFlag;
-+(void)setSubGroupLaunchFlag:(BOOL)flag;
++ (BOOL)getSubGroupLaunchFlag;
++ (void)setSubGroupLaunchFlag:(BOOL)flag;
 
-+(NSArray *)getListOfViewControllers;
-+(void)setListOfViewControllers:(NSArray *)viewList;
++ (NSArray *)getListOfViewControllers;
++ (void)setListOfViewControllers:(NSArray *)viewList;
 
-+(void)setMsgContainerVC:(NSString *)className;
-+(NSString *)getMsgContainerVC;
++ (void)setMsgContainerVC:(NSString *)className;
++ (NSString *)getMsgContainerVC;
 
-+(NSString *)getAudioVideoClassName;
-+(void)setAudioVideoClassName:(NSString *)className;
++ (NSString *)getAudioVideoClassName;
++ (void)setAudioVideoClassName:(NSString *)className;
 
-+(NSString *)getClientStoryBoard;
-+(void)setClientStoryBoard:(NSString *)storyboard;
-+(NSString *)getGroupDeletedTitle;
-+(void)setGroupDeletedTitle:(NSString *)title;
++ (NSString *)getClientStoryBoard;
++ (void)setClientStoryBoard:(NSString *)storyboard;
++ (NSString *)getGroupDeletedTitle;
++ (void)setGroupDeletedTitle:(NSString *)title;
 
-+(NSString *)getUserDeletedText;
-+(void)setUserDeletedText:(NSString *)text;
++ (NSString *)getUserDeletedText;
++ (void)setUserDeletedText:(NSString *)text;
 
-+(UIImage *)getChatListTabIcon;
-+(void)setChatListTabIcon:(NSString *)imageName;
++ (UIImage *)getChatListTabIcon;
++ (void)setChatListTabIcon:(NSString *)imageName;
 
-+(NSString *)getChatListTabTitle;
-+(void)setChatListTabTitle:(NSString *)title;
++ (NSString *)getChatListTabTitle;
++ (void)setChatListTabTitle:(NSString *)title;
 
-+(UIImage *)getProfileTabIcon;
-+(void)setProfileTabIcon:(NSString *)imageName;
++ (UIImage *)getProfileTabIcon;
++ (void)setProfileTabIcon:(NSString *)imageName;
 
-+(NSString *)getProfileTabTitle;
-+(void)setProfileTabTitle:(NSString *)title;
++ (NSString *)getProfileTabTitle;
++ (void)setProfileTabTitle:(NSString *)title;
 
-+(BOOL)isChatOnTapUserProfile;
-+(void)openChatOnTapUserProfile:(BOOL)flag;
++ (BOOL)isChatOnTapUserProfile;
++ (void)openChatOnTapUserProfile:(BOOL)flag;
 
-+(BOOL)isReplyOptionEnabled;
-+(void)replyOptionEnabled:(BOOL)flag;
++ (BOOL)isReplyOptionEnabled;
++ (void)replyOptionEnabled:(BOOL)flag;
 
-+(BOOL)isAudioVideoEnabled;
-+(void)setAudioVideoEnabled:(BOOL)flag;
++ (BOOL)isAudioVideoEnabled;
++ (void)setAudioVideoEnabled:(BOOL)flag;
 
-+(void)enableOrDisableContactsGroup :(BOOL)flag;
++ (void)enableOrDisableContactsGroup:(BOOL)flag;
 
-+(BOOL)isContactsGroupEnabled;
++ (BOOL)isContactsGroupEnabled;
 
-+(void)setContactsGroupId:(NSString *)contactsGroupId;
-
-+(NSString *)getContactsGroupId;
++ (void)setContactsGroupId:(NSString *)contactsGroupId;
+
++ (NSString *)getContactsGroupId;
 
-+(void)setContactGroupIdList:(NSArray *)contactIdList;
-
-+(NSArray*)getContactGroupIdList;
++ (void)setContactGroupIdList:(NSArray *)contactIdList;
+
++ (NSArray*)getContactGroupIdList;
 
-+(void)forwardOptionEnableOrDisable:(BOOL)flag;
++ (void)forwardOptionEnableOrDisable:(BOOL)flag;
 
-+(BOOL)isForwardOptionEnabled;
++ (BOOL)isForwardOptionEnabled;
 
-+(BOOL)isSwiftFramework;
-+(void)setSwiftFramework:(BOOL)flag;
++ (BOOL)isSwiftFramework;
++ (void)setSwiftFramework:(BOOL)flag;
 
-+(BOOL)isStorageServiceEnabled;
-+(void)enableStorageService:(BOOL)flag;
++ (BOOL)isStorageServiceEnabled;
++ (void)enableStorageService:(BOOL)flag;
 
-+(BOOL)isGoogleCloudServiceEnabled;
-+(void)enableGoogleCloudService:(BOOL)flag;
++ (BOOL)isGoogleCloudServiceEnabled;
++ (void)enableGoogleCloudService:(BOOL)flag;
 
-+(BOOL)isConversationCloseButtonEnabled;
-+(void)setConversationCloseButton:(BOOL)flag;
++ (BOOL)isConversationCloseButtonEnabled;
++ (void)setConversationCloseButton:(BOOL)flag;
 
-+(void) setHideAttachmentsOption:(NSArray*)array;
++ (void)setHideAttachmentsOption:(NSArray *)array;
 
-+(NSArray*) getHideAttachmentsOption;
++ (NSArray*)getHideAttachmentsOption;
 
-+(BOOL) isCameraOptionHidden;
-+(BOOL) isPhotoGalleryOptionHidden;
-+(BOOL) isSendAudioOptionHidden;
-+(BOOL) isSendVideoOptionHidden;
-+(BOOL) isLocationOptionHidden;
-+(BOOL) isBlockUserOptionHidden;
-+(BOOL) isShareContactOptionHidden;
-+(BOOL) isAttachmentButtonHidden;
-+(BOOL) isDocumentOptionHidden;
-+(BOOL)isS3StorageServiceEnabled;
-+(void)enableS3StorageService:(BOOL)flag;
-+(void) setDefaultGroupType:(NSInteger)type;
-+(NSInteger) getDefaultGroupType;
-+(void) enableSaveVideosToGallery:(BOOL)flag;
-+(BOOL) isSaveVideoToGalleryEnabled;
-+(void) enableQuickAudioRecording:(BOOL)flag;
-+(BOOL) isQuickAudioRecordingEnabled;
++ (BOOL)isCameraOptionHidden;
++ (BOOL)isPhotoGalleryOptionHidden;
++ (BOOL)isSendAudioOptionHidden;
++ (BOOL)isSendVideoOptionHidden;
++ (BOOL)isLocationOptionHidden;
++ (BOOL)isBlockUserOptionHidden;
++ (BOOL)isShareContactOptionHidden;
++ (BOOL)isAttachmentButtonHidden;
++ (BOOL)isDocumentOptionHidden;
++ (BOOL)isS3StorageServiceEnabled;
++ (void)enableS3StorageService:(BOOL)flag;
++ (void) setDefaultGroupType:(NSInteger)type;
++ (NSInteger) getDefaultGroupType;
++ (void) enableSaveVideosToGallery:(BOOL)flag;
++ (BOOL) isSaveVideoToGalleryEnabled;
++ (void) enableQuickAudioRecording:(BOOL)flag;
++ (BOOL) isQuickAudioRecordingEnabled;
 
-+(void)setUserRoleName:(NSString*)roleName;
-+(NSString*)getUserRoleName;
++ (void)setUserRoleName:(NSString*)roleName;
++ (NSString*)getUserRoleName;
 
-+(void)setDropShadowInNavigationBar:(BOOL)flag;
-+(BOOL)isDropShadowInNavigationBarEnabled;
++ (void)setDropShadowInNavigationBar:(BOOL)flag;
++ (BOOL)isDropShadowInNavigationBarEnabled;
 
-+(void)setDeleteConversationOption:(BOOL)flag;
-+(BOOL)isDeleteConversationOptionEnabled;
++ (void)setDeleteConversationOption:(BOOL)flag;
++ (BOOL)isDeleteConversationOptionEnabled;
 
-+(NSString *)getLocalizableName;
-+(void)setLocalizableName:(NSString *)localizableName;
-+(void) setTemplateMessages:(NSMutableDictionary*)dictionary;
-+(NSMutableDictionary*) getTemplateMessages;
++ (NSString *)getLocalizableName;
++ (void)setLocalizableName:(NSString *)localizableName;
++ (void)setTemplateMessages:(NSMutableDictionary *)dictionary;
++ (NSMutableDictionary*) getTemplateMessages;
 
-+(BOOL)isTemplateMessageEnabled;
-+(void)enableTeamplateMessage:(BOOL)flag;
++ (BOOL)isTemplateMessageEnabled;
++ (void)enableTeamplateMessage:(BOOL)flag;
 
-+(void)setCategoryName:(NSString*)categoryName;
-+(NSString*)getCategoryName;
++ (void)setCategoryName:(NSString*)categoryName;
++ (NSString*)getCategoryName;
 
-+(BOOL)isContactSearchEnabled;
-+(void)enableContactSearch:(BOOL)flag;
++ (BOOL)isContactSearchEnabled;
++ (void)enableContactSearch:(BOOL)flag;
 
-+(BOOL)isChannelMembersInfoInNavigationBarEnabled;
-+(void)showChannelMembersInfoInNavigationBar:(BOOL)flag;
++ (BOOL)isChannelMembersInfoInNavigationBarEnabled;
++ (void)showChannelMembersInfoInNavigationBar:(BOOL)flag;
 
-+(UIColor *) getTabBarBackgroundColour;
-+(void) setTabBarBackgroundColour:(UIColor *)color;
-+(UIColor *) getTabBarSelectedItemColour;
-+(void) setTabBarSelectedItemColour:(UIColor *)color;
-+(UIColor *) getTabBarUnSelectedItemColour;
-+(void) setTabBarUnSelectedItemColour:(UIColor *)color;
-+(UIColor *) getAttachmentIconColour;
-+(void) setAttachmentIconColour:(UIColor *)color;
-+(UIColor *) getSendIconColour;
-+(void) setSendIconColour:(UIColor *)color;
-+(UIColor *) getMessageSubtextColour;
-+(void) setMessageSubtextColour:(UIColor *)color;
-+(UIColor *) getProfileMainColour;
-+(void) setProfileMainColour:(UIColor *)color;
-+(UIColor *) getProfileSubColour;
-+(void) setProfileSubColour:(UIColor *)color;
-+(UIColor *) getNewContactMainColour;
-+(void) setNewContactMainColour:(UIColor *)color;
-+(UIColor *) getNewContactSubColour;
-+(void) setNewContactSubColour:(UIColor *)color;
-+(UIColor *) getNewContactTextColour;
-+(void) setNewContactTextColour:(UIColor *)color;
-+(UIColor *) getMessageListTextColor;
-+(void) setMessageListTextColor:(UIColor *)color;
-+(UIColor *) getMessagesViewBackgroundColour;
-+(void) setMessagesViewBackgroundColour:(UIColor *)color;
-+(UIColor *) getChatViewControllerBackgroundColor;
-+(void) setChatViewControllerBackgroundColor:(UIColor *)color;
-+(UIColor *) getSearchBarTintColour;
-+(void) setSearchBarTintColour:(UIColor *)color;
++ (UIColor *) getTabBarBackgroundColour;
++ (void) setTabBarBackgroundColour:(UIColor *)color;
++ (UIColor *) getTabBarSelectedItemColour;
++ (void) setTabBarSelectedItemColour:(UIColor *)color;
++ (UIColor *) getTabBarUnSelectedItemColour;
++ (void) setTabBarUnSelectedItemColour:(UIColor *)color;
++ (UIColor *) getAttachmentIconColour;
++ (void) setAttachmentIconColour:(UIColor *)color;
++ (UIColor *) getSendIconColour;
++ (void) setSendIconColour:(UIColor *)color;
++ (UIColor *) getMessageSubtextColour;
++ (void) setMessageSubtextColour:(UIColor *)color;
++ (UIColor *) getProfileMainColour;
++ (void) setProfileMainColour:(UIColor *)color;
++ (UIColor *) getProfileSubColour;
++ (void) setProfileSubColour:(UIColor *)color;
++ (UIColor *) getNewContactMainColour;
++ (void) setNewContactMainColour:(UIColor *)color;
++ (UIColor *) getNewContactSubColour;
++ (void) setNewContactSubColour:(UIColor *)color;
++ (UIColor *) getNewContactTextColour;
++ (void) setNewContactTextColour:(UIColor *)color;
++ (UIColor *) getMessageListTextColor;
++ (void) setMessageListTextColor:(UIColor *)color;
++ (UIColor *) getMessagesViewBackgroundColour;
++ (void) setMessagesViewBackgroundColour:(UIColor *)color;
++ (UIColor *) getChatViewControllerBackgroundColor;
++ (void) setChatViewControllerBackgroundColor:(UIColor *)color;
++ (UIColor *) getSearchBarTintColour;
++ (void) setSearchBarTintColour:(UIColor *)color;
 
-+(NSArray *) metadataKeysToHideMessages;
-+(void) hideMessagesWithMetadataKeys:(NSArray *)keys;
++ (NSArray *) metadataKeysToHideMessages;
++ (void) hideMessagesWithMetadataKeys:(NSArray *)keys;
 
-+(BOOL)isMultiSelectGalleryViewDisabled;
-+(void)disableMultiSelectGalleryView:(BOOL)enabled;
++ (BOOL)isMultiSelectGalleryViewDisabled;
++ (void)disableMultiSelectGalleryView:(BOOL)enabled;
 
-+(BOOL)is5MinVideoLimitInGalleryEnabled;
-+(void)enable5MinVideoLimitInGallery:(BOOL)enabled;
++ (BOOL)is5MinVideoLimitInGalleryEnabled;
++ (void)enable5MinVideoLimitInGallery:(BOOL)enabled;
 
-+(void)setBackgroundColorForAttachmentPlusIcon:(UIColor *)backgroundColor;
-+(UIColor *)getBackgroundColorForAttachmentPlusIcon;
-+(void) clearAll;
++ (void)setBackgroundColorForAttachmentPlusIcon:(UIColor *)backgroundColor;
++ (UIColor *)getBackgroundColorForAttachmentPlusIcon;
++ (void) clearAll;
 
-+(BOOL)isTextStyleInCellEnabled;
-+(void)enableTextStyleCell:(BOOL)enabled;
++ (BOOL)isTextStyleInCellEnabled;
++ (void)enableTextStyleCell:(BOOL)enabled;
 
-+(void)setChatCellTextFontSize:(float)fontSize;
-+(float)getChatCellTextFontSize;
++ (void)setChatCellTextFontSize:(float)fontSize;
++ (float)getChatCellTextFontSize;
 
-+(void)setChannelCellTextFontSize:(float)fontSize;
-+(float)getChannelCellTextFontSize;
++ (void)setChannelCellTextFontSize:(float)fontSize;
++ (float)getChannelCellTextFontSize;
 
-+(void)setBackgroundColorForAudioRecordingView:(UIColor *)backgroundColor;
-+(UIColor *)getBackgroundColorForAudioRecordingView;
++ (void)setBackgroundColorForAudioRecordingView:(UIColor *)backgroundColor;
++ (UIColor *)getBackgroundColorForAudioRecordingView;
 
-+(void)setColorForSlideToCancelText:(UIColor *)color;
-+(UIColor *)getColorForSlideToCancelText;
++ (void)setColorForSlideToCancelText:(UIColor *)color;
++ (UIColor *)getColorForSlideToCancelText;
 
-+(void)setColorForAudioRecordingText:(UIColor *)color;
-+(UIColor *)getColorForAudioRecordingText;
++ (void)setColorForAudioRecordingText:(UIColor *)color;
++ (UIColor *)getColorForAudioRecordingText;
 
-+(void)setFontForAudioView:(NSString *)font;
-+(NSString *)getFontForAudioView;
++ (void)setFontForAudioView:(NSString *)font;
++ (NSString *)getFontForAudioView;
 
-+(void)enableNewAudioDesign:(BOOL)enable;
-+(BOOL)isNewAudioDesignEnabled;
++ (void)enableNewAudioDesign:(BOOL)enable;
++ (BOOL)isNewAudioDesignEnabled;
 
-+(void)setBackgroundColorForReplyView:(UIColor *)backgroudColor;
-+(UIColor *)getBackgroundColorForReplyView;
++ (void)setBackgroundColorForReplyView:(UIColor *)backgroudColor;
++ (UIColor *)getBackgroundColorForReplyView;
 
-+(void) setHideMediaSelectOption:(NSMutableArray*)array;
-+(NSArray*) getHideMediaSelectOption;
++ (void) setHideMediaSelectOption:(NSMutableArray *)array;
++ (NSArray*) getHideMediaSelectOption;
 
-+(BOOL) imagesHiddenInGallery;
-+(BOOL) videosHiddenInGallery;
++ (BOOL) imagesHiddenInGallery;
++ (BOOL) videosHiddenInGallery;
 
-+(void)setTextColorForMessageTextView:(UIColor *)txtColor;
-+(UIColor *)getTextColorForMessageTextView;
++ (void)setTextColorForMessageTextView:(UIColor *)txtColor;
++ (UIColor *)getTextColorForMessageTextView;
 
-+(void)setChannelActionMessageBgColor:(UIColor *)txtColor;
-+(UIColor *)getChannelActionMessageBgColor;
++ (void)setChannelActionMessageBgColor:(UIColor *)txtColor;
++ (UIColor *)getChannelActionMessageBgColor;
 
-+(void)setChannelActionMessageTextColor:(UIColor *)txtColor;
-+(UIColor *)getChannelActionMessageTextColor;
++ (void)setChannelActionMessageTextColor:(UIColor *)txtColor;
++ (UIColor *)getChannelActionMessageTextColor;
 
-+(void)setUserIconFirstNameColorCodes:(NSMutableDictionary*)nsMutableDictionary;
-+(NSMutableDictionary*) getUserIconFirstNameColorCodes;
++ (void)setUserIconFirstNameColorCodes:(NSMutableDictionary *)nsMutableDictionary;
++ (NSMutableDictionary*) getUserIconFirstNameColorCodes;
 
 // Enable/Disable unblock users from sendMessageTextView
-+(void) setIsUnblockInChatDisabled:(BOOL)flag;
-+(BOOL) isUnblockInChatDisabled;
++ (void) setIsUnblockInChatDisabled:(BOOL)flag;
++ (BOOL) isUnblockInChatDisabled;
 
-+(void)setupSuiteAndMigrate;
-+(NSString *)getShareExtentionGroup;
++ (void)setupSuiteAndMigrate;
++ (NSString *)getShareExtentionGroup;
 
-+(BOOL)isDocumentOptionEnabled;
-+(void)enableDocumentOption:(BOOL)flag;
++ (BOOL)isDocumentOptionEnabled;
++ (void)enableDocumentOption:(BOOL)flag;
 
-+(BOOL)isAddContactButtonForSenderDisabled;
-+(void)disableAddContactButtonForSender;
++ (BOOL)isAddContactButtonForSenderDisabled;
++ (void)disableAddContactButtonForSender;
 
-+(void)setColorForSentContactMsgLabel:(UIColor *)sentContactLabelMsgColor;
-+(void)setColorForReceivedContactMsgLabel:(UIColor *)receivedMsgColor;
++ (void)setColorForSentContactMsgLabel:(UIColor *)sentContactLabelMsgColor;
++ (void)setColorForReceivedContactMsgLabel:(UIColor *)receivedMsgColor;
 
-+(UIColor *)getSentContactMsgLabelColor;
-+(UIColor *)getReceivedContactMsgLabelColor;
++ (UIColor *)getSentContactMsgLabelColor;
++ (UIColor *)getReceivedContactMsgLabelColor;
 
-+(void)setImagePreviewBackgroundColor:(UIColor *)color;
-+(UIColor *)getImagePreviewBackgroundColor;
++ (void)setImagePreviewBackgroundColor:(UIColor *)color;
++ (UIColor *)getImagePreviewBackgroundColor;
 
-+(void)restrictedMessageRegexPattern:(NSString *)pattern;
-+(NSString *)getRestrictedMessageRegexPattern;
++ (void)restrictedMessageRegexPattern:(NSString *)pattern;
++ (NSString *)getRestrictedMessageRegexPattern;
 
-+(void)disableInAppNotificationTap:(BOOL)flag;
-+(BOOL)isInAppNotificationTapDisabled;
++ (void)disableInAppNotificationTap:(BOOL)flag;
++ (BOOL)isInAppNotificationTapDisabled;
 
-+(void)disableGroupListingTab:(BOOL)flag;
-+(BOOL)isGroupListingTabDisabled;
++ (void)disableGroupListingTab:(BOOL)flag;
++ (BOOL)isGroupListingTabDisabled;
 
-+(void)enableMessageSearch:(BOOL)flag;
++ (void)enableMessageSearch:(BOOL)flag;
 
-+(BOOL)isMessageSearchEnabled;
++ (BOOL)isMessageSearchEnabled;
 
-+(void)enableMessageDeleteForAllOption:(BOOL)flag;
-+(BOOL)isMessageDeleteForAllEnabled;
++ (void)enableMessageDeleteForAllOption:(BOOL)flag;
++ (BOOL)isMessageDeleteForAllEnabled;
 
-+(void)setPhotosSelectionLimit:(NSInteger)selectionLimit;
-+(NSInteger)getPhotosSelectionLimit;
++ (void)setPhotosSelectionLimit:(NSInteger)selectionLimit;
++ (NSInteger)getPhotosSelectionLimit;
 
-+(void)setMessageMetadata:(NSMutableDictionary *) messageMetadata;
-+(NSMutableDictionary *)getMessageMetadata;
++ (void)setMessageMetadata:(NSMutableDictionary *)messageMetadata;
++ (NSMutableDictionary *)getMessageMetadata;
 
 /// Support contact userId can be set for  showing the support contact at top in contact screen.
-+(void)setSupportContactUserId:(NSString *)userId;
-+(NSString *)getSupportContactUserId;
++ (void)setSupportContactUserId:(NSString *)userId;
++ (NSString *)getSupportContactUserId;
 
 @end

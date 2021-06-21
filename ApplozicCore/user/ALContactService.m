@@ -14,9 +14,9 @@
 
 @implementation ALContactService
 
- ALContactDBService * alContactDBService;
+ALContactDBService * alContactDBService;
 
--(instancetype)  init{
+- (instancetype)init {
     self= [super init];
     alContactDBService = [[ALContactDBService alloc] init];
     return self;
@@ -27,67 +27,60 @@
 
 //For purgeing single contacts
 
--(BOOL)purgeContact:(ALContact *)contact{
-    
+- (BOOL)purgeContact:(ALContact *)contact {
     return [alContactDBService purgeContact:contact];
 }
 
 
 //For purgeing multiple contacts
--(BOOL)purgeListOfContacts:(NSArray *)contacts{
-    
+- (BOOL)purgeListOfContacts:(NSArray *)contacts {
     return [ alContactDBService purgeListOfContacts:contacts];
 }
 
 
 //For delting all contacts at once
 
--(BOOL)purgeAllContact{
-  return  [alContactDBService purgeAllContact];
-    
+- (BOOL)purgeAllContact {
+    return  [alContactDBService purgeAllContact];
 }
 
 #pragma mark Update APIS
 
 
--(BOOL)updateContact:(ALContact *)contact {
+- (BOOL)updateContact:(ALContact *)contact {
 
     if (!contact.userId || contact.userId.length == 0) {
         return NO;
     }
     return [alContactDBService updateContact:contact];
-    
 }
 
--(BOOL)setUnreadCountInDB:(ALContact*)contact{
+- (BOOL)setUnreadCountInDB:(ALContact*)contact {
     return [alContactDBService setUnreadCountDB:contact];
 }
 
--(BOOL)updateListOfContacts:(NSArray *)contacts{
+- (BOOL)updateListOfContacts:(NSArray *)contacts {
     return [alContactDBService updateListOfContacts:contacts];
 }
 
--(NSNumber *)getOverallUnreadCountForContact
-{
-   return  [alContactDBService getOverallUnreadCountForContactsFromDB];
+- (NSNumber *)getOverallUnreadCountForContact {
+    return [alContactDBService getOverallUnreadCountForContactsFromDB];
 }
 
--(BOOL) isContactExist:(NSString *) value{
-   
-    DB_CONTACT* contact= [alContactDBService getContactByKey:@"userId" value:value];
+- (BOOL)isContactExist:(NSString *) value {
+
+    DB_CONTACT *contact= [alContactDBService getContactByKey:@"userId" value:value];
     return contact != nil && contact.userId != nil;
 }
 #pragma update OR insert contact
 
--(BOOL) updateOrInsert:(ALContact*)contact{
-    
+- (BOOL) updateOrInsert:(ALContact*)contact {
     return ([self isContactExist:contact.userId]) ? [self updateContact:contact] : [self addContact:contact];
-
 }
 
--(void)updateOrInsertListOfContacts:(NSMutableArray *)contacts {
+- (void)updateOrInsertListOfContacts:(NSMutableArray *)contacts {
     
-    for(ALContact* conatct in contacts){
+    for(ALContact *conatct in contacts){
         [self updateOrInsert:conatct];
     }
 }
@@ -95,11 +88,11 @@
 #pragma mark addition APIS
 
 
--(BOOL)addListOfContacts:(NSArray *)contacts{
+- (BOOL)addListOfContacts:(NSArray *)contacts {
     return [alContactDBService addListOfContacts:contacts];
 }
 
--(BOOL)addContact:(ALContact *)userContact{
+- (BOOL)addContact:(ALContact *)userContact{
 
     if (!userContact.userId || userContact.userId.length == 0) {
         return NO;
@@ -112,22 +105,18 @@
 #pragma mark fetching APIS
 
 
-- (ALContact *)loadContactByKey:(NSString *) key value:(NSString*) value
-
-{
+- (ALContact *)loadContactByKey:(NSString *)key value:(NSString *)value {
     return [alContactDBService loadContactByKey:key value:value];
-
 }
 
 #pragma mark fetching OR SAVE
 
-- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *) contactId value:(NSString*) displayName{
+- (ALContact *)loadOrAddContactByKeyWithDisplayName:(NSString *)contactId value:(NSString*)displayName{
     
     DB_CONTACT * dbContact = [alContactDBService getContactByKey:@"userId" value:contactId];
     
     ALContact *contact = [[ALContact alloc] init];
-    if (!dbContact)
-    {
+    if (!dbContact) {
         contact.userId = contactId;
         contact.displayName = displayName;
         NSMutableDictionary * metadata = [[NSMutableDictionary alloc] init];
@@ -165,13 +154,12 @@
     return contact;
 }
 
--(BOOL)isUserDeleted:(NSString *)userId
-{
+- (BOOL)isUserDeleted:(NSString *)userId {
     return [alContactDBService isUserDeleted:userId];
 }
 
--(ALUserDetail *)updateMuteAfterTime:(NSNumber*)notificationAfterTime andUserId:(NSString*)userId{
+- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
     ALContactDBService *contactDataBase = [[ALContactDBService alloc] init];
-   return  [contactDataBase updateMuteAfterTime:notificationAfterTime andUserId:userId];
+    return  [contactDataBase updateMuteAfterTime:notificationAfterTime andUserId:userId];
 }
 @end

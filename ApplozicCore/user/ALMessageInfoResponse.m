@@ -10,26 +10,21 @@
 
 @implementation ALMessageInfoResponse
 
--(instancetype)initWithJSONString:(NSString *)JSONString
-{
+- (instancetype)initWithJSONString:(NSString *)JSONString {
     self = [super initWithJSONString:JSONString];
     
     self.msgInfoList = [NSMutableArray new];
     
-    if([super.status isEqualToString: AL_RESPONSE_SUCCESS])
-    {
+    if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSMutableArray *responseArray = [JSONString valueForKey:@"response"];
         
-        for(NSDictionary *JSONDictionaryObject in responseArray)
-        {
+        for(NSDictionary *JSONDictionaryObject in responseArray) {
             ALMessageInfo *msgObject = [[ALMessageInfo alloc] initWithDictonary:JSONDictionaryObject];
             [self.msgInfoList addObject:msgObject];
         }
         
         return self;
-    }
-    else
-    {
+    } else {
         return nil;
     }
 

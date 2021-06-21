@@ -28,11 +28,9 @@
 @property (nonatomic, strong) NSString *topicId;
 @property (nonatomic,strong)  NSMutableArray *fallBackTemplateList;
 
+- (id)initWithDictonary:(NSDictionary *)detailJson;
 
-
--(id)initWithDictonary:(NSDictionary *)detailJson;
-
--(void)parseMessage:(id) detailJson;
+- (void)parseMessage:(id) detailJson;
 
 
 @end

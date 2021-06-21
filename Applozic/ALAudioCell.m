@@ -51,22 +51,18 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 
 @end
 
-@implementation ALAudioCell
-{
+@implementation ALAudioCell {
     CGFloat msgFrameHeight;
     CGFloat ORDINATE_CONSTANT;
 }
--(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
-    if(self)
-    {
+    if (self) {
         
-          [self.contentView sizeToFit];
-        
-        
+        [self.contentView sizeToFit];
+
         self.playPauseStop = [[UIButton alloc] init];
         [self.playPauseStop addTarget:self action:@selector(mediaButtonAction) forControlEvents:UIControlEventTouchDown];
         [self.contentView addSubview:self.playPauseStop];
@@ -98,18 +94,16 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     return self;
 }
 
--(void) addShadowEffects
-{
+- (void)addShadowEffects {
     self.mBubleImageView.layer.shadowOpacity = 0.3;
     self.mBubleImageView.layer.shadowOffset = CGSizeMake(0, 2);
     self.mBubleImageView.layer.shadowRadius = 1;
     self.mBubleImageView.layer.masksToBounds = NO;
 }
 
--(instancetype) populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype) populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize {
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[alMessage.createdAtTime doubleValue]/1000]];
-    NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
+    NSString *theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
     self.mediaTrackLength.text = [self getAudioLength:alMessage.imageFilePath];
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
@@ -137,49 +131,43 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     [self.mUserProfileImageView setUserInteractionEnabled:YES];
     [self.mUserProfileImageView addGestureRecognizer:tapForOpenChat];
     
-    if([alMessage isReceivedMessage])
-    {
+    if ([alMessage isReceivedMessage]) {
         self.mBubleImageView.backgroundColor = [ALApplozicSettings getReceiveMsgColor];
         
         [self.mUserProfileImageView setFrame:CGRectMake(USER_PROFILE_PADDING_X, 0, USER_PROFILE_WIDTH, USER_PROFILE_HEIGHT)];
         
-        if([ALApplozicSettings isUserProfileHidden])
-        {
+        if ([ALApplozicSettings isUserProfileHidden]) {
             [self.mUserProfileImageView setFrame:CGRectMake(USER_PROFILE_PADDING_X, 0, 0, USER_PROFILE_HEIGHT)];
         }
         
         self.mUserProfileImageView.layer.cornerRadius = self.mUserProfileImageView.frame.size.width/2;
         self.mUserProfileImageView.layer.masksToBounds = YES;
         
-         
+
         self.mNameLabel.frame = self.mUserProfileImageView.frame;
         [self.mNameLabel setText:[ALColorUtility getAlphabetForProfileImage:alMessage.to]];
         
-        if(alContact.contactImageUrl)
-        {
+        if (alContact.contactImageUrl) {
             [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"contact_default_placeholder"];
-        }
-        else
-        {
+        } else {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
             [self.mNameLabel setHidden:NO];
             self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to colorCodes:self.alphabetiColorCodesDictionary];
         }
-         CGFloat requiredHeight  = BUBBLE_PADDING_HEIGHT;
+        CGFloat requiredHeight  = BUBBLE_PADDING_HEIGHT;
         CGFloat paypauseBUttonY = self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y ;
-            
-  [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+
+        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
                                                   self.mUserProfileImageView.frame.origin.y,
                                                   viewSize.width/2 + BUBBLE_PADDING_WIDTH, requiredHeight)];
         
         
-        if(alMessage.groupId)
-        {
-         
+        if (alMessage.groupId) {
+
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary]];
             [self.mChannelMemberName setText:receiverName];
-   
+
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        self.mBubleImageView.frame.size.width - CHANNEL_PADDING_WIDTH, CHANNEL_HEIGHT);
@@ -187,20 +175,19 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
             requiredHeight =  requiredHeight + self.mChannelMemberName.frame.size.height;
             paypauseBUttonY = paypauseBUttonY + self.mChannelMemberName.frame.size.height;
             
-        }    
-        if(alMessage.isAReplyMessage)
-        {
+        }
+        if (alMessage.isAReplyMessage) {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
             
             requiredHeight =  requiredHeight + self.replyParentView.frame.size.height;
             paypauseBUttonY = paypauseBUttonY + self.replyParentView.frame.size.height;
             
         }
-                    
-            [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
-                                                      self.mUserProfileImageView.frame.origin.y,
-                                                      viewSize.width/2 + BUBBLE_PADDING_WIDTH, requiredHeight)];
-             [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
+
+        [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X,
+                                                  self.mUserProfileImageView.frame.origin.y,
+                                                  viewSize.width/2 + BUBBLE_PADDING_WIDTH, requiredHeight)];
+        [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
                                                 paypauseBUttonY,
                                                 BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
         
@@ -224,30 +211,21 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
                                              self.mBubleImageView.frame.size.height + self.mBubleImageView.frame.origin.y,
                                              DATE_WIDTH, DATE_HEIGHT)];
         
-        if (alMessage.imageFilePath == nil)
-        {
+        if (alMessage.imageFilePath == nil) {
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setHidden:NO];
             [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DownloadiOS.png"] forState:UIControlStateNormal];
-        }
-        else
-        {
+        } else {
             [self.mDowloadRetryButton setHidden:YES];
         }
         
-        if (alMessage.inProgress == YES)
-        {
+        if (alMessage.inProgress == YES) {
             self.progresLabel.alpha = 1;
             [self.mDowloadRetryButton setHidden:YES];
-        }
-        else
-        {
+        } else {
             self.progresLabel.alpha = 0;
         }
-    
-    
-    }else
-    {
+    } else {
 
         [self.mUserProfileImageView setFrame:CGRectMake(viewSize.width - USER_PROFILE_PADDING_X_OUTBOX, 0, 0, USER_PROFILE_HEIGHT)];
         
@@ -256,9 +234,8 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         [self.mBubleImageView setFrame:CGRectMake(viewSize.width - (viewSize.width/2 + 50) - 10,
                                                   self.mUserProfileImageView.frame.origin.y,
                                                   viewSize.width/2 + BUBBLE_PADDING_WIDTH, BUBBLE_PADDING_HEIGHT)];
-  
-        if(alMessage.isAReplyMessage)
-        {
+
+        if (alMessage.isAReplyMessage) {
             [self processReplyOfChat:alMessage andViewSize:viewSize ];
             
             [self.mBubleImageView setFrame:CGRectMake(viewSize.width - (viewSize.width/2 + 50) - 10,
@@ -268,17 +245,15 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
                                                     self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y + self.replyParentView.frame.size.height,
                                                     BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
             
-        }
-        else
-        {
+        } else {
             
             [self.playPauseStop setFrame:CGRectMake(self.mBubleImageView.frame.origin.x + BUTTON_PADDING_X,
                                                     self.mBubleImageView.frame.origin.y + BUTTON_PADDING_Y,
                                                     BUTTON_PADDING_WIDTH, BUTTON_PADDING_HEIGHT)];
             
         }
-                [self.mDowloadRetryButton setFrame:CGRectMake(self.playPauseStop.frame.origin.x ,
-                                                     self.playPauseStop.frame.origin.y,
+        [self.mDowloadRetryButton setFrame:CGRectMake(self.playPauseStop.frame.origin.x ,
+                                                      self.playPauseStop.frame.origin.y,
                                                       DOWNLOAD_RETRY_WIDTH, DOWNLOAD_RETRY_WIDTH)];
         
         [self setupProgressValueX: (self.playPauseStop.frame.origin.x) andY: (self.playPauseStop.frame.origin.y)];
@@ -309,20 +284,13 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         self.progresLabel.alpha = 0;
         self.mDowloadRetryButton.alpha = 0;
         
-        if (alMessage.inProgress == YES)
-        {
+        if (alMessage.inProgress == YES) {
             self.progresLabel.alpha = 1;
             ALSLog(ALLoggerSeverityInfo, @"calling you progress label....");
-        }
-        
-        else if(!alMessage.imageFilePath && alMessage.fileMeta.blobKey)
-        {
+        } else  if (!alMessage.imageFilePath && alMessage.fileMeta.blobKey) {
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DownloadiOS.png"] forState:UIControlStateNormal];
-        }
-        
-        else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey)
-        {
+        } else if (alMessage.imageFilePath && !alMessage.fileMeta.blobKey) {
             self.mDowloadRetryButton.alpha = 1;
             [self.mDowloadRetryButton setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"UploadiOS2.png"] forState:UIControlStateNormal];
         }
@@ -330,18 +298,17 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     }
 
     self.frontView.frame = self.mBubleImageView.frame;
-    if(alMessage.imageFilePath != nil && alMessage.fileMeta.blobKey)
-    {
-        NSURL * soundFileURL;
+    if (alMessage.imageFilePath != nil && alMessage.fileMeta.blobKey) {
+        NSURL *soundFileURL;
         NSURL *documentDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:alMessage.imageFilePath];
         NSString *filePath = documentDirectory.path;
 
-        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
             soundFileURL = [NSURL fileURLWithPath:documentDirectory.path];
-        }else{
+        } else {
             NSURL *appGroupDirectory =  [ALUtilityClass getAppsGroupDirectoryWithFilePath:alMessage.imageFilePath];
 
-            if(appGroupDirectory){
+            if (appGroupDirectory) {
                 soundFileURL = [NSURL fileURLWithPath:appGroupDirectory.path];
             }
         }
@@ -363,7 +330,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     if ([alMessage isSentMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
         
         self.mMessageStatusImageView.hidden = NO;
-        NSString * imageName = [self getMessageStatusIconName:self.mMessage];
+        NSString *imageName = [self getMessageStatusIconName:self.mMessage];
         self.mMessageStatusImageView.image = [ALUIUtilityClass getImageFromFramworkBundle:imageName];
     }
     [self.contentView bringSubviewToFront:self.replyUIView];
@@ -372,34 +339,27 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     
 }
 
--(void) cancelAction
-{
-    if ([self.delegate respondsToSelector:@selector(stopDownloadForIndex:andMessage:)])
-    {
+- (void)cancelAction {
+    if ([self.delegate respondsToSelector:@selector(stopDownloadForIndex:andMessage:)]) {
         [self.delegate stopDownloadForIndex:(int)self.tag andMessage:self.mMessage];
     }
 }
 
--(void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 }
 
--(void) dowloadRetryAction
-{
+- (void)dowloadRetryAction {
     [self.delegate downloadRetryButtonActionDelegate:(int)self.tag andMessage:self.mMessage];
 }
 
--(void) dealloc
-{
-    if(self.mMessage.fileMeta)
-    {
+- (void)dealloc {
+    if (self.mMessage.fileMeta) {
         //  [self.mMessage.fileMeta removeObserver:self forKeyPath:@"progressValue" context:nil];
     }
 }
 
--(void) setupProgressValueX:(CGFloat)cooridinateX andY:(CGFloat)cooridinateY
-{
+- (void)setupProgressValueX:(CGFloat)cooridinateX andY:(CGFloat)cooridinateY {
     self.progresLabel = [[KAProgressLabel alloc] init];
     self.progresLabel.cancelButton.frame = CGRectMake(10, 10, 40, 40);
     [self.progresLabel.cancelButton setBackgroundImage:[ALUIUtilityClass getImageFromFramworkBundle:@"DELETEIOSX.png"] forState:UIControlStateNormal];
@@ -417,25 +377,20 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
 }
 
 
--(void) mediaButtonAction
-{
-    ALMediaPlayer * mediaPlayer =  [ALMediaPlayer sharedInstance];
+- (void)mediaButtonAction {
+    ALMediaPlayer *mediaPlayer =  [ALMediaPlayer sharedInstance];
     
-    if( [mediaPlayer isPlayingCurrentKey:self.mMessage.key ] )
-    {
-        if(!mediaPlayer.audioPlayer.isPlaying)
-        {
+    if ([mediaPlayer isPlayingCurrentKey:self.mMessage.key ] ) {
+        if (!mediaPlayer.audioPlayer.isPlaying) {
             [mediaPlayer resumeAudio];
             [self.playPauseStop setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"PAUSE.png"] forState: UIControlStateNormal];
-        }
-        else
-        {
+        } else {
             [self.playPauseStop setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
             [mediaPlayer pauseAudio];
         }
-    }else{
+    } else {
 
-        if(mediaPlayer.audioPlayer.isPlaying) {
+        if (mediaPlayer.audioPlayer.isPlaying) {
             [mediaPlayer stopPlaying];
         }
         mediaPlayer.delegate = self;
@@ -446,25 +401,23 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     }
 }
 
--(NSString*) getAudioLength:(NSString*)path
-{
+- (NSString *)getAudioLength:(NSString *)path {
 
-    NSString * duration = [ALMediaPlayer getTotalDuration:path];
+    NSString *duration = [ALMediaPlayer getTotalDuration:path];
 
     NSString *audioLength = [NSString stringWithFormat:@"0:00 / %@", duration];
 
     return audioLength;
 }
 
--(void) getProgressOfTrack
-{
-    ALMediaPlayer * mediaPlayer =  [ALMediaPlayer sharedInstance];
+- (void)getProgressOfTrack {
+    ALMediaPlayer *mediaPlayer =  [ALMediaPlayer sharedInstance];
 
     NSInteger durationMinutes = [mediaPlayer.audioPlayer duration] / 60;
-    NSInteger durationSeconds = [mediaPlayer.audioPlayer duration] - durationMinutes * 60;
+    NSInteger durationSeconds = [mediaPlayer.audioPlayer duration] - durationMinutes *60;
     
     NSInteger currentTimeMinutes = [mediaPlayer.audioPlayer currentTime] / 60;
-    NSInteger currentTimeSeconds = [mediaPlayer.audioPlayer currentTime] - currentTimeMinutes * 60;
+    NSInteger currentTimeSeconds = [mediaPlayer.audioPlayer currentTime] - currentTimeMinutes *60;
     
     NSString *progressString = [NSString stringWithFormat:@"%ld:%02ld / %ld:%02ld", (long)currentTimeMinutes, (long)currentTimeSeconds, (long)durationMinutes, (long)durationSeconds];
     
@@ -473,41 +426,35 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     
 }
 
--(void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
-{
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
     [self.playPauseStop setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"PLAY.png"] forState: UIControlStateNormal];
     self.mediaTrackLength.text = [self getAudioLength:self.mMessage.imageFilePath];
     [self.mediaTrackProgress setProgress: 0.0];
-    ALMediaPlayer * mediaPlayer =  [ALMediaPlayer sharedInstance];
+    ALMediaPlayer *mediaPlayer =  [ALMediaPlayer sharedInstance];
     [mediaPlayer.audioPlayer stop];
 }
 
--(BOOL)canBecomeFirstResponder
-{
+- (BOOL)canBecomeFirstResponder {
     return YES;
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     ALFileMetaInfo *metaInfo = (ALFileMetaInfo *)object;
     [self setNeedsDisplay];
     self.progresLabel.startDegree = 0;
     self.progresLabel.endDegree = metaInfo.progressValue;
-     ALSLog(ALLoggerSeverityInfo, @"##observer is called....%f",self.progresLabel.endDegree);
+    ALSLog(ALLoggerSeverityInfo, @"##observer is called....%f",self.progresLabel.endDegree);
 }
 
--(void) hidePlayButtonOnUploading
-{
+- (void)hidePlayButtonOnUploading {
     [self.playPauseStop setHidden:YES];
 }
 
--(void)openUserChatVC
-{
+- (void)openUserChatVC {
     [self.delegate processUserChatView:self.mMessage];
 }
 
--(void)processOpenChat
-{
+- (void)processOpenChat {
     [self.delegate handleTapGestureForKeyBoard];
     [self.delegate openUserChat:self.mMessage];
 }

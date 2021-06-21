@@ -25,14 +25,13 @@
 
 @implementation ALMessageServiceWrapper
 
--(void)sendTextMessage:(NSString*)text andtoContact:(NSString*)toContactId {
+- (void)sendTextMessage:(NSString*)text andtoContact:(NSString*)toContactId {
     
     ALMessage * almessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
     
     [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
         
-        if(error)
-        {
+        if (error) {
             ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
             return;
         }
@@ -41,16 +40,15 @@
 }
 
 
--(void)sendTextMessage:(NSString*)messageText andtoContact:(NSString*)contactId orGroupId:(NSNumber*)channelKey{
+- (void)sendTextMessage:(NSString *)messageText andtoContact:(NSString *)contactId orGroupId:(NSNumber *)channelKey {
     
-    ALMessage * almessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:contactId withText:messageText];
+    ALMessage *almessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:contactId withText:messageText];
     
-    almessage.groupId=channelKey;
+    almessage.groupId = channelKey;
     
     [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
         
-        if(error)
-        {
+        if (error) {
             ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
             return;
         }
@@ -58,10 +56,10 @@
     }];
 }
 
--(void) sendMessage:(ALMessage *)alMessage
+- (void) sendMessage:(ALMessage *)alMessage
 withAttachmentAtLocation:(NSString *)attachmentLocalPath
 andWithStatusDelegate:(id)statusDelegate
-     andContentType:(short)contentype{
+      andContentType:(short)contentype {
     
     //Message Creation
     ALMessage * theMessage = alMessage;
@@ -71,16 +69,16 @@ andWithStatusDelegate:(id)statusDelegate
     //File Meta Creation
     theMessage.fileMeta = [self getFileMetaInfo];
     theMessage.fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", attachmentLocalPath.lastPathComponent];
-    if(alMessage.contactIds){
+    if (alMessage.contactIds) {
         theMessage.fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",alMessage.contactIds, attachmentLocalPath.lastPathComponent];
     }
     NSString *mimeType = [ALUtilityClass fileMIMEType:attachmentLocalPath];
-    if(!mimeType) {
+    if (!mimeType) {
         return;
     }
 
     theMessage.fileMeta.contentType = mimeType;
-    if( theMessage.contentType == ALMESSAGE_CONTENT_VCARD){
+    if (theMessage.contentType == ALMESSAGE_CONTENT_VCARD) {
         theMessage.fileMeta.contentType = @"text/x-vcard";
     }
     NSData *imageSize = [NSData dataWithContentsOfFile:attachmentLocalPath];
@@ -92,9 +90,9 @@ andWithStatusDelegate:(id)statusDelegate
     theMessage.msgDBObjectId = [theMessageEntity objectID];
     theMessageEntity.inProgress = [NSNumber numberWithBool:YES];
     theMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
-     NSError * error =  [[ALDBHandler sharedInstance] saveContext];
+    NSError * error =  [[ALDBHandler sharedInstance] saveContext];
 
-    if (self.messageServiceDelegate && error){
+    if (self.messageServiceDelegate && error) {
         theMessageEntity.inProgress = [NSNumber numberWithBool:NO];
         theMessageEntity.isUploadFailed = [NSNumber numberWithBool:YES];
         [self.messageServiceDelegate uploadDownloadFailed:alMessage];
@@ -106,8 +104,7 @@ andWithStatusDelegate:(id)statusDelegate
     ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
     [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *message, NSError *error) {
         
-        if (error)
-        {
+        if (error) {
             [self.messageServiceDelegate uploadDownloadFailed:alMessage];
             return;
         }
@@ -119,8 +116,7 @@ andWithStatusDelegate:(id)statusDelegate
 }
 
 
--(ALFileMetaInfo *)getFileMetaInfo
-{
+- (ALFileMetaInfo *)getFileMetaInfo {
     ALFileMetaInfo *info = [ALFileMetaInfo new];
     
     info.blobKey = nil;
@@ -136,9 +132,9 @@ andWithStatusDelegate:(id)statusDelegate
     return info;
 }
 
--(ALMessage *)createMessageEntityOfContentType:(int)contentType
-                                      toSendTo:(NSString*)to
-                                      withText:(NSString*)text{
+- (ALMessage *)createMessageEntityOfContentType:(int)contentType
+                                       toSendTo:(NSString*)to
+                                       withText:(NSString*)text {
     
     ALMessage * theMessage = [ALMessage new];
     
@@ -162,7 +158,7 @@ andWithStatusDelegate:(id)statusDelegate
 }
 
 
--(void) downloadMessageAttachment:(ALMessage*)alMessage{
+- (void)downloadMessageAttachment:(ALMessage*)alMessage {
 
     ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self;
@@ -171,7 +167,7 @@ andWithStatusDelegate:(id)statusDelegate
 }
 
 - (void)onDownloadCompleted:(ALMessage *)alMessage {
-   [self.messageServiceDelegate DownloadCompleted:alMessage];
+    [self.messageServiceDelegate DownloadCompleted:alMessage];
 }
 
 - (void)onDownloadFailed:(ALMessage *)alMessage {

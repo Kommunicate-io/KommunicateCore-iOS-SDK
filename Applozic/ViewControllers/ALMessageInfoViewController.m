@@ -10,8 +10,7 @@
 #import "UIImageView+WebCache.h"
 #import "ALUIUtilityClass.h"
 
-@interface ALMessageInfoViewController ()
-{
+@interface ALMessageInfoViewController () {
     NSMutableArray *arrayList;
     NSMutableArray *readList;
     NSMutableArray *deliveredList;
@@ -25,8 +24,7 @@
 
 @implementation ALMessageInfoViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.alTableView.delegate = self;
@@ -36,23 +34,19 @@
     self.colourDictionary = [ALApplozicSettings getUserIconFirstNameColorCodes];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     [self.activityIndicator stopAnimating];
     [self navigationBarColor];
 }
 
--(void)navigationBarColor
-{
-    if([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem])
-    {
+-(void)navigationBarColor {
+    if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
         [self.navigationController.navigationBar addSubview:[ALUIUtilityClass setStatusBarStyle]];
         [self.navigationController.navigationBar setBarTintColor: [ALApplozicSettings getColorForNavigation]];
         [self.navigationController.navigationBar setTintColor: [ALApplozicSettings getColorForNavigationItem]];
@@ -63,83 +57,61 @@
 # pragma TABLE VIEW DELEGATES
 //==================================================================================================
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 3;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    if (section == 0)
-    {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 0) {
         return 0;
-    }
-    else if (section == 1)
-    {
+    } else if (section == 1) {
         return readList.count;
-    }
-    else
-    {
+    } else {
         return deliveredList.count;
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    if (section == 0)
-    {
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
         return self.msgHeaderHeight + 20;
     }
     
     return 50;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 60;
 }
 
-- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    if (section == 0)
-    {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
         return [self viewForMessageSection:tableView];
-    }
-    else if(section == 1)
-    {
+    } else if (section == 1) {
         return [self customHeaderView:section withTitle:NSLocalizedStringWithDefaultValue(@"read", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Read", @"") andName:@"ic_action_read.png"];
-    }
-    else
-    {
+    } else {
         return [self customHeaderView:section withTitle:NSLocalizedStringWithDefaultValue(@"delivered", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Delivered", @"")  andName:@"ic_action_message_delivered.png"];
     }
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ALContactCell *contactCell = (ALContactCell *)[tableView dequeueReusableCellWithIdentifier:@"userCell"];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         
         [self setTableCellView: contactCell];
         ALMessageInfo *msgInfo;
-        if(indexPath.section == 1)
-        {
+        if (indexPath.section == 1) {
             msgInfo = self->readList[indexPath.row];
             [self cellAtIndexPath:msgInfo inSection:indexPath.section];
-        }
-        else if(indexPath.section == 2)
-        {
+        } else if (indexPath.section == 2) {
             msgInfo = self->deliveredList[indexPath.row];
             [self cellAtIndexPath:msgInfo inSection:indexPath.section];
         }
@@ -152,17 +124,14 @@
 # pragma TABLE VIEW HELPER METHODS
 //==================================================================================================
 
--(void)setMessage:(ALMessage *)alMessage andHeaderHeight:(CGFloat)headerHeight withCompletionHandler:(void(^)(NSError * error))completion
-{
-    if(![ALDataNetworkConnection checkDataNetworkAvailable])
-    {
+-(void)setMessage:(ALMessage *)alMessage andHeaderHeight:(CGFloat)headerHeight withCompletionHandler:(void(^)(NSError * error))completion {
+    if (![ALDataNetworkConnection checkDataNetworkAvailable]) {
         ALNotificationView * notification = [ALNotificationView new];
         [notification noDataConnectionNotificationView];
         completion([self customError]);
         return;
     }
-    if(!alMessage.sentToServer)
-    {
+    if (!alMessage.sentToServer) {
         [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
         [TSMessage showNotificationWithTitle:NSLocalizedStringWithDefaultValue(@"messageProccessText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Message is in processing", @"") type:TSMessageNotificationTypeWarning];
         completion([self customError]);
@@ -178,19 +147,15 @@
     ALMessageService *msgService = [ALMessageService new];
     [msgService getMessageInformationWithMessageKey:self.almessage.key withCompletionHandler:^(ALMessageInfoResponse *msgInfo, NSError *theError) {
         
-        if(!theError)
-        {
+        if (!theError) {
             self->arrayList = [NSMutableArray arrayWithArray:msgInfo.msgInfoList];
             
-            for (ALMessageInfo *info in self->arrayList)
-            {
-                if(info.status == (short)READ || info.status == DELIVERED_AND_READ)
-                {
+            for (ALMessageInfo *info in self->arrayList)  {
+                if (info.status == (short)READ || info.status == DELIVERED_AND_READ) {
                     [self->readList addObject:info];
                 }
                 
-                if(info.status == (short)DELIVERED)
-                {
+                if (info.status == (short)DELIVERED) {
                     [self->deliveredList addObject:info];
                 }
                 
@@ -200,8 +165,7 @@
     }];
 }
 
--(void)setTableCellView:(ALContactCell *)contactCell
-{
+-(void)setTableCellView:(ALContactCell *)contactCell {
     self.firstAlphabet = (UILabel *)[contactCell viewWithTag:505];
     self.userImage = (UIImageView *)[contactCell viewWithTag:504];
     self.userName = (UILabel *)[contactCell viewWithTag:503];
@@ -210,13 +174,11 @@
     self.userImage.layer.masksToBounds = YES;
 }
 
--(UIView *)viewForMessageSection:(UITableView *)tableView
-{
+-(UIView *)viewForMessageSection:(UITableView *)tableView {
     return [self populateCellForMessage:self.view.frame.size];
 }
 
--(UIView *)customHeaderView:(NSInteger)section withTitle:(NSString *)title andName:(NSString *)name
-{
+-(UIView *)customHeaderView:(NSInteger)section withTitle:(NSString *)title andName:(NSString *)name {
     self.headerTitle = [[UILabel alloc] init];
     [self.headerTitle setBackgroundColor:[UIColor clearColor]];
     [self.headerTitle setTextColor:[UIColor blackColor]];
@@ -242,16 +204,14 @@
     return headerView;
 }
 
--(void)cellAtIndexPath:(ALMessageInfo *)msgInfo inSection:(NSInteger)section
-{
+-(void)cellAtIndexPath:(ALMessageInfo *)msgInfo inSection:(NSInteger)section {
     ALContactDBService * alContactDBService = [ALContactDBService new];
     ALContact *alContact = [alContactDBService loadContactByKey:@"userId" value:msgInfo.userId];
     [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.userImage defaultImage:@"contact_default_placeholder"];
     [self.firstAlphabet setHidden:YES];
     [self.userName setText:[alContact getDisplayName]];
     
-    if(!alContact.contactImageUrl)
-    {
+    if (!alContact.contactImageUrl) {
         [self.firstAlphabet setHidden:NO];
         [self.userImage setBackgroundColor:[ALColorUtility getColorForAlphabet:[alContact getDisplayName] colorCodes:self.colourDictionary]];
         [self.firstAlphabet setText:[ALColorUtility getAlphabetForProfileImage:[alContact getDisplayName]]];
@@ -260,8 +220,7 @@
 }
 
 
--(UIView *)populateCellForMessage:(CGSize)cellSize
-{
+-(UIView *)populateCellForMessage:(CGSize)cellSize {
     CGFloat maxWidth = cellSize.width - 150;
     
     UIImageView *bubbleView = [[UIImageView alloc] init];
@@ -276,8 +235,7 @@
     
     CGRect frameImage = CGRectMake(cellSize.width - 265, 10, maxWidth, maxWidth);
     
-    if(self.almessage.contentType == ALMESSAGE_CONTENT_LOCATION)
-    {
+    if (self.almessage.contentType == ALMESSAGE_CONTENT_LOCATION) {
         frameImage = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
     }
     
@@ -300,11 +258,8 @@
     imageView.frame = subFrameImage;
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.msgHeaderHeight + 20)];
     
-    if([self.almessage.fileMeta.contentType hasPrefix:@"audio"])
-    {
-        
-        
-        
+    if ([self.almessage.fileMeta.contentType hasPrefix:@"audio"]) {
+
         textSize  =  [ALUtilityClass getSizeForText:self.almessage.fileMeta.name maxWidth:maxWidth + 5 font:textView.font.fontName fontSize:textView.font.pointSize];
         [textView setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 
@@ -320,11 +275,8 @@
         [view addSubview:textView];
         [view addSubview:imageView];
         
-    }
-    else if ([self.almessage.fileMeta.contentType hasPrefix:@"video"])
-    {
-        if(self.almessage.message.length)
-        {
+    } else if ([self.almessage.fileMeta.contentType hasPrefix:@"video"]) {
+        if (self.almessage.message.length) {
             CGSize textSize = [ALUtilityClass getSizeForText:self.almessage.message
                                                     maxWidth:imageView.frame.size.width
                                                         font:textView.font.fontName
@@ -337,19 +289,14 @@
             [view addSubview:textView];
             [textView setText:self.almessage.message];
         }
-        
-        
-        
-        if(self.almessage.imageFilePath != nil && self.almessage.fileMeta.blobKey)
-        {
+
+        if (self.almessage.imageFilePath != nil && self.almessage.fileMeta.blobKey) {
             NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             NSString * filePath = [docDir stringByAppendingPathComponent:self.almessage.imageFilePath];
             [imageView setImage: [ALUIUtilityClass setVideoThumbnail:filePath]];
             
             
-        }
-        else
-        {
+        } else {
             [imageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
             
         }
@@ -360,13 +307,10 @@
         [view addSubview:imageView];
         
         
-    }
-    else if ([self.almessage.fileMeta.contentType hasPrefix:@"image"] || self.almessage.contentType == ALMESSAGE_CONTENT_LOCATION)
-    {
+    } else if ([self.almessage.fileMeta.contentType hasPrefix:@"image"] || self.almessage.contentType == ALMESSAGE_CONTENT_LOCATION) {
         [imageView sd_setImageWithURL:self.contentURL];
         [view addSubview:imageView];
-        if(self.almessage.message.length && self.almessage.contentType == ALMESSAGE_CONTENT_ATTACHMENT)
-        {
+        if (self.almessage.message.length && self.almessage.contentType == ALMESSAGE_CONTENT_ATTACHMENT) {
             CGSize textSize = [ALUtilityClass getSizeForText:self.almessage.message maxWidth:imageView.frame.size.width font:textView.font.fontName fontSize:textView.font.pointSize];
             bubbleView.frame = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
             textView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + imageView.frame.size.height + 10, imageView.frame.size.width, textSize.height + 20);
@@ -374,9 +318,7 @@
             [textView setText:self.almessage.message];
             [imageView setContentMode:UIViewContentModeScaleAspectFill];
         }
-    }
-    else if(self.almessage.fileMeta.contentType)
-    {
+    } else if (self.almessage.fileMeta.contentType) {
         bubbleView.frame = CGRectMake(cellSize.width - 265, 10, maxWidth, self.msgHeaderHeight);
         imageView.frame = CGRectMake(bubbleView.frame.origin.x + 5, bubbleView.frame.origin.y + 5, self.msgHeaderHeight - 10, self.msgHeaderHeight - 10);
         
@@ -388,24 +330,21 @@
                                     bubbleView.frame.size.width - imageView.frame.size.width - 10,
                                     imageView.frame.size.height);
         
-        if(self.almessage.contentType == ALMESSAGE_CONTENT_VCARD)
-        {
+        if (self.almessage.contentType == ALMESSAGE_CONTENT_VCARD) {
             imageView.frame = CGRectMake(bubbleView.frame.origin.x + 10, bubbleView.frame.origin.y + 5, 50, 50);
             imageView.layer.cornerRadius = imageView.frame.size.width/2;
             
             [imageView setImage: [ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"]];
-    
-                if(self.VCardClass.contactImage)
-                {
-                    [imageView setImage:self.VCardClass.contactImage];
-                }
-                [textView setText:[NSString stringWithFormat:@"%@\n\n%@",self.VCardClass.fullName,self.VCardClass.userPHONE_NO]];
-                if(self.VCardClass.userEMAIL_ID)
-                {
-                    [textView setText:[NSString stringWithFormat:@"%@\n\n%@\n\n%@",self.VCardClass.fullName, self.VCardClass.userPHONE_NO,
-                                       self.VCardClass.userEMAIL_ID]];
-                }
-        
+
+            if (self.VCardClass.contactImage)  {
+                [imageView setImage:self.VCardClass.contactImage];
+            }
+            [textView setText:[NSString stringWithFormat:@"%@\n\n%@",self.VCardClass.fullName,self.VCardClass.userPHONE_NO]];
+            if (self.VCardClass.userEMAIL_ID)  {
+                [textView setText:[NSString stringWithFormat:@"%@\n\n%@\n\n%@",self.VCardClass.fullName, self.VCardClass.userPHONE_NO,
+                                   self.VCardClass.userEMAIL_ID]];
+            }
+
             textView.frame = CGRectMake(imageView.frame.origin.x + imageView.frame.size.width + 10,
                                         bubbleView.frame.origin.y + 5,
                                         bubbleView.frame.size.width - imageView.frame.size.width - 10,
@@ -417,9 +356,7 @@
         [view addSubview:imageView];
         [imageView setBackgroundColor:[UIColor clearColor]];
         [imageView setContentMode:UIViewContentModeScaleAspectFit];
-    }
-    else
-    {
+    } else {
         bubbleView.frame = CGRectMake((view.frame.size.width - textSize.width - 27), view.frame.origin.y + 10, textSize.width + 18, self.msgHeaderHeight);
         textView.frame = CGRectMake(bubbleView.frame.origin.x + 10, bubbleView.frame.origin.y + 10, textSize.width, textSize.height);
         [view addSubview:textView];
@@ -434,16 +371,12 @@
     if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
         textView.textAlignment = NSTextAlignmentRight;
         imageView.transform = CGAffineTransformMakeScale(-1.0, 1.0);
-        
     }
     
     return view;
 }
 
-
-
--(NSError *)customError
-{
+-(NSError *)customError {
     NSString * domain = @"com.applozic.domain";
     NSString * desc = NSLocalizedString(@"EITHER 'NO NETWORK' OR 'MSG YET TO SENT'", @"");
     NSDictionary * userInfo = @{ NSLocalizedDescriptionKey : desc };

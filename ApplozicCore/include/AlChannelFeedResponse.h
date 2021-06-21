@@ -15,6 +15,6 @@
 @property (nonatomic, strong) ALChannel *alChannel;
 @property (nonatomic, strong) NSDictionary *errorResponse;
 
--(instancetype)initWithJSONString:(NSString *)JSONString;
+- (instancetype)initWithJSONString:(NSString *)JSONString;
 
 @end

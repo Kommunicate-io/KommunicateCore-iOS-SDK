@@ -44,12 +44,11 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 @implementation ALChatCell
 {
     CGFloat msgFrameHeight;
-    UITapGestureRecognizer * tapForCustomView, *tapGestureRecognizerForCell;
+    UITapGestureRecognizer *tapForCustomView, *tapGestureRecognizerForCell;
 
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 
     if (self) {
@@ -74,7 +73,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         self.replyParentView.layer.cornerRadius = 5;
         [self.replyParentView setUserInteractionEnabled:YES];
 
-        UITapGestureRecognizer * replyViewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureForReplyView:)];
+        UITapGestureRecognizer *replyViewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureForReplyView:)];
         replyViewTapGesture.numberOfTapsRequired=1;
         [self.replyParentView addGestureRecognizer:replyViewTapGesture];
 
@@ -91,12 +90,6 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
         self.mMessageLabel = [[ALHyperLabel alloc] init];
         self.mMessageLabel.numberOfLines = 0;
-
-        NSString *fontName = [ALUIUtilityClass parsedALChatCostomizationPlistForKey:APPLOZIC_CHAT_FONTNAME];
-
-        if (!fontName) {
-            fontName = DEFAULT_FONT_NAME;
-        }
 
         self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:[ALApplozicSettings getChatCellTextFontSize] fontName:[ALApplozicSettings getFontFace]];
         self.mMessageLabel.textColor = [UIColor grayColor];
@@ -148,13 +141,13 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         [self.contentView addSubview:self.frontView];
     }
 
-    UILongPressGestureRecognizer * menuTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
+    UILongPressGestureRecognizer *menuTapGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
     menuTapGesture.minimumPressDuration = 1.0;
     menuTapGesture.cancelsTouchesInView = NO;
     [self.frontView setUserInteractionEnabled:YES];
     [self.frontView addGestureRecognizer:menuTapGesture];
 
-    UILongPressGestureRecognizer * menuTapGestureForMessageLabel = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
+    UILongPressGestureRecognizer *menuTapGestureForMessageLabel = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(proccessTapForMenu:)];
     menuTapGestureForMessageLabel.minimumPressDuration = 1.0;
     menuTapGestureForMessageLabel.cancelsTouchesInView = NO;
     [self.mMessageLabel addGestureRecognizer:menuTapGestureForMessageLabel];
@@ -163,8 +156,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
 }
 
--(UIFont *)getDynamicFontWithDefaultSize:(CGFloat)size fontName:(NSString *)fontName
-{
+- (UIFont *)getDynamicFontWithDefaultSize:(CGFloat)size fontName:(NSString *)fontName {
     UIFont *defaultFont = [UIFont fontWithName:fontName size:size];
     if (!defaultFont) {
         defaultFont = [UIFont systemFontOfSize:size];
@@ -178,14 +170,13 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     return defaultFont;
 }
 
--(instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage*) alMessage viewSize:(CGSize)viewSize {
 
     [self.hyperLinkArray removeAllObjects];
     self.mUserProfileImageView.alpha = 1;
 
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[alMessage.createdAtTime doubleValue]/1000]];
-    NSString * theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
+    NSString *theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
 
     self.mMessage = alMessage;
     [self processHyperLink];
@@ -193,7 +184,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     ALContactDBService *theContactDBService = [[ALContactDBService alloc] init];
     ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
 
-    NSString * receiverName = [alContact getDisplayName];
+    NSString *receiverName = [alContact getDisplayName];
 
     CGSize theTextSize = [ALUtilityClass getSizeForText:alMessage.message maxWidth:viewSize.width-115
                                                    font:self.mMessageLabel.font.fontName
@@ -220,30 +211,21 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     self.mUserProfileImageView.backgroundColor = [UIColor whiteColor];
     self.mMessageLabel.backgroundColor = [UIColor clearColor];
 
-    if([alMessage.type isEqualToString:@"100"])
-    {
+    if ([alMessage.type isEqualToString:@"100"]) {
         [self dateTextSetupForALMessage:alMessage withViewSize:viewSize andTheTextSize:theTextSize];
-    }
-    else if ([alMessage.type isEqualToString:AL_IN_BOX])
-    {
+    } else if ([alMessage.type isEqualToString:AL_IN_BOX]) {
         [self.contentView bringSubviewToFront:self.mChannelMemberName];
 
-        if([ALApplozicSettings isUserProfileHidden])
-        {
+        if ([ALApplozicSettings isUserProfileHidden]) {
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0, 0, USER_PROFILE_HEIGHT);
-        }
-        else
-        {
+        } else {
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X,
                                                           0, USER_PROFILE_WIDTH, USER_PROFILE_HEIGHT);
         }
 
-        if([ALApplozicSettings getReceiveMsgColor])
-        {
+        if ([ALApplozicSettings getReceiveMsgColor]) {
             self.mBubleImageView.backgroundColor = [ALApplozicSettings getReceiveMsgColor];
-        }
-        else
-        {
+        } else {
             self.mBubleImageView.backgroundColor = [UIColor whiteColor];
         }
 
@@ -267,13 +249,12 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
         CGFloat mMessageLabelY = self.mBubleImageView.frame.origin.y + MESSAGE_PADDING_Y;
 
-        if([alMessage getGroupId])
-        {
+        if ([alMessage getGroupId]) {
             [self.mChannelMemberName setHidden:NO];
 
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.colourDictionary]];
 
-            if(theTextSize.width < receiverNameSize.width)
+            if (theTextSize.width < receiverNameSize.width)
             {
                 theTextSize.width = receiverNameSize.width+5;
                 requiredBubbleWidth = theTextSize.width + CHANNEL_PADDING_X;
@@ -290,8 +271,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
             requiredBubbleHeight = requiredBubbleHeight + self.mChannelMemberName.frame.size.height;
         }
 
-        if( alMessage.isAReplyMessage )
-        {
+        if (alMessage.isAReplyMessage ) {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
             mMessageLabelY = mMessageLabelY + self.replyParentView.frame.size.height;
             requiredBubbleHeight = requiredBubbleHeight + self.replyParentView.frame.size.height;
@@ -299,7 +279,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         }
         //resize bubble
 
-        if(self.replyParentView.frame.size.width>theTextSize.width){
+        if (self.replyParentView.frame.size.width>theTextSize.width) {
             theTextSize.width = self.replyParentView.frame.size.width;
         }
 
@@ -325,32 +305,24 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         self.mDateLabel.textAlignment = NSTextAlignmentLeft;
 
 
-        if(alMessage.groupId){
+        if (alMessage.groupId) {
 
             self.mChannelMemberName.frame = CGRectMake(self.mBubleImageView.frame.origin.x + CHANNEL_PADDING_X,
                                                        self.mBubleImageView.frame.origin.y + CHANNEL_PADDING_Y,
                                                        (self.mBubleImageView.frame.size.width -10), CHANNEL_PADDING_HEIGHT);
         }
 
-        if(alContact.contactImageUrl)
-        {
+        if (alContact.contactImageUrl) {
             [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"contact_default_placeholder"];
-        }
-        else
-        {
+        } else {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:nil options:SDWebImageRefreshCached];
             [self.mNameLabel setHidden:NO];
             self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.colourDictionary];
         }
-    }
-    else    //Sent Message
-    {
-        if([ALApplozicSettings getSendMsgColor])
-        {
+    } else {
+        if ([ALApplozicSettings getSendMsgColor]) {
             self.mBubleImageView.backgroundColor = [ALApplozicSettings getSendMsgColor];
-        }
-        else
-        {
+        } else {
             self.mBubleImageView.backgroundColor = [UIColor whiteColor];
         }
         self.mUserProfileImageView.alpha = 0;
@@ -369,8 +341,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         self.mBubleImageView.layer.masksToBounds = NO;
         CGFloat mMessageLabelY = self.mBubleImageView.frame.origin.y + MESSAGE_PADDING_Y;
 
-        if(alMessage.isAReplyMessage)
-        {
+        if (alMessage.isAReplyMessage) {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
             mMessageLabelY = mMessageLabelY + self.replyParentView.frame.size.height ;
             requiredBubbleHeight = requiredBubbleHeight + self.replyParentView.frame.size.height;
@@ -383,7 +354,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
                                                 0, requiredBubbleWidth,
                                                 requiredBubbleHeight);
 
-        if(self.replyParentView.frame.size.width>theTextSize.width){
+        if (self.replyParentView.frame.size.width>theTextSize.width) {
             theTextSize.width = self.replyParentView.frame.size.width;
         }
 
@@ -409,10 +380,10 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
     self.frontView.frame = self.mBubleImageView.frame;
 
-    if ([alMessage isSentMessage]  && ![alMessage isChannelContentTypeMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
+    if ([alMessage isSentMessage] && ![alMessage isChannelContentTypeMessage] && ((self.channel && self.channel.type != OPEN) || !self.channel)) {
 
         self.mMessageStatusImageView.hidden = NO;
-        NSString * imageName;
+        NSString *imageName;
 
         switch (alMessage.status.intValue) {
             case DELIVERED_AND_READ :
@@ -436,29 +407,25 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
     self.mDateLabel.text = theDate;
 
-    /*    =========================== FOR PUSH VC ON TAP =============================  */
+    /*   =========================== FOR PUSH VC ON TAP =============================  */
 
     //   CHECKING IF MESSAGE META-DATA DICTIONARY HAVE SOME DATA
 
-    if(self.mMessage.metadata.count && (alMessage.contentType != 102) && (alMessage.contentType != 103))
-    {
+    if (self.mMessage.metadata.count && (alMessage.contentType != 102) && (alMessage.contentType != 103)) {
         [self.mBubleImageView setUserInteractionEnabled:YES];
         [self.mBubleImageView addGestureRecognizer:tapForCustomView];
     }
 
-    /*    ====================================== END =================================  */
+    /*   ====================================== END =================================  */
 
     self.mMessageLabel.font = [self getDynamicFontWithDefaultSize:[ALApplozicSettings getChatCellTextFontSize] fontName:[ALApplozicSettings getFontFace]];
-    if(alMessage.contentType == ALMESSAGE_CONTENT_TEXT_HTML)
-    {
+    if (alMessage.contentType == ALMESSAGE_CONTENT_TEXT_HTML) {
 
-        NSAttributedString * attributedString = [[NSAttributedString alloc] initWithData:[self.mMessage.message dataUsingEncoding:NSUnicodeStringEncoding]
-                                                                                 options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType } documentAttributes:nil error:nil];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[self.mMessage.message dataUsingEncoding:NSUnicodeStringEncoding]
+                                                                                options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType } documentAttributes:nil error:nil];
 
         self.mMessageLabel.attributedText = attributedString;
-    }
-    else
-    {
+    } else {
         NSDictionary *attrs = @{
             NSFontAttributeName : self.mMessageLabel.font,
             NSForegroundColorAttributeName : self.mMessageLabel.textColor
@@ -470,7 +437,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
             NSUnderlineStyleAttributeName : [NSNumber numberWithInt:NSUnderlineStyleThick]
         };
 
-        if (self.mMessage.message){
+        if (self.mMessage.message) {
             self.mMessageLabel.attributedText = [[NSAttributedString alloc] initWithString:self.mMessage.message attributes:attrs];
         }
         [self setHyperLinkAttribute];
@@ -479,10 +446,10 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
 }
 
--(void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
+- (void) proccessTapForMenu:(UITapGestureRecognizer *)longPressGestureRecognizer {
 
-    UIView * superView = [longPressGestureRecognizer.view superview];
-    UIView * gestureView = longPressGestureRecognizer.view;
+    UIView *superView = [longPressGestureRecognizer.view superview];
+    UIView *gestureView = longPressGestureRecognizer.view;
 
     if (!superView ||
         !gestureView ||
@@ -490,7 +457,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         return;
     }
 
-    UIMenuController * sharedMenuController =  [UIMenuController sharedMenuController];
+    UIMenuController *sharedMenuController =  [UIMenuController sharedMenuController];
     if (![gestureView canBecomeFirstResponder] ||
         sharedMenuController.isMenuVisible) {
         return;
@@ -499,26 +466,26 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     [gestureView becomeFirstResponder];
     [self processKeyBoardHideTap];
 
-    UIMenuItem * messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
-    UIMenuItem * messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
+    UIMenuItem *messageForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"forwardOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Forward", @"") action:@selector(messageForward:)];
+    UIMenuItem *messageReply = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"replyOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Reply", @"") action:@selector(messageReply:)];
 
-    if ([self.mMessage.type isEqualToString:AL_IN_BOX]){
+    if ([self.mMessage.type isEqualToString:AL_IN_BOX]) {
 
-        UIMenuItem * messageReportMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"ReportMessageOption",
-                                                                                                                 [ALApplozicSettings getLocalizableName],
-                                                                                                                 [NSBundle mainBundle],
-                                                                                                                 @"Report", @"")
-                                                                        action:@selector(messageReport:)];
+        UIMenuItem *messageReportMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"ReportMessageOption",
+                                                                                                                [ALApplozicSettings getLocalizableName],
+                                                                                                                [NSBundle mainBundle],
+                                                                                                                @"Report", @"")
+                                                                       action:@selector(messageReport:)];
 
         [sharedMenuController setMenuItems: @[messageForward,
                                               messageReply,
                                               messageReportMenuItem]];
 
-    }else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]){
+    } else if ([self.mMessage.type isEqualToString:AL_OUT_BOX]) {
 
-        UIMenuItem * deleteForAllMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"deleteForAll", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Delete for all", @"") action:@selector(deleteMessageForAll:)];
+        UIMenuItem *deleteForAllMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"deleteForAll", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Delete for all", @"") action:@selector(deleteMessageForAll:)];
 
-        UIMenuItem * msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
+        UIMenuItem *msgInfo = [[UIMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"infoOptionTitle", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Info", @"") action:@selector(msgInfo:)];
 
         [sharedMenuController setMenuItems: @[msgInfo, messageReply, messageForward, deleteForAllMenuItem]];
     }
@@ -528,8 +495,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
 }
 
--(void)dateTextSetupForALMessage:(ALMessage *)alMessage withViewSize:(CGSize)viewSize andTheTextSize:(CGSize)theTextSize
-{
+- (void)dateTextSetupForALMessage:(ALMessage *)alMessage withViewSize:(CGSize)viewSize andTheTextSize:(CGSize)theTextSize {
     [self.mDateLabel setHidden:YES];
     [self.mBubleImageView setHidden:YES];
     CGFloat dateY = 0;
@@ -541,18 +507,15 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0, 0, USER_PROFILE_HEIGHT);
 
 }
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 }
 
--(BOOL)canBecomeFirstResponder
-{
+- (BOOL)canBecomeFirstResponder {
     return YES;
 }
 
--(BOOL) canPerformAction:(SEL)action withSender:(id)sender
-{
+- (BOOL) canPerformAction:(SEL)action withSender:(id)sender {
 
     if ([self.mMessage isSentMessage] &&
         action == @selector(messageReport:)) {
@@ -591,33 +554,27 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
             action == @selector(messageReport:));
 }
 
--(void) messageForward:(id)sender
-{
+- (void) messageForward:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processForwardMessage:self.mMessage];
 }
 
 
 // Default copy method
-- (void)copy:(id)sender
-{
+- (void)copy:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Copy in ALChatCell, messageId: %@", self.mMessage.message);
     UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
 
-    if(self.mMessage.message != NULL)
-    {
+    if (self.mMessage.message != NULL) {
         //    [pasteBoard setString:cell.textLabel.text];
         [pasteBoard setString:self.mMessage.message];
-    }
-    else
-    {
+    } else {
         [pasteBoard setString:@""];
     }
 
 }
 
--(void) delete:(id)sender
-{
+- (void) delete:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Delete in ALChatCell pressed");
 
     //UI
@@ -631,7 +588,7 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     }];
 }
 
--(void)msgInfo:(id)sender {
+- (void)msgInfo:(id)sender {
     [self.delegate showAnimation:YES];
     UIStoryboard *storyboardM = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     ALMessageInfoViewController *msgInfoVC = (ALMessageInfoViewController *)[storyboardM instantiateViewControllerWithIdentifier:@"ALMessageInfoView"];
@@ -640,91 +597,74 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
 
     [msgInfoVC setMessage:self.mMessage andHeaderHeight:msgFrameHeight withCompletionHandler:^(NSError *error) {
 
-        if(!error)
-        {
+        if (!error) {
             [self.delegate loadView:weakObj];
-        }
-        else
-        {
+        } else {
             [self.delegate showAnimation:NO];
         }
     }];
 }
 
 
--(void) messageReply:(id)sender
-{
+- (void) messageReply:(id)sender {
     ALSLog(ALLoggerSeverityInfo, @"Message forward option is pressed");
     [self.delegate processMessageReply:self.mMessage];
 
 }
 
--(void) messageReport:(id)sender {
+- (void) messageReport:(id)sender {
     [self.delegate messageReport:self.mMessage];
 }
 
--(void) processKeyBoardHideTap
-{
+- (void) processKeyBoardHideTap {
     [self.delegate handleTapGestureForKeyBoard];
 
 }
 
--(void)processTapGesture
-{
+- (void)processTapGesture {
     [self.delegate processALMessage:self.mMessage];
 }
 
--(void)processOpenChat
-{
+- (void)processOpenChat {
     [self processKeyBoardHideTap];
     [self.delegate openUserChat:self.mMessage];
 }
 
--(void)processHyperLink
-{
-    if(self.mMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION || !self.mMessage.message.length) // AVOID HYPERLINK FOR GROUP OPERATION MESSAGE OBJECT
-    {
+- (void)processHyperLink {
+    if (self.mMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION || !self.mMessage.message.length)  {
         return;
     }
 
-    NSString * source = self.mMessage.message;
-    NSDataDetector * detector = [NSDataDetector dataDetectorWithTypes:(NSTextCheckingTypePhoneNumber | NSTextCheckingTypeLink)
-                                                                error:nil];
+    NSString *source = self.mMessage.message;
+    NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:(NSTextCheckingTypePhoneNumber | NSTextCheckingTypeLink)
+                                                               error:nil];
 
-    NSArray * matches = [detector matchesInString:source options:0 range:NSMakeRange(0, [source length])];
+    NSArray *matches = [detector matchesInString:source options:0 range:NSMakeRange(0, [source length])];
 
-    for(NSTextCheckingResult * link in matches)
-    {
-        if(link.URL)
-        {
-            NSString * actualLinkString = [source substringWithRange:link.range];
+    for(NSTextCheckingResult *link in matches) {
+        if (link.URL) {
+            NSString *actualLinkString = [source substringWithRange:link.range];
             [self.hyperLinkArray addObject:actualLinkString];
         }
-        else if (link.phoneNumber)
-        {
+        else if (link.phoneNumber) {
             [self.hyperLinkArray addObject:link.phoneNumber.description];
         }
     }
 }
 
--(void)setHyperLinkAttribute
-{
-    if(self.mMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION || !self.mMessage.message.length)
-    {
+- (void)setHyperLinkAttribute {
+    if (self.mMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION || !self.mMessage.message.length) {
         return;
     }
 
-    void(^handler)(ALHyperLabel *label, NSString *substring) = ^(ALHyperLabel *label, NSString *substring){
+    void(^handler)(ALHyperLabel *label, NSString *substring) = ^(ALHyperLabel *label, NSString *substring) {
 
-        if(substring.integerValue)
-        {
-            NSNumber * contact = [NSNumber numberWithInteger:substring.integerValue];
-            NSURL * phoneNumber = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@",contact]];
+        if (substring.integerValue) {
+            NSNumber *contact = [NSNumber numberWithInteger:substring.integerValue];
+            NSURL *phoneNumber = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@",contact]];
             [[UIApplication sharedApplication] openURL:phoneNumber options:@{} completionHandler:nil];
-        }
-        else
-        {
-            if([substring hasPrefix:@"http"])
+        } else {
+            if ([substring hasPrefix:@"http"])
             {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:substring] options:@{} completionHandler:nil];
             }
@@ -735,22 +675,20 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
         }
     };
 
-    NSArray * nsArrayLink = [NSArray arrayWithArray:[self.hyperLinkArray mutableCopy]];
+    NSArray *nsArrayLink = [NSArray arrayWithArray:[self.hyperLinkArray mutableCopy]];
     [self.mMessageLabel setLinksForSubstrings:nsArrayLink withLinkHandler: handler];
 }
 
--(void)processReplyOfChat:(ALMessage*)almessage andViewSize:(CGSize)viewSize
-{
+- (void)processReplyOfChat:(ALMessage*)almessage andViewSize:(CGSize)viewSize {
 
-    if(!almessage.isAReplyMessage)
-    {
+    if (!almessage.isAReplyMessage) {
         return;
     }
 
-    NSString * messageReplyId = [almessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
-    ALMessage * replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
+    NSString *messageReplyId = [almessage.metadata valueForKey:AL_MESSAGE_REPLY_KEY];
+    ALMessage *replyMessage = [[ALMessageService new] getALMessageByKey:messageReplyId];
 
-    if(replyMessage == nil){
+    if (replyMessage == nil) {
         return;
 
     }
@@ -762,41 +700,35 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     [self.replyUIView setBackgroundColor:[UIColor clearColor]];
     CGFloat replyWidthRequired = [self.replyUIView getWidthRequired:replyMessage andViewSize:viewSize];
 
-    if(self.mBubleImageView.frame.size.width> replyWidthRequired )
-    {
+    if (self.mBubleImageView.frame.size.width> replyWidthRequired ) {
         replyWidthRequired = (self.mBubleImageView.frame.size.width);
         ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is less from parent one : %f", replyWidthRequired);
-    }
-    else
-    {
+    } else {
         ALSLog(ALLoggerSeverityInfo, @" replyWidthRequired is grater from parent one : %f", replyWidthRequired);
 
     }
 
     CGFloat bubbleXposition = self.mBubleImageView.frame.origin.x +5;
 
-    if(almessage.isSentMessage)
-    {
+    if (almessage.isSentMessage) {
         bubbleXposition  = (viewSize.width - replyWidthRequired - BUBBLE_PADDING_X_OUTBOX -5);
 
     }
 
-    if(almessage.groupId && almessage.isReceivedMessage)
-    {
+    if (almessage.groupId && almessage.isReceivedMessage) {
 
         self.replyParentView.frame =
         CGRectMake( bubbleXposition+2,
                    self.mChannelMemberName.frame.origin.y + self.mChannelMemberName.frame.size.height,
                    replyWidthRequired+5,
                    60);
-    }
-    else if(!almessage.groupId & !almessage.isSentMessage  ){
+    } else if (!almessage.groupId & !almessage.isSentMessage) {
         self.replyParentView.frame =
         CGRectMake( bubbleXposition -1 ,
                    self.mBubleImageView.frame.origin.y+3 ,
                    replyWidthRequired+5,
                    60);
-    }else{
+    } else {
         self.replyParentView.frame =
         CGRectMake( bubbleXposition -5 ,
                    self.mBubleImageView.frame.origin.y+3 ,
@@ -818,25 +750,25 @@ static NSString *const DEFAULT_FONT_NAME = @"Helvetica-Bold";
     [self.contentView bringSubviewToFront:self.replyParentView];
 }
 
--(void)tapGestureForReplyView:(id)sender {
+- (void)tapGestureForReplyView:(id)sender {
     [self.delegate scrollToReplyMessage:self.mMessage];
 }
 
--(BOOL)isMessageReplyMenuEnabled:(SEL) action {
+- (BOOL)isMessageReplyMenuEnabled:(SEL) action {
     return ([ALApplozicSettings isReplyOptionEnabled] &&
             action == @selector(messageReply:));
 }
 
--(BOOL)isForwardMenuEnabled:(SEL) action {
+- (BOOL)isForwardMenuEnabled:(SEL) action {
     return ([ALApplozicSettings isForwardOptionEnabled] &&
             action == @selector(messageForward:));
 }
 
--(BOOL)isMessageDeleteForAllMenuEnabled:(SEL) action {
+- (BOOL)isMessageDeleteForAllMenuEnabled:(SEL) action {
     return ([ALApplozicSettings isMessageDeleteForAllEnabled] &&
             action == @selector(deleteMessageForAll:));
 }
--(void)deleteMessageForAll:(id)sender {
+- (void)deleteMessageForAll:(id)sender {
     [self.delegate deleteMessasgeforAll:self.mMessage];
 }
 

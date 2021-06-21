@@ -14,6 +14,6 @@
 
 @property (nonatomic, strong) ALChannel *alChannel;
 
--(instancetype)initWithJSONString:(NSString *)JSONString;
+- (instancetype)initWithJSONString:(NSString *)JSONString;
 
 @end

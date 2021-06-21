@@ -24,7 +24,6 @@ static CGFloat const BUBBLE_PADDING_HEIGHT = 190;
 static CGFloat const DATE_HEIGHT = 20;
 
 static CGFloat const CNT_PROFILE_X = 10;
-static CGFloat const CNT_PROFILE_Y = 10;
 static CGFloat const CNT_PROFILE_HEIGHT = 50;
 static CGFloat const CNT_PROFILE_WIDTH = 50;
 static CGFloat const CNT_PERSON_X = 10;
@@ -50,16 +49,13 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
 
 @end
 
-@implementation ALContactMessageCell
-{
+@implementation ALContactMessageCell {
     NSURL *theUrl;
 }
--(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 
-    if(self)
-    {
+    if (self) {
 
         self.addContactButton = [[UIButton alloc] init];
         [self.addContactButton setTitle: NSLocalizedStringWithDefaultValue(@"addContactButtonText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"ADD CONTACT", @"") forState:UIControlStateNormal];
@@ -75,8 +71,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
     return self;
 }
 
--(instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize {
     [super populateCell:alMessage viewSize:viewSize];
 
     [self.addContactButton setEnabled:NO];
@@ -88,18 +83,14 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
     CGSize theDateSize = [ALUtilityClass getSizeForText:theDate maxWidth:150 font:self.mDateLabel.font.fontName fontSize:self.mDateLabel.font.pointSize];
 
 
-    if ([alMessage isReceivedMessage])
-    {
+    if ([alMessage isReceivedMessage]) {
         [self.contactPerson setTextColor:[ALApplozicSettings getReceivedContactMsgLabelColor]];
         [self.userContact setTextColor:[ALApplozicSettings getReceivedContactMsgLabelColor]];
         [self.emailId setTextColor:[ALApplozicSettings getReceivedContactMsgLabelColor]];
 
-        if([ALApplozicSettings isUserProfileHidden])
-        {
+        if ([ALApplozicSettings isUserProfileHidden]) {
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0, 0, USER_PROFILE_HEIGHT);
-        }
-        else
-        {
+        } else {
             self.mUserProfileImageView.frame = CGRectMake(USER_PROFILE_PADDING_X, 0,
                                                           USER_PROFILE_WIDTH, USER_PROFILE_HEIGHT);
         }
@@ -112,12 +103,9 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
         ALContactDBService *theContactDBService = [[ALContactDBService alloc] init];
         ALContact *alContact = [theContactDBService loadContactByKey:@"userId" value: alMessage.to];
         NSString * receiverName = [alContact getDisplayName];
-        if(alContact.contactImageUrl)
-        {
+        if (alContact.contactImageUrl) {
             [ALUIUtilityClass downloadImageUrlAndSet:alContact.contactImageUrl imageView:self.mUserProfileImageView defaultImage:@"contact_default_placeholder"];
-        }
-        else
-        {
+        } else {
             [self.mUserProfileImageView sd_setImageWithURL:[NSURL URLWithString:@""]];
             [self.mNameLabel setHidden:NO];
             self.mUserProfileImageView.backgroundColor = [ALColorUtility getColorForAlphabet:alMessage.to colorCodes:self.alphabetiColorCodesDictionary];
@@ -127,13 +115,10 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
 
         CGFloat requiredHeight = viewSize.width -BUBBLE_PADDING_HEIGHT;
 
-        CGFloat imageViewY =  self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y;
-
         CGFloat contactProfileViewY = 0.0;
         [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,
                                                   viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
-        if(alMessage.groupId)
-        {
+        if (alMessage.groupId) {
             [self.mChannelMemberName setHidden:NO];
             [self.mChannelMemberName setText:receiverName];
             [self.mChannelMemberName setTextColor: [ALColorUtility getColorForAlphabet:receiverName colorCodes:self.alphabetiColorCodesDictionary]];
@@ -142,25 +127,21 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
                                                        self.mBubleImageView.frame.size.width + CHANNEL_PADDING_WIDTH, CHANNEL_PADDING_HEIGHT);
 
             requiredHeight = requiredHeight + self.mChannelMemberName.frame.size.height;
-            imageViewY = imageViewY +  self.mChannelMemberName.frame.size.height;
-            
             contactProfileViewY =  self.mChannelMemberName.frame.origin.x-AL_CONTACT_PADDING_Y;
 
         }
         
-        if(alMessage.isAReplyMessage)
-        {
+        if (alMessage.isAReplyMessage) {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
 
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
-            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
 
         }
 
 
         [self.mBubleImageView setFrame:CGRectMake(self.mUserProfileImageView.frame.size.width + BUBBLE_PADDING_X , 0,viewSize.width - BUBBLE_PADDING_WIDTH, requiredHeight)];
         
-        if(!alMessage.groupId){
+        if (!alMessage.groupId){
             contactProfileViewY =  self.mUserProfileImageView.frame.origin.x + 20;
         }
         
@@ -208,8 +189,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
     theUrl  = nil;
     self.vCardClass = nil;
 
-    if (alMessage.imageFilePath != NULL)
-    {
+    if (alMessage.imageFilePath != NULL) {
         NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.imageFilePath];
         theUrl = [NSURL fileURLWithPath:filePath];
@@ -218,8 +198,7 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
         [self.vCardClass vCardParser:filePath];
 
         [self.contactPerson setText:self.vCardClass.fullName];
-        if(self.vCardClass.contactImage)
-        {
+        if (self.vCardClass.contactImage) {
             [self.contactProfileImage setImage:self.vCardClass.contactImage];
         }
         [self.emailId setText:self.vCardClass.userEMAIL_ID];
@@ -230,13 +209,10 @@ static CGFloat const AL_CONTACT_PADDING_Y = 20;
     return self;
 }
 
--(void)addButtonAction
-{
-    @try
-    {
+- (void)addButtonAction {
+    @try {
         [self.vCardClass addContact:self.vCardClass];
     } @catch (NSException *exception) {
-        
         ALSLog(ALLoggerSeverityInfo, @"CONTACT_EXCEPTION :: %@", exception.description);
     }
 }

@@ -23,9 +23,11 @@
     NSData *encodedData = [value dataUsingEncoding:NSUTF8StringEncoding];
 
     if (!encodedData) {
-        *error = [NSError errorWithDomain:@"Applozic"
-                                     code:1
-                                 userInfo:@{NSLocalizedDescriptionKey : @"String to Data conversion error"}];
+        if (error != NULL) {
+            *error = [NSError errorWithDomain:@"Applozic"
+                                         code:1
+                                     userInfo:@{NSLocalizedDescriptionKey : @"String to Data conversion error"}];
+        }
         return NO;
     }
 
@@ -115,13 +117,14 @@
 }
 
 
--(void)setErrorMessage:(OSStatus)status
+-(BOOL)setErrorMessage:(OSStatus)status
              withError:(NSError **)error {
+    BOOL success = NO;
     NSString *errorMessage = nil;
     if (@available(iOS 11.3, *)) {
         CFStringRef errorMessageRef = SecCopyErrorMessageString(status, nil);
-        if (errorMessage) {
-            errorMessage = (__bridge NSString *)errorMessageRef;
+        if (errorMessageRef != NULL) {
+            errorMessage = (__bridge_transfer NSString *)errorMessageRef;
         } else {
             errorMessage  = [[NSString alloc] initWithFormat:@"Unhandled Error with status %d" ,(int)status];
         }
@@ -130,11 +133,13 @@
     }
 
     if (errorMessage) {
-        *error = [NSError errorWithDomain:@"Applozic"
-                                     code:1
-                                 userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
-
+        if (error != NULL) {
+            *error = [NSError errorWithDomain:@"Applozic"
+                                         code:1
+                                     userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
+        }
     }
+    return success;
 }
 
 @end

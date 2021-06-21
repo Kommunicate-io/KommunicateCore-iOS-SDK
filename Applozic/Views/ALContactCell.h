@@ -30,10 +30,11 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *unreadCountLabel;
 
--(void)updateWithMessage:(ALMessage*) message  withColourDictionary:(NSMutableDictionary *)colourDictionary;
+- (void)updateWithMessage:(ALMessage*) message  withColourDictionary:(NSMutableDictionary *)colourDictionary;
 
--(void)updateProfileImageAndUnreadCountWithChannel:(ALChannel*) alChannel orContact:(ALContact*)contact
+- (void)updateProfileImageAndUnreadCountWithChannel:(ALChannel *) alChannel
+                                          orContact:(ALContact *)contact
                               withColourDictionary:(NSMutableDictionary *)colourDictionary;
 
--(void)displayAttachmentMediaType:(ALMessage *)message;
+- (void)displayAttachmentMediaType:(ALMessage *)message;
 @end

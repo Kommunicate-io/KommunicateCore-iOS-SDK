@@ -48,18 +48,15 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
 @end
 
-@implementation ALMyContactMessageCell
-{
+@implementation ALMyContactMessageCell {
     NSURL *theUrl;
 }
--(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 
-    if(self)
-    {
+    if (self) {
 
-        if(!ALApplozicSettings.isAddContactButtonForSenderDisabled){
+        if (!ALApplozicSettings.isAddContactButtonForSenderDisabled) {
 
             self.addContactButton = [[UIButton alloc] init];
             [self.addContactButton setTitle: NSLocalizedStringWithDefaultValue(@"addContactButtonText", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"ADD CONTACT", @"") forState:UIControlStateNormal];
@@ -69,7 +66,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
             [self.addContactButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
             [self.contentView addSubview:self.addContactButton];
 
-            if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
+            if ([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft) {
                 self.addContactButton.transform = CGAffineTransformMakeScale(-1.0, 1.0);
             }
         }
@@ -77,8 +74,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
     return self;
 }
 
--(instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize
-{
+- (instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize {
 
     [super populateCell:alMessage viewSize:viewSize];
     self.contactProfileImage.layer.cornerRadius = self.contactProfileImage.frame.size.width/2;
@@ -93,7 +89,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
     [self addContactButtonEnable:NO];
     
-    if ([alMessage isSentMessage]){
+    if ([alMessage isSentMessage]) {
 
         [self.contactPerson setTextColor:[ALApplozicSettings getSentContactMsgLabelColor]];
         [self.userContact setTextColor:[ALApplozicSettings getSentContactMsgLabelColor]];
@@ -110,17 +106,13 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
         CGFloat requiredHeight = viewSize.width - widthPadding;
 
-        CGFloat imageViewY =  self.mBubleImageView.frame.origin.y + CNT_PROFILE_Y;
-
         self.mBubleImageView.frame = CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX), 0,
                                                 viewSize.width - BUBBLE_PADDING_WIDTH, viewSize.width - widthPadding);
 
-        if(alMessage.isAReplyMessage)
-        {
+        if (alMessage.isAReplyMessage) {
             [self processReplyOfChat:alMessage andViewSize:viewSize];
 
             requiredHeight = requiredHeight + self.replyParentView.frame.size.height;
-            imageViewY = imageViewY +  self.replyParentView.frame.size.height;
 
         }
 
@@ -146,7 +138,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
                                           self.userContact.frame.size.height + EMAIL_Y,
                                           widthName, EMAIL_HEIGHT)];
 
-        if(!ALApplozicSettings.isAddContactButtonForSenderDisabled){
+        if (!ALApplozicSettings.isAddContactButtonForSenderDisabled) {
 
             [self.addContactButton setFrame:CGRectMake(self.contactProfileImage.frame.origin.x,
                                                        self.mBubleImageView.frame.origin.y + self.mBubleImageView.frame.size.height - BUTTON_Y,
@@ -156,7 +148,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
             
             [self.addContactButton setBackgroundColor:[UIColor whiteColor]];
 
-        }else{
+        } else {
             self.msgFrameHeight = self.mBubleImageView.frame.size.height;
         }
 
@@ -183,8 +175,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 
     theUrl = nil;
     self.vCardClass = nil;
-    if (alMessage.imageFilePath != NULL)
-    {
+    if (alMessage.imageFilePath != NULL) {
         NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString * filePath = [docDir stringByAppendingPathComponent:alMessage.imageFilePath];
         theUrl = [NSURL fileURLWithPath:filePath];
@@ -193,8 +184,7 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
         [self.vCardClass vCardParser:filePath];
 
         [self.contactPerson setText:self.vCardClass.fullName];
-        if(self.vCardClass.contactImage)
-        {
+        if (self.vCardClass.contactImage) {
             [self.contactProfileImage setImage:self.vCardClass.contactImage];
         }
         [self.emailId setText:self.vCardClass.userEMAIL_ID];
@@ -213,10 +203,8 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
 }
 
 
--(void)addButtonAction
-{
-    @try
-    {
+- (void)addButtonAction {
+    @try {
         [self.vCardClass addContact:self.vCardClass];
     } @catch (NSException *exception) {
 
@@ -224,8 +212,8 @@ static CGFloat const AL_CONTACT_ADD_BUTTON_HEIGHT_PADDING = 230;
     }
 }
 
--(void)addContactButtonEnable:(BOOL)flag{
-    if(!ALApplozicSettings.isAddContactButtonForSenderDisabled){
+- (void)addContactButtonEnable:(BOOL)flag{
+    if (!ALApplozicSettings.isAddContactButtonForSenderDisabled) {
         [self.addContactButton setEnabled:flag];
     }
 }
