@@ -20,7 +20,7 @@
 - (void)parseJsonString:(NSString *)JSONString {
     if ((JSONString && [JSONString isKindOfClass:[NSString class]] && JSONString.length) ||
         (JSONString && [JSONString isKindOfClass:[NSDictionary class]] && ((NSDictionary*)JSONString).count)) {
-        NSMutableArray * userDetailArray = [[NSMutableArray alloc] initWithArray:[JSONString valueForKey:@"users"]];
+        NSMutableArray *userDetailArray = [[NSMutableArray alloc] initWithArray:[JSONString valueForKey:@"users"]];
         self.userDetailList = [NSMutableArray new];
 
         for (NSDictionary *userDictionary in userDetailArray) {

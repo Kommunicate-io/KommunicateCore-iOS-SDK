@@ -12,11 +12,13 @@
 #import "ALSyncMessageFeed.h"
 #import "MessageListRequest.h"
 #import "ALMessageInfoResponse.h"
-#import "ALMessageService.h"
 #import "ALContactDBService.h"
 #import "ALSearchRequest.h"
+#import "ALResponseHandler.h"
 
 @interface ALMessageClientService : NSObject
+
+@property (nonatomic, strong) ALResponseHandler *responseHandler;
 
 - (void)addWelcomeMessage:(NSNumber *)channelKey;
 
@@ -33,11 +35,15 @@
 
 - (void)getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void (^)(ALSyncMessageFeed *, NSError *))completion;
 
-- (void)deleteMessage:(NSString *)keyString andContactId:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)deleteMessage:(NSString *)keyString
+         andContactId:(NSString *)contactId
+       withCompletion:(void (^)(NSString *, NSError *))completion;
 
-- (void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
+- (void)deleteMessageThread:(NSString *)contactId
+               orChannelKey:(NSNumber *)channelKey
+             withCompletion:(void (^)(NSString *, NSError *))completion;
 
-- (void)sendMessage:(NSDictionary *)userInfo WithCompletionHandler:(void(^)(id theJson, NSError *theError))completion;
+- (void)sendMessage:(NSDictionary *)userInfo withCompletionHandler:(void(^)(id theJson, NSError *theError))completion;
 
 - (void)getCurrentMessageInformation:(NSString *)messageKey
                withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion;
@@ -46,14 +52,14 @@
                 withOpenGroup:(BOOL)isOpenGroup
                withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion;
 
-- (void)downloadImageUrl:(NSString *) blobKey withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion;
+- (void)downloadImageUrl:(NSString *)blobKey withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion;
 
 - (void)downloadImageThumbnailUrl:(NSString *)url
                           blobKey:(NSString *)blobKey
                        completion:(void(^)(NSString *fileURL, NSError *error)) completion;
 
 - (void)downloadImageThumbnailUrl:(ALMessage *)message
-                   withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion __attribute__((deprecated));
+                   withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion DEPRECATED_ATTRIBUTE;
 
 - (void)getLatestMessageForUser:(NSString *)deviceKeyString
                withMetaDataSync:(BOOL)isMetaDataUpdate
@@ -69,12 +75,12 @@
 
 - (void)searchMessage:(NSString *)key withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
 
-- (void)searchMessageWith:(ALSearchRequest *)request withCompletion: (void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
+- (void)searchMessageWith:(ALSearchRequest *)request withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
 
-- (void) getMessagesWithkeys:(NSMutableArray<NSString *> *)keys
+- (void)getMessagesWithkeys:(NSMutableArray<NSString *> *)keys
               withCompletion:(void(^)(ALAPIResponse* response, NSError *error))completion;
 
-- (void)deleteMessageForAllWithKey:(NSString *) keyString
-                    withCompletion:(void (^)(ALAPIResponse *, NSError *))completion;
+- (void)deleteMessageForAllWithKey:(NSString *)keyString
+                    withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 @end

@@ -15,6 +15,6 @@ static NSString *const AL_REGISTERED = @"AL_REGISTERED";
 @interface ALInternalSettings : NSObject
 
 + (void)setRegistrationStatusMessage:(NSString *)message;
-+ (NSString*)getRegistrationStatusMessage;
++ (NSString *)getRegistrationStatusMessage;
 
 @end

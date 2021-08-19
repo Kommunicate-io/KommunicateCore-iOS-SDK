@@ -38,11 +38,11 @@
 
 + (UIColor*)colorWithHexString:(NSString*)hex;
 
-+ (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
++ (UIImage *)generateVideoThumbnailImage:(NSString *)videoFilePATH;
 
-+ (UIImage *)subProcessThumbnail:(NSURL *)url;
++ (UIImage *)generateImageThumbnailForVideoWithURL:(NSURL *)url;
 
-+ (void)subVideoImage:(NSURL *)url withCompletion:(void (^)(UIImage *image)) completion;
++ (void)imageGeneratorForVideoWithURL:(NSURL *)url withCompletion:(void (^)(UIImage *image)) completion;
 
 + (void)permissionPopUpWithMessage:(NSString *)msgText andViewController:(UIViewController *)viewController;
 + (void)setAlertControllerFrame:(UIAlertController *)alertController andViewController:(UIViewController *)viewController;

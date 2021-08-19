@@ -250,7 +250,7 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 + (void)setPushNotificationFormat:(short)type;
 + (short)getPushNotificationFormat;
 + (void)setUserEncryption:(NSString *)encryptionKey;
-+ (NSString*)getUserEncryptionKey;
++ (NSString *)getUserEncryptionKey;
 
 + (void)setLastSyncTimeForMetaData:(NSNumber *)metaDataLastSyncTime;
 + (NSNumber *)getLastSyncTimeForMetaData;
@@ -276,5 +276,5 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 + (NSNumber *)getChannelListLastSyncGeneratedTime;
 
 + (void)setVOIPDeviceToken:(NSString *)VOIPDeviceToken;
-+ (NSString*)getVOIPDeviceToken;
++ (NSString *)getVOIPDeviceToken;
 @end

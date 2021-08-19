@@ -22,7 +22,7 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 
 - (void)syncCall:(ALMessage *)alMessage andMessageList:(NSMutableArray *)messageArray;
 - (void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status;
-- (void)updateStatusForContact:(NSString *)contactId  withStatus:(int)status;
+- (void)updateStatusForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateTypingStatus:(NSString *) applicationKey userId:(NSString *)userId status:(BOOL)status;
 - (void)updateLastSeenAtStatus:(ALUserDetail *)alUserDetail;
 - (void)mqttConnectionClosed;

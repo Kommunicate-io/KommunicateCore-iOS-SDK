@@ -285,9 +285,7 @@
     
     BOOL isTheObjectThere = [mutableArray containsObject:withNotificationId];
     
-    if (isTheObjectThere) {
-        // [mutableArray removeObject:withNotificationId];
-    } else {
+    if (!isTheObjectThere) {
         [mutableArray addObject:withNotificationId];
     }
     //WE will just store 20 notificationIds for processing...

@@ -274,27 +274,27 @@
                            alpha:1.0f];
 }
 
-+ (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH {
++ (UIImage *)generateVideoThumbnailImage:(NSString *)videoFilePATH {
     NSURL *url = [NSURL fileURLWithPath:videoFilePATH];
-    UIImage * processThumbnail = [self subProcessThumbnail:url];
+    UIImage * processThumbnail = [self generateImageThumbnailForVideoWithURL:url];
     return processThumbnail;
 }
 
-+ (UIImage *)subProcessThumbnail:(NSURL *)url {
++ (UIImage *)generateImageThumbnailForVideoWithURL:(NSURL *)url {
     AVAsset *asset = [AVAsset assetWithURL:url];
     AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     imageGenerator.appliesPreferredTrackTransform = YES;
     CMTime time = [asset duration];
     time.value = 0;
     CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
-    UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];
+    UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
 
     return thumbnail;
 }
 
 
-+ (void)subVideoImage:(NSURL *)url withCompletion:(void (^)(UIImage *image)) completion {
++ (void)imageGeneratorForVideoWithURL:(NSURL *)url withCompletion:(void (^)(UIImage *image)) completion {
 
     AVAsset *asset = [AVAsset assetWithURL:url];
     AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];

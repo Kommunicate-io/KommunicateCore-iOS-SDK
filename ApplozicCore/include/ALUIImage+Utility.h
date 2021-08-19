@@ -10,12 +10,8 @@
 
 @interface UIImage (Utility)
 
-- (double) getImageSizeInMb;
-
-//-(BOOL) islandScape;
-
-- (UIImage *)getCompressedImageLessThanSize:(double) sizeInMb;
+- (double)getImageSizeInMb;
+- (UIImage *)getCompressedImageLessThanSize:(double)sizeInMb;
 - (NSData *)getCompressedImageData;
-
 
 @end

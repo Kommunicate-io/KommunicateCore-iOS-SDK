@@ -11,15 +11,15 @@
 @implementation ALLastSeenSyncFeed
 
 - (instancetype)initWithJSONString:(NSString *)serverResponse {
-    NSMutableArray * lastSeenDetailArray = [serverResponse valueForKey:@"response"];
+    NSMutableArray *lastSeenDetailArray = [serverResponse valueForKey:@"response"];
     [self populateLastSeenDetail:lastSeenDetailArray];
     return self;
 }
 
 - (void)populateLastSeenDetail:(NSMutableArray *)lastSeenDetailArray {
     NSMutableArray *listArray = [NSMutableArray new];
-    for (NSDictionary *theDictionary in lastSeenDetailArray) {
-        ALUserDetail *userLastSeenDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+    for (NSDictionary *userDetailDictionary in lastSeenDetailArray) {
+        ALUserDetail *userLastSeenDetail = [[ALUserDetail alloc] initWithDictonary:userDetailDictionary];
         [listArray addObject:userLastSeenDetail];
     }
     self.lastSeenArray = listArray;

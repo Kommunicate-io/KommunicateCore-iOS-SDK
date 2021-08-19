@@ -1,5 +1,5 @@
 //
-//  SearchResultCache.h
+//  ALSearchResultCache.h
 //  Applozic
 //
 //  Created by Shivam Pokhriyal on 02/07/19.
@@ -11,9 +11,9 @@
 #import "ALContact.h"
 #import "ALUserDetail.h"
 
-@interface SearchResultCache : NSObject
+@interface ALSearchResultCache : NSObject
 
-+ (SearchResultCache *) shared;
++ (ALSearchResultCache *)shared;
 
 - (void)saveChannels:(NSMutableArray<ALChannel *> *)channels;
 - (void)saveUserDetails:(NSMutableArray<ALUserDetail *> *)userDetails;

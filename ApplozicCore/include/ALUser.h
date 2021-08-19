@@ -55,7 +55,7 @@ typedef enum
 @property NSString *notificationSoundFileName;
 @property NSMutableDictionary *metadata;
 
--(instancetype)initWithUserId:(NSString *)userId
+- (instancetype)initWithUserId:(NSString *)userId
                      password:(NSString *)password
                         email:(NSString *)email
                andDisplayName:(NSString *)displayName;

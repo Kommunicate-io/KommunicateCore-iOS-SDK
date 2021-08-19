@@ -10,7 +10,7 @@
 
 @implementation ALJWTClaim
 
--(instancetype)initWithValue:(id) value {
+-(instancetype)initWithValue:(id)value {
     self.value = value;
     return self;
 }

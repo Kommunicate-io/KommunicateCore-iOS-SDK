@@ -237,7 +237,7 @@ static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.A
 
 + (NSNumber *)getStartTime;
 
-+ (void)setChatWallpaperImageName:(NSString*)imageName;
++ (void)setChatWallpaperImageName:(NSString *)imageName;
 
 + (NSString *)getChatWallpaperImageName;
 
@@ -494,39 +494,39 @@ static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.A
 + (BOOL)isChannelMembersInfoInNavigationBarEnabled;
 + (void)showChannelMembersInfoInNavigationBar:(BOOL)flag;
 
-+ (UIColor *) getTabBarBackgroundColour;
++ (UIColor *)getTabBarBackgroundColour;
 + (void) setTabBarBackgroundColour:(UIColor *)color;
-+ (UIColor *) getTabBarSelectedItemColour;
++ (UIColor *)getTabBarSelectedItemColour;
 + (void) setTabBarSelectedItemColour:(UIColor *)color;
-+ (UIColor *) getTabBarUnSelectedItemColour;
++ (UIColor *)getTabBarUnSelectedItemColour;
 + (void) setTabBarUnSelectedItemColour:(UIColor *)color;
-+ (UIColor *) getAttachmentIconColour;
-+ (void) setAttachmentIconColour:(UIColor *)color;
-+ (UIColor *) getSendIconColour;
++ (UIColor *)getAttachmentIconColour;
++ (void)setAttachmentIconColour:(UIColor *)color;
++ (UIColor *)getSendIconColour;
 + (void) setSendIconColour:(UIColor *)color;
-+ (UIColor *) getMessageSubtextColour;
-+ (void) setMessageSubtextColour:(UIColor *)color;
-+ (UIColor *) getProfileMainColour;
++ (UIColor *)getMessageSubtextColour;
++ (void)setMessageSubtextColour:(UIColor *)color;
++ (UIColor *)getProfileMainColour;
 + (void) setProfileMainColour:(UIColor *)color;
-+ (UIColor *) getProfileSubColour;
++ (UIColor *)getProfileSubColour;
 + (void) setProfileSubColour:(UIColor *)color;
-+ (UIColor *) getNewContactMainColour;
++ (UIColor *)getNewContactMainColour;
 + (void) setNewContactMainColour:(UIColor *)color;
-+ (UIColor *) getNewContactSubColour;
-+ (void) setNewContactSubColour:(UIColor *)color;
-+ (UIColor *) getNewContactTextColour;
++ (UIColor *)getNewContactSubColour;
++ (void)setNewContactSubColour:(UIColor *)color;
++ (UIColor *)getNewContactTextColour;
 + (void) setNewContactTextColour:(UIColor *)color;
-+ (UIColor *) getMessageListTextColor;
++ (UIColor *)getMessageListTextColor;
 + (void) setMessageListTextColor:(UIColor *)color;
-+ (UIColor *) getMessagesViewBackgroundColour;
-+ (void) setMessagesViewBackgroundColour:(UIColor *)color;
-+ (UIColor *) getChatViewControllerBackgroundColor;
++ (UIColor *)getMessagesViewBackgroundColour;
++ (void)setMessagesViewBackgroundColour:(UIColor *)color;
++ (UIColor *)getChatViewControllerBackgroundColor;
 + (void) setChatViewControllerBackgroundColor:(UIColor *)color;
-+ (UIColor *) getSearchBarTintColour;
-+ (void) setSearchBarTintColour:(UIColor *)color;
++ (UIColor *)getSearchBarTintColour;
++ (void)setSearchBarTintColour:(UIColor *)color;
 
-+ (NSArray *) metadataKeysToHideMessages;
-+ (void) hideMessagesWithMetadataKeys:(NSArray *)keys;
++ (NSArray *)metadataKeysToHideMessages;
++ (void)hideMessagesWithMetadataKeys:(NSArray *)keys;
 
 + (BOOL)isMultiSelectGalleryViewDisabled;
 + (void)disableMultiSelectGalleryView:(BOOL)enabled;
@@ -536,7 +536,7 @@ static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.A
 
 + (void)setBackgroundColorForAttachmentPlusIcon:(UIColor *)backgroundColor;
 + (UIColor *)getBackgroundColorForAttachmentPlusIcon;
-+ (void) clearAll;
++ (void)clearAll;
 
 + (BOOL)isTextStyleInCellEnabled;
 + (void)enableTextStyleCell:(BOOL)enabled;
@@ -565,11 +565,11 @@ static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.A
 + (void)setBackgroundColorForReplyView:(UIColor *)backgroudColor;
 + (UIColor *)getBackgroundColorForReplyView;
 
-+ (void) setHideMediaSelectOption:(NSMutableArray *)array;
-+ (NSArray*) getHideMediaSelectOption;
++ (void)setHideMediaSelectOption:(NSMutableArray *)array;
++ (NSArray *)getHideMediaSelectOption;
 
-+ (BOOL) imagesHiddenInGallery;
-+ (BOOL) videosHiddenInGallery;
++ (BOOL)imagesHiddenInGallery;
++ (BOOL)videosHiddenInGallery;
 
 + (void)setTextColorForMessageTextView:(UIColor *)txtColor;
 + (UIColor *)getTextColorForMessageTextView;
@@ -584,8 +584,8 @@ static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.A
 + (NSMutableDictionary*) getUserIconFirstNameColorCodes;
 
 // Enable/Disable unblock users from sendMessageTextView
-+ (void) setIsUnblockInChatDisabled:(BOOL)flag;
-+ (BOOL) isUnblockInChatDisabled;
++ (void)setIsUnblockInChatDisabled:(BOOL)flag;
++ (BOOL)isUnblockInChatDisabled;
 
 + (void)setupSuiteAndMigrate;
 + (NSString *)getShareExtentionGroup;

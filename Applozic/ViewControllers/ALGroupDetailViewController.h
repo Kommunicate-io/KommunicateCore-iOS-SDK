@@ -14,7 +14,6 @@
 @property (nonatomic) NSInteger memberCount;
 @property (strong, nonatomic) NSNumber * channelKeyID;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (nonatomic) NSString * memberIdToAdd;
 @property (strong,nonatomic)UIViewController * alChatViewController;
 
 @end

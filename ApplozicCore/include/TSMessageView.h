@@ -12,8 +12,6 @@
 #define TSMessageViewAlpha 0.95
 
 
-
-
 @interface TSMessageView : UIView
 
 /** The displayed title of this message */

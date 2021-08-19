@@ -310,7 +310,6 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         self.sizeLabel.alpha = 0;
         if (alMessage.inProgress == YES) {
             self.progresLabel.alpha = 1;
-            //            NSLog(@"calling you progress label....");
         } else if (!alMessage.imageFilePath && alMessage.fileMeta.blobKey) {
             self.mDowloadRetryButton.alpha = 1;
             self.downloadRetryView.alpha = 1;
@@ -400,7 +399,6 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         return;
     }
     
-    //    NSLog(@"CALL_GESTURE_SELECTOR FILE_URL : %@",fileSourceURL);
     [self.delegate showSuggestionView:fileSourceURL andFrame:[self.imageView frame]];
 }
 //========================================================================================

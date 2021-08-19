@@ -88,7 +88,6 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     
     NSString *theDate = [NSString stringWithFormat:@"%@",[alMessage getCreatedAtTimeChat:today]];
     
-    //    [self.mDowloadRetryButton setHidden:NO];
     self.mDowloadRetryButton.alpha = 1;
     [self.contentView bringSubviewToFront:self.mDowloadRetryButton];
     
@@ -356,7 +355,7 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
         [self.mImageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
         [self.delegate thumbnailDownloadWithMessageObject:self.mMessage];
     } else if (imagePath) {
-        [self.mImageView setImage:[ALUIUtilityClass setVideoThumbnail:imagePath]];
+        [self.mImageView setImage:[ALUIUtilityClass generateVideoThumbnailImage:imagePath]];
     }
 }
 

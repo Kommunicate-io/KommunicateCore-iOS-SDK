@@ -293,7 +293,7 @@ UIViewController *modalCon;
         if (alMessage.message.length > 0) {
             [self.imageWithText setHidden:NO];
             self.imageWithText.backgroundColor = [UIColor clearColor];
-            self.imageWithText.textColor = [ALApplozicSettings getSendMsgTextColor];;
+            self.imageWithText.textColor = [ALApplozicSettings getSendMsgTextColor];
             self.mBubleImageView.frame = CGRectMake((viewSize.width - self.mUserProfileImageView.frame.origin.x + BUBBLE_PADDING_X_OUTBOX),
                                                     0, viewSize.width - BUBBLE_PADDING_WIDTH,
                                                     viewSize.width - BUBBLE_PADDING_HEIGHT
@@ -455,7 +455,6 @@ UIViewController *modalCon;
     [self setNeedsDisplay];
     self.progresLabel.startDegree = 0;
     self.progresLabel.endDegree = metaInfo.progressValue;
-    // NSLog(@"##observer is called....%f",self.progresLabel.endDegree );
 }
 
 - (void)imageFullScreen:(UITapGestureRecognizer*)sender {

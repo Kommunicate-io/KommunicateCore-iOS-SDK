@@ -78,7 +78,6 @@ static NSString *const DEFAULT_GROUP_ICON_NAME = @"applozic_group_icon";
     self.descriptionTextView.hidden = NO;
     self.descriptionTextView.userInteractionEnabled = NO;
     [self.tabBarController.tabBar setHidden:YES];
-    // self.alNewContactViewController.delegateGroupCreation = self;
 }
 
 - (void)setProfileImage {

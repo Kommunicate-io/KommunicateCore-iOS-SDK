@@ -19,8 +19,8 @@
         NSMutableArray *responseArray = [JSONString valueForKey:@"response"];
         
         for (NSDictionary *JSONDictionaryObject in responseArray) {
-            ALChannel *channelObject = [[ALChannel alloc] initWithDictonary:JSONDictionaryObject];
-            [self.alChannelArray addObject:channelObject];
+            ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionaryObject];
+            [self.alChannelArray addObject:alChannel];
         }
         
         return self;

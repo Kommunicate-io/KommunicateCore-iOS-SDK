@@ -23,6 +23,7 @@ static const CGFloat NAVIGATION_TEXT_SIZE = 20;
 // Constants
 static CGFloat const DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
+static NSInteger const ALMQTT_MAX_RETRY = 3;
 
 //==============================================================================================================================================
 // Private interface
@@ -58,6 +59,11 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 @property (strong, nonatomic) ALCustomSearchBar *customSearchBar;
 
+@property (strong, nonatomic) ALMessageService *messageService;
+@property (strong, nonatomic) ALChannelService *channelService;
+@property (strong, nonatomic) ALUserService *userService;
+@property (nonatomic) NSInteger mqttRetryCount;
+
 @end
 
 // $$$$$$$$$$$$$$$$$$ Class Extension for solving Constraints Issues.$$$$$$$$$$$$$$$$$$$$
@@ -76,12 +82,19 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 @implementation ALMessagesViewController
 
+
+-(void)setupServices {
+    self.messageService = [[ALMessageService alloc] init];
+    self.channelService = [[ALChannelService alloc] init];
+    self.userService = [[ALUserService alloc] init];
+}
 //==============================================================================================================================================
 #pragma mark - VIEW LIFE CYCLE
 //==============================================================================================================================================
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupServices];
     self.extendedLayoutIncludesOpaqueBars = true;
 
     [self setUpTableView];
@@ -250,8 +263,6 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 - (void)intializeSubgroupMessages {
     ALChannelService *channelService = [ALChannelService new];
     self.childGroupList = [[NSMutableArray alloc] initWithArray:[channelService fetchChildChannelsWithParentKey:self.parentGroupKey]];
-    //    ALChannel * parentChannel = [channelService getChannelByKey:self.parentGroupKey];
-    //    [self.childGroupList addObject:parentChannel];
 }
 
 // Channel details update notification
@@ -781,17 +792,15 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
             return;
         }
         ALMessage *alMessageobj = self.mContactsMessageListArray[indexPath.row];
-        
-        ALChannelService *channelService = [ALChannelService new];
-        
-        if ([channelService isChannelLeft:[alMessageobj getGroupId]]) {
+
+        if ([self.channelService isChannelLeft:[alMessageobj getGroupId]]) {
             
             [self.dBService deleteAllMessagesByContact:nil orChannelKey:[alMessageobj getGroupId]];
-            [ALChannelService setUnreadCountZeroForGroupID:[alMessageobj getGroupId]];
+            [self.channelService setUnreadCountZeroForGroupID:[alMessageobj getGroupId]];
         }
         
-        [ALMessageService deleteMessageThread:alMessageobj.contactIds orChannelKey:[alMessageobj getGroupId]
-                               withCompletion:^(NSString *string, NSError *error) {
+        [self.messageService deleteMessageThread:alMessageobj.contactIds orChannelKey:[alMessageobj getGroupId]
+                                  withCompletion:^(NSString *string, NSError *error) {
             
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"DELETE_FAILED_CONVERSATION_ERROR_DESCRIPTION :: %@", error.description);
@@ -880,7 +889,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 
 - (void)updateUserDetail:(NSString *)userId {
     ALSLog(ALLoggerSeverityInfo, @"ALMSGVC : USER_DETAIL_CHANGED_CALL_UPDATE");
-    [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+    [self.userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
 
         if (!userDetail) {
             return;
@@ -1004,8 +1013,37 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 }
 
 - (void)mqttConnectionClosed {
-    if (self.alMqttConversationService) {
-        [self.alMqttConversationService retryConnection];
+
+    if (self.mqttRetryCount >= ALMQTT_MAX_RETRY) {
+        return;
+    }
+
+    BOOL isBackgroundState = ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground);
+
+    if ([ALDataNetworkConnection checkDataNetworkAvailable]
+        && !isBackgroundState) {
+        __weak ALMessagesViewController *weakSelf = self;
+
+        double intervalSeconds = 0.0;
+
+        if (self.mqttRetryCount == 1) {
+            intervalSeconds = [ALUtilityClass randomNumberBetween:1 maxNumber:10] * 60.0;
+        } else if (self.mqttRetryCount == 2) {
+            intervalSeconds = [ALUtilityClass randomNumberBetween:10 maxNumber:20] * 60.0;
+        }
+
+        self.mqttRetryCount++;
+        
+        ALSLog(ALLoggerSeverityError, @"MQTT retry in MessagesViewController will start after %.f seconds and the retry count is : %ld",intervalSeconds, (long)self.mqttRetryCount);
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(intervalSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+
+            [weakSelf subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+                if (!connected) {
+                    ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed to retry on mqttConnectionClosed in ALMessagesViewController");
+                }
+            }];
+        });
     }
 }
 
@@ -1015,7 +1053,6 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
         if (self.alMqttConversationService) {
             [self.alMqttConversationService subscribeToConversationWithTopic:[ALUserDefaultsHandler getUserKeyString] withCompletionHandler:^(BOOL subscribed, NSError *error) {
                 if (error) {
-                    ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed with error %@", error);
                     completion(false);
                     return;
                 }
@@ -1051,7 +1088,7 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 }
 
 - (void)callLastSeenStatusUpdate {
-    [ALUserService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray *userDetailArray)
+    [self.userService getLastSeenUpdateForUsers:[ALUserDefaultsHandler getLastSeenSyncTime] withCompletion:^(NSMutableArray *userDetailArray)
      {
         for(ALUserDetail *userDetail in userDetailArray) {
             [self updateLastSeenAtStatus:userDetail];
@@ -1119,7 +1156,6 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
 }
 
 - (void)dealloc {
-    //    NSLog(@"dealloc called. Unsubscribing with mqtt.");
     [self.alMqttConversationService unsubscribeToConversation];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"USER_DETAILS_UPDATE_CALL" object:nil];
@@ -1171,15 +1207,9 @@ static CGFloat const DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
     [view addSubview:imageView];
     [view addSubview:label];
     
-    //    UIButton * button = [[UIButton alloc] initWithFrame:view.frame];
-    //    [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
-    
     UITapGestureRecognizer *backTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back:)];
     backTap.numberOfTapsRequired = 1;
     [view addGestureRecognizer:backTap];
-    
-    //    [button addSubview:view];
-    //    [view addSubview:button];
     return view;
 }
 

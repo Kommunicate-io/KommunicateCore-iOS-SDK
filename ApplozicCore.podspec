@@ -7,7 +7,7 @@
 #
 Pod::Spec.new do |s|
     s.name             = 'ApplozicCore'
-    s.version          = '8.2.1'
+    s.version          = '8.3.0'
     s.summary          = 'ApplozicCore pod'
     s.description      = <<-DESC
     The ApplozicCore SDK helps you build your own custom UI in your iOS app.

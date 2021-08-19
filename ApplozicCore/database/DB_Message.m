@@ -16,8 +16,6 @@
 @dynamic createdAt;
 @dynamic deviceKey;
 @dynamic filePath;
-//@dynamic isRead;
-//@dynamic isSent;
 @dynamic isSentToDevice;
 @dynamic isShared;
 @dynamic isStoredOnDevice;

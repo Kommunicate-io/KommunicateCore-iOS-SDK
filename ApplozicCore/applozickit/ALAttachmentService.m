@@ -26,8 +26,7 @@
     return sharedInstance;
 }
 
-
-- (void)sendMessageWithAttachment:(ALMessage*) attachmentMessage
+- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
                      withDelegate:(id<ApplozicUpdatesDelegate>)delegate
            withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
     
@@ -71,10 +70,10 @@
         videoUploaddManager.delegate = self.delegate;
         [videoUploaddManager uploadTheVideo:attachmentMessage];
     } else {
-        NSDictionary *userInfo = [attachmentMessage dictionary];
+        NSDictionary *messageDictionary = [attachmentMessage dictionary];
         
         ALMessageClientService *clientService  = [[ALMessageClientService alloc]init];
-        [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *responseUrl, NSError *error) {
+        [clientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *responseUrl, NSError *error) {
             
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){

@@ -14,11 +14,13 @@
 #import "MessageListRequest.h"
 #import "ALConversationListRequest.h"
 
+@class ALMessageService;
+
 @protocol ALMessagesDelegate <NSObject>
 
 - (void)getMessagesArray:(NSMutableArray*)messagesArray;
 
--(void)updateMessageList:(NSMutableArray*)messagesArray;
+- (void)updateMessageList:(NSMutableArray*)messagesArray;
 
 @end
 
@@ -26,13 +28,16 @@
 
 @property(nonatomic,weak) id <ALMessagesDelegate>delegate;
 
+@property(nonatomic, retain) ALMessageService *messageService;
+
 //Add Message APIS
-- (NSMutableArray *)addMessageList:(NSMutableArray*)messageList skipAddingMessageInDb:(BOOL)skip;
-- (DB_Message*)addMessage:(ALMessage *)message;
+- (NSMutableArray *)addMessageList:(NSMutableArray *)messageList skipAddingMessageInDb:(BOOL)skip;
+- (DB_Message *)addMessage:(ALMessage *)message;
 - (void)getMessages:(NSMutableArray *)subGroupList;
-- (void)fetchAndRefreshFromServer:(NSMutableArray *)subGroupList;
 - (void)fetchConversationsGroupByContactId;
 - (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *, NSError *))completion;
+- (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion;
+- (void)getLatestMessagesWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion;
 
 - (NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID;
 - (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString*) value;
@@ -59,7 +64,7 @@
 - (void)updateMessageDeliveryReport:(NSString *)messageKeyString withStatus:(int)status;
 - (void)updateDeliveryReportForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateMessageSyncStatus:(NSString *)keyString;
-- (void)updateFileMetaInfo:(ALMessage *)almessage;
+- (void)updateFileMetaInfo:(ALMessage *)alMessage;
 
 //Delete Message APIS
 - (void)deleteMessageByKey:(NSString *)keyString;
@@ -69,12 +74,12 @@
 - (BOOL)isMessageTableEmpty;
 - (void)deleteAllObjectsInCoreData;
 
-- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)theMessage;
+- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)alMessage;
 - (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo;
-- (ALMessage *)createMessageEntity:(DB_Message *)theEntity;
+- (ALMessage *)createMessageEntity:(DB_Message *)dbMessage;
 - (ALMessage*)getMessageByKey:(NSString *)messageKey;
 
-- (NSMutableArray*)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
+- (NSMutableArray *)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
 
 - (void)fetchConversationfromServerWithCompletion:(void(^)(BOOL flag))completionHandler;
 
@@ -86,7 +91,9 @@
 
 - (void)updateMessageReplyType:(NSString *)messageKeyString replyType:(NSNumber *)type hideFlag:(BOOL)flag;
 
-- (void)updateMessageSentDetails:(NSString *)messageKeyString withCreatedAtTime:(NSNumber *)createdAtTime withDbMessage:(DB_Message *)dbMessage;
+- (void)updateMessageSentDetails:(NSString *)messageKeyString
+               withCreatedAtTime:(NSNumber *)createdAtTime
+                   withDbMessage:(DB_Message *)dbMessage;
 
 - (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion;
 

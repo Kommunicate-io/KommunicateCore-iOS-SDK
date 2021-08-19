@@ -248,7 +248,7 @@
     textView.scrollEnabled = NO;
     textView.textContainerInset = UIEdgeInsetsZero;
     textView.textContainer.lineFragmentPadding = 0;
-    [textView setTextColor:[UIColor whiteColor]];;
+    [textView setTextColor:[UIColor whiteColor]];
     [textView setBackgroundColor:[UIColor clearColor]];
     [textView setText:self.almessage.message];
     
@@ -293,19 +293,13 @@
         if (self.almessage.imageFilePath != nil && self.almessage.fileMeta.blobKey) {
             NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             NSString * filePath = [docDir stringByAppendingPathComponent:self.almessage.imageFilePath];
-            [imageView setImage: [ALUIUtilityClass setVideoThumbnail:filePath]];
-            
+            [imageView setImage: [ALUIUtilityClass generateVideoThumbnailImage:filePath]];
             
         } else {
             [imageView setImage:[ALUIUtilityClass getImageFromFramworkBundle:@"VIDEO.png"]];
-            
         }
-        
         [imageView setContentMode:UIViewContentModeScaleAspectFill];
-        
-        
         [view addSubview:imageView];
-        
         
     } else if ([self.almessage.fileMeta.contentType hasPrefix:@"image"] || self.almessage.contentType == ALMESSAGE_CONTENT_LOCATION) {
         [imageView sd_setImageWithURL:self.contentURL];

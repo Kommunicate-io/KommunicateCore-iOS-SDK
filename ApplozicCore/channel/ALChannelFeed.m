@@ -17,23 +17,22 @@
 }
 
 - (void)parseMessage:(id)json {
-    NSMutableArray *theChannelFeedArray = [NSMutableArray new];
-    
-    NSDictionary *theChannelFeedDict = [json valueForKey:@"groupFeeds"];
-    for (NSDictionary *theDictionary in theChannelFeedDict) {
+    NSMutableArray *channelFeedArray = [NSMutableArray new];
+    NSDictionary *channelFeedDictionary = [json valueForKey:@"groupFeeds"];
+    for (NSDictionary *theDictionary in channelFeedDictionary) {
         ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:theDictionary];
-        [theChannelFeedArray addObject:alChannel];
+        [channelFeedArray addObject:alChannel];
     }
-    self.channelFeedsList = theChannelFeedArray;
+    self.channelFeedsList = channelFeedArray;
     
-    NSMutableArray *theConversationProxyArray = [NSMutableArray new];
+    NSMutableArray *conversationProxyArray = [NSMutableArray new];
     
-    NSDictionary *theConversationProxyDict = [json valueForKey:@"conversationPxys"];
-    for (NSDictionary *theDictionary in theConversationProxyDict) {
+    NSDictionary *conversationProxyDictinoary = [json valueForKey:@"conversationPxys"];
+    for (NSDictionary *theDictionary in conversationProxyDictinoary) {
         ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:theDictionary];
-        [theConversationProxyArray addObject:conversationProxy];
+        [conversationProxyArray addObject:conversationProxy];
     }
-    self.conversationProxyList = theConversationProxyArray;
+    self.conversationProxyList = conversationProxyArray;
 }
 
 @end

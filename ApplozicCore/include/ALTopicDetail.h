@@ -30,7 +30,7 @@
 
 - (id)initWithDictonary:(NSDictionary *)detailJson;
 
-- (void)parseMessage:(id) detailJson;
+- (void)parseMessage:(id)detailJson;
 
 
 @end

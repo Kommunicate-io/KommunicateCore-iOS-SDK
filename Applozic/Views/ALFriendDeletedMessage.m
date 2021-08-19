@@ -111,7 +111,7 @@ static CGFloat const DATE_LABEL_WIDTH_PADDING = 70;
 
 }
 
-- (void) update:(ALMessage *)message {
+- (void)update:(ALMessage *)message {
     [super update:message];
     BOOL today = [[NSCalendar currentCalendar] isDateInToday:[NSDate dateWithTimeIntervalSince1970:[message.createdAtTime doubleValue]/1000]];
     NSString *theDate = [NSString stringWithFormat:@"%@", [message getCreatedAtTimeChat:today]];

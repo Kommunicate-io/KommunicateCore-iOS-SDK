@@ -10,9 +10,13 @@
 #import "ALConstant.h"
 #import "ALConversationCreateResponse.h"
 #import "ALConversationProxy.h"
+#import "ALResponseHandler.h"
 
 @interface ALConversationClientService : NSObject
-+ (void)createConversation:(ALConversationProxy *)alConversationProxy
+@property (nonatomic, strong) ALResponseHandler *responseHandler;
+
+- (void)createConversation:(ALConversationProxy *)alConversationProxy
            withCompletion:(void(^)(NSError *error, ALConversationCreateResponse *response))completion;
-+ (void)fetchTopicDetails:(NSNumber *)alConversationProxyID andCompletion:(void (^)(NSError *, ALAPIResponse *))completion;
+
+- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID andCompletion:(void (^)(NSError *, ALAPIResponse *))completion;
 @end

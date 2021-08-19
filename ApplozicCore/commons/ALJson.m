@@ -75,7 +75,7 @@
 }
 
 
--(BOOL)validateJsonClass:(NSDictionary *)jsonClass {
+- (BOOL)validateJsonClass:(NSDictionary *)jsonClass {
     
     if ([NSStringFromClass([jsonClass class]) isEqual:@"NSNUll"] || jsonClass == nil) {
         return NO;
@@ -84,7 +84,7 @@
     return YES;
 }
 
--(BOOL)validateJsonArrayClass:(NSArray *)jsonClass {
+- (BOOL)validateJsonArrayClass:(NSArray *)jsonClass {
     
     if ([NSStringFromClass([jsonClass class]) isEqual:@"NSNUll"] || jsonClass == nil) {
         return NO;
@@ -100,7 +100,6 @@
     
     return nil;
 }
-
 
 - (BOOL)getBoolFromJsonValue:(id)jsonValue {
     if (jsonValue != [NSNull null] && jsonValue != nil) {
@@ -118,7 +117,7 @@
     return 0;
 }
 
--(NSNumber *)getNSNumberFromJsonValue:(id)jsonValue {
+- (NSNumber *)getNSNumberFromJsonValue:(id)jsonValue {
     
     if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [NSNumber numberWithDouble:[jsonValue doubleValue]];
@@ -126,7 +125,7 @@
     return 0;
 }
 
--(long)getLongFromJsonValue:(id)jsonValue {
+- (long)getLongFromJsonValue:(id)jsonValue {
     
     if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [jsonValue longValue];
@@ -134,7 +133,7 @@
     return 0;
 }
 
--(int)getIntFromJsonValue:(id)jsonValue {
+- (int)getIntFromJsonValue:(id)jsonValue {
     
     if (jsonValue != [NSNull null] && jsonValue != nil) {
         return [jsonValue intValue];

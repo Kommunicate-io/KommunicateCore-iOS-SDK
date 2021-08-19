@@ -99,15 +99,16 @@ typedef enum {
 
 @property (nonatomic,copy) NSNumber *messageReplyType;
 
+@property (nonatomic,assign) BOOL deleted;
+
+@property (nonatomic, assign) BOOL msgHidden;
+
 - (NSString *)getCreatedAtTime:(BOOL)today;
-
-- (id)initWithDictonary:(NSDictionary*)messageDictonary;
-
+- (id)initWithDictonary:(NSDictionary *)messageDictonary;
 - (BOOL)isDownloadRequired;
 - (BOOL)isUploadRequire;
 - (BOOL)isHiddenMessage;
 - (BOOL)isVOIPNotificationMessage;
-
 - (NSString *)getCreatedAtTimeChat:(BOOL)today;
 - (NSNumber *)getGroupId;
 - (NSString *)getLastMessage;
@@ -118,12 +119,9 @@ typedef enum {
 - (BOOL)isMessageCategoryHidden;
 - (ALReplyType)getReplyType;
 - (BOOL)isToIgnoreUnreadCountIncrement;
-
 - (BOOL)isAReplyMessage;
-
 - (BOOL)isSentMessage;
 - (BOOL)isReceivedMessage;
-
 - (BOOL)isLocationMessage;
 - (BOOL)isContactMessage;
 - (BOOL)isChannelContentTypeMessage;
@@ -132,8 +130,6 @@ typedef enum {
 - (BOOL)isDeletedForAll;
 - (BOOL)isMessageSentToServer;
 
-@property (nonatomic,assign) BOOL deleted;
-@property (nonatomic, assign) BOOL msgHidden;
 - (instancetype)initWithBuilder:(ALMessageBuilder *)builder;
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder;
 - (BOOL)isNotificationDisabled;

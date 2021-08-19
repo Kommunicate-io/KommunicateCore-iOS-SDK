@@ -17,20 +17,19 @@
 - (id)initWithJSONString:(NSString *)syncMessageResponse {
     
     self.lastSyncTime = [syncMessageResponse valueForKey:@"lastSyncTime"];
-    //self.isRegisterdIdInvalid = [syncMessageResponse valueForKey:@"regIdInvalid"];
     NSMutableArray *messageList = [syncMessageResponse valueForKey:@"messages"];
     [self parseMessagseArray:messageList];
     self.deliveredMessageKeys = [syncMessageResponse valueForKey:@"deliveredMessageKeys"];
     return self;
 }
 
-- (void)parseMessagseArray:(id) theMessageDict {
-    NSMutableArray * theMessagesArray = [NSMutableArray new];
-    for (NSDictionary * theDictionary in theMessageDict) {
+- (void)parseMessagseArray:(id)theMessageDict {
+    NSMutableArray *messagesArray = [NSMutableArray new];
+    for (NSDictionary *theDictionary in theMessageDict) {
         ALMessage *message = [[ALMessage alloc] initWithDictonary:theDictionary ];
-        [theMessagesArray addObject:message];
+        [messagesArray addObject:message];
     }
-    self.messagesList = theMessagesArray;
+    self.messagesList = messagesArray;
 }
 
 @end

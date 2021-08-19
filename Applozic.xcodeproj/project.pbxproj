@@ -379,10 +379,10 @@
 		18E0F00225DCF85900F6EDE3 /* ALUtilityClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF225DCF85800F6EDE3 /* ALUtilityClass.m */; };
 		18E0F00425DCF85900F6EDE3 /* NSData+AES.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFF425DCF85800F6EDE3 /* NSData+AES.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18E0F00525DCF85900F6EDE3 /* NSData+AES.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF525DCF85800F6EDE3 /* NSData+AES.m */; };
-		18E0F00725DCF85900F6EDE3 /* SearchResultCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF725DCF85800F6EDE3 /* SearchResultCache.m */; };
+		18E0F00725DCF85900F6EDE3 /* ALSearchResultCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF725DCF85800F6EDE3 /* ALSearchResultCache.m */; };
 		18E0F00825DCF85900F6EDE3 /* ALLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFF825DCF85800F6EDE3 /* ALLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18E0F00925DCF85900F6EDE3 /* ALLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0EFF925DCF85900F6EDE3 /* ALLogger.m */; };
-		18E0F00B25DCF85900F6EDE3 /* SearchResultCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFFB25DCF85900F6EDE3 /* SearchResultCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18E0F00B25DCF85900F6EDE3 /* ALSearchResultCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFFB25DCF85900F6EDE3 /* ALSearchResultCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18E0F00C25DCF85900F6EDE3 /* NSString+Encode.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFFC25DCF85900F6EDE3 /* NSString+Encode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18E0F00D25DCF85900F6EDE3 /* ALUtilityClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0EFFD25DCF85900F6EDE3 /* ALUtilityClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18E0F04825DCF8A400F6EDE3 /* MQTTInMemoryPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = 18E0F01725DCF89F00F6EDE3 /* MQTTInMemoryPersistence.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -941,10 +941,10 @@
 		18E0EFF325DCF85800F6EDE3 /* ALUIImage+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALUIImage+Utility.m"; sourceTree = "<group>"; };
 		18E0EFF425DCF85800F6EDE3 /* NSData+AES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+AES.h"; sourceTree = "<group>"; };
 		18E0EFF525DCF85800F6EDE3 /* NSData+AES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+AES.m"; sourceTree = "<group>"; };
-		18E0EFF725DCF85800F6EDE3 /* SearchResultCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultCache.m; sourceTree = "<group>"; };
+		18E0EFF725DCF85800F6EDE3 /* ALSearchResultCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALSearchResultCache.m; sourceTree = "<group>"; };
 		18E0EFF825DCF85800F6EDE3 /* ALLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALLogger.h; sourceTree = "<group>"; };
 		18E0EFF925DCF85900F6EDE3 /* ALLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALLogger.m; sourceTree = "<group>"; };
-		18E0EFFB25DCF85900F6EDE3 /* SearchResultCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultCache.h; sourceTree = "<group>"; };
+		18E0EFFB25DCF85900F6EDE3 /* ALSearchResultCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALSearchResultCache.h; sourceTree = "<group>"; };
 		18E0EFFC25DCF85900F6EDE3 /* NSString+Encode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Encode.h"; sourceTree = "<group>"; };
 		18E0EFFD25DCF85900F6EDE3 /* ALUtilityClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALUtilityClass.h; sourceTree = "<group>"; };
 		18E0F01725DCF89F00F6EDE3 /* MQTTInMemoryPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTInMemoryPersistence.h; sourceTree = "<group>"; };
@@ -1416,7 +1416,7 @@
 				18E0EFF225DCF85800F6EDE3 /* ALUtilityClass.m */,
 				18E0EFF525DCF85800F6EDE3 /* NSData+AES.m */,
 				18E0EFF125DCF85800F6EDE3 /* NSString+Encode.m */,
-				18E0EFF725DCF85800F6EDE3 /* SearchResultCache.m */,
+				18E0EFF725DCF85800F6EDE3 /* ALSearchResultCache.m */,
 			);
 			path = utilities;
 			sourceTree = "<group>";
@@ -1471,7 +1471,7 @@
 				18E0F04125DCF8A300F6EDE3 /* MQTTSSLSecurityPolicyTransport.h */,
 				18E0F03A25DCF8A300F6EDE3 /* MQTTStrict.h */,
 				18E0F04225DCF8A300F6EDE3 /* MQTTTransport.h */,
-				18E0EFFB25DCF85900F6EDE3 /* SearchResultCache.h */,
+				18E0EFFB25DCF85900F6EDE3 /* ALSearchResultCache.h */,
 				1873619E25DD584300C02F5D /* ALMessageArrayWrapper.h */,
 				1896EF2025DBEEF00038EBFF /* ALFileMetaInfo.h */,
 				1896EF2325DBEEF10038EBFF /* ALMessage.h */,
@@ -1958,7 +1958,6 @@
 				6D6DF1E41BC5387B00EBA00F /* contact */,
 				8B170C1E2122CEFF003A14B3 /* CustomPicker.storyboard */,
 				6D6DF1E31BC5386400EBA00F /* message */,
-				6D6DF1E51BC5389B00EBA00F /* notification */,
 				18A2BA2320C44E5E00AD47A2 /* ViewModel */,
 				1868F12A21B570ED00B237B3 /* ALGroupDetailsMemberCell.m */,
 				185B6AB124EBE7D20028AB75 /* ALTappableView.h */,
@@ -1994,13 +1993,6 @@
 				6D6DF0B51BC5364C00EBA00F /* ALContactCell.h */,
 			);
 			name = contact;
-			sourceTree = "<group>";
-		};
-		6D6DF1E51BC5389B00EBA00F /* notification */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = notification;
 			sourceTree = "<group>";
 		};
 		6D73B2F91D4F0F02007D3D72 /* LoggedInUserProfile */ = {
@@ -2097,7 +2089,7 @@
 				1896EECB25DBE8E40038EBFF /* DB_CHANNEL_USER_X.h in Headers */,
 				1896EE9425DBE6630038EBFF /* ALReachability.h in Headers */,
 				1896EE8E25DBE6630038EBFF /* ALResponseHandler.h in Headers */,
-				18E0F00B25DCF85900F6EDE3 /* SearchResultCache.h in Headers */,
+				18E0F00B25DCF85900F6EDE3 /* ALSearchResultCache.h in Headers */,
 				1896EE5B25DBD84B0038EBFF /* ALContactsResponse.h in Headers */,
 				1896EE6C25DBD84B0038EBFF /* ALMessageInfoResponse.h in Headers */,
 				1896EF0925DBEA670038EBFF /* TSMessageView.h in Headers */,
@@ -2450,7 +2442,7 @@
 				1896EEA725DBE84C0038EBFF /* ALInternalSettings.m in Sources */,
 				1896EF3A25DBEEF10038EBFF /* ALMessageList.m in Sources */,
 				1896EE6225DBD84B0038EBFF /* ALUserService.m in Sources */,
-				18E0F00725DCF85900F6EDE3 /* SearchResultCache.m in Sources */,
+				18E0F00725DCF85900F6EDE3 /* ALSearchResultCache.m in Sources */,
 				18E0F06C25DCF8A400F6EDE3 /* MQTTInMemoryPersistence.m in Sources */,
 				18E0F05B25DCF8A400F6EDE3 /* MQTTSSLSecurityPolicy.m in Sources */,
 				1896EE9725DBE6630038EBFF /* ALAppLocalNotifications.m in Sources */,
@@ -2759,7 +2751,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 8.2.1;
+				MARKETING_VERSION = 8.3.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2798,7 +2790,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 8.2.1;
+				MARKETING_VERSION = 8.3.0;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.ApplozicCore;
@@ -2951,7 +2943,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 8.2.1;
+				MARKETING_VERSION = 8.3.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2988,7 +2980,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 8.2.1;
+				MARKETING_VERSION = 8.3.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.applozic.framework;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -26,7 +26,7 @@
 
 - (void)removeObjectFromMessageArray:(NSMutableArray *)paramMessageArray;
 
-- (void)removeALMessageFromMessageArray:(ALMessage *)almessage;
+- (void)removeALMessageFromMessageArray:(ALMessage *)alMessage;
 
 - (void)addLatestObjectToArray:(NSMutableArray *)paramMessageArray;
 

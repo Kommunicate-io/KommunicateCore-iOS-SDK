@@ -17,6 +17,7 @@
 #import "ALSubViewController.h"
 #import "ALNotificationHelper.h"
 #import "ALUIUtilityClass.h"
+#import "ALChannelCreateResponse.h"
 
 const int DEFAULT_TOP_LANDSCAPE_CONSTANT = 34;
 const int DEFAULT_TOP_PORTRAIT_CONSTANT = 64;
@@ -49,13 +50,13 @@ static const int SHOW_GROUP = 102;
 @property  NSUInteger lastSearchLength;
 
 @property (strong,nonatomic)NSMutableSet *groupMembers;
-@property (strong,nonatomic)ALChannelService *creatingChannel;
 
 @property (strong,nonatomic) NSNumber *groupOrContacts;
 @property (strong, nonatomic) NSMutableArray *alChannelsList;
 @property (nonatomic)NSInteger selectedSegment;
 @property (strong, nonatomic) UILabel *emptyConversationText;
 @property (strong, nonatomic) ALContactService *contactService;
+@property (strong, nonatomic) ALChannelService *channelService;
 
 @end
 
@@ -64,8 +65,13 @@ static const int SHOW_GROUP = 102;
 }
 @synthesize delegate;
 
+-(void)setupServices {
+    self.channelService = [ALChannelService new];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupServices];
     [[self activityIndicator] startAnimating];
     self.selectedSegment = 0;
     [ALUserDefaultsHandler setContactServerCallIsDone:NO];
@@ -82,12 +88,6 @@ static const int SHOW_GROUP = 102;
     [self handleFrameForOrientation];
     [self.contactsTableView setBackgroundColor:[UIColor whiteColor]];
 
-    //    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"< Back" style:UIBarButtonItemStyleBordered target:self action:@selector(back:)];
-    //    [self.navigationItem setLeftBarButtonItem:barButtonItem];
-    
-    //    if (![ALUserDefaultsHandler getContactViewLoaded] && [ALApplozicSettings getFilterContactsStatus]) // COMMENTED for INTERNAL PURPOSE
-    //    {
-    
     float y = self.navigationController.navigationBar.frame.origin.y+self.navigationController.navigationBar.frame.size.height;
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,y, self.view.frame.size.width, 40)];
     self.searchBar.delegate = self;
@@ -179,7 +179,6 @@ static const int SHOW_GROUP = 102;
     [self.tabBarController.tabBar setHidden: [ALUserDefaultsHandler isBottomTabBarHidden]];
     
     if ([ALApplozicSettings getColorForNavigation] && [ALApplozicSettings getColorForNavigationItem]) {
-        //        self.navigationController.navigationBar.translucent = NO;
         [self.navigationController.navigationBar setTitleTextAttributes: @{
             NSForegroundColorAttributeName:[ALApplozicSettings getColorForNavigationItem],
             NSFontAttributeName:[UIFont fontWithName:[ALApplozicSettings getFontFace]
@@ -540,10 +539,6 @@ static const int SHOW_GROUP = 102;
             }];
         }break;
         case IMAGE_SHARE:{
-            // TODO : Send Image
-            /* ALContact * contact = self.filteredContactList[indexPath.row];
-             [[NSNotificationCenter defaultCenter] postNotificationName:@"SHARE_IMAGE" object:contact];
-             */
         }break;
         case LAUNCH_GROUP_OF_TWO: {
             if (self.selectedSegment == 0) {
@@ -820,8 +815,7 @@ static const int SHOW_GROUP = 102;
                 }
                 break;
             case 1: {
-                ALChannelService *channelService = [ALChannelService new];
-                if (![channelService isChannelLeft:channelKey] && ![ALChannelService isChannelDeleted:channelKey]) {
+                if (![self.channelService isChannelLeft:channelKey] && ![ALChannelService isChannelDeleted:channelKey]) {
                     self.alMessage.contactIds = nil;
                     self.alMessage.groupId = channelKey;
                     [self.forwardDelegate proccessReloadAndForwardMessage:self.alMessage];
@@ -978,34 +972,38 @@ static const int SHOW_GROUP = 102;
     }
     
     //Server Call
-    self.creatingChannel = [[ALChannelService alloc] init];
     NSMutableArray *memberList = [NSMutableArray arrayWithArray:self.groupMembers.allObjects];
     if ([ALApplozicSettings getSubGroupLaunchFlag]) {
-        [self.creatingChannel createChannel:self.groupName andParentChannelKey:self.parentChannel.key orClientChannelKey:nil
-                             andMembersList:memberList andImageLink:self.groupImageURL channelType:PUBLIC
-                                andMetaData:nil withCompletion:^(ALChannel *alChannel, NSError *error) {
 
-            if (alChannel) {
-                //Updating view, popping to MessageList View
+        ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
+        channelInfo.groupName = self.groupName;
+        channelInfo.groupMemberList = memberList;
+        channelInfo.imageUrl = self.groupImageURL;
+        channelInfo.type = PUBLIC;
+        channelInfo.parentKey = self.parentChannel.key;
+
+        [self.channelService createChannelWithChannelInfo:channelInfo withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+            [[self activityIndicator] stopAnimating];
+
+            if (!error
+                && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
 
                 for (UIViewController *aViewController in allViewControllers) {
                     if ([aViewController isKindOfClass:[ALMessagesViewController class]]) {
                         ALMessagesViewController *messageVC = (ALMessagesViewController *)aViewController;
-                        [messageVC insertChannelMessage:alChannel.key];
+                        [messageVC insertChannelMessage:response.alChannel.key];
                         [self.navigationController popToViewController:aViewController animated:YES];
                     }
                 }
-            } else {
 
+            } else {
                 [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"unableToCreateGroupText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to create group. Please try again", @"") type:TSMessageNotificationTypeError];
                 [self turnUserInteractivityForNavigationAndTableView:YES];
             }
-
-            [[self activityIndicator] stopAnimating];
         }];
     } else if (isForBroadCast) {
-        [self.creatingChannel createBroadcastChannelWithMembersList:memberList
+        [self.channelService createBroadcastChannelWithMembersList:memberList
                                                         andMetaData:nil
                                                      withCompletion:^(ALChannel *alChannel, NSError *error) {
             if (alChannel) {
@@ -1037,9 +1035,18 @@ static const int SHOW_GROUP = 102;
         if ([ALApplozicSettings getDefaultGroupType]) {
             channelType = [ALApplozicSettings getDefaultGroupType];
         }
-        [self.creatingChannel createChannel:self.groupName orClientChannelKey:nil andMembersList:memberList andImageLink:self.groupImageURL channelType:channelType
-                                andMetaData:nil withCompletion:^(ALChannel *alChannel, NSError *error) {
-            if (alChannel) {
+
+        ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
+        channelInfo.groupName = self.groupName;
+        channelInfo.groupMemberList = memberList;
+        channelInfo.imageUrl = self.groupImageURL;
+        channelInfo.type = channelType;
+
+        [self.channelService createChannelWithChannelInfo:channelInfo withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+            [[self activityIndicator] stopAnimating];
+
+            if (!error
+                && [response.status isEqual:AL_RESPONSE_SUCCESS]) {
                 //Updating view, popping to MessageList View
                 NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
 
@@ -1050,11 +1057,11 @@ static const int SHOW_GROUP = 102;
 
                     } else if ([aViewController isKindOfClass:[ALMessagesViewController class]]) {
                         ALMessagesViewController *messageVC = (ALMessagesViewController *)aViewController;
-                        [messageVC insertChannelMessage:alChannel.key];
+                        [messageVC insertChannelMessage:response.alChannel.key];
                         [self.navigationController popToViewController:aViewController animated:YES];
                     } else if ([ALPushAssist isViewObjIsMsgContainerVC:aViewController]) {
                         ALSubViewController *msgSubView = (ALSubViewController*)aViewController;
-                        [msgSubView.msgView insertChannelMessage:alChannel.key];
+                        [msgSubView.msgView insertChannelMessage:response.alChannel.key];
                         [self.navigationController popToViewController:aViewController animated:YES];
                     }
                 }
@@ -1062,8 +1069,6 @@ static const int SHOW_GROUP = 102;
                 [TSMessage showNotificationWithTitle: NSLocalizedStringWithDefaultValue(@"unableToCreateGroupText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Unable to create group. Please try again", @"") type:TSMessageNotificationTypeError];
                 [self turnUserInteractivityForNavigationAndTableView:YES];
             }
-
-            [[self activityIndicator] stopAnimating];
 
         }];
     }
@@ -1154,7 +1159,6 @@ static const int SHOW_GROUP = 102;
 }
 
 - (void)launchProcessForSubgroups {
-    ALChannelService *channelService = [ALChannelService new];
     NSMutableSet *allMemberSet = nil;
     NSMutableArray *allMemberArray = [NSMutableArray new];
     [self.childChannels addObject:self.parentChannel];
@@ -1162,7 +1166,7 @@ static const int SHOW_GROUP = 102;
     
     for (ALChannel *childChannel in self.childChannels) {
         if (childChannel.type != GROUP_OF_TWO) {
-            NSMutableArray *childArray = [channelService getListOfAllUsersInChannel:childChannel.key];
+            NSMutableArray *childArray = [self.channelService getListOfAllUsersInChannel:childChannel.key];
             [allMemberArray addObjectsFromArray:childArray];
             if ([childArray containsObject:[ALUserDefaultsHandler getUserId]]) {
                 [self.alChannelsList addObject:childChannel];
@@ -1192,7 +1196,6 @@ static const int SHOW_GROUP = 102;
 }
 
 - (void)initiateGroupOfTwoChat:(ALChannel *)parentChannel andUser:(ALContact *)alContact {
-    ALChannelService *channelService = [ALChannelService new];
     ALContact *loginContact = [self.contactService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
     NSMutableArray *userList = [NSMutableArray arrayWithObjects:alContact.userId, loginContact.userId, nil];
     
@@ -1207,14 +1210,21 @@ static const int SHOW_GROUP = 102;
     }
     
     //CHECK IF CONVERSATION ALREADY THERE
-    ALChannel *previousChannel = [channelService fetchChannelWithClientChannelKey:clientChannelKey];
+    ALChannel *previousChannel = [self.channelService fetchChannelWithClientChannelKey:clientChannelKey];
     if (!previousChannel) {
-        [channelService createChannel:channelName andParentChannelKey:parentChannel.key orClientChannelKey:clientChannelKey andMembersList:userList
-                         andImageLink:nil channelType:GROUP_OF_TWO andMetaData:nil withCompletion:^(ALChannel *alChannel, NSError *error) {
-
-            ALSLog(ALLoggerSeverityInfo, @"CHANNEL RESPONSE GET :: %@",alChannel.name);
-            if (alChannel) {
-                [self chatLaunchForGroupOfTwo:alChannel andUser:alContact];
+        
+        ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
+        channelInfo.clientGroupId = clientChannelKey;
+        channelInfo.groupName = channelName;
+        channelInfo.groupMemberList = userList;
+        channelInfo.type = GROUP_OF_TWO;
+        channelInfo.parentKey = parentChannel.key;
+        
+        [self.channelService createChannelWithChannelInfo:channelInfo
+                                           withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+            if (!error
+                && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                [self chatLaunchForGroupOfTwo:response.alChannel andUser:alContact];
             }
         }];
     } else {
@@ -1315,7 +1325,7 @@ static const int SHOW_GROUP = 102;
 
 - (void)proccessContactsGroupCall {
     
-    [ALChannelService getMembersFromContactGroupOfType:[ALApplozicSettings getContactsGroupId] withGroupType:CONTACT_GROUP withCompletion:^(NSError *error, ALChannel *channel) {
+    [self.channelService getMembersFromContactGroupOfType:[ALApplozicSettings getContactsGroupId] withGroupType:CONTACT_GROUP withCompletion:^(NSError *error, ALChannel *channel) {
         [self.searchBar setUserInteractionEnabled:YES];
         
         NSMutableArray *contactList = [NSMutableArray new];
@@ -1335,10 +1345,9 @@ static const int SHOW_GROUP = 102;
             [self.contactsTableView reloadData];
             
         } else {
-            ALChannelService *channelService = [ALChannelService new];
             NSMutableArray *membersArray = nil;
             
-            membersArray = [channelService getListOfAllUsersInChannelByNameForContactsGroup:[ALApplozicSettings getContactsGroupId]];
+            membersArray = [self.channelService getListOfAllUsersInChannelByNameForContactsGroup:[ALApplozicSettings getContactsGroupId]];
             
             if (membersArray && membersArray.count >0) {
                 for (NSString *userId in membersArray) {
@@ -1360,7 +1369,7 @@ static const int SHOW_GROUP = 102;
 
 - (void)proccessContactsGroupList{
     
-    [ALChannelService getMembersIdsForContactGroups:[ALApplozicSettings getContactGroupIdList] withCompletion:^(NSError *error, NSArray *membersArray) {
+    [self.channelService getMembersIdsForContactGroups:[ALApplozicSettings getContactGroupIdList] withCompletion:^(NSError *error, NSArray *membersArray) {
         [self.searchBar setUserInteractionEnabled:YES];
         
         NSMutableArray *contactList = [NSMutableArray new];

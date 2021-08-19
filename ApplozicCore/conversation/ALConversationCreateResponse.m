@@ -11,7 +11,7 @@
 @implementation ALConversationCreateResponse
 
 
-- (instancetype)initWithJSONString:(NSString *)JSONString{
+- (instancetype)initWithJSONString:(NSString *)JSONString {
     
     self = [super initWithJSONString:JSONString];
     

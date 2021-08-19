@@ -17,25 +17,25 @@
     self.blockedToUserList = [[NSMutableArray alloc] initWithArray:[JSONDictionary valueForKey:@"blockedToUserList"]];
     
     for (NSDictionary *dict in self.blockedToUserList) {
-        ALUserBlocked *userBlockedObject = [[ALUserBlocked alloc] init];
-        userBlockedObject.blockedTo = [dict valueForKey:@"blockedTo"];
-        userBlockedObject.applicationKey = [dict valueForKey:@"applicationKey"];
-        userBlockedObject.createdAtTime = [dict valueForKey:@"createdAtTime"];
-        userBlockedObject.updatedAtTime = [dict valueForKey:@"updatedAtTime"];
-        userBlockedObject.userBlocked = [[dict valueForKey:@"userBlocked"] boolValue];
+        ALUserBlocked *userBlocked = [[ALUserBlocked alloc] init];
+        userBlocked.blockedTo = [dict valueForKey:@"blockedTo"];
+        userBlocked.applicationKey = [dict valueForKey:@"applicationKey"];
+        userBlocked.createdAtTime = [dict valueForKey:@"createdAtTime"];
+        userBlocked.updatedAtTime = [dict valueForKey:@"updatedAtTime"];
+        userBlocked.userBlocked = [[dict valueForKey:@"userBlocked"] boolValue];
         
-        [self.blockedUserList addObject:userBlockedObject];
+        [self.blockedUserList addObject:userBlocked];
     }
     
     self.blockByUserList = [NSMutableArray new];
     self.blockedByList = [[NSMutableArray alloc] initWithArray:[JSONDictionary valueForKey:@"blockedByUserList"]];
     
     for (NSDictionary *dict in self.blockedByList) {
-        ALUserBlocked *userBlockedByObject = [[ALUserBlocked alloc] init];
-        userBlockedByObject.blockedBy = [dict valueForKey:@"blockedBy"];
-        userBlockedByObject.userblockedBy = [[dict valueForKey:@"userBlocked"] boolValue];
+        ALUserBlocked *userBlockedBy = [[ALUserBlocked alloc] init];
+        userBlockedBy.blockedBy = [dict valueForKey:@"blockedBy"];
+        userBlockedBy.userblockedBy = [[dict valueForKey:@"userBlocked"] boolValue];
         
-        [self.blockByUserList addObject: userBlockedByObject];
+        [self.blockByUserList addObject: userBlockedBy];
     }
     
     return self;

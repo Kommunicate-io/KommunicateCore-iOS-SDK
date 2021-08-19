@@ -93,14 +93,7 @@
     self.maxWindowSize = maxWindowSize;
     self.maxSize = maxSize;
     self.maxMessages = maxMessages;
-    
-    __weak MQTTSessionManager *weakSelf = self;
-    self.reconnectTimer = [[ReconnectTimer alloc] initWithRetryInterval:RECONNECT_TIMER
-                                                       maxRetryInterval:maxRetryInterval
-                                                                  queue:self.queue
-                                                         reconnectBlock:^{
-                                                             [weakSelf reconnect:nil];
-                                                         }];
+
 #if TARGET_OS_IPHONE == 1
     if (connectInForeground) {
         self.foregroundReconnection = [[ForegroundReconnection alloc] initWithMQTTSessionManager:self];
@@ -217,7 +210,6 @@
 - (void)disconnectWithDisconnectHandler:(MQTTDisconnectHandler)disconnectHandler {
     [self updateState:MQTTSessionManagerStateClosing];
     [self.session closeWithDisconnectHandler:disconnectHandler];
-    [self.reconnectTimer stop];
 }
 
 - (BOOL)requiresTearDown {
@@ -252,7 +244,6 @@
         case MQTTSessionEventConnected:
             self.lastErrorCode = nil;
             [self updateState:MQTTSessionManagerStateConnected];
-            [self.reconnectTimer resetRetryInterval];
             break;
             
         case MQTTSessionEventConnectionClosed:
@@ -260,16 +251,12 @@
             break;
             
         case MQTTSessionEventConnectionClosedByBroker:
-            if (self.state != MQTTSessionManagerStateClosing) {
-                [self triggerDelayedReconnect];
-            }
             [self updateState:MQTTSessionManagerStateClosed];
             break;
             
         case MQTTSessionEventProtocolError:
         case MQTTSessionEventConnectionRefused:
         case MQTTSessionEventConnectionError:
-            [self triggerDelayedReconnect];
             self.lastErrorCode = error;
             [self updateState:MQTTSessionManagerStateError];
             break;
@@ -362,12 +349,7 @@
     if (self.state == MQTTSessionManagerStateConnected) {
         return;
     }
-    [self.reconnectTimer resetRetryInterval];
     [self reconnect:connectHandler];
-}
-
-- (void)triggerDelayedReconnect {
-    [self.reconnectTimer schedule];
 }
 
 - (NSDictionary<NSString *, NSNumber *> *)subscriptions {
