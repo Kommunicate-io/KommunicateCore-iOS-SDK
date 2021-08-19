@@ -41,12 +41,15 @@
     
     ALContact *myContact;
     ALContactService *alContactService;
+    ALUserService *userService;
+
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     alContactService = [[ALContactService alloc] init];
+    userService = [[ALUserService alloc] init];
     self.placeHolderImage = [ALUIUtilityClass getImageFromFramworkBundle:@"contact_default_placeholder"];
 
     [self fetchLoginUserDetails];
@@ -69,7 +72,7 @@
     NSString *loginUserId = [ALUserDefaultsHandler getUserId];
     [self.activityIndicator startAnimating];
 
-    [ALUserService updateUserDetail:loginUserId
+    [userService updateUserDetail:loginUserId
                      withCompletion:^(ALUserDetail *userDetail) {
         self->myContact = [self->alContactService loadContactByKey:@"userId" value:loginUserId];
         [self setupViewWithContact:self->myContact];

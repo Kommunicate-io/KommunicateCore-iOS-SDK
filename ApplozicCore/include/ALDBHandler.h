@@ -8,9 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "DB_CONTACT.h"
 
-@class ALContact;
 static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 @interface ALDBHandler : NSObject
@@ -26,7 +24,7 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 + (ALDBHandler *)sharedInstance;
 
 - (void)saveWithContext:(NSManagedObjectContext *)context
-             completion:(void (^)(NSError*error))completion;
+             completion:(void (^)(NSError *error))completion;
 
 - (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError;
 
@@ -34,7 +32,7 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 - (NSUInteger)countForFetchRequest:(NSFetchRequest *)fetchrequest;
 
-- (NSManagedObject*)existingObjectWithID:(NSManagedObjectID *)objectID;
+- (NSManagedObject *)existingObjectWithID:(NSManagedObjectID *)objectID;
 
 - (NSManagedObject *)insertNewObjectForEntityForName:(NSString *)entityName;
 
@@ -42,6 +40,6 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 - (void)deleteObject:(NSManagedObject *)managedObject;
 
-- (NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError: (NSError **)fetchError;
+- (NSBatchUpdateResult *)executeRequestForNSBatchUpdateResult:(NSBatchUpdateRequest *)updateRequest withError:(NSError **)fetchError;
 
 @end

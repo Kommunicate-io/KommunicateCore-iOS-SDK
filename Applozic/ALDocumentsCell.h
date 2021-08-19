@@ -17,9 +17,9 @@
 
 @interface ALDocumentsCell : ALMediaBaseCell
 
-@property (nonatomic, strong) UILabel * documentName;
+@property (nonatomic, strong) UILabel *documentName;
 @property (nonatomic, strong) UITapGestureRecognizer *tapper;
 
-- (instancetype) populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize;
+- (instancetype)populateCell:(ALMessage *) alMessage viewSize:(CGSize)viewSize;
 
 @end

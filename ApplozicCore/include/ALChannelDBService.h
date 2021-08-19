@@ -23,7 +23,7 @@
 
 - (void)insertChannel:(NSMutableArray *)channelList;
 
-- (DB_CHANNEL *) createChannelEntity:(ALChannel *)channel;
+- (DB_CHANNEL *)createChannelEntity:(ALChannel *)channel;
 
 - (void)insertChannelUserX:(NSMutableArray *)channelUserX;
 
@@ -35,7 +35,7 @@
 
 - (DB_CHANNEL *)getChannelByKey:(NSNumber *)key;
 
-- (NSString *)stringFromChannelUserList:(NSNumber *)key;
+- (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key;
 
 - (ALChannel *)checkChannelEntity:(NSNumber *)channelKey;
 
@@ -71,7 +71,7 @@
 
 - (BOOL)isAdminBroadcastChannel:(NSNumber *)groupId;
 
-- (void) updateChannelParentKey:(NSNumber *)channelKey
+- (void)updateChannelParentKey:(NSNumber *)channelKey
               andWithParentKey:(NSNumber *)channelParentKey
                        isAdding:(BOOL)flag;
 
@@ -97,18 +97,18 @@
 
 - (ALChannelUserX *)loadChannelUserXByUserId:(NSNumber *)channelKey andUserId:(NSString *)userId;
 
-- (void)updateParentKeyInChannelUserX:(NSNumber *)channelKey andWithParentKey:(NSNumber *)parentKey addUserId :(NSString *)userId;
+- (void)updateParentKeyInChannelUserX:(NSNumber *)channelKey andWithParentKey:(NSNumber *)parentKey addUserId:(NSString *)userId;
 
 - (void)updateRoleInChannelUserX:(NSNumber *)channelKey andUserId:(NSString *)userId withRoleType:(NSNumber *)role;
 
 - (NSMutableArray *)getListOfAllUsersInChannelByNameForContactsGroup:(NSString *)channelName;
 
 - (DB_CHANNEL *)getContactsGroupChannelByName:(NSString *)channelName;
-- (NSMutableArray *) getGroupUsersInChannel:(NSNumber *)key;
+- (NSMutableArray *)getGroupUsersInChannel:(NSNumber *)key;
 
 - (void)fetchChannelMembersAsyncWithChannelKey:(NSNumber*)channelKey witCompletion:(void(^)(NSMutableArray *membersArray))completion;
 
-- (void) getUserInSupportGroup:(NSNumber *)channelKey withCompletion:(void(^)(NSString *userId)) completion;
+- (void)getUserInSupportGroup:(NSNumber *)channelKey withCompletion:(void(^)(NSString *userId)) completion;
 
 - (DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX withContext:(NSManagedObjectContext *)context;
 

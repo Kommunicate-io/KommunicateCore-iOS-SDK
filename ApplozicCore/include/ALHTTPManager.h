@@ -26,6 +26,8 @@
 
 @property (nonatomic) ALDownloadTask *downloadTask;
 
+@property (nonatomic, strong) ALResponseHandler *responseHandler;
+
 - (void)processDownloadForMessage:(ALMessage *)alMessage isAttachmentDownload:(BOOL)attachmentDownloadFlag;
 
 - (void)processUploadFileForMessage:(ALMessage *)message uploadURL:(NSString *)uploadURL;

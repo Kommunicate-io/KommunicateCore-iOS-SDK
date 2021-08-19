@@ -353,12 +353,6 @@ static CGFloat const USER_PROFILE_HEIGHT = 45;
     [self.delegate downloadRetryButtonActionDelegate:(int)self.tag andMessage:self.mMessage];
 }
 
-- (void)dealloc {
-    if (self.mMessage.fileMeta) {
-        //  [self.mMessage.fileMeta removeObserver:self forKeyPath:@"progressValue" context:nil];
-    }
-}
-
 - (void)setupProgressValueX:(CGFloat)cooridinateX andY:(CGFloat)cooridinateY {
     self.progresLabel = [[KAProgressLabel alloc] init];
     self.progresLabel.cancelButton.frame = CGRectMake(10, 10, 40, 40);

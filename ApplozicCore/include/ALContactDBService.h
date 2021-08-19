@@ -25,11 +25,11 @@
 
 - (BOOL)updateListOfContacts:(NSArray *)contacts;
 
-- (BOOL)updateContact:(ALContact *)contact;
+- (BOOL)updateContactInDatabase:(ALContact *)contact;
 
 - (BOOL)addListOfContacts:(NSArray *)contacts;
 
-- (BOOL)addContact:(ALContact *)userContact;
+- (BOOL)addContactInDatabase:(ALContact *)userContact;
 
 - (void)updateConnectedStatus:(NSString *)userId lastSeenAt:(NSNumber *)lastSeenAt connected:(BOOL)connected;
 

@@ -65,7 +65,6 @@
 - (NSString * _Nullable)getValueFor:(NSString * _Nonnull)userAccount
                               error:(NSError * _Nullable * _Nullable)error {
 
-
     NSMutableDictionary <NSString *, id> *query =  self.secureStoreQueryable.query;
     query[(__bridge NSString *)kSecMatchLimit] = (__bridge NSString *)kSecMatchLimitOne;
     query[(__bridge NSString *)kSecReturnAttributes] = (__bridge id)kCFBooleanTrue;

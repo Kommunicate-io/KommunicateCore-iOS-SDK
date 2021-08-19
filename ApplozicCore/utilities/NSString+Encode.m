@@ -10,7 +10,7 @@
 
 @implementation NSString (Encode)
 
--(NSString *)urlEncodeUsingNSUTF8StringEncoding {
+- (NSString *)urlEncodeUsingNSUTF8StringEncoding {
     return [self stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 @end

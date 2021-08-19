@@ -875,7 +875,7 @@
 + (NSString *)getGroupDeletedTitle {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSString *title = [userDefaults stringForKey:AL_GROUP_DELETED_TITLE];
-    return title ? title : NSLocalizedStringWithDefaultValue(@"groupDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"This Group has been Deleted", @"");;
+    return title ? title : NSLocalizedStringWithDefaultValue(@"groupDeletedInfo", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"This Group has been Deleted", @"");
 }
 
 + (void)setGroupDeletedTitle:(NSString *)title {

@@ -14,10 +14,10 @@
 
 @interface ALVideoCell : ALMediaBaseCell
 
-- (instancetype) populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize;
+- (instancetype)populateCell:(ALMessage *)alMessage viewSize:(CGSize)viewSize;
 
-- (void) videoFullScreen:(UITapGestureRecognizer *)sender;
-- (void) downloadRetryAction;
+- (void)videoFullScreen:(UITapGestureRecognizer *)sender;
+- (void)downloadRetryAction;
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapper;
 @property (nonatomic, strong) NSURL *videoFileURL;

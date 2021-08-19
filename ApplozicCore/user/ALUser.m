@@ -19,7 +19,6 @@
     self = [super init];
     
     if (self) {
-    
         self.userId = userId;
         self.password = password;
         self.displayName = displayName;

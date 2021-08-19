@@ -24,12 +24,12 @@
 @property short pricingPackage;
 @property NSString *displayName;
 @property NSString* notificationSoundFileName;
-@property  NSMutableDictionary * metadata;
+@property NSMutableDictionary *metadata;
 @property NSString *roleName;
 @property short roleType;
-@property NSString * userEncryptionKey;
-@property NSString * authToken;
+@property NSString *userEncryptionKey;
+@property NSString *authToken;
 
--(BOOL)isRegisteredSuccessfully;
+- (BOOL)isRegisteredSuccessfully;
 
 @end

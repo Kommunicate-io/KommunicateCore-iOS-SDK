@@ -29,19 +29,19 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
                                            paramString:(NSString *)paramString
                                               ofUserId:(NSString *)userId {
 
-    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] init];
-    NSURL *theUrl = nil;
+    NSMutableURLRequest *requestGetURL = [[NSMutableURLRequest alloc] init];
+    NSURL *requestURL = nil;
     if (paramString != nil) {
-        theUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@",urlString,paramString]];
+        requestURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@",urlString,paramString]];
     } else {
-        theUrl = [NSURL URLWithString:urlString];
+        requestURL = [NSURL URLWithString:urlString];
     }
-    ALSLog(ALLoggerSeverityInfo, @"GET_URL :: %@", theUrl);
-    [theRequest setURL:theUrl];
-    [theRequest setTimeoutInterval:600];
-    [theRequest setHTTPMethod:@"GET"];
-    [self addGlobalHeader:theRequest ofUserId:userId];
-    return theRequest;
+    ALSLog(ALLoggerSeverityInfo, @"GET_URL :: %@", requestURL);
+    [requestGetURL setURL:requestURL];
+    [requestGetURL setTimeoutInterval:600];
+    [requestGetURL setHTTPMethod:@"GET"];
+    [self addGlobalHeader:requestGetURL ofUserId:userId];
+    return requestGetURL;
 }
 
 + (NSMutableURLRequest *)createPOSTRequestWithUrlString:(NSString *)urlString
@@ -55,44 +55,44 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
                                             paramString:(NSString *)paramString
                                                ofUserId:(NSString *)userId {
 
-    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
-    [theRequest setTimeoutInterval:600];
-    [theRequest setHTTPMethod:@"POST"];
+    NSMutableURLRequest *postRequestURL = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+    [postRequestURL setTimeoutInterval:600];
+    [postRequestURL setHTTPMethod:@"POST"];
 
     if (paramString != nil) {
-        NSData *thePostData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *postData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
         if([ALUserDefaultsHandler getEncryptionKey] && ![urlString hasSuffix:REGISTER_USER_STRING] && ![urlString hasSuffix:@"rest/ws/register/update"]) {
-            NSData *postData = [thePostData AES128EncryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
-            NSData *base64Encoded = [postData base64EncodedDataWithOptions:0];
-            thePostData = base64Encoded;
+            NSData *encryptedData = [postData AES128EncryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
+            NSData *base64Encoded = [encryptedData base64EncodedDataWithOptions:0];
+            postData = base64Encoded;
         }
-        [theRequest setHTTPBody:thePostData];
-        [theRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[thePostData length]] forHTTPHeaderField:@"Content-Length"];
+        [postRequestURL setHTTPBody:postData];
+        [postRequestURL setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[postData length]] forHTTPHeaderField:@"Content-Length"];
     }
     ALSLog(ALLoggerSeverityInfo, @"POST_URL :: %@", urlString);
-    [self addGlobalHeader:theRequest ofUserId:userId];
-    return theRequest;
+    [self addGlobalHeader:postRequestURL ofUserId:userId];
+    return postRequestURL;
 }
 
 + (NSMutableURLRequest *)createGETRequestWithUrlStringWithoutHeader:(NSString *)urlString
                                                         paramString:(NSString *)paramString {
-    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] init];
-    NSURL *theUrl = nil;
+    NSMutableURLRequest *requestGetURL = [[NSMutableURLRequest alloc] init];
+    NSURL *requestURL = nil;
     if (paramString != nil) {
-        theUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@",urlString,paramString]];
+        requestURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@",urlString,paramString]];
     } else {
-        theUrl = [NSURL URLWithString:urlString];
+        requestURL = [NSURL URLWithString:urlString];
     }
-    ALSLog(ALLoggerSeverityInfo, @"GET_URL :: %@", theUrl);
-    [theRequest setURL:theUrl];
-    [theRequest setTimeoutInterval:600];
-    [theRequest setHTTPMethod:@"GET"];
-    return theRequest;
+    ALSLog(ALLoggerSeverityInfo, @"GET_URL :: %@", requestURL);
+    [requestGetURL setURL:requestURL];
+    [requestGetURL setTimeoutInterval:600];
+    [requestGetURL setHTTPMethod:@"GET"];
+    return requestGetURL;
 }
 
 + (NSMutableURLRequest *)createPatchRequestWithUrlString:(NSString *)urlString
                                              paramString:(NSString *)paramString {
-    NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+    NSMutableURLRequest *patchURLRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
 
     NSURL *theUrl = nil;
     if (paramString != nil) {
@@ -101,15 +101,15 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     } else {
         theUrl = [NSURL URLWithString: urlString];
     }
-    [theRequest setURL:theUrl];
-    [theRequest setTimeoutInterval:600];
-    [theRequest setHTTPMethod:@"PATCH"];
-    [self addGlobalHeader:theRequest ofUserId:nil];
+    [patchURLRequest setURL:theUrl];
+    [patchURLRequest setTimeoutInterval:600];
+    [patchURLRequest setHTTPMethod:@"PATCH"];
+    [self addGlobalHeader:patchURLRequest ofUserId:nil];
     ALSLog(ALLoggerSeverityInfo, @"PATCH_URL :: %@", theUrl);
-    return theRequest;
+    return patchURLRequest;
 }
 
-+ (void)addGlobalHeader:(NSMutableURLRequest*)request
++ (void)addGlobalHeader:(NSMutableURLRequest *)request
                ofUserId:(NSString *)userId {
     
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];

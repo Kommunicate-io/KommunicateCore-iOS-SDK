@@ -37,7 +37,7 @@ static NSString * const AL_TRUE = @"true";
     return self;
 }
 
-- (void)parseMessage:(id) messageJson {
+- (void)parseMessage:(id)messageJson {
 
     // key String
 
@@ -123,24 +123,24 @@ static NSString * const AL_TRUE = @"true";
 
     // file meta info
 
-    NSDictionary * fileMetaDict = messageJson[@"fileMeta"];
+    NSDictionary * fileMetaDictionary = messageJson[@"fileMeta"];
 
-    if ([self validateJsonClass:fileMetaDict]) {
+    if ([self validateJsonClass:fileMetaDictionary]) {
 
-        ALFileMetaInfo * theFileMetaInfo = [ALFileMetaInfo new];
+        ALFileMetaInfo *fileMetaInfo = [ALFileMetaInfo new];
 
-        theFileMetaInfo.blobKey = [self getStringFromJsonValue:fileMetaDict[@"blobKey"]];
-        theFileMetaInfo.thumbnailBlobKey = [self getStringFromJsonValue:fileMetaDict[@"thumbnailBlobKey"]];
-        theFileMetaInfo.contentType = [self getStringFromJsonValue:fileMetaDict[@"contentType"]];
-        theFileMetaInfo.createdAtTime = [self getNSNumberFromJsonValue:fileMetaDict[@"createdAtTime"]];
-        theFileMetaInfo.key = [self getStringFromJsonValue:fileMetaDict[@"key"]];
-        theFileMetaInfo.name = [self getStringFromJsonValue:fileMetaDict[@"name"]];
-        theFileMetaInfo.userKey = [self getStringFromJsonValue:fileMetaDict[@"userKey"]];
-        theFileMetaInfo.size = [self getStringFromJsonValue:fileMetaDict[@"size"]];
-        theFileMetaInfo.thumbnailUrl = [self getStringFromJsonValue:fileMetaDict[@"thumbnailUrl"]];
-        theFileMetaInfo.url = [self getStringFromJsonValue:fileMetaDict[@"url"]];
+        fileMetaInfo.blobKey = [self getStringFromJsonValue:fileMetaDictionary[@"blobKey"]];
+        fileMetaInfo.thumbnailBlobKey = [self getStringFromJsonValue:fileMetaDictionary[@"thumbnailBlobKey"]];
+        fileMetaInfo.contentType = [self getStringFromJsonValue:fileMetaDictionary[@"contentType"]];
+        fileMetaInfo.createdAtTime = [self getNSNumberFromJsonValue:fileMetaDictionary[@"createdAtTime"]];
+        fileMetaInfo.key = [self getStringFromJsonValue:fileMetaDictionary[@"key"]];
+        fileMetaInfo.name = [self getStringFromJsonValue:fileMetaDictionary[@"name"]];
+        fileMetaInfo.userKey = [self getStringFromJsonValue:fileMetaDictionary[@"userKey"]];
+        fileMetaInfo.size = [self getStringFromJsonValue:fileMetaDictionary[@"size"]];
+        fileMetaInfo.thumbnailUrl = [self getStringFromJsonValue:fileMetaDictionary[@"thumbnailUrl"]];
+        fileMetaInfo.url = [self getStringFromJsonValue:fileMetaDictionary[@"url"]];
 
-        self.fileMeta = theFileMetaInfo;
+        self.fileMeta = fileMetaInfo;
     }
 
     self.deleted = NO;
@@ -154,43 +154,40 @@ static NSString * const AL_TRUE = @"true";
 
 - (NSString *)getCreatedAtTime:(BOOL)today {
 
-    NSString *formattedStr = today?@"hh:mm a":@"dd MMM";
-
-    NSString *formattedDateStr;
-
+    NSString *formattedString = today ? @"hh:mm a":@"dd MMM";
+    NSString *formattedDateString;
     NSDate *currentTime = [[NSDate alloc] init];
 
-    NSDate *msgDate = [NSDate dateWithTimeIntervalSince1970:self.createdAtTime.doubleValue/1000];
-    NSTimeInterval difference = [currentTime timeIntervalSinceDate:msgDate];
+    NSDate *messageDate = [NSDate dateWithTimeIntervalSince1970:self.createdAtTime.doubleValue/1000];
+    NSTimeInterval difference = [currentTime timeIntervalSinceDate:messageDate];
 
     float minutes;
     if (difference <= 3600) {
-        if(difference <= 60) {
-            formattedDateStr = NSLocalizedStringWithDefaultValue(@"justNow", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Just Now", @"");
+        if (difference <= 60) {
+            formattedDateString = NSLocalizedStringWithDefaultValue(@"justNow", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Just Now", @"");
         } else {
             minutes = difference/60;
-            formattedDateStr = [NSString stringWithFormat:@"%.0f", minutes];
-            formattedDateStr = [formattedDateStr stringByAppendingString:@" m"];
+            formattedDateString = [NSString stringWithFormat:@"%.0f", minutes];
+            formattedDateString = [formattedDateString stringByAppendingString:@" m"];
         }
     } else if(difference <= 7200) {
         minutes = (difference - 3600)/60;
-        formattedDateStr = [NSString stringWithFormat:@"%.0f", minutes];
+        formattedDateString = [NSString stringWithFormat:@"%.0f", minutes];
         NSString *hour = @"1h ";
-        formattedDateStr = [hour stringByAppendingString:formattedDateStr];
-        formattedDateStr = [formattedDateStr stringByAppendingString:@"m"];
+        formattedDateString = [hour stringByAppendingString:formattedDateString];
+        formattedDateString = [formattedDateString stringByAppendingString:@"m"];
     } else {
-        formattedDateStr = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedStr];
+        formattedDateString = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedString];
     }
 
-    return formattedDateStr;
+    return formattedDateString;
 }
 
 - (NSString *)getCreatedAtTimeChat:(BOOL)today {
 
-    NSString *formattedStr = @"hh:mm a";
-    NSString *formattedDateStr = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedStr];
-
-    return formattedDateStr;
+    NSString *formattedString = @"hh:mm a";
+    NSString *formattedDateString = [ALUtilityClass formatTimestamp:[self.createdAtTime doubleValue]/1000 toFormat:formattedString];
+    return formattedDateString;
 }
 - (BOOL)isDownloadRequired {
 
@@ -263,16 +260,16 @@ static NSString * const AL_TRUE = @"true";
         return nil;
     }
 
-    NSData * data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
-    NSMutableDictionary * metaDataDictionary;
+    NSMutableDictionary *metaDataDictionary;
 
     if (!data) {
         return nil;
     }
 
     @try {
-        NSError * error;
+        NSError *error;
         metaDataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
                                                                         format:&format
                                                                          error:&error];
@@ -286,7 +283,7 @@ static NSString * const AL_TRUE = @"true";
     NSString *msgType = (NSString *)[self.metadata objectForKey:@"MSG_TYPE"];
     BOOL flag = [[self.metadata objectForKey:@"CALL_AUDIO_ONLY"] boolValue];
 
-    NSString * text = self.message;
+    NSString *text = self.message;
 
     if ([msgType isEqualToString:@"CALL_MISSED"]) {
         text = flag ? @"Missed Audio Call" : @"Missed Video Call";
@@ -322,7 +319,7 @@ static NSString * const AL_TRUE = @"true";
 
 - (BOOL)isMessageCategoryHidden {
     return (self.metadata && [self.metadata valueForKey:@"category"] &&
-            [ [self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_HIDDEN]);
+            [[self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_HIDDEN]);
 }
 
 - (BOOL)isAReplyMessage {
@@ -430,19 +427,19 @@ static NSString * const AL_TRUE = @"true";
 }
 
 - (ALFileMetaInfo *)getFileMetaInfo {
-    ALFileMetaInfo *info = [ALFileMetaInfo new];
+    ALFileMetaInfo *fileMetaInfo = [ALFileMetaInfo new];
     
-    info.blobKey = nil;
-    info.contentType = @"";
-    info.createdAtTime = nil;
-    info.key = nil;
-    info.name = @"";
-    info.size = @"";
-    info.userKey = @"";
-    info.thumbnailUrl = @"";
-    info.progressValue = 0;
+    fileMetaInfo.blobKey = nil;
+    fileMetaInfo.contentType = @"";
+    fileMetaInfo.createdAtTime = nil;
+    fileMetaInfo.key = nil;
+    fileMetaInfo.name = @"";
+    fileMetaInfo.size = @"";
+    fileMetaInfo.userKey = @"";
+    fileMetaInfo.thumbnailUrl = @"";
+    fileMetaInfo.progressValue = 0;
     
-    return info;
+    return fileMetaInfo;
 }
 
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder {
@@ -452,33 +449,20 @@ static NSString * const AL_TRUE = @"true";
 }
 
 - (BOOL)isNotificationDisabled {
-    
     ALChannel *channel;
-    
     ALContact *contact;
-    
     if (self.groupId != nil) {
-        
         ALChannelService *channelService = [[ALChannelService alloc] init];
-        
-        channel =  [channelService getChannelByKey:self.groupId];
-        
+        channel = [channelService getChannelByKey:self.groupId];
     } else {
-        
         ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
-        
         contact = [alContactDBService loadContactByKey:@"userId" value:self.contactIds];
-        
     }
     
     return (([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE)
-            
             || (_metadata && ([self isSilentNotification]
-                              
                               || [self isHiddenMessage]))
-            
             || (channel && [channel isNotificationMuted])
-            
             || (contact && [contact isNotificationMuted]));
 }
 
@@ -493,7 +477,7 @@ static NSString * const AL_TRUE = @"true";
     return self.status.intValue != 0;
 }
 
-- (NSMutableDictionary *)combineMetadata:(NSMutableDictionary *) messageMetadata {
+- (NSMutableDictionary *)combineMetadata:(NSMutableDictionary *)messageMetadata {
     if (!self.metadata) {
         return messageMetadata;
     }

@@ -34,8 +34,6 @@
 
 - (void)setUserDetails:(NSString *)jsonString;
 
-- (void)userDetail;
-
 - (NSString *)getDisplayName;
 
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;

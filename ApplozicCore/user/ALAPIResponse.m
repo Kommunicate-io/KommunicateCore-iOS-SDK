@@ -9,6 +9,9 @@
 #import "ALAPIResponse.h"
 #import "ALLogger.h"
 
+NSString *const AL_RESPONSE_SUCCESS = @"success";
+NSString *const AL_RESPONSE_ERROR = @"error";
+
 @implementation ALAPIResponse
 
 - (id)initWithJSONString:(NSString *)JSONString {

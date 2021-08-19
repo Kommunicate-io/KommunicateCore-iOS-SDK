@@ -9,14 +9,10 @@
 #import "DB_CHANNEL_USER_X.h"
 
 @implementation DB_CHANNEL_USER_X
-
-
 @dynamic channelKey;
 @dynamic parentGroupKey;
 @dynamic status;
 @dynamic userId;
 @dynamic unreadCount;
 @dynamic role;
-
-
 @end

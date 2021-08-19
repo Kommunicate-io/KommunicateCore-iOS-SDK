@@ -16,7 +16,7 @@
 
 - (NSString *)getStringFromJsonValue:(id)jsonValue;
 
-- (BOOL )getBoolFromJsonValue:(id)jsonValue;
+- (BOOL)getBoolFromJsonValue:(id)jsonValue;
 
 - (BOOL)validateJsonClass:(NSDictionary *)jsonClass;
 

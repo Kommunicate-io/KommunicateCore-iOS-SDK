@@ -15,10 +15,22 @@
 static NSString *const CREATED_TIME = @"createdAtTime";
 static NSString *const VALID_UPTO = @"validUpto";
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self setupService];
+    }
+    return self;
+}
+
+-(void)setupService {
+    self.authClientService = [[ALAuthClientService alloc] init];
+}
+
 - (NSError *)decodeAndSaveToken:(NSString *)authToken {
-    NSError * jwtError;
+    NSError *jwtError;
     if (!authToken) {
-        NSError * error = [NSError errorWithDomain:@"Applozic"
+        NSError *error = [NSError errorWithDomain:@"Applozic"
                                               code:1
                                           userInfo:@{NSLocalizedDescriptionKey : @"AuthToken is nil"}];
         return error;
@@ -29,7 +41,7 @@ static NSString *const VALID_UPTO = @"validUpto";
     ALJWT *jwt = [ALJWT decodeWithJwt:authToken error:&jwtError];
 
     if (!jwtError && jwt.body) {
-        NSDictionary * jwtBody = jwt.body;
+        NSDictionary *jwtBody = jwt.body;
         NSNumber *createdAtTime = [jwtBody objectForKey:CREATED_TIME];
         NSNumber *validUptoInMins = [jwtBody objectForKey:VALID_UPTO];
 
@@ -46,8 +58,8 @@ static NSString *const VALID_UPTO = @"validUpto";
 
 - (BOOL)isAuthTokenValid {
 
-    NSNumber * authTokenCreatedAtTime = [ALUserDefaultsHandler getAuthTokenCreatedAtTime];
-    NSNumber * authTokenValidUptoMins = [ALUserDefaultsHandler getAuthTokenValidUptoMins];
+    NSNumber *authTokenCreatedAtTime = [ALUserDefaultsHandler getAuthTokenCreatedAtTime];
+    NSNumber *authTokenValidUptoMins = [ALUserDefaultsHandler getAuthTokenValidUptoMins];
 
     NSTimeInterval timeInSeconds = [[NSDate date] timeIntervalSince1970] * 1000;
 
@@ -75,9 +87,7 @@ static NSString *const VALID_UPTO = @"validUpto";
 }
 
 - (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
-
-    ALAuthClientService * authClientService = [[ALAuthClientService alloc] init];
-    [authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+    [self.authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
         if (error) {
             completion(nil, error);
             return;

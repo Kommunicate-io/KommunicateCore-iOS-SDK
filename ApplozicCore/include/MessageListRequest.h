@@ -20,7 +20,7 @@
 @property(nonatomic,retain) NSString *userId;
 @property(nonatomic,retain) NSNumber *conversationId;
 
-- (NSString*)getParamString;
+- (NSString *)getParamString;
 - (BOOL)isFirstCall;
 
 @end

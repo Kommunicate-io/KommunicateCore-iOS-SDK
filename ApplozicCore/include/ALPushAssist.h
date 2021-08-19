@@ -13,7 +13,7 @@
 
 @property(nonatomic, readonly, strong) UIViewController *topViewController;
 
-- (void)assist:(NSString*)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString *)userId;
+- (void)assist:(NSString *)notiMsg withUserInfo:(NSMutableDictionary *)dict ofUser:(NSString *)userId;
 - (UIViewController *)topViewController;
 - (BOOL)isOurViewOnTop;
 - (BOOL)isMessageContainerOnTop;

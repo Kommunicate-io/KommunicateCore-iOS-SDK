@@ -129,11 +129,7 @@
     }
     if ([updateUI isEqualToNumber:[NSNumber numberWithInt:APP_STATE_BACKGROUND]]) {
         if (alertValue || alertValue.length >0) {
-            ALPushAssist *assitant = [[ALPushAssist alloc] init];
             ALSLog(ALLoggerSeverityInfo, @"APP_STATE_BACKGROUND :: %@",notification.userInfo);
-            if (!assitant.isOurViewOnTop) {
-                //     [ALUtilityClass thirdDisplayNotificationTS:alertValue andForContactId:self.contactId withGroupId:groupId delegate:self];
-            }
         }
     }
 }

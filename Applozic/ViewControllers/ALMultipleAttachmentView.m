@@ -45,8 +45,6 @@ static NSString *const reuseIdentifier = @"collectionCell";
     UIImage *addButtonImage = [ALUIUtilityClass getImageFromFramworkBundle:@"Plus_PNG.png"];
     [self.imageArray addObject: addButtonImage];
 
-    //    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
-
     [self setTitle: NSLocalizedStringWithDefaultValue(@"attachmentViewTitle", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Attachment", @"")];
 
     self.sendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"sendText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Send" , @"")
@@ -159,7 +157,7 @@ static NSString *const reuseIdentifier = @"collectionCell";
                 if (isMovie)
                 {
                     NSURL *videoURL = info[UIImagePickerControllerMediaURL];
-                    UIImage *image = [ALUIUtilityClass subProcessThumbnail:videoURL];
+                    UIImage *image = [ALUIUtilityClass generateImageThumbnailForVideoWithURL:videoURL];
                     ALMultimediaData *object = [[ALMultimediaData new] getMultimediaDataOfType:ALMultimediaTypeVideo withImage:nil withGif:nil withVideo:[videoURL path]];
                     completion(image, object);
                     return;

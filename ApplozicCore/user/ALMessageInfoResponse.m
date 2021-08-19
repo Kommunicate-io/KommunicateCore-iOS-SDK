@@ -19,8 +19,8 @@
         NSMutableArray *responseArray = [JSONString valueForKey:@"response"];
         
         for(NSDictionary *JSONDictionaryObject in responseArray) {
-            ALMessageInfo *msgObject = [[ALMessageInfo alloc] initWithDictonary:JSONDictionaryObject];
-            [self.msgInfoList addObject:msgObject];
+            ALMessageInfo *messageInfoObject = [[ALMessageInfo alloc] initWithDictonary:JSONDictionaryObject];
+            [self.msgInfoList addObject:messageInfoObject];
         }
         
         return self;

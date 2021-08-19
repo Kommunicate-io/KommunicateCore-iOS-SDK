@@ -42,16 +42,16 @@
         return nil;
     }
     
-    NSData * data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     NSPropertyListFormat format;
-    NSMutableDictionary * metaDataDictionary;
+    NSMutableDictionary *metaDataDictionary;
     
     @try {
-        NSError * error;
+        NSError *error;
         metaDataDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable
                                                                         format:&format
                                                                          error:&error];
-    } @catch(NSException * exp) {
+    } @catch(NSException *exp) {
 
     }
     
@@ -59,8 +59,8 @@
 }
 
 - (NSString *)getDisplayName {
-    NSString * trimDisplayName = [self.displayName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSString * trimFullName = [self.fullName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSString *trimDisplayName = [self.displayName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSString *trimFullName = [self.fullName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
     if (self.displayName && trimDisplayName.length) {
         return self.displayName;
@@ -74,7 +74,7 @@
 
 - (BOOL)isNotificationMuted {
     
-    long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970] ] longValue ]*1000L;
+    long secsUtc1970 = [[NSNumber numberWithDouble:[[NSDate date]timeIntervalSince1970]] longValue ]*1000L;
     
     return (_notificationAfterTime && [_notificationAfterTime longValue]> secsUtc1970);
 }
@@ -84,19 +84,18 @@
 }
 
 - (BOOL)isDisplayNameUpdateRequired {
-
     return _metadata && [_metadata count] > 0
     && [_metadata objectForKey:AL_DISPLAY_NAME_UPDATED]
     && [[_metadata objectForKey:AL_DISPLAY_NAME_UPDATED] isEqualToString:@"false"];
 }
 
-- (NSMutableDictionary *)appendMetadataIn:(NSString *) metadataString {
+- (NSMutableDictionary *)appendMetadataIn:(NSString *)metadataString {
 
     NSMutableDictionary *existingMetadata = [self getMetaDataDictionary:metadataString];
 
     if (existingMetadata && [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED]) {
 
-        NSString * flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
+        NSString *flag =  [existingMetadata objectForKey:AL_DISPLAY_NAME_UPDATED];
 
         if (!_metadata) {
             _metadata = [[NSMutableDictionary alloc]init];

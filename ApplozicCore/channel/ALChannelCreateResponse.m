@@ -30,11 +30,11 @@
 
 - (void)pasreUserDetails:(NSMutableArray * ) userDetailJsonArray {
     
-    for(NSDictionary *JSONDictionaryObject in userDetailJsonArray) {
+    for (NSDictionary *JSONDictionaryObject in userDetailJsonArray) {
         ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:JSONDictionaryObject];
-        ALContactDBService * contactDB = [ALContactDBService new];
+        ALContactDBService *contactDBService = [ALContactDBService new];
         userDetail.unreadCount = 0;
-        [contactDB updateUserDetail: userDetail];
+        [contactDBService updateUserDetail: userDetail];
     }
 }
 

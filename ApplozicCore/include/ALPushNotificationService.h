@@ -60,7 +60,6 @@ static NSString *const APPLOZIC_CATEGORY_KEY = @"category";
 
 @property (nonatomic, weak) id<ApplozicUpdatesDelegate>realTimeUpdate;
 @property(nonatomic,strong) ALSyncCallService *alSyncCallService;
-@property(nonatomic, readonly, strong) UIViewController *topViewController;
 
 - (BOOL)isApplozicNotification:(NSDictionary *)dictionary;
 - (BOOL)processPushNotification:(NSDictionary *)dictionary updateUI:(NSNumber *)updateUI;

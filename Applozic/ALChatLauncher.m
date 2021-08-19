@@ -167,9 +167,6 @@ const int REGULAR_CONTACTS = 0;
     
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Applozic" bundle:[NSBundle bundleForClass:ALChatViewController.class]];
     UITabBarController *theTabBar = [storyboard instantiateViewControllerWithIdentifier:@"messageTabBar"];
-
-    //              To Lunch with different Animation...
-    //theTabBar.modalTransitionStyle=UIModalTransitionStyleCrossDissolve ;
     
     UITabBarController * tabBAR = ((UITabBarController *)theTabBar);
     [self setCustomTabBarIcon:tabBAR];

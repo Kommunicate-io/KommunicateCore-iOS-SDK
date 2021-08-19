@@ -23,7 +23,7 @@
 
 
 + (ALAppLocalNotifications *)appLocalNotificationHandler {
-    static ALAppLocalNotifications * localNotificationHandler = nil;
+    static ALAppLocalNotifications *localNotificationHandler = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
@@ -70,22 +70,22 @@
 }
 
 - (void)reachabilityChanged:(NSNotification*)note {
-    ALReachability * reach = [note object];
+    ALReachability *reachability = [note object];
     
-    if (reach == self.googleReach) {
-        if ([reach isReachable]) {
+    if (reachability == self.googleReach) {
+        if ([reachability isReachable]) {
             ALSLog(ALLoggerSeverityInfo, @"========== IF googleReach ============");
         } else {
             ALSLog(ALLoggerSeverityInfo, @"========== ELSE googleReach ============");
         }
-    } else if (reach == self.localWiFiReach) {
-        if ([reach isReachable]) {
+    } else if (reachability == self.localWiFiReach) {
+        if ([reachability isReachable]) {
             ALSLog(ALLoggerSeverityInfo, @"========== IF localWiFiReach ============");
         } else {
             ALSLog(ALLoggerSeverityInfo, @"========== ELSE localWiFiReach ============");
         }
-    } else if (reach == self.internetConnectionReach) {
-        if ([reach isReachable]) {
+    } else if (reachability == self.internetConnectionReach) {
+        if ([reachability isReachable]) {
             ALSLog(ALLoggerSeverityInfo, @"========== IF internetConnectionReach ============");
             [self proactivelyConnectMQTT];
             [ALMessageService syncMessages];
@@ -119,7 +119,6 @@
     [ALLogger saveLogArray];
 }
 
-//receiver
 - (void)onAppDidBecomeActive:(NSNotification *)notification {
     [self proactivelyConnectMQTT];
     [ALMessageService syncMessages];

@@ -18,7 +18,7 @@
 @property (nonatomic, strong) NSString *topicDetailJson;
 @property (nonatomic, strong) NSNumber *groupId;
 @property (nonatomic, strong) NSString *userId;
-@property (nonatomic, strong) NSArray  *supportIds;
+@property (nonatomic, strong) NSArray *supportIds;
 @property (nonatomic, strong) NSMutableArray *fallBackTemplatesListArray;
 @property (nonatomic, strong) NSMutableDictionary *fallBackTemplateForSENDER;
 @property (nonatomic, strong) NSMutableDictionary *fallBackTemplateForRECEIVER;

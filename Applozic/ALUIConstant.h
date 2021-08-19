@@ -17,9 +17,8 @@
 + (CGFloat) getLocationCellHeight:(CGRect)cellFrame;
 + (CGFloat) getDateCellHeight;
 + (CGFloat) getAudioCellHeight;
-+(CGFloat)getContactCellHeight:(ALMessage*)message;
++ (CGFloat)getContactCellHeight:(ALMessage*)message;
 + (CGFloat) getDocumentCellHeight;
-
 + (CGFloat) getVideoCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame;
 + (CGFloat) getImageCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame;
 + (CGFloat) getChatCellHeight:(ALMessage *)alMessage andCellFrame:(CGRect)cellFrame;

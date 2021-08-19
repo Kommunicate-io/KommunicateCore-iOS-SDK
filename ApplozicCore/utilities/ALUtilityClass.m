@@ -24,17 +24,17 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 
 @implementation ALUtilityClass
 
-+ (NSString *) formatTimestamp:(NSTimeInterval) timeInterval toFormat:(NSString *)forMatStr {
++ (NSString *)formatTimestamp:(NSTimeInterval)timeInterval toFormat:(NSString *)formatString {
     
-    NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setAMSymbol:@"am"];
     [formatter setPMSymbol:@"pm"];
-    [formatter setDateFormat:forMatStr];
+    [formatter setDateFormat:formatString];
     formatter.timeZone = [NSTimeZone localTimeZone];
     
-    NSString * dateStr = [formatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:timeInterval]];
+    NSString *dateString = [formatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:timeInterval]];
 
-    return dateStr;
+    return dateString;
 }
 
 + (NSString *)generateJsonStringFromDictionary:(NSDictionary *)dictionary {
@@ -66,14 +66,14 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     components = [cal components:(NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay) fromDate:todayDate];
     NSDate *otherDate = [cal dateFromComponents:components];
     
-    if([today isEqualToDate:otherDate]) {
+    if ([today isEqualToDate:otherDate]) {
         //do stuff
         result = YES;
     }
     return result;
 }
 
-+ (NSString*) fileMIMEType:(NSString *)filePath {
++ (NSString *)fileMIMEType:(NSString *)filePath {
     NSString *mimeType = nil;
     if (filePath) {
         NSString *fileExtension = [filePath pathExtension];
@@ -102,30 +102,29 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
                    andForContactId:(NSString *)contactId
-                       withGroupId:(NSNumber*) groupID
+                       withGroupId:(NSNumber *)groupID
                  completionHandler:(void (^)(BOOL))handler {
 
     if ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE) {
         return;
     }
     //3rd Party View is Opened.........
-    ALContact* contact = nil;
-    ALContactDBService * contactDb=[[ALContactDBService alloc] init];
-    contact = [contactDb loadContactByKey:@"userId" value:contactId];
-
+    ALContact *contact = nil;
+    ALContactDBService *contactDatabase = [[ALContactDBService alloc] init];
+    contact = [contactDatabase loadContactByKey:@"userId" value:contactId];
 
     ALChannel *channel = nil;
-    ALChannelDBService *groupDb= [[ALChannelDBService alloc] init];
+    ALChannelDBService *channelDatabaseService = [[ALChannelDBService alloc] init];
 
-    NSString* title;
+    NSString *title;
     if (groupID != nil) {
-        channel = [groupDb loadChannelByKey:groupID];
+        channel = [channelDatabaseService loadChannelByKey:groupID];
         title = channel.name;
     } else {
         title = contact.getDisplayName;
     }
 
-    ALPushAssist* top=[[ALPushAssist alloc] init];
+    ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
     UIImage *appIcon = [UIImage imageNamed: [[[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIcons"] objectForKey:@"CFBundlePrimaryIcon"] objectForKey:@"CFBundleIconFiles"] objectAtIndex:0]];
 
     [[TSMessageView appearance] setTitleFont:[UIFont fontWithName:@"Helvetica Neue" size:18.0]];
@@ -133,7 +132,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
     [[TSMessageView appearance] setContentTextColor:[UIColor whiteColor]];
 
-    [TSMessage showNotificationInViewController:top.topViewController
+    [TSMessage showNotificationInViewController:pushAssist.topViewController
                                           title:title
                                        subtitle:toastMessage
                                           image:appIcon
@@ -152,25 +151,25 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return resultString;
 }
 
--(void)getExactDate:(NSNumber *)dateValue {
+- (void)getExactDate:(NSNumber *)dateValue {
     
     NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970: [dateValue doubleValue]/1000];
     
-    NSDate *current = [[NSDate alloc] init];
+    NSDate *currentDate = [[NSDate alloc] init];
     NSDate *today = [NSDate date];
     NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
     
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
     [format setDateFormat:@"dd/MM/yyy"];
     
-    NSString *todaydate = [format stringFromDate:current];
-    NSString *yesterdaydate = [format stringFromDate:yesterday];
-    NSString *serverdate = [format stringFromDate:date];
-    self.msgdate = serverdate;
+    NSString *todayDate = [format stringFromDate:currentDate];
+    NSString *yesterdayDate = [format stringFromDate:yesterday];
+    NSString *serverDate = [format stringFromDate:date];
+    self.msgdate = serverDate;
     
-    if ([serverdate isEqualToString:todaydate]) {
+    if ([serverDate isEqualToString:todayDate]) {
         self.msgdate = NSLocalizedStringWithDefaultValue(@"todayMsgViewText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"today" , @"");
-    } else if ([serverdate isEqualToString:yesterdaydate]) {
+    } else if ([serverDate isEqualToString:yesterdayDate]) {
         self.msgdate = NSLocalizedStringWithDefaultValue(@"yesterdayMsgViewText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"yesterday" , @"");
     }
     
@@ -194,13 +193,13 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 }
 
 + (NSString *)getDevieUUID {
-    NSString * uuid = [[NSUUID UUID] UUIDString];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
     return uuid;
 }
 
 + (BOOL)checkDeviceKeyString:(NSString *)string {
-    NSArray * array = [string componentsSeparatedByString:@":"];
-    NSString * deviceString = (NSString *)[array firstObject];
+    NSArray *array = [string componentsSeparatedByString:@":"];
+    NSString *deviceString = (NSString *)[array firstObject];
     return [deviceString isEqualToString:[ALUtilityClass getDevieUUID]];
 }
 
@@ -210,56 +209,56 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     NSInteger minutes = (ti / 60) % 60;
     NSInteger hours = (ti / 3600);
     
-    NSString * text = @"";
+    NSString *stringTime = @"";
     
     if (hours) {
-        text = [NSString stringWithFormat:@"%ld Hr %02ld Min %02ld Sec", (long)hours, (long)minutes, (long)seconds];
+        stringTime = [NSString stringWithFormat:@"%ld Hr %02ld Min %02ld Sec", (long)hours, (long)minutes, (long)seconds];
     } else if (minutes) {
-        text = [NSString stringWithFormat:@"%ld Min %ld Sec", (long)minutes, (long)seconds];
+        stringTime = [NSString stringWithFormat:@"%ld Min %ld Sec", (long)minutes, (long)seconds];
     } else {
-        text = [NSString stringWithFormat:@"%ld Sec", (long)seconds];
+        stringTime = [NSString stringWithFormat:@"%ld Sec", (long)seconds];
     }
     
-    return text;
+    return stringTime;
 }
 
-+ (NSString*)getLocationUrl:(ALMessage *)almessage {
-    NSString *latLongArgument = [self formatLocationJson:almessage];
-    NSString * finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
-                           latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
++ (NSString *)getLocationURL:(ALMessage *)alMessage {
+    NSString *latLongArgument = [self formatLocationJson:alMessage];
+    NSString *finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
+                          latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
     return finalURl;
 }
 
-+ (NSString*)getLocationUrl:(ALMessage*)almessage size:(CGRect)withSize {
++ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize {
 
-    NSString *latLongArgument = [self formatLocationJson:almessage];
+    NSString *latLongArgument = [self formatLocationJson:alMessage];
 
-    NSString *staticMapUrl = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?format=png&markers=%@&key=%@&zoom=13&size=%dx%d&scale=1",latLongArgument,
+    NSString *staticMapURL = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?format=png&markers=%@&key=%@&zoom=13&size=%dx%d&scale=1",latLongArgument,
                               [ALUserDefaultsHandler getGoogleMapAPIKey], 2*(int)withSize.size.width, 2*(int)withSize.size.height];
     
-    return staticMapUrl;
+    return staticMapURL;
 }
 
-+ (NSString*)formatLocationJson:(ALMessage *)locationAlMessage {
++ (NSString *)formatLocationJson:(ALMessage *)locationALMessage {
     NSError *error;
-    NSData *objectData = [locationAlMessage.message dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *jsonStringDic = [NSJSONSerialization JSONObjectWithData:objectData
-                                                                  options:NSJSONReadingMutableContainers
-                                                                    error:&error];
+    NSData *objectData = [locationALMessage.message dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *jsonStringDictionary = [NSJSONSerialization JSONObjectWithData:objectData
+                                                                         options:NSJSONReadingMutableContainers
+                                                                           error:&error];
     
-    NSArray* latLog = [[NSArray alloc] initWithObjects:[jsonStringDic valueForKey:@"lat"],[jsonStringDic valueForKey:@"lon"], nil];
+    NSArray *latLog = [[NSArray alloc] initWithObjects:[jsonStringDictionary valueForKey:@"lat"],[jsonStringDictionary valueForKey:@"lon"], nil];
     
     if (!latLog.count) {
-        return [self processMapUrl:locationAlMessage];
+        return [self processMapURL:locationALMessage];
     }
     
     NSString *latLongArgument = [NSString stringWithFormat:@"%@,%@", latLog[0], latLog[1]];
     return latLongArgument;
 }
 
-+ (NSString *)processMapUrl:(ALMessage *)message {
-    NSArray * URL_ARRAY = [message.message componentsSeparatedByString:@"="];
-    NSString * coordinate = (NSString *)[URL_ARRAY lastObject];
++ (NSString *)processMapURL:(ALMessage *)message {
+    NSArray *arrayOfURL = [message.message componentsSeparatedByString:@"="];
+    NSString *coordinate = (NSString *)[arrayOfURL lastObject];
     return coordinate;
 }
 
@@ -269,29 +268,29 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 }
 
 + (NSURL *)getDocumentDirectory {
-    return  [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
 + (NSURL *)getAppsGroupDirectory {
 
-    NSURL * urlForDocumentsDirectory;
-    NSString * shareExtentionGroupName = [ALApplozicSettings getShareExtentionGroup];
+    NSURL *urlForDocumentsDirectory;
+    NSString *shareExtentionGroupName = [ALApplozicSettings getShareExtentionGroup];
     if (shareExtentionGroupName) {
         urlForDocumentsDirectory = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:shareExtentionGroupName];
     }
     return urlForDocumentsDirectory;
 }
 
-+(NSURL *)getApplicationDirectoryWithFilePath:(NSString *)path {
++ (NSURL *)getApplicationDirectoryWithFilePath:(NSString *)path {
 
-    NSURL * directory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *directory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     directory = [directory URLByAppendingPathComponent:path];
     return directory;
 }
 
-+(NSURL *)getAppsGroupDirectoryWithFilePath:(NSString *)path {
++ (NSURL *)getAppsGroupDirectoryWithFilePath:(NSString *)path {
 
-    NSURL * urlForDocumentsDirectory = self. getAppsGroupDirectory;
+    NSURL *urlForDocumentsDirectory = [ALUtilityClass getAppsGroupDirectory];
     if (urlForDocumentsDirectory) {
         urlForDocumentsDirectory = [urlForDocumentsDirectory URLByAppendingPathComponent:path];
     }
@@ -343,15 +342,14 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return imageData;
 }
 
-
-+(NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url {
++ (NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url {
 
     NSString *fileName = url.lastPathComponent;
-    NSString * uniqueFileName = [NSString stringWithFormat:@"%f_%@",[[NSDate date] timeIntervalSince1970] * 1000, fileName];
-    NSURL* documentFileURL = [ALUtilityClass getApplicationDirectoryWithFilePath:uniqueFileName];
+    NSString *uniqueFileName = [NSString stringWithFormat:@"%f_%@",[[NSDate date] timeIntervalSince1970] * 1000, fileName];
+    NSURL *documentFileURL = [ALUtilityClass getApplicationDirectoryWithFilePath:uniqueFileName];
     @try {
-        NSFileManager * fileManager = [NSFileManager defaultManager];
-        NSError * error = nil;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSError *error = nil;
 
         if ([fileManager fileExistsAtPath:documentFileURL.path]) {
             [fileManager removeItemAtURL:documentFileURL error:&error];
@@ -372,23 +370,23 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return documentFileURL;
 }
 
-+(NSString *)getPathFromDirectory:(NSString *)imageFilePath {
++ (NSString *)getPathFromDirectory:(NSString *)imageFilePath {
 
-    NSURL * docDirectory =  [ALUtilityClass getApplicationDirectoryWithFilePath:imageFilePath];
-    NSString * filePath = docDirectory.path;
+    NSURL *documentDirectory = [ALUtilityClass getApplicationDirectoryWithFilePath:imageFilePath];
+    NSString *filePath = documentDirectory.path;
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        NSURL *docURL = [ALUtilityClass getAppsGroupDirectoryWithFilePath:imageFilePath];
-        if (docURL != nil) {
-            filePath = docURL.path;
+        NSURL *documentURL = [ALUtilityClass getAppsGroupDirectoryWithFilePath:imageFilePath];
+        if (documentURL != nil) {
+            filePath = documentURL.path;
         }
     }
     return filePath;
 }
 
 + (NSString *)saveImageToDocDirectory:(UIImage *)image {
-    NSString * docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString * timestamp = [NSString stringWithFormat:@"IMG-%f.jpeg",[[NSDate date] timeIntervalSince1970] * 1000];
-    NSString * filePath = [docDirPath stringByAppendingPathComponent:timestamp];
+    NSString *documentDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *timeStamp = [NSString stringWithFormat:@"IMG-%f.jpeg",[[NSDate date] timeIntervalSince1970] * 1000];
+    NSString *filePath = [documentDirectoryPath stringByAppendingPathComponent:timeStamp];
     NSData *imageData = UIImageJPEGRepresentation(image, 1.0f);
     [imageData writeToFile:filePath atomically:YES];
     return filePath;
@@ -402,7 +400,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     CMTime time = [asset duration];
     time.value = 0;
     CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
-    UIImage * thumbnail = [UIImage imageWithCGImage:imageRef];
+    UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
 
     return thumbnail;
@@ -415,6 +413,10 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
         return appGroupsId;
     }
     return AL_DEFAULT_APP_GROUP;
+}
+
++ (NSInteger)randomNumberBetween:(NSInteger)minimum maxNumber:(NSInteger)maximum {
+    return minimum + arc4random_uniform((uint32_t)(maximum - minimum + 1));
 }
 
 /// get the bundle if its SWIFT_PACKAGE will use the runtime bundle of SPM else will use the bundle from class

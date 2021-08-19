@@ -19,7 +19,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
 
 - (NSString* )getParamString {
     
-    NSString * paramString;
+    NSString *paramString;
     
     if (!self.pageSize) {
         self.pageSize = DEFAULT_PAGE_SIZE;
@@ -45,7 +45,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
     if (self.startTimeStamp != nil) {
         paramString = [paramString stringByAppendingFormat:@"&startTime=%@",self.startTimeStamp.stringValue];
     }
-
+    
     if (self.conversationId != nil){
         
         paramString = [paramString stringByAppendingFormat:@"&conversationId=%@",self.conversationId];
@@ -67,8 +67,8 @@ static NSString *const DEFAULT_START_INDEX = @"0";
 }
 
 - (BOOL)isFirstCall {
-
-    NSString * key = self.channelKey != nil ? [self.channelKey stringValue]: self.userId;
+    
+    NSString *key = self.channelKey != nil ? [self.channelKey stringValue]: self.userId;
     return (![ALUserDefaultsHandler isServerCallDoneForMSGList:key]);
 }
 

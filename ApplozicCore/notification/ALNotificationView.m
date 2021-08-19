@@ -22,7 +22,7 @@
  *********************/
 
 
-- (instancetype)initWithAlMessage:(ALMessage*)alMessage withAlertMessage:(NSString *)alertMessage {
+- (instancetype)initWithAlMessage:(ALMessage *)alMessage withAlertMessage:(NSString *)alertMessage {
     self = [super init];
     self.text =[self getNotificationText:alMessage];
     self.textColor = [UIColor whiteColor];
@@ -85,36 +85,36 @@
         return;
     }
     
-    NSString * title; // Title of Notification Banner (Display Name or Group Name)
-    NSString * subtitle = self.text; //Message to be shown
+    NSString *title; // Title of Notification Banner (Display Name or Group Name)
+    NSString *subtitle = self.text; //Message to be shown
 
-    ALPushAssist * top = [[ALPushAssist alloc] init];
+    ALPushAssist *top = [[ALPushAssist alloc] init];
 
     ALContactDBService * contactDbService = [[ALContactDBService alloc] init];
-    ALContact * alcontact = [contactDbService loadContactByKey:@"userId" value:self.contactId];
+    ALContact *alContact = [contactDbService loadContactByKey:@"userId" value:self.contactId];
 
-    ALChannel * alchannel = nil;
-    ALChannelDBService * channelDbService = [[ALChannelDBService alloc] init];
+    ALChannel *alChannel = nil;
+    ALChannelDBService *channelDbService = [[ALChannelDBService alloc] init];
 
     if (self.groupId && self.groupId.intValue != 0) {
-        NSString * contactName;
-        NSString * groupName;
+        NSString *contactName;
+        NSString *groupName;
 
-        alchannel = [channelDbService loadChannelByKey:self.groupId];
-        alcontact.userId = (alcontact.userId != nil ? alcontact.userId:@"");
+        alChannel = [channelDbService loadChannelByKey:self.groupId];
+        alContact.userId = (alContact.userId != nil ? alContact.userId:@"");
 
-        groupName = [NSString stringWithFormat:@"%@",(alchannel.name != nil ? alchannel.name : self.groupId)];
+        groupName = [NSString stringWithFormat:@"%@",(alChannel.name != nil ? alChannel.name : self.groupId)];
 
-        if (alchannel.type == GROUP_OF_TWO) {
-            ALContact * grpContact = [contactDbService loadContactByKey:@"userId" value:[alchannel getReceiverIdInGroupOfTwo]];
-            groupName = [grpContact getDisplayName];
+        if (alChannel.type == GROUP_OF_TWO) {
+            ALContact * groupContact = [contactDbService loadContactByKey:@"userId" value:[alChannel getReceiverIdInGroupOfTwo]];
+            groupName = [groupContact getDisplayName];
         }
 
-        NSArray *notificationComponents = [alcontact.getDisplayName componentsSeparatedByString:@":"];
+        NSArray *notificationComponents = [alContact.getDisplayName componentsSeparatedByString:@":"];
         if (notificationComponents.count > 1) {
             contactName = [[contactDbService loadContactByKey:@"userId" value:[notificationComponents lastObject]] getDisplayName];
         } else {
-            contactName = alcontact.getDisplayName;
+            contactName = alContact.getDisplayName;
         }
 
         if (self.alMessageObject.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
@@ -125,7 +125,7 @@
             subtitle = [NSString stringWithFormat:@"%@:%@",contactName,subtitle];
         }
     } else {
-        title = alcontact.getDisplayName;
+        title = alContact.getDisplayName;
         subtitle = self.text;
     }
 

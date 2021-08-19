@@ -10,6 +10,7 @@
 #import "ALUser.h"
 #import "ALConstant.h"
 #import "ALAPIResponse.h"
+#import "ALResponseHandler.h"
 
 static NSString *const AL_INVALID_APPLICATIONID = @"INVALID_APPLICATIONID";
 static short AL_VERSION_CODE = 112;
@@ -17,11 +18,15 @@ static NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
 
 @interface ALRegisterUserClientService : NSObject
 
+@property (nonatomic, strong) ALResponseHandler *responseHandler;
+
 - (void)initWithCompletion:(ALUser *)user withCompletion:(void(^)(ALRegistrationResponse *message, NSError *error)) completion;
 
-- (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken withCompletion:(void(^)(ALRegistrationResponse *message, NSError *error)) completion;
+- (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
+                            withCompletion:(void(^)(ALRegistrationResponse *message, NSError *error)) completion;
 
-+ (void)updateNotificationMode:(short)notificationMode withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
++ (void)updateNotificationMode:(short)notificationMode
+                withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion;
 - (void)connect;
 
 - (void)disconnect;

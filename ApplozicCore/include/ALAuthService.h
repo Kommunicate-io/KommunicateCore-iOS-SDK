@@ -8,13 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "ALUserDefaultsHandler.h"
-#import "ALRegisterUserClientService.h"
+#import "ALAuthClientService.h"
 
 @interface ALAuthService : NSObject
 
+@property (nonatomic, strong) ALAuthClientService *authClientService;
+
 - (NSError *)decodeAndSaveToken:(NSString *)authToken;
 
-- (void) validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion;
+- (void)validateAuthTokenAndRefreshWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 

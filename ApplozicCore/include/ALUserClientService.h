@@ -13,10 +13,13 @@
 #import "ALUserDetailListFeed.h"
 #import "ALAPIResponse.h"
 #import "ALMuteRequest.h"
+#import "ALResponseHandler.h"
 
 @interface ALUserClientService : NSObject
 
-+ (void)userLastSeenDetail:(NSNumber *)lastSeenAt withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark;
+@property (nonatomic, strong) ALResponseHandler *responseHandler;
+
+- (void)userLastSeenDetail:(NSNumber *)lastSeenAt withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark;
 
 - (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark;
 
@@ -24,15 +27,15 @@
 
 - (void)markConversationAsReadforContact:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
 
-+ (void)userBlockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *json, NSError *error))completion;
+- (void)userBlockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *json, NSError *error))completion;
 
-+ (void)userBlockSyncServerCall:(NSNumber *)lastSyncTime withCompletion:(void (^)(NSString *json, NSError *error))completion;
+- (void)userBlockSyncServerCall:(NSNumber *)lastSyncTime withCompletion:(void (^)(NSString *json, NSError *error))completion;
 
-+ (void)userUnblockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *json, NSError *error))completion;
+- (void)userUnblockServerCall:(NSString *)userId withCompletion:(void (^)(NSString *json, NSError *error))completion;
 
 - (void)markMessageAsReadforPairedMessageKey:(NSString *)pairedMessageKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
-+ (void)multiUserSendMessage:(NSDictionary *)messageDictionary
+- (void)multiUserSendMessage:(NSDictionary *)messageDictionary
                   toContacts:(NSMutableArray *)contactIdsArray
                     toGroups:(NSMutableArray *)channelKeysArray
               withCompletion:(void (^)(NSString *json, NSError *error))completion;
@@ -43,9 +46,10 @@
 
 - (void)fetchOnlineContactFromServer:(NSUInteger)limit withCompletion:(void (^)(id json, NSError *error))completion;
 
-- (void)subProcessUserDetailServerCall:(NSString *)paramString withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
+- (void)subProcessUserDetailServerCall:(NSString *)paramString
+                        withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completionMark;
 
-+ (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion;
+- (void)readCallResettingUnreadCountWithCompletion:(void (^)(NSString *json, NSError *error))completion;
 
 - (void)updateUserDisplayName:(NSString *)displayName
              andUserImageLink:(NSString *)imageLink
@@ -71,6 +75,6 @@
 
 - (void)muteUser:(ALMuteRequest *)alMuteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
-- (void)reportUserWithMessageKey:(NSString *)messageKey  withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
+- (void)reportUserWithMessageKey:(NSString *)messageKey withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;
 
 @end

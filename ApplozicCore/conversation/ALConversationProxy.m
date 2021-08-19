@@ -20,16 +20,15 @@
 
 - (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
-    ALConversationProxy * alConversationProxy = [[ALConversationProxy alloc] init];
+    ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc] init];
     
-    alConversationProxy.created =dbConversation.created.boolValue;
+    alConversationProxy.created = dbConversation.created.boolValue;
     alConversationProxy.closed = dbConversation.closed.boolValue;
     alConversationProxy.Id = dbConversation.iD;
     alConversationProxy.topicId = dbConversation.topicId;
-    alConversationProxy.topicDetailJson =dbConversation.topicDetailJson;
+    alConversationProxy.topicDetailJson = dbConversation.topicDetailJson;
     alConversationProxy.groupId = dbConversation.groupId;
-    alConversationProxy.userId =  dbConversation.userId;
-    ALSLog(ALLoggerSeverityInfo, @" parseMessage  called for conversation proxy topicDetailJson : %@",self.topicDetailJson);
+    alConversationProxy.userId = dbConversation.userId;
     return alConversationProxy;
 }
 
@@ -48,28 +47,27 @@
     }
 
     NSError *jsonError;
-    NSData *objectData = [self.topicDetailJson dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:objectData
-                                                         options:NSJSONReadingMutableContainers
-                                                           error:&jsonError];
-    return (self.topicDetailJson)?[[ALTopicDetail alloc] initWithDictonary:json]: nil;
+    NSData *topicData = [self.topicDetailJson dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *JSONDictionary = [NSJSONSerialization JSONObjectWithData:topicData
+                                                                   options:NSJSONReadingMutableContainers
+                                                                     error:&jsonError];
+    return (self.topicDetailJson)?[[ALTopicDetail alloc] initWithDictonary:JSONDictionary]: nil;
 }
 
 + (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy {
     
-    NSMutableDictionary *requestDict = [[NSMutableDictionary alloc] init];
-    [requestDict setValue:alConversationProxy.topicId forKey:@"topicId"];
-    [requestDict setValue:alConversationProxy.userId forKey:@"userId"];
-    [requestDict setValue:alConversationProxy.topicDetailJson forKey:@"topicDetail"];
+    NSMutableDictionary *requestDictionary = [[NSMutableDictionary alloc] init];
+    [requestDictionary setValue:alConversationProxy.topicId forKey:@"topicId"];
+    [requestDictionary setValue:alConversationProxy.userId forKey:@"userId"];
+    [requestDictionary setValue:alConversationProxy.topicDetailJson forKey:@"topicDetail"];
     
     alConversationProxy.fallBackTemplatesListArray = [[NSMutableArray alloc]
                                                       initWithObjects:alConversationProxy.fallBackTemplateForRECEIVER,alConversationProxy.fallBackTemplateForSENDER, nil];
     
-    [requestDict setValue:alConversationProxy.fallBackTemplatesListArray forKey:@"fallBackTemplatesList"];
-    return requestDict;
+    [requestDictionary setValue:alConversationProxy.fallBackTemplatesListArray forKey:@"fallBackTemplatesList"];
+    return requestDictionary;
 
 }
-
 
 
 - (void)setSenderSMSFormat:(NSString *)senderFormatString {

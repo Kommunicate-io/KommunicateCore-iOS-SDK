@@ -17,26 +17,26 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 @property (nonatomic, strong) NSString *msgdate;
 @property (nonatomic, strong) NSString *msgtime;
 
-+ (NSString *)formatTimestamp:(NSTimeInterval)timeInterval toFormat:(NSString *)forMatStr;
++ (NSString *)formatTimestamp:(NSTimeInterval)timeInterval toFormat:(NSString *)formatString;
 
 + (NSString *)generateJsonStringFromDictionary:(NSDictionary *)dictionary;
 
 + (BOOL)isToday:(NSDate *)todayDate;
 
-+ (NSString*) fileMIMEType:(NSString *)filePath;
++ (NSString *)fileMIMEType:(NSString *)filePath;
 
 + (CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize;
 
-+ (NSString*)getLocationUrl:(ALMessage *)almessage;
++ (NSString *)getLocationURL:(ALMessage *)alMessage;
 
-+ (NSString*)getLocationUrl:(ALMessage *)almessage size: (CGRect) withSize;
++ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize;
 
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
                    andForContactId:(NSString *)contactId
-                       withGroupId:(NSNumber *)groupID completionHandler:(void (^)(BOOL))handler;
+                       withGroupId:(NSNumber *)groupID
+                 completionHandler:(void (^)(BOOL))handler;
 
 + (NSString *)getFileNameWithCurrentTimeStamp;
-
 - (void)getExactDate:(NSNumber *)dateValue;
 + (BOOL)isThisDebugBuild;
 
@@ -50,9 +50,11 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 + (NSURL *)getApplicationDirectoryWithFilePath:(NSString *)path;
 + (NSData *)compressImage:(NSData *)data;
 + (NSURL *)moveFileToDocumentsWithFileURL:(NSURL *)url;
-+ (NSBundle*)getBundle;
++ (NSBundle *)getBundle;
 + (NSString *)getPathFromDirectory:(NSString *)imageFilePath;
 + (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
 + (NSString *)saveImageToDocDirectory:(UIImage *)image;
 + (NSString *)getAppGroupsName;
++ (NSInteger)randomNumberBetween:(NSInteger)minimum maxNumber:(NSInteger)maximum;
+
 @end

@@ -18,9 +18,9 @@ import Foundation
 
     // MARK: Public properties
     
-    @objc  open var viewModel: ALTemplateMessagesViewModel!
+    @objc open var viewModel: ALTemplateMessagesViewModel!
 
-    @objc   public let collectionView: UICollectionView = {
+    @objc public let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let cv = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)

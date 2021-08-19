@@ -56,6 +56,7 @@ NSString *const ThirdPartyProfileTapNotification = @"ThirdPartyProfileTapNotific
 NSString *const ALAudioVideoCallForUserIdKey = @"USER_ID";
 NSString *const ALCallForAudioKey = @"CALL_FOR_AUDIO";
 NSString *const ALDidSelectStartCallOptionKey = @"ALDidSelectStartCallOption";
+static NSInteger const ALMQTT_MAX_RETRY = 3;
 
 @interface ALChatViewController ()<ALMediaBaseCellDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, ALAudioRecorderViewProtocol, ALAudioRecorderProtocol,
 ALMQTTConversationDelegate, ALAudioAttachmentDelegate, UIPickerViewDelegate, UIPickerViewDataSource,
@@ -97,6 +98,13 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
 //============Message Reply outlets END====================================//
 
+
+@property (strong, nonatomic)  ALMessageDBService *dbService;
+@property (strong, nonatomic)  ALMessageService *messageService;
+@property (strong, nonatomic)  ALChannelService *channelService;
+@property (strong, nonatomic)  ALUserService *userService;
+
+@property (nonatomic) NSInteger mqttRetryCount;
 
 - (IBAction)loadEarlierButtonAction:(id)sender;
 - (void)markConversationRead;
@@ -148,16 +156,21 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     CGRect previousRect;
     CGRect maxHeight;
     CGRect minHeight;
-
-    ALMessageDBService *dbService;
 }
 
+-(void)setupServices {
+    self.channelService = [[ALChannelService alloc] init];
+    self.messageService = [[ALMessageService alloc] init];
+    self.userService = [[ALUserService alloc] init];
+}
 //==============================================================================================================================================
 #pragma mark - VIEW LIFECYCLE
 //==============================================================================================================================================
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.mqttRetryCount = 0;
+    [self setupServices];
     // Setup quick recording if it's enabled in the settings
     if ([ALApplozicSettings isQuickAudioRecordingEnabled]) {
         if ([ALApplozicSettings isNewAudioDesignEnabled]) {
@@ -375,7 +388,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
         [self deleteMessageFromView:msg]; // Removes message from U.I.
 
-        [ALMessageService deleteMessage:messageKey andContactId:self.contactIds withCompletion:^(NSString *response, NSError *error) {
+        [self.messageService deleteMessage:messageKey andContactId:self.contactIds withCompletion:^(NSString *response, NSError *error) {
 
             ALSLog(ALLoggerSeverityInfo, @"Message Deleted upon APPLOZIC_05 and response: %@", response);
 
@@ -418,7 +431,6 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALSLog(ALLoggerSeverityInfo, @"ALChatVC: Individual launch ...unsubscribeToConversation to mqtt..");
         if (self.mqttObject) {
             [self.mqttObject unsubscribeToConversation];
-            ALSLog(ALLoggerSeverityInfo, @"ALChatVC: In ViewWillDisapper .. MQTTObject in ==IF== now");
         } else {
             ALSLog(ALLoggerSeverityInfo, @"mqttObject is not found...");
         }
@@ -467,8 +479,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read channel %@",self.channelKey);
             } else {
-                ALUserService *userService = [[ALUserService alloc] init];
-                [userService processResettingUnreadCount];
+                [self.userService processResettingUnreadCount];
 
             }
         }];
@@ -479,33 +490,9 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error while marking messages as read for contact %@", self.contactIds);
             } else {
-                ALUserService *userService = [[ALUserService alloc] init];
-                [userService processResettingUnreadCount];
-
+                [self.userService processResettingUnreadCount];
             }
         }];
-    }
-}
-
-- (void)markSingleMessageRead:(ALMessage *)almessage {
-    if (almessage.groupId != NULL) {
-        if ([self.channelKey isEqualToNumber:almessage.groupId]) {
-            [ALUserService markMessageAsRead:almessage withPairedkeyValue:almessage.pairedMessageKey withCompletion:^(NSString *completion, NSError *error) {
-
-                if (error) {
-                    ALSLog(ALLoggerSeverityError, @"GROUP: Marking message read error:%@",error);
-                }
-            }];
-        }
-    } else {
-        if ([self.contactIds isEqualToString:almessage.contactIds]) {
-            [ALUserService markMessageAsRead:almessage withPairedkeyValue:almessage.pairedMessageKey withCompletion:^(NSString *completion, NSError *error) {
-
-                if (error) {
-                    ALSLog(ALLoggerSeverityError, @"Individual: Marking message read error:%@",error);
-                }
-            }];
-        }
     }
 }
 
@@ -652,8 +639,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
     if ([self isGroup]
         && (![channel isGroupOfTwo])) {
         if ([ALApplozicSettings isChannelMembersInfoInNavigationBarEnabled]) {
-            ALChannelService *alChannelService  = [[ALChannelService alloc] init];
-            [self.label setText:[alChannelService stringFromChannelUserList:channel.key]];
+            [self.label setText:[self.channelService userNamesWithCommaSeparatedForChannelkey:channel.key]];
         } else {
             [self.label setText:@""];
         }
@@ -723,14 +709,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         ALSLog(ALLoggerSeverityInfo, @"MQTT object is nil");
         return;
     }
-    ALChannelService *alChannelService  = [[ALChannelService alloc] init];
-
-    ALChannel *alChannel = [alChannelService getChannelByKey:self.channelKey];
+    ALChannel *alChannel = [self.channelService getChannelByKey:self.channelKey];
     if (alChannel && alChannel.type == OPEN) {
         [self.mqttObject subscribeToOpenChannel:self.channelKey];
     }
 
-    if (![alChannelService isChannelLeft:self.channelKey] && ![ALChannelService isChannelDeleted:self.channelKey]) {
+    if (![self.channelService isChannelLeft:self.channelKey] && ![ALChannelService isChannelDeleted:self.channelKey]) {
         [self.mqttObject subscribeToChannelConversation:self.channelKey];
     }
 
@@ -860,8 +844,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             [self showNoDataNotification];
             return;
         }
-        ALUserService *userService = [ALUserService new];
-        [userService unblockUser:self.contactIds withCompletionHandler:^(NSError *error, BOOL userBlock) {
+        [self.userService unblockUser:self.contactIds withCompletionHandler:^(NSError *error, BOOL userBlock) {
 
             if (userBlock) {
 
@@ -937,7 +920,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 
     if (self.channelKey && !self.contactIds) {
 
-        [ALChannelService closeGroupConverstion : self.channelKey withCompletion:^(NSError *error) {
+        [self.channelService closeGroupConverstion : self.channelKey withCompletion:^(NSError *error) {
 
             if (!error) {
 
@@ -1091,15 +1074,12 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)fetchConversationProfileDetailsWithUserId:(NSString *)userId
                                    withChannelKey:(NSNumber *)channelKey
                                    withCompletion:(void (^)( ALChannel *channel, ALContact *contact))completion {
-    ALUserService *userService = [[ALUserService alloc] init];
 
     if (channelKey) {
-
-        ALChannelService *channelService = [[ALChannelService alloc] init];
-        [channelService getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
+        [self.channelService getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
             if (alChannel && [alChannel isGroupOfTwo]) {
                 NSString *receiverId = [alChannel getReceiverIdInGroupOfTwo];
-                [userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
+                [self.userService getUserDetail:receiverId withCompletion:^(ALContact *contact) {
                     completion(alChannel, contact);
                     return;
                 }];
@@ -1113,7 +1093,7 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
             ALContact *contact = [contactService loadOrAddContactByKeyWithDisplayName:userId value: self.displayName];
             completion(nil, contact);
         } else {
-            [userService getUserDetail:userId withCompletion:^(ALContact *contact) {
+            [self.userService getUserDetail:userId withCompletion:^(ALContact *contact) {
                 completion(nil, contact);
             }];
         }
@@ -2324,9 +2304,8 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
 - (void)deleteMessasgeforAll:(ALMessage *) message {
 
     [self.mActivityIndicator startAnimating];
-    ALMessageService *messageService = [[ALMessageService alloc] init];
     ALMessageDBService *messagedb = [[ALMessageDBService alloc] init];
-    [messageService deleteMessageForAllWithKey:message.key withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+    [self.messageService deleteMessageForAllWithKey:message.key withCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
         [self.mActivityIndicator stopAnimating];
         if (!error) {
             [message setAsDeletedForAll];
@@ -2951,8 +2930,8 @@ ALSoundRecorderProtocol, ALCustomPickerDelegate,ALImageSendDelegate,UIDocumentPi
         userId = self.contactIds;
     }
 
-    [ALMessageService deleteMessageThread:userId orChannelKey:groupId
-                           withCompletion:^(NSString *string, NSError *error) {
+    [self.messageService deleteMessageThread:userId orChannelKey:groupId
+                              withCompletion:^(NSString *string, NSError *error) {
 
         if (error) {
             [ALUIUtilityClass displayToastWithMessage:@"Delete failed"];
@@ -3249,12 +3228,6 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
      userId != nil && [self.contactIds isEqualToString:userId]);
 }
 
-- (void)reloadViewfor3rdParty {
-    [[self.alMessageWrapper getUpdatedMessageArray] removeAllObjects];
-    self.startIndex = 0;
-    [self fetchMessageFromDB];
-}
-
 - (void)handleNotification:(UIGestureRecognizer *)gestureRecognizer {
     ALNotificationView *notificationView = (ALNotificationView*)gestureRecognizer.view;
     self.contactIds = notificationView.contactId;
@@ -3546,8 +3519,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (!receiverId) {
         return;
     }
-    [ALUserService userDetailServerCall:receiverId withCompletion:^(ALUserDetail *alUserDetail)
-     {
+    [self.userService userDetailServerCall:receiverId withCompletion:^(ALUserDetail *alUserDetail) {
         if (alUserDetail) {
             [ALUserDefaultsHandler setServerCallDoneForUserInfo:YES ForContact:alUserDetail.userId];
             alUserDetail.unreadCount = 0;
@@ -3676,30 +3648,6 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
     return self.label.text;
 }
-- (NSMutableArray *)getLastSeenForGroupDetails {
-    NSMutableArray *userDetailsArray = [[NSMutableArray alloc] init];
-    ALContactService *contactDBService = [[ALContactService alloc] init];
-    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
-
-    NSMutableArray *memberIdArray= [NSMutableArray arrayWithArray:[channelDBService getListOfAllUsersInChannel:self.channelKey]];
-
-    for (NSString *userID in memberIdArray) {
-        ALContact *contact = [contactDBService loadContactByKey:@"userId" value:userID];
-        ALUserDetail *userDetails = [[ALUserDetail alloc] init];
-        userDetails.userId = userID;
-        userDetails.lastSeenAtTime = contact.lastSeenAt;
-        double value = contact.lastSeenAt.doubleValue;
-        ALSLog(ALLoggerSeverityInfo, @"Contact :: %@ && Value :: %@", contact.userId, contact.lastSeenAt);
-        if (contact.lastSeenAt == NULL) {
-            [userDetailsArray addObject:@" "];
-        } else {
-            [userDetailsArray addObject:[self formatDateTime:userDetails andValue:value]];
-        }
-    }
-
-    return userDetailsArray;
-}
-
 //==============================================================================================================================================
 #pragma TEXT VIEW DELEGATE + PLUS HELPER METHODS
 //==============================================================================================================================================
@@ -3889,6 +3837,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
     if (self.individualLaunch) {
         [self subscrbingChannel];
     }
+    
 }
 
 //==============================================================================================================================================
@@ -3898,7 +3847,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 - (void)updateUserDetail:(NSString *)userId {
     ALSLog(ALLoggerSeverityInfo, @"ALCHATVC : USER_DETAIL_CHANGED_CALL_UPDATE");
 
-    [ALUserService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+    [self.userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
 
         if (!userDetail) {
             return;
@@ -3971,8 +3920,35 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 }
 
 - (void)mqttConnectionClosed {
-    if (self.mqttObject) {
-        [self.mqttObject retryConnection];
+    
+    if (self.mqttRetryCount >= ALMQTT_MAX_RETRY) {
+        return;
+    }
+    
+    BOOL isBackgroundState = ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground);
+    
+    if ([ALDataNetworkConnection checkDataNetworkAvailable]
+        && !isBackgroundState) {
+        __weak ALChatViewController *weakSelf = self;
+        double intervalSeconds = 0.0;
+
+        if (self.mqttRetryCount == 1) {
+            intervalSeconds = [ALUtilityClass randomNumberBetween:1 maxNumber:10] * 60.0;
+        } else if (self.mqttRetryCount == 2) {
+            intervalSeconds = [ALUtilityClass randomNumberBetween:10 maxNumber:20] * 60.0;
+        }
+
+        self.mqttRetryCount++;
+
+        ALSLog(ALLoggerSeverityError, @"MQTT retry in ChatViewController will start after %.f seconds and the retry count is : %ld",intervalSeconds, (long)self.mqttRetryCount);
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(intervalSeconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf subscribeToConversationWithCompletionHandler:^(BOOL connected) {
+                if (!connected) {
+                    ALSLog(ALLoggerSeverityError, @"MQTT subscribe to conversation failed to retry on mqttConnectionClosed in ALChatViewController");
+                }
+            }];
+        });
     }
 }
 
@@ -4066,8 +4042,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 }
 
 - (BOOL)isOpenGroup {
-    ALChannelService *alChannelService  = [[ALChannelService alloc] init];
-    ALChannel *channel = [alChannelService getChannelByKey:self.channelKey];
+    ALChannel *channel = [self.channelService getChannelByKey:self.channelKey];
     return channel && [channel isOpenGroup];
 }
 
@@ -4293,7 +4268,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
                 theUrl = [NSURL fileURLWithPath:filePath];
             }
 
-            globalThumbnail = [ALUIUtilityClass subProcessThumbnail:theUrl];
+            globalThumbnail = [ALUIUtilityClass generateImageThumbnailForVideoWithURL:theUrl];
 
             if ([message.message length] != 0) {
                 self.replyMessageText.text = message.message;
@@ -4332,7 +4307,7 @@ withMessageMetadata:(NSMutableDictionary *)messageMetadata {
 
         NSURL *theUrl = nil;
         if ([ALDataNetworkConnection checkDataNetworkAvailable]) {
-            NSString *finalURl = [ALUtilityClass getLocationUrl:message];
+            NSString *finalURl = [ALUtilityClass getLocationURL:message];
             theUrl = [NSURL URLWithString:finalURl];
             [self.replyAttachmentPreview sd_setImageWithURL:theUrl];
         } else {

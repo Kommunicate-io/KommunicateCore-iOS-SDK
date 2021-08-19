@@ -25,34 +25,34 @@
 
 @implementation ALMessageServiceWrapper
 
-- (void)sendTextMessage:(NSString*)text andtoContact:(NSString*)toContactId {
+- (void)sendTextMessage:(NSString*)text andtoContact:(NSString *)toContactId {
     
-    ALMessage * almessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
+    ALMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
     
-    [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
             ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
             return;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:almessage];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:alMessage];
     }];
 }
 
 
 - (void)sendTextMessage:(NSString *)messageText andtoContact:(NSString *)contactId orGroupId:(NSNumber *)channelKey {
     
-    ALMessage *almessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:contactId withText:messageText];
+    ALMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:contactId withText:messageText];
     
-    almessage.groupId = channelKey;
+    alMessage.groupId = channelKey;
     
-    [[ALMessageService sharedInstance] sendMessages:almessage withCompletion:^(NSString *message, NSError *error) {
+    [[ALMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
             ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
             return;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:almessage];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_MESSAGE_SEND_STATUS" object:alMessage];
     }];
 }
 
@@ -62,47 +62,47 @@ andWithStatusDelegate:(id)statusDelegate
       andContentType:(short)contentype {
     
     //Message Creation
-    ALMessage * theMessage = alMessage;
-    theMessage.contentType = contentype;
-    theMessage.imageFilePath = attachmentLocalPath.lastPathComponent;
+    ALMessage *message = alMessage;
+    message.contentType = contentype;
+    message.imageFilePath = attachmentLocalPath.lastPathComponent;
     
     //File Meta Creation
-    theMessage.fileMeta = [self getFileMetaInfo];
-    theMessage.fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", attachmentLocalPath.lastPathComponent];
+    message.fileMeta = [self getFileMetaInfo];
+    message.fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", attachmentLocalPath.lastPathComponent];
     if (alMessage.contactIds) {
-        theMessage.fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",alMessage.contactIds, attachmentLocalPath.lastPathComponent];
+        message.fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",alMessage.contactIds, attachmentLocalPath.lastPathComponent];
     }
     NSString *mimeType = [ALUtilityClass fileMIMEType:attachmentLocalPath];
     if (!mimeType) {
         return;
     }
 
-    theMessage.fileMeta.contentType = mimeType;
-    if (theMessage.contentType == ALMESSAGE_CONTENT_VCARD) {
-        theMessage.fileMeta.contentType = @"text/x-vcard";
+    message.fileMeta.contentType = mimeType;
+    if (message.contentType == ALMESSAGE_CONTENT_VCARD) {
+        message.fileMeta.contentType = @"text/x-vcard";
     }
     NSData *imageSize = [NSData dataWithContentsOfFile:attachmentLocalPath];
-    theMessage.fileMeta.size = [NSString stringWithFormat:@"%lu",(unsigned long)imageSize.length];
+    message.fileMeta.size = [NSString stringWithFormat:@"%lu",(unsigned long)imageSize.length];
     
     //DB Addition
-    ALMessageDBService* messageDBService = [[ALMessageDBService alloc] init];
-    DB_Message * theMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:theMessage];
-    theMessage.msgDBObjectId = [theMessageEntity objectID];
-    theMessageEntity.inProgress = [NSNumber numberWithBool:YES];
-    theMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
-    NSError * error =  [[ALDBHandler sharedInstance] saveContext];
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    DB_Message *dbMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:message];
+    message.msgDBObjectId = [dbMessageEntity objectID];
+    dbMessageEntity.inProgress = [NSNumber numberWithBool:YES];
+    dbMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
+    NSError *error =  [[ALDBHandler sharedInstance] saveContext];
 
     if (self.messageServiceDelegate && error) {
-        theMessageEntity.inProgress = [NSNumber numberWithBool:NO];
-        theMessageEntity.isUploadFailed = [NSNumber numberWithBool:YES];
+        dbMessageEntity.inProgress = [NSNumber numberWithBool:NO];
+        dbMessageEntity.isUploadFailed = [NSNumber numberWithBool:YES];
         [self.messageServiceDelegate uploadDownloadFailed:alMessage];
         return;
     }
 
-    NSDictionary * userInfo = [alMessage dictionary];
+    NSDictionary *messageDictionary = [alMessage dictionary];
     
-    ALMessageClientService * clientService  = [[ALMessageClientService alloc]init];
-    [clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *message, NSError *error) {
+    ALMessageClientService *clientService  = [[ALMessageClientService alloc] init];
+    [clientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
             [self.messageServiceDelegate uploadDownloadFailed:alMessage];
@@ -110,57 +110,57 @@ andWithStatusDelegate:(id)statusDelegate
         }
         ALHTTPManager *httpManager = [[ALHTTPManager alloc]init];
         httpManager.attachmentProgressDelegate = self;
-        [httpManager processUploadFileForMessage:[messageDBService createMessageEntity:theMessageEntity] uploadURL:message];
+        [httpManager processUploadFileForMessage:[messageDBService createMessageEntity:dbMessageEntity] uploadURL:message];
     }];
     
 }
 
 
 - (ALFileMetaInfo *)getFileMetaInfo {
-    ALFileMetaInfo *info = [ALFileMetaInfo new];
+    ALFileMetaInfo *fileMetaInfo = [ALFileMetaInfo new];
     
-    info.blobKey = nil;
-    info.contentType = @"";
-    info.createdAtTime = nil;
-    info.key = nil;
-    info.name = @"";
-    info.size = @"";
-    info.userKey = @"";
-    info.thumbnailUrl = @"";
-    info.progressValue = 0;
+    fileMetaInfo.blobKey = nil;
+    fileMetaInfo.contentType = @"";
+    fileMetaInfo.createdAtTime = nil;
+    fileMetaInfo.key = nil;
+    fileMetaInfo.name = @"";
+    fileMetaInfo.size = @"";
+    fileMetaInfo.userKey = @"";
+    fileMetaInfo.thumbnailUrl = @"";
+    fileMetaInfo.progressValue = 0;
     
-    return info;
+    return fileMetaInfo;
 }
 
 - (ALMessage *)createMessageEntityOfContentType:(int)contentType
-                                       toSendTo:(NSString*)to
-                                       withText:(NSString*)text {
+                                       toSendTo:(NSString *)to
+                                       withText:(NSString *)text {
     
-    ALMessage * theMessage = [ALMessage new];
+    ALMessage *alMessage = [ALMessage new];
     
-    theMessage.contactIds = to;//1
-    theMessage.to = to;//2
-    theMessage.message = text;//3
-    theMessage.contentType = contentType;//4
+    alMessage.contactIds = to;//1
+    alMessage.to = to;//2
+    alMessage.message = text;//3
+    alMessage.contentType = contentType;//4
     
-    theMessage.type = @"5";
-    theMessage.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
-    theMessage.deviceKey = [ALUserDefaultsHandler getDeviceKeyString ];
-    theMessage.sendToDevice = NO;
-    theMessage.shared = NO;
-    theMessage.fileMeta = nil;
-    theMessage.storeOnDevice = NO;
-    theMessage.key = [[NSUUID UUID] UUIDString];
-    theMessage.delivered = NO;
-    theMessage.fileMetaKey = nil;
+    alMessage.type = @"5";
+    alMessage.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
+    alMessage.deviceKey = [ALUserDefaultsHandler getDeviceKeyString ];
+    alMessage.sendToDevice = NO;
+    alMessage.shared = NO;
+    alMessage.fileMeta = nil;
+    alMessage.storeOnDevice = NO;
+    alMessage.key = [[NSUUID UUID] UUIDString];
+    alMessage.delivered = NO;
+    alMessage.fileMetaKey = nil;
     
-    return theMessage;
+    return alMessage;
 }
 
 
-- (void)downloadMessageAttachment:(ALMessage*)alMessage {
+- (void)downloadMessageAttachment:(ALMessage *)alMessage {
 
-    ALHTTPManager * manager =  [[ALHTTPManager alloc] init];
+    ALHTTPManager *manager = [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self;
     [manager processDownloadForMessage:alMessage isAttachmentDownload:YES];
 
