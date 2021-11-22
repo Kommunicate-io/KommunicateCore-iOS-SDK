@@ -12,9 +12,9 @@ Pod::Spec.new do |s|
     s.description      = <<-DESC
     The KommunicateCore-iOS SDK helps you build your own custom UI in your iOS app.
     DESC
-    s.homepage         = 'https://github.com/AppLozic/Applozic-Chat-iOS-Framework'
+    s.homepage         = 'https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK'
     s.license = { :type => "BSD 3-Clause", :file => "LICENSE" }
-    s.source           = { :git => 'https://github.com/AppLozic/Applozic-Chat-iOS-Framework.git', :tag => s.version.to_s }
+    s.source           = { :git => 'https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK', :tag => s.version.to_s }
     # s.social_media_url = 'https://www.twitter.com/AppLozic'
     s.authors = { 'Applozic Inc.' => 'support@applozic.com' }
     s.swift_version = '5.0'
