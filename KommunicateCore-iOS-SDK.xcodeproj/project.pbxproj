@@ -184,7 +184,7 @@
 		187361A125DD584300C02F5D /* ALMessageArrayWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1873619F25DD584300C02F5D /* ALMessageArrayWrapper.m */; };
 		187D675E25DD83C4008BE643 /* ALUIUtilityClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 187D675C25DD83C4008BE643 /* ALUIUtilityClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		187D675F25DD83C4008BE643 /* ALUIUtilityClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 187D675D25DD83C4008BE643 /* ALUIUtilityClass.m */; };
-		187D683425DED634008BE643 /* ApplozicCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1896EDB225DBD15D0038EBFF /* ApplozicCore.framework */; };
+		187D683425DED634008BE643 /* KommunicateCore_iOS_SDKCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1896EDB225DBD15D0038EBFF /* KommunicateCore_iOS_SDKCore.framework */; };
 		1886F80B25DF9CBC007EEDB7 /* ALCustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1886F80325DF9CBB007EEDB7 /* ALCustomSearchBar.swift */; };
 		1886F80C25DF9CBC007EEDB7 /* ALTabViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1886F80425DF9CBB007EEDB7 /* ALTabViewController.h */; };
 		1886F80D25DF9CBC007EEDB7 /* SoundRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1886F80525DF9CBC007EEDB7 /* SoundRecordingView.swift */; };
@@ -518,7 +518,7 @@
 		6D7757241D5B83AA0025560B /* ALHyperLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D7757221D5B83AA0025560B /* ALHyperLabel.m */; };
 		6D7757271D5B841B0025560B /* ALMessageInfoViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D7757251D5B841B0025560B /* ALMessageInfoViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D7757281D5B841B0025560B /* ALMessageInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D7757261D5B841B0025560B /* ALMessageInfoViewController.m */; };
-		6D77572A1D5B845C0025560B /* Applozic_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 6D7757291D5B845C0025560B /* Applozic_Prefix.pch */; settings = {ATTRIBUTES = (Public, ); }; };
+		6D77572A1D5B845C0025560B /* KommunicateCore-iOS-SDK_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 6D7757291D5B845C0025560B /* KommunicateCore-iOS-SDK_Prefix.pch */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D77572D1D5B84940025560B /* ALCustomCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D77572B1D5B84940025560B /* ALCustomCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D77572E1D5B84940025560B /* ALCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D77572C1D5B84940025560B /* ALCustomCell.m */; };
 		6D7757351D5B84BE0025560B /* ALUIConstant.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D7757311D5B84BE0025560B /* ALUIConstant.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -744,7 +744,7 @@
 		1886F80825DF9CBC007EEDB7 /* MessageReplyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageReplyView.m; path = Applozic/MessageReplyView.m; sourceTree = "<group>"; };
 		1886F80925DF9CBC007EEDB7 /* ALDocumentPickerHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALDocumentPickerHandler.h; path = Applozic/ALDocumentPickerHandler.h; sourceTree = "<group>"; };
 		1886F80A25DF9CBC007EEDB7 /* MessageReplyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageReplyView.h; path = Applozic/MessageReplyView.h; sourceTree = "<group>"; };
-		1896EDB225DBD15D0038EBFF /* ApplozicCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ApplozicCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1896EDB225DBD15D0038EBFF /* KommunicateCore_iOS_SDKCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KommunicateCore_iOS_SDKCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1896EDB425DBD15D0038EBFF /* ApplozicCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplozicCore.h; sourceTree = "<group>"; };
 		1896EDB525DBD15D0038EBFF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1896EDC225DBD4180038EBFF /* ALMessageBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALMessageBuilder.h; sourceTree = "<group>"; };
@@ -1049,7 +1049,7 @@
 		6D46B6C31BD025060014A5D3 /* ALMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALMapViewController.h; sourceTree = "<group>"; };
 		6D46B6C41BD025060014A5D3 /* ALMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALMapViewController.m; sourceTree = "<group>"; };
 		6D5439DB1C19B8D600C686BC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		6D6DF07D1BC535C800EBA00F /* Applozic.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Applozic.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D6DF07D1BC535C800EBA00F /* KommunicateCore-iOS-SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "KommunicateCore-iOS-SDK.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D6DF0801BC535C800EBA00F /* Applozic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Applozic.h; sourceTree = "<group>"; };
 		6D6DF0931BC5364C00EBA00F /* ALImagePickerHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALImagePickerHandler.h; path = Applozic/Handlers/ALImagePickerHandler.h; sourceTree = "<group>"; };
 		6D6DF0941BC5364C00EBA00F /* ALImagePickerHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALImagePickerHandler.m; path = Applozic/Handlers/ALImagePickerHandler.m; sourceTree = "<group>"; };
@@ -1085,7 +1085,7 @@
 		6D7757221D5B83AA0025560B /* ALHyperLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALHyperLabel.m; path = Applozic/ALHyperLabel.m; sourceTree = "<group>"; };
 		6D7757251D5B841B0025560B /* ALMessageInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALMessageInfoViewController.h; sourceTree = "<group>"; };
 		6D7757261D5B841B0025560B /* ALMessageInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALMessageInfoViewController.m; sourceTree = "<group>"; };
-		6D7757291D5B845C0025560B /* Applozic_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Applozic_Prefix.pch; path = Applozic/Applozic_Prefix.pch; sourceTree = "<group>"; };
+		6D7757291D5B845C0025560B /* KommunicateCore-iOS-SDK_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "KommunicateCore-iOS-SDK_Prefix.pch"; path = "Applozic/KommunicateCore-iOS-SDK_Prefix.pch"; sourceTree = "<group>"; };
 		6D77572B1D5B84940025560B /* ALCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALCustomCell.h; path = Applozic/ALCustomCell.h; sourceTree = "<group>"; };
 		6D77572C1D5B84940025560B /* ALCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ALCustomCell.m; path = Applozic/ALCustomCell.m; sourceTree = "<group>"; };
 		6D7757311D5B84BE0025560B /* ALUIConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALUIConstant.h; path = Applozic/ALUIConstant.h; sourceTree = "<group>"; };
@@ -1132,7 +1132,7 @@
 			files = (
 				46ABAAD71DA4054000EC48AC /* Contacts.framework in Frameworks */,
 				46ABAAD81DA4054000EC48AC /* ContactsUI.framework in Frameworks */,
-				187D683425DED634008BE643 /* ApplozicCore.framework in Frameworks */,
+				187D683425DED634008BE643 /* KommunicateCore_iOS_SDKCore.framework in Frameworks */,
 				6DC729661C7854E100A8A268 /* MediaPlayer.framework in Frameworks */,
 				6D3A4DF71C75ED330067A4C8 /* AVFoundation.framework in Frameworks */,
 				6D5439DC1C19B8D600C686BC /* SystemConfiguration.framework in Frameworks */,
@@ -1644,7 +1644,7 @@
 			children = (
 				C76D31431F0AAFB30087291F /* ALVOIPCell.h */,
 				C76D31441F0AAFB30087291F /* ALVOIPCell.m */,
-				6D7757291D5B845C0025560B /* Applozic_Prefix.pch */,
+				6D7757291D5B845C0025560B /* KommunicateCore-iOS-SDK_Prefix.pch */,
 				6DC729651C7854E100A8A268 /* MediaPlayer.framework */,
 				6D3A4DF61C75ED330067A4C8 /* AVFoundation.framework */,
 				6D9C69391C28380100C78219 /* ALChatSettings */,
@@ -1664,8 +1664,8 @@
 		6D6DF07E1BC535C800EBA00F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6D6DF07D1BC535C800EBA00F /* Applozic.framework */,
-				1896EDB225DBD15D0038EBFF /* ApplozicCore.framework */,
+				6D6DF07D1BC535C800EBA00F /* KommunicateCore-iOS-SDK.framework */,
+				1896EDB225DBD15D0038EBFF /* KommunicateCore_iOS_SDKCore.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2258,7 +2258,7 @@
 				1814A775252F31C2004E836B /* SDImageTransformer.h in Headers */,
 				6D3A4E051C76ED6C0067A4C8 /* ALAudioAttachmentViewController.h in Headers */,
 				1814A737252F31C2004E836B /* UIImageView+WebCache.h in Headers */,
-				6D77572A1D5B845C0025560B /* Applozic_Prefix.pch in Headers */,
+				6D77572A1D5B845C0025560B /* KommunicateCore-iOS-SDK_Prefix.pch in Headers */,
 				1814A741252F31C2004E836B /* SDMemoryCache.h in Headers */,
 				6D1385781CA9B83C009E6F50 /* AlMultipleAttachmentCell.h in Headers */,
 				1814A715252F31C2004E836B /* SDImageCoder.h in Headers */,
@@ -2304,9 +2304,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1896EDB125DBD15D0038EBFF /* ApplozicCore */ = {
+		1896EDB125DBD15D0038EBFF /* KommunicateCore-iOS-SDKCore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1896EDB925DBD15D0038EBFF /* Build configuration list for PBXNativeTarget "ApplozicCore" */;
+			buildConfigurationList = 1896EDB925DBD15D0038EBFF /* Build configuration list for PBXNativeTarget "KommunicateCore-iOS-SDKCore" */;
 			buildPhases = (
 				1896EDAD25DBD15D0038EBFF /* Headers */,
 				1896EDAE25DBD15D0038EBFF /* Sources */,
@@ -2317,14 +2317,14 @@
 			);
 			dependencies = (
 			);
-			name = ApplozicCore;
+			name = "KommunicateCore-iOS-SDKCore";
 			productName = ApplozicCore;
-			productReference = 1896EDB225DBD15D0038EBFF /* ApplozicCore.framework */;
+			productReference = 1896EDB225DBD15D0038EBFF /* KommunicateCore_iOS_SDKCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		6D6DF07C1BC535C800EBA00F /* Applozic */ = {
+		6D6DF07C1BC535C800EBA00F /* KommunicateCore-iOS-SDK */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6D6DF0851BC535C800EBA00F /* Build configuration list for PBXNativeTarget "Applozic" */;
+			buildConfigurationList = 6D6DF0851BC535C800EBA00F /* Build configuration list for PBXNativeTarget "KommunicateCore-iOS-SDK" */;
 			buildPhases = (
 				6D6DF0781BC535C800EBA00F /* Sources */,
 				6D6DF0791BC535C800EBA00F /* Frameworks */,
@@ -2337,9 +2337,9 @@
 			dependencies = (
 				187D683725DED634008BE643 /* PBXTargetDependency */,
 			);
-			name = Applozic;
+			name = "KommunicateCore-iOS-SDK";
 			productName = Applozic;
-			productReference = 6D6DF07D1BC535C800EBA00F /* Applozic.framework */;
+			productReference = 6D6DF07D1BC535C800EBA00F /* KommunicateCore-iOS-SDK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -2363,7 +2363,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6D6DF0771BC535C800EBA00F /* Build configuration list for PBXProject "Applozic" */;
+			buildConfigurationList = 6D6DF0771BC535C800EBA00F /* Build configuration list for PBXProject "KommunicateCore-iOS-SDK" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -2377,8 +2377,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6D6DF07C1BC535C800EBA00F /* Applozic */,
-				1896EDB125DBD15D0038EBFF /* ApplozicCore */,
+				6D6DF07C1BC535C800EBA00F /* KommunicateCore-iOS-SDK */,
+				1896EDB125DBD15D0038EBFF /* KommunicateCore-iOS-SDKCore */,
 			);
 		};
 /* End PBXProject section */
@@ -2709,7 +2709,7 @@
 /* Begin PBXTargetDependency section */
 		187D683725DED634008BE643 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1896EDB125DBD15D0038EBFF /* ApplozicCore */;
+			target = 1896EDB125DBD15D0038EBFF /* KommunicateCore-iOS-SDKCore */;
 			targetProxy = 187D683625DED634008BE643 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -2938,7 +2938,7 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Applozic/Applozic_Prefix.pch;
+				GCC_PREFIX_HEADER = "Applozic/KommunicateCore-iOS-SDK_Prefix.pch";
 				INFOPLIST_FILE = Applozic/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -2975,7 +2975,7 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Applozic/Applozic_Prefix.pch;
+				GCC_PREFIX_HEADER = "Applozic/KommunicateCore-iOS-SDK_Prefix.pch";
 				INFOPLIST_FILE = Applozic/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -2997,7 +2997,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1896EDB925DBD15D0038EBFF /* Build configuration list for PBXNativeTarget "ApplozicCore" */ = {
+		1896EDB925DBD15D0038EBFF /* Build configuration list for PBXNativeTarget "KommunicateCore-iOS-SDKCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1896EDB725DBD15D0038EBFF /* Debug */,
@@ -3006,7 +3006,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6D6DF0771BC535C800EBA00F /* Build configuration list for PBXProject "Applozic" */ = {
+		6D6DF0771BC535C800EBA00F /* Build configuration list for PBXProject "KommunicateCore-iOS-SDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6D6DF0831BC535C800EBA00F /* Debug */,
@@ -3015,7 +3015,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6D6DF0851BC535C800EBA00F /* Build configuration list for PBXNativeTarget "Applozic" */ = {
+		6D6DF0851BC535C800EBA00F /* Build configuration list for PBXNativeTarget "KommunicateCore-iOS-SDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6D6DF0861BC535C800EBA00F /* Debug */,

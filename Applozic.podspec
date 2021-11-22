@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  s.name         = "Applozic"
-  s.version      = "8.3.0"
+  s.name         = "KommunicateCore-iOS-SDK"
+  s.version      = "0.0.1"
   s.summary      = "Applozic Light weight CocoaPod for in-app messaging and chat SDK"
 
   # This description is used to generate tags and improve search results.
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.description  = "Applozic iOS SDK CocoaPods"
 
   s.homepage     = "https://github.com/AppLozic/Applozic-Chat-iOS-Framework"
-  s.screenshots  = "https://www.applozic.com/resources/images/one-group-chat.png"
+  # s.screenshots  = "https://www.applozic.com/resources/images/one-group-chat.png"
 
 
   # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -64,7 +64,7 @@ Pod::Spec.new do |s|
   #
 
   # s.platform     = :ios
-  s.platform     = :ios, "10.0"
+  s.platform     = :ios, "12.0"
 
   #  When using multiple platforms
   # s.ios.deployment_target = "5.0"
