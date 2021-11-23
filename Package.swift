@@ -3,20 +3,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "Applozic",
+    name: "KommunicateCore-iOS-SDK",
     defaultLocalization: "en",
-    platforms: [.iOS(.v10)],
+    platforms: [.iOS(.v12)],
     products: [
         .library(
-            name: "ApplozicCore",
-            targets: ["ApplozicCore"])
+            name: "KommunicateCore-iOS-SDK",
+            targets: ["KommunicateCore-iOS-SDK"])
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "ApplozicCore",
+            name: "KommunicateCore-iOS-SDK",
             dependencies: [],
-            path: "ApplozicCore",
+            path: "KommunicateCore-iOS-SDK",
             exclude: ["Info.plist",
                       "MQTT/MQTTClient-Prefix.pch"],
             resources: [
