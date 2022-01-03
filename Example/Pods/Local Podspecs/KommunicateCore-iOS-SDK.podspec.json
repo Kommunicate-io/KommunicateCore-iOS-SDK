@@ -9,7 +9,7 @@
     "file": "LICENSE"
   },
   "authors": {
-    "Applozic Inc.": "support@applozic.com"
+    "Kommunicate": "team.engineering@kommunicate.io"
   },
   "source": {
     "git": "https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK.git",
@@ -19,9 +19,8 @@
   "platforms": {
     "ios": "12.0"
   },
-  "source_files": "KommunicateCore-iOS-SDK/Classes/**/*",
+  "source_files": "Sources/KommunicateCore-iOS-SDK/Classes/**/*.{h,m}",
   "requires_arc": true,
-  "resources": "ApplozicCore/**/*.{xcassets,xcdatamodeld,json}",
   "frameworks": [
     "Foundation",
     "SystemConfiguration"
