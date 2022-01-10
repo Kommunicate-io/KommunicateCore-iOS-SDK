@@ -168,6 +168,8 @@
 		A13C94012786D2EC0032FFE7 /* TSMessageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1811AA99EF70EB4EA0FC25031DC0D766 /* TSMessageView.h */; };
 		A140F608278C0DFD002370AF /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A140F5FA278C0DFD002370AF /* AppLozic.xcdatamodeld */; };
 		A140F609278C0DFD002370AF /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A140F5FA278C0DFD002370AF /* AppLozic.xcdatamodeld */; };
+		A140F60C278C139E002370AF /* MQTTClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A140F60A278C139E002370AF /* MQTTClient.xcdatamodeld */; };
+		A140F60D278C139E002370AF /* MQTTClient.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A140F60A278C139E002370AF /* MQTTClient.xcdatamodeld */; };
 		A36871A8C00449737753523CB4898EB1 /* ALMessageArrayWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FEB6FBB9C1AE23428F18672F0E25516 /* ALMessageArrayWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A36AFA2988F8EDD44111C45A5D741214 /* ForegroundReconnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 642D9851DACFC8C0A28F06C099C8A94F /* ForegroundReconnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A44489A9F12ADE5BF0FDD43D0568172D /* ALAuthClientService.m in Sources */ = {isa = PBXBuildFile; fileRef = EE235F14B71C887C850812C1F36C2E4F /* ALAuthClientService.m */; };
@@ -473,6 +475,7 @@
 		A140F605278C0DFD002370AF /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
 		A140F606278C0DFD002370AF /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
 		A140F607278C0DFD002370AF /* AppLozic 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 3.xcdatamodel"; sourceTree = "<group>"; };
+		A140F60B278C139E002370AF /* MQTTClient.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MQTTClient.xcdatamodel; sourceTree = "<group>"; };
 		A2639767C35FBE0752256CD35E278387 /* AlChannelInfoModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = AlChannelInfoModel.m; sourceTree = "<group>"; };
 		A2D6ED98664071BDD8334CBCF44E5E4E /* ALNotificationView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALNotificationView.m; sourceTree = "<group>"; };
 		A3AFCA617296315845656BBE5ABE246D /* ALRegistrationResponse.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALRegistrationResponse.m; sourceTree = "<group>"; };
@@ -959,6 +962,7 @@
 				0349A8AC303A6BDFDB0291445A21604C /* MQTTSessionManager.m */,
 				E485D245EF55860C48271C300200C1A1 /* MQTTSessionSynchron.m */,
 				496096E148E88399E0015D3439A7F26C /* MQTTSSLSecurityPolicy.m */,
+				A140F60A278C139E002370AF /* MQTTClient.xcdatamodeld */,
 				3591DC2E1D851E71F9518ABABA58EFD6 /* MQTTSSLSecurityPolicyDecoder.m */,
 				527B9251B6C326BFDED780DD721C49D5 /* MQTTSSLSecurityPolicyEncoder.m */,
 				55CED5FB2258B6C4DFD97278CBC80509 /* MQTTSSLSecurityPolicyTransport.m */,
@@ -1399,6 +1403,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A140F60D278C139E002370AF /* MQTTClient.xcdatamodeld in Sources */,
 				8722AD74CF9E48388BFCC8157C9AAA09 /* Pods-KommunicateCore-iOS-SDK_Example-dummy.m in Sources */,
 				A140F609278C0DFD002370AF /* AppLozic.xcdatamodeld in Sources */,
 			);
@@ -1455,6 +1460,7 @@
 				FC07E5DD7A8FE2C04080C8B260243D6C /* ALGroupUser.m in Sources */,
 				9FD443ECF9A03C8359F6F039E59BA6E5 /* ALHTTPManager.m in Sources */,
 				ADEFCB47A59154134B33690439DD2EE5 /* ALInternalSettings.m in Sources */,
+				A140F60C278C139E002370AF /* MQTTClient.xcdatamodeld in Sources */,
 				B4A016578C771D731AD941C2480AD9F5 /* ALJson.m in Sources */,
 				D3CE9EF4689BB4B005D50CCD67917B25 /* ALJWT.m in Sources */,
 				32F9C418F299050D7CE0BF66A647B9AB /* ALJWTClaim.m in Sources */,
@@ -1950,6 +1956,16 @@
 			);
 			currentVersion = A140F603278C0DFD002370AF /* AppLozic 13.xcdatamodel */;
 			path = AppLozic.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		A140F60A278C139E002370AF /* MQTTClient.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A140F60B278C139E002370AF /* MQTTClient.xcdatamodel */,
+			);
+			currentVersion = A140F60B278C139E002370AF /* MQTTClient.xcdatamodel */;
+			path = MQTTClient.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
