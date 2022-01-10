@@ -166,6 +166,8 @@
 		9FD443ECF9A03C8359F6F039E59BA6E5 /* ALHTTPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BB7A59D9CBB721B55812A4DB948429 /* ALHTTPManager.m */; };
 		A02F3BAD65AC052AD28C40254EB5D4F0 /* ALUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8900C5278D945FF3DD4CA89C7BA766 /* ALUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A13C94012786D2EC0032FFE7 /* TSMessageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1811AA99EF70EB4EA0FC25031DC0D766 /* TSMessageView.h */; };
+		A140F608278C0DFD002370AF /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A140F5FA278C0DFD002370AF /* AppLozic.xcdatamodeld */; };
+		A140F609278C0DFD002370AF /* AppLozic.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A140F5FA278C0DFD002370AF /* AppLozic.xcdatamodeld */; };
 		A36871A8C00449737753523CB4898EB1 /* ALMessageArrayWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FEB6FBB9C1AE23428F18672F0E25516 /* ALMessageArrayWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A36AFA2988F8EDD44111C45A5D741214 /* ForegroundReconnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 642D9851DACFC8C0A28F06C099C8A94F /* ForegroundReconnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A44489A9F12ADE5BF0FDD43D0568172D /* ALAuthClientService.m in Sources */ = {isa = PBXBuildFile; fileRef = EE235F14B71C887C850812C1F36C2E4F /* ALAuthClientService.m */; };
@@ -458,6 +460,19 @@
 		9D490923D6FD05A62954D1D6F2C8DABC /* DB_ConversationProxy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = DB_ConversationProxy.h; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9EA8E93A03828112333897C0149A75FC /* ALMessageDBService.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALMessageDBService.h; sourceTree = "<group>"; };
+		A140F5FB278C0DFD002370AF /* AppLozic 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 4.xcdatamodel"; sourceTree = "<group>"; };
+		A140F5FC278C0DFD002370AF /* AppLozic 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 12.xcdatamodel"; sourceTree = "<group>"; };
+		A140F5FD278C0DFD002370AF /* AppLozic 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 8.xcdatamodel"; sourceTree = "<group>"; };
+		A140F5FE278C0DFD002370AF /* AppLozic 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 2.xcdatamodel"; sourceTree = "<group>"; };
+		A140F5FF278C0DFD002370AF /* AppLozic 11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 11.xcdatamodel"; sourceTree = "<group>"; };
+		A140F600278C0DFD002370AF /* AppLozic 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 7.xcdatamodel"; sourceTree = "<group>"; };
+		A140F601278C0DFD002370AF /* AppLozic 9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 9.xcdatamodel"; sourceTree = "<group>"; };
+		A140F602278C0DFD002370AF /* AppLozic 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 5.xcdatamodel"; sourceTree = "<group>"; };
+		A140F603278C0DFD002370AF /* AppLozic 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 13.xcdatamodel"; sourceTree = "<group>"; };
+		A140F604278C0DFD002370AF /* AppLozic 10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 10.xcdatamodel"; sourceTree = "<group>"; };
+		A140F605278C0DFD002370AF /* AppLozic 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 6.xcdatamodel"; sourceTree = "<group>"; };
+		A140F606278C0DFD002370AF /* AppLozic.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppLozic.xcdatamodel; sourceTree = "<group>"; };
+		A140F607278C0DFD002370AF /* AppLozic 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "AppLozic 3.xcdatamodel"; sourceTree = "<group>"; };
 		A2639767C35FBE0752256CD35E278387 /* AlChannelInfoModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = AlChannelInfoModel.m; sourceTree = "<group>"; };
 		A2D6ED98664071BDD8334CBCF44E5E4E /* ALNotificationView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALNotificationView.m; sourceTree = "<group>"; };
 		A3AFCA617296315845656BBE5ABE246D /* ALRegistrationResponse.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALRegistrationResponse.m; sourceTree = "<group>"; };
@@ -883,6 +898,7 @@
 			isa = PBXGroup;
 			children = (
 				EE2D5FCAA8AA17443766D8566CBA7CE6 /* ALDBHandler.m */,
+				A140F5FA278C0DFD002370AF /* AppLozic.xcdatamodeld */,
 				F714AF615E8BA15661BBB62D6ACEF16C /* DB_CHANNEL.m */,
 				0F02F177DB0A4C3FB0CBA8999A246ED2 /* DB_CHANNEL_USER_X.m */,
 				F74990F858070618D23D84FE9C9C1BB1 /* DB_CONTACT.m */,
@@ -1384,6 +1400,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8722AD74CF9E48388BFCC8157C9AAA09 /* Pods-KommunicateCore-iOS-SDK_Example-dummy.m in Sources */,
+				A140F609278C0DFD002370AF /* AppLozic.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1450,6 +1467,7 @@
 				EF19F857BF24E16B6151160F1C46684A /* ALMessageDBService.m in Sources */,
 				581B530F6F7758B80FF6B72DBEBD07F9 /* ALMessageInfo.m in Sources */,
 				6BECEDB9CF3B472DFC2F6660BE25DC05 /* ALMessageInfoResponse.m in Sources */,
+				A140F608278C0DFD002370AF /* AppLozic.xcdatamodeld in Sources */,
 				14BF510A76FB4EA7B1823991A6E89BA3 /* ALMessageList.m in Sources */,
 				FCDAD566C64B2DE2BADF849373C9A15B /* ALMessageService.m in Sources */,
 				341193E107A980C5CC42750997967E61 /* ALMessageServiceWrapper.m in Sources */,
@@ -1911,6 +1929,31 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		A140F5FA278C0DFD002370AF /* AppLozic.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A140F5FB278C0DFD002370AF /* AppLozic 4.xcdatamodel */,
+				A140F5FC278C0DFD002370AF /* AppLozic 12.xcdatamodel */,
+				A140F5FD278C0DFD002370AF /* AppLozic 8.xcdatamodel */,
+				A140F5FE278C0DFD002370AF /* AppLozic 2.xcdatamodel */,
+				A140F5FF278C0DFD002370AF /* AppLozic 11.xcdatamodel */,
+				A140F600278C0DFD002370AF /* AppLozic 7.xcdatamodel */,
+				A140F601278C0DFD002370AF /* AppLozic 9.xcdatamodel */,
+				A140F602278C0DFD002370AF /* AppLozic 5.xcdatamodel */,
+				A140F603278C0DFD002370AF /* AppLozic 13.xcdatamodel */,
+				A140F604278C0DFD002370AF /* AppLozic 10.xcdatamodel */,
+				A140F605278C0DFD002370AF /* AppLozic 6.xcdatamodel */,
+				A140F606278C0DFD002370AF /* AppLozic.xcdatamodel */,
+				A140F607278C0DFD002370AF /* AppLozic 3.xcdatamodel */,
+			);
+			currentVersion = A140F603278C0DFD002370AF /* AppLozic 13.xcdatamodel */;
+			path = AppLozic.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 }
