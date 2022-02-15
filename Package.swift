@@ -16,17 +16,15 @@ let package = Package(
         .target(
             name: "KommunicateCore-iOS-SDK",
             dependencies: [],
-            path: "Sources/KommunicateCore-iOS-SDK",
-            exclude: ["Classes/Info.plist",
-                      "Classes/MQTT/MQTTClient-Prefix.pch"],
+            path: "Sources/KommunicateCore-iOS-SDK/Classes",
+            exclude: ["Info.plist",
+                      "MQTT/MQTTClient-Prefix.pch"],
             resources: [
-                .copy("Classes/push/TSMessagesDefaultDesign.json"),
-                    .copy("Classes/MQTT/MQTTClient-Prefix.pch")
+                .copy("push/TSMessagesDefaultDesign.json"),
+                    .copy("MQTT/MQTTClient-Prefix.pch")
             ],
             cSettings: [
                 .headerSearchPath(""),
-                .headerSearchPath("Assets"),
-                .headerSearchPath("Classes/include"),
                 .headerSearchPath("include"),
                 .headerSearchPath("account"),
                 .headerSearchPath("applozickit"),
