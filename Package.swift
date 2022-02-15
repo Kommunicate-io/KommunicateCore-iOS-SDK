@@ -26,7 +26,7 @@ let package = Package(
             cSettings: [
                 .headerSearchPath(""),
                 .headerSearchPath("Assets"),
-                .headerSearchPath("Classes"),
+                .headerSearchPath("Classes/include"),
                 .headerSearchPath("include"),
                 .headerSearchPath("account"),
                 .headerSearchPath("applozickit"),
@@ -43,7 +43,6 @@ let package = Package(
                 .headerSearchPath("push"),
                 .headerSearchPath("sync"),
                 .headerSearchPath("user"),
-                .headerSearchPath("KommunicateCore-iOS-SDK"),
                 .headerSearchPath("utilities")
             ],
             linkerSettings: [
