@@ -346,7 +346,7 @@
 		312D2743764BA45069DF089D331E2C85 /* ALConversationListRequest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALConversationListRequest.m; sourceTree = "<group>"; };
 		318985DFAD966D15FB2581D20C7CFA9B /* ALContactsResponse.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALContactsResponse.h; sourceTree = "<group>"; };
 		3346BA3A3B5ADF21D74004DDCCEF2BFA /* ALSearchRequest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ALSearchRequest.m; sourceTree = "<group>"; };
-		33FA48827337E6E35F7527E254FBAB67 /* KommunicateCore-iOS-SDK */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "KommunicateCore-iOS-SDK"; path = KommunicateCore_iOS_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		33FA48827337E6E35F7527E254FBAB67 /* KommunicateCore_iOS_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KommunicateCore_iOS_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3456BA0A6B9482F0683768AD148C8EF6 /* NSData+AES.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSData+AES.h"; sourceTree = "<group>"; };
 		3591DC2E1D851E71F9518ABABA58EFD6 /* MQTTSSLSecurityPolicyDecoder.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MQTTSSLSecurityPolicyDecoder.m; sourceTree = "<group>"; };
 		3625CAFE9262BBA75585B1D5262543AC /* ALVideoUploadManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ALVideoUploadManager.h; sourceTree = "<group>"; };
@@ -688,7 +688,7 @@
 		4461630D6778702B41B24A86796868D0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				33FA48827337E6E35F7527E254FBAB67 /* KommunicateCore-iOS-SDK */,
+				33FA48827337E6E35F7527E254FBAB67 /* KommunicateCore_iOS_SDK.framework */,
 				CBF35E9016A566C36175CC8F348C0CA4 /* Pods-KommunicateCore-iOS-SDK_Example */,
 				AD427672B7B25F4B73968AC79B94C427 /* Pods-KommunicateCore-iOS-SDK_Tests */,
 			);
@@ -1273,7 +1273,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A13C94012786D2EC0032FFE7 /* TSMessageView.h in Headers */,
 				46F51D491B233DC852AF201DF16E9D2D /* Pods-KommunicateCore-iOS-SDK_Example-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1323,7 +1322,7 @@
 			);
 			name = "KommunicateCore-iOS-SDK";
 			productName = KommunicateCore_iOS_SDK;
-			productReference = 33FA48827337E6E35F7527E254FBAB67 /* KommunicateCore-iOS-SDK */;
+			productReference = 33FA48827337E6E35F7527E254FBAB67 /* KommunicateCore_iOS_SDK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		89A567BB96DD28F8E97BE93EC649B065 /* Pods-KommunicateCore-iOS-SDK_Tests */ = {
@@ -1353,6 +1352,11 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					6AB87FAF333536003D8314DA48E8E51F = {
+						LastSwiftMigration = 1320;
+					};
+				};
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1570,6 +1574,7 @@
 			baseConfigurationReference = E9A463050F86334B8F619B595E58A348 /* KommunicateCore-iOS-SDK.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -1590,6 +1595,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1833,6 +1839,7 @@
 			baseConfigurationReference = 5F73AE6A813C964E79EBABD1BA24E8F0 /* KommunicateCore-iOS-SDK.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
