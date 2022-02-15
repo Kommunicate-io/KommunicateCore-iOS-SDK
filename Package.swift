@@ -27,7 +27,6 @@ let package = Package(
             ],
             cSettings: [
                 .headerSearchPath(""),
-                .headerSearchPath("include"),
                 .headerSearchPath("account"),
                 .headerSearchPath("applozickit"),
                 .headerSearchPath("channel"),
