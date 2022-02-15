@@ -20,7 +20,7 @@ let package = Package(
             exclude: ["Info.plist",
                       "MQTT/MQTTClient-Prefix.pch"],
             resources: [
-                .copy("push/TSMessagesDefaultDesign.json"),
+                .process("push/TSMessagesDefaultDesign.json"),
                 .process("database/AppLozic.xcdatamodeld"),
                 .process("MQTT/MQTTClient.xcdatamodeld"),
 
