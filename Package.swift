@@ -20,8 +20,7 @@ let package = Package(
             exclude: ["Info.plist",
                       "MQTT/MQTTClient-Prefix.pch"],
             resources: [
-                .copy("push/TSMessagesDefaultDesign.json"),
-                    .copy("MQTT/MQTTClient-Prefix.pch")
+                .copy("push/TSMessagesDefaultDesign.json")
             ],
             cSettings: [
                 .headerSearchPath(""),
