@@ -332,7 +332,8 @@
 /// get the bundle if its SWIFT_PACKAGE will use the runtime bundle of SPM else will use the bundle from class
 - (NSBundle*)getBundle {
 #if SWIFT_PACKAGE
-    return SWIFTPM_MODULE_BUNDLE;
+    return [NSBundle mainBundle];
+
 #else
     return [NSBundle bundleForClass:[ALDBHandler class]];
 #endif
