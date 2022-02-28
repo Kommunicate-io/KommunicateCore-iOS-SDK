@@ -524,7 +524,7 @@
 				GCC_PREFIX_HEADER = "KommunicateCore-iOS-SDK/KommunicateCore-iOS-SDK-Prefix.pch";
 				INFOPLIST_FILE = "KommunicateCore-iOS-SDK/KommunicateCore-iOS-SDK-Info.plist";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kommunicate.kommunicateCoreDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Kommunicate Core Dev Profile";
 				SWIFT_VERSION = 4.0;
