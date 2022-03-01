@@ -3,18 +3,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "KommunicateCore-iOS-SDK",
+    name: "KommunicateCoreiOSSDK",
     defaultLocalization: "en",
     platforms: [.iOS(.v12)],
     products: [
         .library(
-            name: "KommunicateCore-iOS-SDK",
-            targets: ["KommunicateCore-iOS-SDK"])
+            name: "KommunicateCoreiOSSDK",
+            targets: ["KommunicateCoreiOSSDK"])
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "KommunicateCore-iOS-SDK",
+            name: "KommunicateCoreiOSSDK",
             dependencies: [],
             path: "Sources",
             exclude: ["Info.plist",
