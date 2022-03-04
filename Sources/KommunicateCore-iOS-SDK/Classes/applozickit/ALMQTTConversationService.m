@@ -554,6 +554,12 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DEACTIVATED)]]) {
             [ALUserDefaultsHandler deactivateLoggedInUser:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:ALLoggedInUserDidChangeDeactivateNotification object:nil userInfo:@{@"DEACTIVATED": @"true"}];
+        } else if ([type isEqualToString: @"APPLOZIC_25"] ){
+            NSString *message = [theMessageDict objectForKey:@"message"];
+            NSArray *typingParts = [message componentsSeparatedByString:@","];
+            NSString *userId = typingParts[0];
+            NSString *status = typingParts[1];
+            [self.mqttConversationDelegate userOnlineStatusChanged:userId status:status];
         } else {
             ALSLog(ALLoggerSeverityInfo, @"MQTT NOTIFICATION \"%@\" IS NOT HANDLED",type);
         }
