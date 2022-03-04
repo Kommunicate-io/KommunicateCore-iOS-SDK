@@ -3,24 +3,24 @@
 import PackageDescription
 
 let package = Package(
-    name: "KommunicateCore-iOS-SDK",
+    name: "KommunicateCore_iOS_SDK",
     defaultLocalization: "en",
     platforms: [.iOS(.v12)],
     products: [
         .library(
-            name: "KommunicateCore-iOS-SDK",
-            targets: ["KommunicateCore-iOS-SDK"])
+            name: "KommunicateCore_iOS_SDK",
+            targets: ["KommunicateCore_iOS_SDK"])
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "KommunicateCore-iOS-SDK",
+            name: "KommunicateCore_iOS_SDK",
             dependencies: [],
-            path: "KommunicateCore-iOS-SDK",
+            path: "Sources",
             exclude: ["Info.plist",
                       "MQTT/MQTTClient-Prefix.pch"],
             resources: [
-                .copy("push/TSMessagesDefaultDesign.json")
+                .process("Resources")
             ],
             cSettings: [
                 .headerSearchPath(""),

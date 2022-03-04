@@ -26,6 +26,8 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 - (void)updateTypingStatus:(NSString *) applicationKey userId:(NSString *)userId status:(BOOL)status;
 - (void)updateLastSeenAtStatus:(ALUserDetail *)alUserDetail;
 - (void)mqttConnectionClosed;
+- (void)userOnlineStatusChanged:(NSString *)contactId status:(NSString *)status;
+
 
 @optional
 
