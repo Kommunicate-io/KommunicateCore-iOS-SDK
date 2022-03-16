@@ -75,6 +75,41 @@
 
 }
 
+- (void)downloadImageUrlV2:(NSString *)blobKey
+                   isS3URL:(BOOL)isS3URL
+          withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion {
+    [self getURLRequestForImageV2:blobKey isS3URL:isS3URL  withCompletion:^(NSMutableURLRequest *urlRequest, NSString *fileUrl) {
+
+        if (!urlRequest
+            && !fileUrl) {
+
+            NSError *urlError = [NSError errorWithDomain:@"Applozic"
+                                                    code:1
+                                                userInfo:@{NSLocalizedDescriptionKey : @"Failed to get the download url"}];
+
+            completion(nil, urlError);
+            return;
+        }
+
+        if (urlRequest) {
+            [self.responseHandler authenticateAndProcessRequest:urlRequest andTag:@"FILE DOWNLOAD URL" WithCompletionHandler:^(id theJson, NSError *theError) {
+
+                if (theError) {
+                    completion(nil, theError);
+                    return;
+                }
+                NSString *imageDownloadURL = (NSString *)theJson;
+                ALSLog(ALLoggerSeverityInfo, @"Response URL for image or attachment : %@",imageDownloadURL);
+                completion(imageDownloadURL, nil);
+            }];
+        } else {
+            completion(fileUrl, nil);
+        }
+    }];
+
+}
+
+
 - (void)getURLRequestForImage:(NSString *)blobKey
                         withCompletion:(void(^)(NSMutableURLRequest *urlRequest, NSString *fileUrl)) completion {
 
@@ -95,6 +130,24 @@
         return;
     } else {
         NSString *fileURLString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/%@",KBASE_FILE_URL,blobKey];
+        completion(nil, fileURLString);
+        return;
+    }
+}
+
+
+- (void)getURLRequestForImageV2:(NSString *)blobKey
+                        isS3URL:(BOOL)isS3URL
+                        withCompletion:(void(^)(NSMutableURLRequest *urlRequest, NSString *fileUrl)) completion {
+
+    NSMutableURLRequest *urlRequest = nil;
+    if (isS3URL) {
+        NSString *fileURLString = [NSString stringWithFormat:@"%@/rest/ws/file/url",KBASE_FILE_URL];
+        NSString *blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
+        urlRequest = [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:blobParamString];
+        completion(urlRequest, nil);
+    } else {
+        NSString *fileURLString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/%@",@"https://applozic.appspot.com" ,blobKey];
         completion(nil, fileURLString);
         return;
     }
