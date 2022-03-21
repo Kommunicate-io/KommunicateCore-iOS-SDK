@@ -188,6 +188,46 @@
     }
 }
 
+/**
+    downloadImageThumbnailUrlV2
+    based S3 flag, url Will be generated - To support google service uploaded imaged when s3 is set as default service
+ **/
+- (void)downloadImageThumbnailUrlV2:(NSString *)url isS3URL:(BOOL)isS3URL  blobKey:(NSString *)blobKey completion:(void (^)(NSString *, NSError *))completion {
+    NSMutableURLRequest *urlRequest = [self getURLRequestForThumbnailV2:blobKey isS3URL:isS3URL];
+    if (urlRequest) {
+        [self.responseHandler authenticateAndProcessRequest:urlRequest
+                                                     andTag:@"FILE DOWNLOAD URL"
+                                      WithCompletionHandler:^(id theJson, NSError *theError) {
+            if (theError) {
+                completion(nil, theError);
+                return;
+            }
+            NSString *imageDownloadURL = (NSString *)theJson;
+            ALSLog(ALLoggerSeverityInfo, @"Response URL For Thumbnail isV2 : %@", imageDownloadURL);
+            completion(imageDownloadURL, nil);
+        }];
+    } else {
+        completion(url, nil);
+    }
+}
+
+
+- (NSMutableURLRequest *)getURLRequestForThumbnailV2:(NSString *)blobKey  isS3URL:(BOOL)isS3URL {
+    if (blobKey == nil) {
+        return nil;
+    }
+    
+    if (isS3URL){
+        NSString *fileURLString = [NSString stringWithFormat:@"%@/rest/ws/file/url",KBASE_FILE_URL];
+        NSString *blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
+        return [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:blobParamString];
+    }else{
+        NSString *fileURLString = [NSString stringWithFormat:@"%@/rest/ws/aws/file/%@",@"https://applozic.appspot.com" ,blobKey];
+        return [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:nil];
+    }
+}
+
+
 - (void)downloadImageThumbnailUrl:(ALMessage *)message
                    withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion {
     [self downloadImageThumbnailUrl:message.fileMeta.thumbnailUrl
