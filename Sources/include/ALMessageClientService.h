@@ -54,12 +54,18 @@
 
 - (void)downloadImageUrl:(NSString *)blobKey withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion;
 
+- (void)downloadImageUrlV2:(NSString *)blobKey isS3URL:(BOOL)isS3URL withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion;
+
 - (void)downloadImageThumbnailUrl:(NSString *)url
                           blobKey:(NSString *)blobKey
                        completion:(void(^)(NSString *fileURL, NSError *error)) completion;
 
 - (void)downloadImageThumbnailUrl:(ALMessage *)message
                    withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion DEPRECATED_ATTRIBUTE;
+- (void)downloadImageThumbnailUrlV2:(NSString *)url
+                            isS3URL:(BOOL)isS3URL
+                          blobKey:(NSString *)blobKey
+                       completion:(void(^)(NSString *fileURL, NSError *error)) completion;
 
 - (void)getLatestMessageForUser:(NSString *)deviceKeyString
                withMetaDataSync:(BOOL)isMetaDataUpdate
