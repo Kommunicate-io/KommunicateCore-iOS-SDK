@@ -500,7 +500,8 @@
 			baseConfigurationReference = F5F427AA2FEEEE157C64123F /* Pods-KommunicateCore-iOS-SDK_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: sathyan elangovan (VJHB5NX2S9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: sathyan elangovan (VJHB5NX2S9)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = C25JNDCBM4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -520,7 +521,8 @@
 			baseConfigurationReference = 4A98F6791916BBA264B8EB5A /* Pods-KommunicateCore-iOS-SDK_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: sathyan elangovan (VJHB5NX2S9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: sathyan elangovan (VJHB5NX2S9)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = C25JNDCBM4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
