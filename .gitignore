@@ -1,7 +1,6 @@
 
 *.xcuserstate
 
-*.xcscheme
 
 ChatApp.xcodeproj/project.xcworkspace/xcuserdata/devashish.xcuserdatad/UserInterfaceState.xcuserstate
 
@@ -19,8 +18,6 @@ sample-with-framework/applozicdemo.xcodeproj/xcuserdata/devashish.xcuserdatad/xc
 sample-with-framework/applozicdemo.xcodeproj/xcuserdata/divjyotsingh.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
 
 *.xcbkptlist
-
-*.xcscheme
 
 ## Build generated
 build/
