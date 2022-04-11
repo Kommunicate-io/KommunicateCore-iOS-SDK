@@ -249,7 +249,7 @@
 				TargetAttributes = {
 					6003F589195388D20070C39A = {
 						DevelopmentTeam = C25JNDCBM4;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					6003F5AD195388D20070C39A = {
 						DevelopmentTeam = C25JNDCBM4;
@@ -535,9 +535,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = C25JNDCBM4;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/KommunicateCore-iOS-SDK\"",
@@ -562,9 +562,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = C25JNDCBM4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KommunicateCore-iOS-SDK/KommunicateCore-iOS-SDK-Prefix.pch";
 				INFOPLIST_FILE = "KommunicateCore-iOS-SDK/KommunicateCore-iOS-SDK-Info.plist";
