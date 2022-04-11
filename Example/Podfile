@@ -2,7 +2,7 @@ use_frameworks!
 
 platform :ios, '12.0'
 
-target 'KommunicateCore-iOS-SDK_Example' do
+target 'KommunicateCore-iOS-SDK' do
   pod 'KommunicateCore-iOS-SDK', :path => '../'
 
   target 'KommunicateCore-iOS-SDK_Tests' do
