@@ -39,7 +39,7 @@
 /* Begin PBXFileReference section */
 		2079B23B2CA140BB5379EB83 /* Pods_KommunicateCore_iOS_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KommunicateCore_iOS_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A98F6791916BBA264B8EB5A /* Pods-KommunicateCore-iOS-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KommunicateCore-iOS-SDK_Example.release.xcconfig"; path = "Target Support Files/Pods-KommunicateCore-iOS-SDK_Example/Pods-KommunicateCore-iOS-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
-		6003F58A195388D20070C39A /* KommunicateCore-iOS-SDK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KommunicateCore-iOS-SDK.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6003F58A195388D20070C39A /* KommunicateCore-iOS-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KommunicateCore-iOS-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		6003F591195388D20070C39A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -110,7 +110,7 @@
 		6003F58B195388D20070C39A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6003F58A195388D20070C39A /* KommunicateCore-iOS-SDK.app */,
+				6003F58A195388D20070C39A /* KommunicateCore-iOS-SDK_Example.app */,
 				6003F5AE195388D20070C39A /* KommunicateCore-iOS-SDK_Tests.xctest */,
 			);
 			name = Products;
@@ -199,9 +199,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6003F589195388D20070C39A /* KommunicateCore-iOS-SDK */ = {
+		6003F589195388D20070C39A /* KommunicateCore-iOS-SDK_Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "KommunicateCore-iOS-SDK" */;
+			buildConfigurationList = 6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "KommunicateCore-iOS-SDK_Example" */;
 			buildPhases = (
 				B35D3D3FEF15FD6686552BCE /* [CP] Check Pods Manifest.lock */,
 				6003F586195388D20070C39A /* Sources */,
@@ -213,9 +213,9 @@
 			);
 			dependencies = (
 			);
-			name = "KommunicateCore-iOS-SDK";
+			name = "KommunicateCore-iOS-SDK_Example";
 			productName = "KommunicateCore-iOS-SDK";
-			productReference = 6003F58A195388D20070C39A /* KommunicateCore-iOS-SDK.app */;
+			productReference = 6003F58A195388D20070C39A /* KommunicateCore-iOS-SDK_Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6003F5AD195388D20070C39A /* KommunicateCore-iOS-SDK_Tests */ = {
@@ -272,7 +272,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6003F589195388D20070C39A /* KommunicateCore-iOS-SDK */,
+				6003F589195388D20070C39A /* KommunicateCore-iOS-SDK_Example */,
 				6003F5AD195388D20070C39A /* KommunicateCore-iOS-SDK_Tests */,
 			);
 		};
@@ -389,7 +389,7 @@
 /* Begin PBXTargetDependency section */
 		6003F5B4195388D20070C39A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6003F589195388D20070C39A /* KommunicateCore-iOS-SDK */;
+			target = 6003F589195388D20070C39A /* KommunicateCore-iOS-SDK_Example */;
 			targetProxy = 6003F5B3195388D20070C39A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -645,7 +645,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "KommunicateCore-iOS-SDK" */ = {
+		6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "KommunicateCore-iOS-SDK_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6003F5C0195388D20070C39A /* Debug */,
