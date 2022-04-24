@@ -106,6 +106,9 @@
 
 - (void)proactivelyConnectMQTT {
     ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
+    NSString *title = @"support-channel-";
+    NSString *applicationId = [ALUserDefaultsHandler getApplicationKey];
+    [alMqttConversationService subscribeToConversationWithTopic:[NSString stringWithFormat: @"%@%@", title, applicationId]];
     [alMqttConversationService subscribeToConversation];
 }
 
