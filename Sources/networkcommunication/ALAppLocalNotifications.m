@@ -114,6 +114,9 @@
 
 - (void)proactivelyDisconnectMQTT {
     ALMQTTConversationService *alMqttConversationService = [ALMQTTConversationService sharedInstance];
+    NSString *title = @"support-channel-";
+    NSString *applicationId = [ALUserDefaultsHandler getApplicationKey];
+    [alMqttConversationService unsubscribeToConversationWithTopic:[NSString stringWithFormat: @"%@%@", title, applicationId]];
     [alMqttConversationService unsubscribeToConversation];
 }
 
