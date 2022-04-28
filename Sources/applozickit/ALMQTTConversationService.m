@@ -716,8 +716,6 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             return NO;
         }
 
-        [self.session publishAndWaitData:[[NSString stringWithFormat:@"%@,%@,%@",userKey, [ALUserDefaultsHandler getDeviceKeyString], @"0"] dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
-
         NSMutableArray<NSString *> *topicsArray = [[NSMutableArray alloc] init];
 
         if ([ALUserDefaultsHandler getUserEncryptionKey]) {
