@@ -705,6 +705,12 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     return [self unsubscribeToConversationForUser: userKey WithTopic: [ALUserDefaultsHandler getUserKeyString]];
 }
 
+- (void)publishOfflineStatus {
+    NSString *publishString = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString],@"0"];
+
+    [self.session publishAndWaitData:[publishString dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
+}
+
 - (void)unsubscribeToConversationWithTopic:(NSString *)topic {
     NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
     [self unsubscribeToConversationForUser: userKey WithTopic: topic];

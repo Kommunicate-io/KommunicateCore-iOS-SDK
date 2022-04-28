@@ -438,6 +438,7 @@
 
         NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
         BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
+        [[ALMQTTConversationService sharedInstance] publishOfflineStatus];
         ALSLog(ALLoggerSeverityInfo, @"Unsubscribed to conversation after logout: %d", completed);
 
         [ALUserDefaultsHandler clearAll];
