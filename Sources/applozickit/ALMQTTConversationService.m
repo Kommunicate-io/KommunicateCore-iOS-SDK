@@ -723,6 +723,10 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         }
 
         NSMutableArray<NSString *> *topicsArray = [[NSMutableArray alloc] init];
+        
+        if (![ALApplozicSettings isAgentAppConfigurationEnabled]){
+            [self publishOfflineStatus];
+        }
 
         if ([ALUserDefaultsHandler getUserEncryptionKey]) {
             [topicsArray addObject:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
