@@ -1906,4 +1906,14 @@
     return [userDefaults valueForKey:AL_SUPPORT_CONTACT_USER_ID];
 }
 
++ (void) enableAgentApConfiguration:(BOOL)flag {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setBool:flag forKey:AL_AGENTAPP_CONFIGURATION];
+    [userDefaults synchronize];
+}
+
++ (BOOL) isAgentAppConfigurationEnabled {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults boolForKey:AL_AGENTAPP_CONFIGURATION];
+}
 @end

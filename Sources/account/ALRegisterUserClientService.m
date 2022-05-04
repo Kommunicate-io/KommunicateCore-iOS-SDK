@@ -435,7 +435,7 @@
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
-
+        [[ALMQTTConversationService sharedInstance] publishOfflineStatus];
         NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
         BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
         ALSLog(ALLoggerSeverityInfo, @"Unsubscribed to conversation after logout: %d", completed);
