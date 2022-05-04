@@ -635,6 +635,6 @@ static NSString *const AL_AGENTAPP_CONFIGURATION = @"com.applozic.userdefault.AL
 + (NSString *)getSupportContactUserId;
 
 + (void) enableAgentApConfiguration:(BOOL) flag;
-+ (BOOL) isAgentAppConfigurationEnabled();
++ (BOOL) isAgentAppConfigurationEnabled;
 
 @end
