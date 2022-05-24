@@ -58,6 +58,8 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 
 - (BOOL)unsubscribeToConversation:(NSString *)userKey;
 
+- (void) publishOfflineStatus;
+
 - (void)sendTypingStatus:(NSString *)applicationKey userID:(NSString *)userId andChannelKey:(NSNumber *)channelKey typing:(BOOL)typing;
 
 - (void)unSubscribeToChannelConversation:(NSNumber *)channelKey;

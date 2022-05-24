@@ -125,7 +125,7 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     }
     
     if (userId) {
-        [request setValue:[userId urlEncodeUsingNSUTF8StringEncoding] forHTTPHeaderField:@"Of-User-Id"];
+        [request addValue:userId forHTTPHeaderField:@"Of-User-Id"];
     }
     
     if ([ALUserDefaultsHandler getUserRoleType] == 8 && userId != nil) {

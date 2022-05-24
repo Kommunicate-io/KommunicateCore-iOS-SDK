@@ -705,6 +705,12 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     return [self unsubscribeToConversationForUser: userKey WithTopic: [ALUserDefaultsHandler getUserKeyString]];
 }
 
+- (void)publishOfflineStatus {
+    NSString *publishString = [NSString stringWithFormat:@"%@,%@,%@", [ALUserDefaultsHandler getUserKeyString], [ALUserDefaultsHandler getDeviceKeyString],@"0"];
+
+    [self.session publishAndWaitData:[publishString dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
+}
+
 - (void)unsubscribeToConversationWithTopic:(NSString *)topic {
     NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
     [self unsubscribeToConversationForUser: userKey WithTopic: topic];
@@ -716,9 +722,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             return NO;
         }
 
-        [self.session publishAndWaitData:[[NSString stringWithFormat:@"%@,%@,%@",userKey, [ALUserDefaultsHandler getDeviceKeyString], @"0"] dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
-
         NSMutableArray<NSString *> *topicsArray = [[NSMutableArray alloc] init];
+        
+        if (![ALApplozicSettings isAgentAppConfigurationEnabled]){
+            [self publishOfflineStatus];
+        }
 
         if ([ALUserDefaultsHandler getUserEncryptionKey]) {
             [topicsArray addObject:[NSString stringWithFormat:@"%@%@",MQTT_ENCRYPTION_SUB_KEY, topic]];
