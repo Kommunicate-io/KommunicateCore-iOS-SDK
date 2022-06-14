@@ -2,6 +2,8 @@
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 
+## [1.0.3] 2022-06-14
+- [CM-917] Fix for encoded header beiing sent
 ## [1.0.2] 2022-05-05
 - [CM-891] Added feature to stop the publishing offline status when (agent app moves to background(only for agent app)
 ## [1.0.1] 2022-03-22
