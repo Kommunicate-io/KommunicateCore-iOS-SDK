@@ -332,7 +332,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             }
             [self.contentLabel setShadowColor:self.titleLabel.shadowColor];
             [self.contentLabel setShadowOffset:self.titleLabel.shadowOffset];
-            // Restricting Notificationt subtitle (Content) to 2 lines. 
+            // Restricting Notification subtitle(Content) to 2 lines. 
             self.contentLabel.numberOfLines = 2;
 
             [self addSubview:self.contentLabel];
