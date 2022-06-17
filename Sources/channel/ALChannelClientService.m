@@ -19,7 +19,7 @@
 
 static NSString *const CHANNEL_INFO_URL = @"/rest/ws/group/info";
 static NSString *const CHANNEL_SYNC_URL = @"/rest/ws/group/v3/list";
-static NSString *const CREATE_CHANNEL_URL = @"/rest/ws/group/create";
+static NSString *const CREATE_CHANNEL_URL = @"/rest/ws/group/v2.1/create";
 static NSString *const DELETE_CHANNEL_URL = @"/rest/ws/group/delete";
 static NSString *const LEFT_CHANNEL_URL = @"/rest/ws/group/left";
 static NSString *const ADD_MEMBER_TO_CHANNEL_URL = @"/rest/ws/group/add/member";
