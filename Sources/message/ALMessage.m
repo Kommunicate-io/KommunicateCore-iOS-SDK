@@ -205,7 +205,7 @@ static NSString * const AL_TRUE = @"true";
 - (BOOL)isHiddenMessage {
     return ((self.contentType == ALMESSAGE_CONTENT_HIDDEN) || [self isVOIPNotificationMessage]
             || [self isPushNotificationMessage] || [self isMessageCategoryHidden]
-            || self.getReplyType== AL_REPLY_BUT_HIDDEN || self.isMsgHidden );
+            || self.getReplyType== AL_REPLY_BUT_HIDDEN || self.isMsgHidden || (self.metadata[KM_ASSIGN_TO] != nil) || (self.metadata[KM_ASSIGN_TEAM] != nil) || (self.metadata[KM_ASSIGN] != nil));
 }
 
 - (BOOL)isVOIPNotificationMessage {
