@@ -31,9 +31,6 @@ static NSString *const AL_MESSAGE_REPLY_KEY = @"AL_REPLY";
 static NSString *const AL_OUT_BOX = @"5";
 static NSString *const AL_IN_BOX = @"4";
 static NSString * const AL_RESET_UNREAD_COUNT = @"AL_RESET_UNREAD_COUNT";
-static NSString * const KM_ASSIGN_TO = @"KM_ASSIGN_TO";
-static NSString * const KM_ASSIGN_TEAM = @"KM_ASSIGN_TEAM";
-static NSString * const KM_ASSIGN = @"KM_ASSIGN";
 
 typedef enum {
     AL_NOT_A_REPLY,

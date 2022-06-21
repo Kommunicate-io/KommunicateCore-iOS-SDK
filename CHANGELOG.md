@@ -1,7 +1,8 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
-
+## [Unreleased] 
+- [CM-961] Updated Create Channel Api endpoint
 ## [1.0.2] 2022-05-05
 - [CM-891] Added feature to stop the publishing offline status when (agent app moves to background(only for agent app)
 ## [1.0.1] 2022-03-22
