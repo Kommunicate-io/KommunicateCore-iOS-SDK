@@ -201,11 +201,10 @@ static NSString * const AL_TRUE = @"true";
             || self.isUploadFailed==YES );
 }
 
-
 - (BOOL)isHiddenMessage {
     return ((self.contentType == ALMESSAGE_CONTENT_HIDDEN) || [self isVOIPNotificationMessage]
             || [self isPushNotificationMessage] || [self isMessageCategoryHidden]
-            || self.getReplyType== AL_REPLY_BUT_HIDDEN || self.isMsgHidden );
+            || self.getReplyType== AL_REPLY_BUT_HIDDEN || self.isMsgHidden);
 }
 
 - (BOOL)isVOIPNotificationMessage {
@@ -301,6 +300,7 @@ static NSString * const AL_TRUE = @"true";
 
     // Check messages that we need to hide
     NSArray *keys = [ALApplozicSettings metadataKeysToHideMessages];
+    
     if (keys != nil) {
         for (NSString *key in keys) {
             // If this key is present then it's a hidden message
