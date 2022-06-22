@@ -332,8 +332,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             }
             [self.contentLabel setShadowColor:self.titleLabel.shadowColor];
             [self.contentLabel setShadowOffset:self.titleLabel.shadowOffset];
-            self.contentLabel.lineBreakMode = self.titleLabel.lineBreakMode;
-            self.contentLabel.numberOfLines = 0;
+            // Restricting Notification subtitle(Content) to 2 lines. 
+            self.contentLabel.numberOfLines = 2;
 
             [self addSubview:self.contentLabel];
         }
