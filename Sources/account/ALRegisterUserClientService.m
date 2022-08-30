@@ -454,6 +454,20 @@
     }];
 }
 
+// Use this only when Logout APi Fails due to authorization
+- (void)logoutUserLocally {
+    [[ALMQTTConversationService sharedInstance] publishOfflineStatus];
+    NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
+    BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
+    ALSLog(ALLoggerSeverityInfo, @"Unsubscribed to conversation after logout: %d", completed);
+
+    [ALUserDefaultsHandler clearAll];
+    [ALApplozicSettings clearAll];
+
+    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    [messageDBService deleteAllObjectsInCoreData];
+}
+
 + (BOOL)isAppUpdated {
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
