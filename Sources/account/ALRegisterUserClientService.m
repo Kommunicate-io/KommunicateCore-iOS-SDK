@@ -435,16 +435,7 @@
 
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_USER_LOGOUT :: %@", (NSString *)theJson);
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
-        [[ALMQTTConversationService sharedInstance] publishOfflineStatus];
-        NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
-        BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
-        ALSLog(ALLoggerSeverityInfo, @"Unsubscribed to conversation after logout: %d", completed);
-
-        [ALUserDefaultsHandler clearAll];
-        [ALApplozicSettings clearAll];
-
-        ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-        [messageDBService deleteAllObjectsInCoreData];
+        [self clearLocalDBAndPublishOfflineStatus];
 
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error in logout: %@", error.description);
@@ -454,8 +445,13 @@
     }];
 }
 
-// Use this only when Logout APi Fails due to authorization
+// This funtion logs out user locally by clearing local DB. Useful when the logout API is not working due to password change and you want to logout.
 - (void)logoutUserLocally {
+    [self clearLocalDBAndPublishOfflineStatus];
+}
+
+// This function changes the status to offline, unsubscribes from MQTT and clears the local data.
+- (void) clearLocalDBAndPublishOfflineStatus {
     [[ALMQTTConversationService sharedInstance] publishOfflineStatus];
     NSString *userKey = [ALUserDefaultsHandler getUserKeyString];
     BOOL completed = [[ALMQTTConversationService sharedInstance] unsubscribeToConversation: userKey];
