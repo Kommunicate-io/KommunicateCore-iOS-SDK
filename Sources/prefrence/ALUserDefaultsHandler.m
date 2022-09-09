@@ -525,7 +525,7 @@
 + (short)getUserAuthenticationTypeId {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
     short type = [userDefaults integerForKey:AL_USER_AUTHENTICATION_TYPE_ID];
-    return type ? type : 0;
+    return type ? type : 1;
 }
 
 + (void)setUnreadCountType:(short)mode {

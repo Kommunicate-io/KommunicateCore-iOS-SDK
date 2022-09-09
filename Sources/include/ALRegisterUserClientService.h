@@ -33,6 +33,8 @@ static NSString *const AL_LOGOUT_URL = @"/rest/ws/device/logout";
 
 - (void)logoutWithCompletionHandler:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
+- (void)logoutUserLocally;
+
 + (BOOL)isAppUpdated;
 
 - (void)syncAccountStatus;

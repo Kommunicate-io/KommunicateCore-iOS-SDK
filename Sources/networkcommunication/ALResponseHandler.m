@@ -35,6 +35,13 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)response;
 
+        if (httpURLResponse.statusCode == 401) {
+            //Trigger LOGOUT_UNAUTHORIZED_USER notification incase of 401 response.
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LOGOUT_UNAUTHORIZED_USER"
+                                                                object:nil
+                                                              userInfo:nil];
+        }
+
         if (connectionError.code == kCFURLErrorUserCancelledAuthentication) {
             NSString *failingURL = connectionError.userInfo[@"NSErrorFailingURLStringKey"] != nil ? connectionError.userInfo[@"NSErrorFailingURLStringKey"]:@"Empty";
             ALSLog(ALLoggerSeverityError, @"Authentication error: HTTP 401 : ERROR CODE : %ld, FAILING URL: %@",  (long)connectionError.code,  failingURL);

@@ -176,6 +176,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     [self subscribeToConversationWithTopic:topic withCompletionHandler:^(BOOL subscribed, NSError *error) {
         if (error) {
             ALSLog(ALLoggerSeverityError, @"MQTT : ERROR_IN_SUBSCRIBE :: %@", error.description);
+            if ([error.description  isEqual: @"MQTT CONNACK: bad user name or password"]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"LOGOUT_UNAUTHORIZED_USER"
+                                                                    object:nil
+                                                                  userInfo:nil];
+            }
         }
     }];
 }

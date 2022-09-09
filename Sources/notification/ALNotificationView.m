@@ -154,6 +154,7 @@
                                        duration:1.75
                                        callback:
      ^(void){
+        [TSMessage dismissActiveNotificationWithCompletion:nil];
         handler(true);
     }
                                     buttonTitle:nil
