@@ -2,7 +2,9 @@
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 
-# [Unreleased]
+##[Unreleased] 
+- 
+## [1.0.5] 2022-09-09
 - [CM-787] Fixed the issue of user can login with wrong password
 ## [1.0.4] 2022-06-22
 - [CM-961] Updated Create Channel Api endpoint
