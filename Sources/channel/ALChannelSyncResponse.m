@@ -16,8 +16,9 @@
     self.alChannelArray = [[NSMutableArray alloc] init];
     
     if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
-        NSMutableArray *responseArray = [JSONString valueForKey:@"response"];
-        
+        NSObject *response = [JSONString valueForKey:@"response"];
+        NSMutableArray *responseArray = [response valueForKey:@"groupPxys"];
+
         for (NSDictionary *JSONDictionaryObject in responseArray) {
             ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionaryObject];
             [self.alChannelArray addObject:alChannel];
