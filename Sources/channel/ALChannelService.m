@@ -1249,7 +1249,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 - (void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
 
     for (ALChannel *channelObject in channelArray) {
-        // Ignore inserting un opened conversation(Which doesn't have user messages, only contains wecome messages)
+        // Ignore inserting un opened conversation(Which doesn't have user messages, only contains bot messages)
         NSDictionary *metadata = channelObject.metadata;
         if (metadata && metadata[AL_CHANNEL_CONVERSATION_STATUS] && [metadata[AL_CHANNEL_CONVERSATION_STATUS] isEqual:UN_OPENED_CONVERSATION_STATUS] ) {
             continue;
