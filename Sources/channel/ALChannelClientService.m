@@ -18,7 +18,7 @@
 #import "ALLogger.h"
 
 static NSString *const CHANNEL_INFO_URL = @"/rest/ws/group/info";
-static NSString *const CHANNEL_SYNC_URL = @"/rest/ws/group/v3/list";
+static NSString *const CHANNEL_SYNC_URL = @"/rest/ws/group/v5/list";
 static NSString *const CREATE_CHANNEL_URL = @"/rest/ws/group/v2.1/create";
 static NSString *const DELETE_CHANNEL_URL = @"/rest/ws/group/delete";
 static NSString *const LEFT_CHANNEL_URL = @"/rest/ws/group/left";
