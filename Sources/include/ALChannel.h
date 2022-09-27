@@ -17,7 +17,7 @@ static NSString *const AL_CATEGORY = @"AL_CATEGORY";
 static NSString *const AL_CONTEXT_BASED_CHAT = @"AL_CONTEXT_BASED_CHAT";
 static NSString *const AL_CONVERSATION_ASSIGNEE = @"CONVERSATION_ASSIGNEE";
 //Channel which doesn't have user messages, only contains bot messages
-static NSString *const UN_OPENED_CONVERSATION_STATUS = @"1";
+static NSString *const UN_OPENED_CONVERSATION_STATUS = @"-1";
 
 /*********************
  type = 7 SPECIAL CASE
