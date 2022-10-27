@@ -2,8 +2,9 @@
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 
-##[Unreleased] 
-- 
+## [1.0.6] 2022-10-27 
+- [CM-1124] Fixed un opened conversation added to conversation list screen
+- [CM-1064] updated channel sync call api to v5
 ## [1.0.5] 2022-09-09
 - [CM-787] Fixed the issue of user can login with wrong password
 ## [1.0.4] 2022-06-22
