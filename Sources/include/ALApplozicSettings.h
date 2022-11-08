@@ -159,6 +159,9 @@ static NSString *const AL_PHOTO_PICKER_SELECTION_LIMIT = @"com.applozic.userdefa
 static NSString *const AL_MESSAGE_META_DATA_KEY = @"com.applozic.userdefault.AL_MESSAGE_META_DATA_KEY";
 static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.AL_SUPPORT_CONTACT_USER_ID";
 static NSString *const AL_AGENTAPP_CONFIGURATION = @"com.applozic.userdefault.AL_AGENTAPP_CONFIGURATION";
+static NSString *const AL_CUSTOM_BOT_NAME = @"com.applozic.userdefault.AL_CUSTOM_BOT_NAME";
+static NSString *const AL_CUSTOM_BOT_ID = @"com.applozic.userdefault.AL_CUSTOM_BOT_ID";
+
 
 
 
@@ -636,5 +639,9 @@ static NSString *const AL_AGENTAPP_CONFIGURATION = @"com.applozic.userdefault.AL
 
 + (void) enableAgentApConfiguration:(BOOL) flag;
 + (BOOL) isAgentAppConfigurationEnabled;
+
++ (void)setCustomizedBotId:(NSString *)customizedBotId;
++ (NSString *)getCustomizedBotId;
++ (void)clearCustomBotConfiguration;
 
 @end
