@@ -1916,7 +1916,7 @@
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     return [userDefaults boolForKey:AL_AGENTAPP_CONFIGURATION];
 }
-
+// To store custom bot name which is fetched from chat context.Later in the convesation we will display this as bot's name if customized bot id matches the userid.
 + (void)setCustomBotName:(NSString *)customBotName {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     [userDefaults setValue:customBotName forKey:AL_CUSTOM_BOT_NAME];
@@ -1927,7 +1927,7 @@
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     return [userDefaults valueForKey:AL_CUSTOM_BOT_NAME];
 }
-
+// To store bot's id to customize its name in conversation screen.
 + (void)setCustomizedBotId:(NSString *)customizedBotId {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     [userDefaults setValue:customizedBotId forKey:AL_CUSTOM_BOT_ID];
