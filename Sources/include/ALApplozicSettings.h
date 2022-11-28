@@ -161,6 +161,9 @@ static NSString *const AL_SUPPORT_CONTACT_USER_ID = @"com.applozic.userdefault.A
 static NSString *const AL_AGENTAPP_CONFIGURATION = @"com.applozic.userdefault.AL_AGENTAPP_CONFIGURATION";
 static NSString *const AL_CUSTOM_BOT_NAME = @"com.applozic.userdefault.AL_CUSTOM_BOT_NAME";
 static NSString *const AL_CUSTOM_BOT_ID = @"com.applozic.userdefault.AL_CUSTOM_BOT_ID";
+static NSString *const KM_ZENDESK_ACCOUNT_KEY = @"com.applozic.userdefault.KM_ZENDESK_ACCOUNT_KEY";
+static NSString *const KM_ZENDESK_CHAT_ENABLED = @"com.applozic.userdefault.KM_ZENDESK_CHAT_ENABLED";
+
 
 
 
@@ -646,4 +649,10 @@ static NSString *const AL_CUSTOM_BOT_ID = @"com.applozic.userdefault.AL_CUSTOM_B
 + (NSString *)getCustomizedBotId;
 
 + (void)clearCustomBotConfiguration;
+
++ (void) setZendeskSdkAccountKey:(NSString *) accountKey;
++ (NSString *) getZendeskSdkAccountKey;
+
++ (void) enableZendeskChat:(BOOL) flag;
++ (BOOL) isZendeskChatEnabeld;
 @end

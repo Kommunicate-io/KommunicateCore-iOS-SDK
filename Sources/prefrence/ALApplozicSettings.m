@@ -1944,4 +1944,26 @@
     [self setCustomizedBotId:@""];
 }
 
++ (void) setZendeskSdkAccountKey:(NSString *)accountKey {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setValue:accountKey forKey:KM_ZENDESK_ACCOUNT_KEY];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getZendeskSdkAccountKey {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults valueForKey:KM_ZENDESK_ACCOUNT_KEY];
+}
+
++ (void)enableZendeskChat:(BOOL)flag {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setBool:flag forKey:KM_ZENDESK_CHAT_ENABLED];
+    [userDefaults synchronize];
+}
+
++ (BOOL)isZendeskChatEnabeld {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults boolForKey:KM_ZENDESK_CHAT_ENABLED];
+}
+
 @end
