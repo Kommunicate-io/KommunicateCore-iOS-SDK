@@ -34,7 +34,7 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 - (void)mqttDidConnected;
 - (void)reloadDataForUserBlockNotification:(NSString *)userId andBlockFlag:(BOOL)flag;
 - (void)updateUserDetail:(NSString *)userId;
-
+- (void)handOffToHuman:(NSString *)conversationId;
 @end
 
 

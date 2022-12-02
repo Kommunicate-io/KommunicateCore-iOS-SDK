@@ -307,6 +307,20 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
             ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
             ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:[theMessageDict objectForKey:@"message"]];
+            if ([alMessage isAssignmentMessage]) {
+                [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
+                                           withCompletion:^(NSMutableArray *message, NSError *error) {
+                    ALSLog(ALLoggerSeverityInfo, @"Pakka101 :Hidden Message :  %@",message);
+                    if (![alMessage isHiddenMessage] && [ALApplozicSettings getZendeskSdkAccountKey] != nil) {
+                        NSDictionary *conversation = [theMessageDict objectForKey:@"message"];
+                        NSString *conversationID = [conversation objectForKey:@"clientGroupId"];
+                        
+                        if(conversationID != nil) {
+                            [self.mqttConversationDelegate handOffToHuman: conversationID];
+                        }
+                    }
+                }];
+            }
 
             if ([alMessage isHiddenMessage]) {
                 ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");

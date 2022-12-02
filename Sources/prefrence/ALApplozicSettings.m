@@ -1955,15 +1955,4 @@
     return [userDefaults valueForKey:KM_ZENDESK_ACCOUNT_KEY];
 }
 
-+ (void)enableZendeskChat:(BOOL)flag {
-    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    [userDefaults setBool:flag forKey:KM_ZENDESK_CHAT_ENABLED];
-    [userDefaults synchronize];
-}
-
-+ (BOOL)isZendeskChatEnabeld {
-    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    return [userDefaults boolForKey:KM_ZENDESK_CHAT_ENABLED];
-}
-
 @end
