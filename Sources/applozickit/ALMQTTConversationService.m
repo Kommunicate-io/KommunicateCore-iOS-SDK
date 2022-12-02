@@ -310,7 +310,6 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             if ([alMessage isAssignmentMessage]) {
                 [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
                                            withCompletion:^(NSMutableArray *message, NSError *error) {
-                    ALSLog(ALLoggerSeverityInfo, @"Pakka101 :Hidden Message :  %@",message);
                     if (![alMessage isHiddenMessage] && [ALApplozicSettings getZendeskSdkAccountKey] != nil) {
                         NSDictionary *conversation = [theMessageDict objectForKey:@"message"];
                         NSString *conversationID = [conversation objectForKey:@"clientGroupId"];
