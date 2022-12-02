@@ -306,23 +306,6 @@ static NSString * const AL_TRUE = @"true";
     }
     
     return [[self.metadata objectForKey:@"hide"] boolValue];
-
-//    if () {
-//        return  false;
-//    }
-
-//    // Check messages that we need to hide
-//    NSArray *keys = [ALApplozicSettings metadataKeysToHideMessages];
-//
-//    if (keys != nil) {
-//        for (NSString *key in keys) {
-//            // If this key is present then it's a hidden message
-//            if ([self.metadata objectForKey:key] != nil && self.message == nil) {
-//                return true;
-//            }
-//        }
-//    }
-//    return hide;
 }
 
 - (BOOL)isPushNotificationMessage {
