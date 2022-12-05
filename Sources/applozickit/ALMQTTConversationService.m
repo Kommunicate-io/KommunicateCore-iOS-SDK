@@ -307,22 +307,6 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
             ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
             ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:[theMessageDict objectForKey:@"message"]];
-            // If zendesk chat is integrated and the message is an assignment(to human) message , then handoff callback needs to be triggered to initialize the zendesk sdk
-            if ([alMessage isAssignmentMessage] && [ALApplozicSettings getZendeskSdkAccountKey] != nil) {
-                [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
-                                           withCompletion:^(NSMutableArray *message, NSError *error) {
-                    NSNumber *conversationID = alMessage.groupId;
-                    NSDictionary *metaData = alMessage.metadata;
-                    NSString *assigneeId = metaData[@"KM_ASSIGN_TO"];
-                    if (metaData != nil &&  assigneeId != nil && ![alMessage isHiddenMessage] && conversationID != nil) {
-                        ALContactDBService *contactDataBaseService = [[ALContactDBService alloc] init];
-                        ALContact *contact = [contactDataBaseService loadContactByKey:@"userId" value:assigneeId];
-                        if (contact.roleType != AL_BOT) {
-                            [self.mqttConversationDelegate handOffToZendeskAgent:conversationID];
-                        }
-                    }
-                }];
-            }
 
             if ([alMessage isHiddenMessage]) {
                 ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");
