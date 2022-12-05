@@ -307,10 +307,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
             ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
             ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:[theMessageDict objectForKey:@"message"]];
-            if ([alMessage isAssignmentMessage]) {
+            // If zendesk chat is integrated and the message is an assignment message , then handoff callback needs to be triggered to initialize the zendesk sdk 
+            if ([ALApplozicSettings getZendeskSdkAccountKey] != nil && [alMessage isAssignmentMessage]) {
                 [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
                                            withCompletion:^(NSMutableArray *message, NSError *error) {
-                    if (![alMessage isHiddenMessage] && [ALApplozicSettings getZendeskSdkAccountKey] != nil) {
+                    if (![alMessage isHiddenMessage]) {
                         NSDictionary *conversation = [theMessageDict objectForKey:@"message"];
                         NSString *conversationID = [conversation objectForKey:@"clientGroupId"];
                         
