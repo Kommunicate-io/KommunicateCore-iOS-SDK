@@ -300,12 +300,19 @@ static NSString * const AL_TRUE = @"true";
     if (self.message && ([self.metadata objectForKey:@"KM_ASSIGN_TO"] != nil || [self.metadata objectForKey:@"KM_ASSIGN_TEAM"] != nil)) {
         return false;
     }
-    
-    if ([self.metadata objectForKey:@"KM_ASSIGN"] != nil) {
-        return true;
+    BOOL hide = [[self.metadata objectForKey:@"hide"] boolValue];
+
+    // Check messages that we need to hide
+    NSArray *keys = [ALApplozicSettings metadataKeysToHideMessages];
+    if (keys != nil) {
+        for (NSString *key in keys) {
+           // If this key is present then it's a hidden message
+           if ([self.metadata objectForKey:key] != nil) {
+               return true;
+           }
+        }
     }
-    
-    return [[self.metadata objectForKey:@"hide"] boolValue];
+    return hide;
 }
 
 - (BOOL)isPushNotificationMessage {
