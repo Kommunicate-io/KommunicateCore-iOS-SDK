@@ -1955,4 +1955,15 @@
     return [userDefaults valueForKey:KM_ZENDESK_ACCOUNT_KEY];
 }
 
++ (void)setLatestZendeskConversationId:(NSNumber *)conversationId {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setValue:conversationId forKey:KM_ZENDESK_LATEST_CONVERSATION_ID];
+    [userDefaults synchronize];
+}
+
++ (NSNumber *)getLatestZendeskConversationId {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults valueForKey:KM_ZENDESK_LATEST_CONVERSATION_ID];
+}
+
 @end

@@ -162,6 +162,8 @@ static NSString *const AL_AGENTAPP_CONFIGURATION = @"com.applozic.userdefault.AL
 static NSString *const AL_CUSTOM_BOT_NAME = @"com.applozic.userdefault.AL_CUSTOM_BOT_NAME";
 static NSString *const AL_CUSTOM_BOT_ID = @"com.applozic.userdefault.AL_CUSTOM_BOT_ID";
 static NSString *const KM_ZENDESK_ACCOUNT_KEY = @"com.applozic.userdefault.KM_ZENDESK_ACCOUNT_KEY";
+static NSString *const KM_ZENDESK_LATEST_CONVERSATION_ID = @"com.applozic.userdefault.KM_ZENDESK_LATEST_CONVERSATION_ID";
+
 
 @interface ALApplozicSettings : NSObject
 
@@ -648,5 +650,8 @@ static NSString *const KM_ZENDESK_ACCOUNT_KEY = @"com.applozic.userdefault.KM_ZE
 
 + (void) setZendeskSdkAccountKey:(NSString *) accountKey;
 + (NSString *) getZendeskSdkAccountKey;
+
++ (void) setLatestZendeskConversationId: (NSNumber *) conversationId;
++ (NSNumber *) getLatestZendeskConversationId;
 
 @end
