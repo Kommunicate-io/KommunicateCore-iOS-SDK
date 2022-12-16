@@ -1944,4 +1944,15 @@
     [self setCustomizedBotId:@""];
 }
 
++ (void) setZendeskSdkAccountKey:(NSString *)accountKey {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setValue:accountKey forKey:KM_ZENDESK_ACCOUNT_KEY];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getZendeskSdkAccountKey {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults valueForKey:KM_ZENDESK_ACCOUNT_KEY];
+}
+
 @end

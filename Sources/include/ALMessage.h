@@ -138,4 +138,5 @@ typedef enum {
 - (BOOL)hasAttachment;
 - (void)setAsDeletedForAll;
 - (NSMutableDictionary *)combineMetadata:(NSMutableDictionary *)messageMetadata;
+- (BOOL) isAssignmentMessage;
 @end
