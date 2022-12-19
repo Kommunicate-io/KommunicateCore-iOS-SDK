@@ -1955,15 +1955,15 @@
     return [userDefaults valueForKey:KM_ZENDESK_ACCOUNT_KEY];
 }
 
-+ (void)setLatestZendeskConversationId:(NSNumber *)conversationId {
++ (void)setLastZendeskConversationId:(NSNumber *)conversationId {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    [userDefaults setValue:conversationId forKey:KM_ZENDESK_LATEST_CONVERSATION_ID];
+    [userDefaults setValue:conversationId forKey:KM_ZENDESK_LAST_CONVERSATION_ID];
     [userDefaults synchronize];
 }
 
-+ (NSNumber *)getLatestZendeskConversationId {
++ (NSNumber *)getLastZendeskConversationId {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    return [userDefaults valueForKey:KM_ZENDESK_LATEST_CONVERSATION_ID];
+    return [userDefaults valueForKey:KM_ZENDESK_LAST_CONVERSATION_ID];
 }
 
 @end
