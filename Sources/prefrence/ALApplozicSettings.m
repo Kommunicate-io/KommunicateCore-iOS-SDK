@@ -1966,4 +1966,16 @@
     return [userDefaults valueForKey:KM_ZENDESK_LAST_CONVERSATION_ID];
 }
 
++ (void)saveZendeskLastSyncTime:(NSNumber *)lastSyncTime {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setValue:lastSyncTime forKey:KM_ZENDESK_LAST_SYNC_TIME];
+    [userDefaults synchronize];
+}
+
++ (NSNumber *)getZendeskLastSyncTime {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults valueForKey:KM_ZENDESK_LAST_SYNC_TIME];
+}
+
+
 @end

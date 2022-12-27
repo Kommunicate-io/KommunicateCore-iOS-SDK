@@ -163,6 +163,7 @@ static NSString *const AL_CUSTOM_BOT_NAME = @"com.applozic.userdefault.AL_CUSTOM
 static NSString *const AL_CUSTOM_BOT_ID = @"com.applozic.userdefault.AL_CUSTOM_BOT_ID";
 static NSString *const KM_ZENDESK_ACCOUNT_KEY = @"com.applozic.userdefault.KM_ZENDESK_ACCOUNT_KEY";
 static NSString *const KM_ZENDESK_LAST_CONVERSATION_ID = @"com.applozic.userdefault.KM_ZENDESK_LAST_CONVERSATION_ID";
+static NSString *const KM_ZENDESK_LAST_SYNC_TIME = @"com.applozic.userdefault.KM_ZENDESK_LAST_SYNC_TIME";
 
 
 @interface ALApplozicSettings : NSObject
@@ -653,5 +654,8 @@ static NSString *const KM_ZENDESK_LAST_CONVERSATION_ID = @"com.applozic.userdefa
 
 + (void) setLastZendeskConversationId: (NSNumber *) conversationId;
 + (NSNumber *) getLastZendeskConversationId;
+
++ (void) saveZendeskLastSyncTime: (NSNumber *) lastSyncTime;
++ (NSNumber *) getZendeskLastSyncTime;
 
 @end
