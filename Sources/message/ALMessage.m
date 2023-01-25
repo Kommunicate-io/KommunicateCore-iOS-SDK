@@ -296,17 +296,20 @@ static NSString * const AL_TRUE = @"true";
 }
 
 - (BOOL)isMsgHidden {
+    
+    if (self.message && ([self.metadata objectForKey:@"KM_ASSIGN_TO"] != nil || [self.metadata objectForKey:@"KM_ASSIGN_TEAM"] != nil)) {
+        return false;
+    }
     BOOL hide = [[self.metadata objectForKey:@"hide"] boolValue];
 
     // Check messages that we need to hide
     NSArray *keys = [ALApplozicSettings metadataKeysToHideMessages];
-    
     if (keys != nil) {
         for (NSString *key in keys) {
-            // If this key is present then it's a hidden message
-            if ([self.metadata objectForKey:key] != nil) {
-                return true;
-            }
+           // If this key is present then it's a hidden message
+           if ([self.metadata objectForKey:key] != nil) {
+               return true;
+           }
         }
     }
     return hide;
@@ -487,6 +490,17 @@ static NSString * const AL_TRUE = @"true";
         return messageMetadata;
     }
     return self.metadata;
+}
+
+- (BOOL)isAssignmentMessage {
+    NSArray *assignmentKeys = @[@"KM_ASSIGN_TO",@"KM_ASSIGN",@"KM_ASSIGN_TEAM"];
+    for (NSString *key in assignmentKeys) {
+        // If this key is present then it's a Assignment message
+        if ([self.metadata objectForKey:key] != nil) {
+            return true;
+        }
+    }
+    return false;
 }
 
 @end
