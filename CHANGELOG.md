@@ -2,7 +2,9 @@
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 
-## [1.0.7] 2022-01-25
+## [1.0.8] 2023-03-17
+- Added Support for Multiple Languages on Speech To Text
+## [1.0.7] 2023-01-25
 - Added Zendesk Integration Support
 ## [1.0.6] 2022-10-27 
 - [CM-1124] Fixed un opened conversation added to conversation list screen
