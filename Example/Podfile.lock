@@ -1,6 +1,7 @@
 PODS:
   - KommunicateCore-iOS-SDK (1.0.8)
 
+
 DEPENDENCIES:
   - KommunicateCore-iOS-SDK (from `../`)
 
