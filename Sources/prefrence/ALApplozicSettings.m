@@ -1977,5 +1977,17 @@
     return [userDefaults valueForKey:KM_ZENDESK_LAST_SYNC_TIME];
 }
 
+// To save language code for STT
++ (void)setSelectedLanguageForSpeechToText:(NSString *)language {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setValue:language forKey:KM_SELECTED_LANGUAGE_FOR_SPEECH_TO_TEXT];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getSelectedLanguageForSpeechToText {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults valueForKey:KM_SELECTED_LANGUAGE_FOR_SPEECH_TO_TEXT];
+}
+
 
 @end
