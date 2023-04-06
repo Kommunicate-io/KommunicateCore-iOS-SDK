@@ -446,7 +446,7 @@
 - (void)deleteMessage:(NSString *)keyString
          andContactId:(NSString *)contactId
        withCompletion:(void (^)(NSString *, NSError *))completion {
-    NSString *deleteMessageURLString = [NSString stringWithFormat:@"%@/rest/ws/message/delete",KBASE_URL];
+    NSString *deleteMessageURLString = [NSString stringWithFormat:@"%@/rest/ws/group/delete",KBASE_URL];
     NSString *deleteMessageParamString = [NSString stringWithFormat:@"key=%@&userId=%@",keyString,[contactId urlEncodeUsingNSUTF8StringEncoding]];
     NSMutableURLRequest *deleteMessageRequest = [ALRequestHandler createGETRequestWithUrlString:deleteMessageURLString paramString:deleteMessageParamString];
 
@@ -457,9 +457,9 @@
             return;
         }
 
-        NSString *status = (NSString *)theJson;
+        NSString *status = (NSString *)[theJson valueForKey:@"status"];
         ALSLog(ALLoggerSeverityInfo, @"Response of delete message: %@", status);
-        if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
+        if (status != nil && [status isEqualToString:AL_RESPONSE_SUCCESS]) {
             completion(status, nil);
             return;
         } else {
