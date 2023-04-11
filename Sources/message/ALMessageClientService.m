@@ -446,7 +446,7 @@
 - (void)deleteMessage:(NSString *)keyString
          andContactId:(NSString *)contactId
        withCompletion:(void (^)(NSString *, NSError *))completion {
-    NSString *deleteMessageURLString = [NSString stringWithFormat:@"%@/rest/ws/group/delete",KBASE_URL];
+    NSString *deleteMessageURLString = [NSString stringWithFormat:@"%@/rest/ws/message/delete",KBASE_URL];
     NSString *deleteMessageParamString = [NSString stringWithFormat:@"key=%@&userId=%@",keyString,[contactId urlEncodeUsingNSUTF8StringEncoding]];
     NSMutableURLRequest *deleteMessageRequest = [ALRequestHandler createGETRequestWithUrlString:deleteMessageURLString paramString:deleteMessageParamString];
 
@@ -457,9 +457,9 @@
             return;
         }
 
-        NSString *status = (NSString *)[theJson valueForKey:@"status"];
+        NSString *status = (NSString *)theJson;
         ALSLog(ALLoggerSeverityInfo, @"Response of delete message: %@", status);
-        if (status != nil && [status isEqualToString:AL_RESPONSE_SUCCESS]) {
+        if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
             completion(status, nil);
             return;
         } else {
@@ -475,7 +475,7 @@
 - (void)deleteMessageThread:(NSString *)contactId
                orChannelKey:(NSNumber *)channelKey
              withCompletion:(void (^)(NSString *, NSError *))completion {
-    NSString *deleteThreadURLString = [NSString stringWithFormat:@"%@/rest/ws/message/delete/conversation",KBASE_URL];
+    NSString *deleteThreadURLString = [NSString stringWithFormat:@"%@/rest/ws/group/delete",KBASE_URL];
     NSString *deleteThreadParamString;
     if (channelKey != nil) {
         deleteThreadParamString = [NSString stringWithFormat:@"groupId=%@",channelKey];
@@ -491,9 +491,9 @@
             completion(nil, theError);
             return;
         }
-        NSString *status = (NSString *)theJson;
+        NSString *status = (NSString *)[theJson valueForKey:@"status"];
         ALSLog(ALLoggerSeverityInfo, @"Response of delete message thread: %@", (NSString *)theJson);
-        if ([status isEqualToString:AL_RESPONSE_SUCCESS]) {
+        if (status != nil && [status isEqualToString:AL_RESPONSE_SUCCESS]) {
             ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
             completion(status, nil);
