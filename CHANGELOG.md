@@ -1,7 +1,9 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
-
+## [1.0.9] 2023-04-19
+- Updated delete conversation endpoint
+- Added new message type for top static message
 ## [1.0.8] 2023-03-17
 - Added Support for Multiple Languages on Speech To Text
 ## [1.0.7] 2023-01-25
