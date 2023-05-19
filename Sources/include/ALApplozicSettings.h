@@ -165,7 +165,8 @@ static NSString *const KM_ZENDESK_ACCOUNT_KEY = @"com.applozic.userdefault.KM_ZE
 static NSString *const KM_ZENDESK_LAST_CONVERSATION_ID = @"com.applozic.userdefault.KM_ZENDESK_LAST_CONVERSATION_ID";
 static NSString *const KM_ZENDESK_LAST_SYNC_TIME = @"com.applozic.userdefault.KM_ZENDESK_LAST_SYNC_TIME";
 static NSString *const KM_SELECTED_LANGUAGE_FOR_SPEECH_TO_TEXT = @"KM_SELECTED_LANGUAGE_FOR_SPEECH_TO_TEXT";
-
+static NSString *const KM_DEFAULT_UPLOAD_OVERRIDE_URL = @"KM_DEFAULT_UPLOAD_OVERRIDE_URL";
+static NSString *const KM_DEFAULT_UPLOAD_OVERRIDE_HEADERS = @"KM_DEFAULT_UPLOAD_OVERRIDE_HEADERS";
 
 @interface ALApplozicSettings : NSObject
 
@@ -662,5 +663,9 @@ static NSString *const KM_SELECTED_LANGUAGE_FOR_SPEECH_TO_TEXT = @"KM_SELECTED_L
 + (void) setSelectedLanguageForSpeechToText: (NSString *) language;
 + (NSString *) getSelectedLanguageForSpeechToText;
 
++ (void) setDefaultOverrideuploadUrl: (NSString *) url;
++ (NSString *) getDefaultOverrideuploadUrl;
 
++ (void) setDefaultOverrideuploadHeaders: (NSMutableDictionary *) headers;
++ (NSMutableDictionary *) getDefaultOverrideuploadHeaders;
 @end
