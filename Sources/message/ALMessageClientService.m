@@ -408,7 +408,9 @@
 }
 
 - (void)sendPhotoForUserInfo:(NSDictionary *)userInfo withCompletion:(void(^)(NSString *message, NSError *error)) completion {
-    if (ALApplozicSettings.isStorageServiceEnabled) {
+    if (ALApplozicSettings.getDefaultOverrideuploadUrl.length != 0){
+        completion(ALApplozicSettings.getDefaultOverrideuploadUrl, nil);
+    } else if (ALApplozicSettings.isStorageServiceEnabled) {
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);
     } else if (ALApplozicSettings.isS3StorageServiceEnabled) {

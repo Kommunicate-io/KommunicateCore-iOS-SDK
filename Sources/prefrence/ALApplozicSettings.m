@@ -1989,5 +1989,26 @@
     return [userDefaults valueForKey:KM_SELECTED_LANGUAGE_FOR_SPEECH_TO_TEXT];
 }
 
++ (void)setDefaultOverrideuploadUrl:(NSString *)url {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setValue:url forKey:KM_DEFAULT_UPLOAD_URL];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getDefaultOverrideuploadUrl {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults valueForKey:KM_DEFAULT_UPLOAD_URL];
+}
+
++ (void)setDefaultOverrideuploadHeaders:(NSMutableDictionary *)headers {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setValue:headers forKey:KM_DEFAULT_UPLOAD_HEADERS];
+    [userDefaults synchronize];
+}
+
++ (NSMutableDictionary *)getDefaultOverrideuploadHeaders {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults valueForKey:KM_DEFAULT_UPLOAD_HEADERS];
+}
 
 @end
