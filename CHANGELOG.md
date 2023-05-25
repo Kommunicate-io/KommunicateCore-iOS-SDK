@@ -1,6 +1,9 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
+## [1.1.0] 2023-05-25
+- Added cloud support for attachments
+- Added support to restrict upload attachment size
 ## [1.0.9] 2023-04-19
 - Updated delete conversation API endpoint
 - Added new message type for top static message
