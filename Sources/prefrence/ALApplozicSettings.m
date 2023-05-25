@@ -187,7 +187,8 @@
 
 + (NSInteger)getMaxImageSizeForUploadInMB {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    return [userDefaults integerForKey:AL_IMAGE_UPLOAD_MAX_SIZE];
+    NSInteger maxSize = [userDefaults integerForKey:AL_IMAGE_UPLOAD_MAX_SIZE];
+    return maxSize? maxSize : 25;
 }
 
 + (void)setMaxCompressionFactor:(double)maxCompressionRatio {
