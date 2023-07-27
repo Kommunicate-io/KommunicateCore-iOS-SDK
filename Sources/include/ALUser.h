@@ -25,6 +25,20 @@ typedef enum
 
 } deviceApnsType;
 
+typedef enum
+{
+    PLATFORM_ANDROID = 1,
+    PLATFORM_IOS = 2,
+    PLATFORM_WEB = 3,
+    PLATFORM_PHONE_GAP = 4,
+    PLATFORM_API = 5,
+    PLATFORM_FLUTTER = 6,
+    PLATFORM_REACT_NATIVE = 7,
+    PLATFORM_CAPACITOR = 8,
+    PLATFORM_CORDOVA = 9,
+    PLATFORM_IONIC = 10,
+} Platform;
+
 @interface ALUser : ALJson
 
 @property NSString *userId;
@@ -54,6 +68,7 @@ typedef enum
 @property NSMutableArray *features;
 @property NSString *notificationSoundFileName;
 @property NSMutableDictionary *metadata;
+@property NSNumber *platform;
 
 - (instancetype)initWithUserId:(NSString *)userId
                      password:(NSString *)password
