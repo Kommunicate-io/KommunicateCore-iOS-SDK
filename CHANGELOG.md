@@ -4,6 +4,7 @@ The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/Ko
 ## Unreleased
 - Added platform property
 - Added Enum for different Platform
+- Added default value for Platform to be iOS
 ## [1.1.0] 2023-05-25
 - Added cloud support for attachments
 - Added support to restrict upload attachment size
