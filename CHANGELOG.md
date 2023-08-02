@@ -1,6 +1,8 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
+## Unreleased
+- Added platform property and default value for platform to be iOS.
 ## [1.1.0] 2023-05-25
 - Added cloud support for attachments
 - Added support to restrict upload attachment size

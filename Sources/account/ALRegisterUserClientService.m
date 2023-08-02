@@ -51,6 +51,10 @@
     [ALUserDefaultsHandler setPassword:user.password];
     [ALUserDefaultsHandler setDisplayName:user.displayName];
     [ALUserDefaultsHandler setEmailId:user.email];
+    
+    if (user.platform == nil) {
+        user.platform = [NSNumber numberWithInt: PLATFORM_IOS];
+    }
 
     NSString *applicationId = [ALUserDefaultsHandler getApplicationKey];
     if (applicationId) {
