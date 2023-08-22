@@ -66,6 +66,7 @@ typedef enum {
 @property (nonatomic, strong) NSNumber *notificationAfterTime;
 @property (nonatomic, strong) NSNumber *deletedAtTime;
 @property (nonatomic, strong) NSMutableDictionary *metadata;
+@property (nonatomic, strong) NSString *platformSource;
 /// This is used to categorize the channel based on the metadata value for `CONVERSATION_CATEGORY`
 @property (nonatomic) short category;
 
