@@ -714,6 +714,36 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     }
 }
 
+- (void)updatePlatformSource:(NSNumber *)channelKey
+              platformSource:(NSString *)newPlatformSource {
+    
+    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    NSEntityDescription *channelEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
+    
+    if (channelEntity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+        [fetchRequest setEntity:channelEntity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [alDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count) {
+            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+            if (newPlatformSource != nil) {
+                dbChannel.platformSource = newPlatformSource;
+            }
+            
+            [alDBHandler saveContext];
+        } else {
+            ALSLog(ALLoggerSeverityError, @"Channel not found in database to update platformSource with channelKey : %@", channelKey);
+        }
+    }
+    
+}
+
 - (void)updateChannelParentKey:(NSNumber *)channelKey
               andWithParentKey:(NSNumber *)channelParentKey
                       isAdding:(BOOL)flag {
