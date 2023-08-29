@@ -88,6 +88,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             dbChannelEntity.unreadCount = channel.unreadCount;
         }
         dbChannelEntity.metadata = channel.metadata.description;
+        dbChannelEntity.platformSource = channel.platformSource;
         dbChannelEntity.category = channel.category;
     }
 
@@ -231,6 +232,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     alChannel.notificationAfterTime = dbChannel.notificationAfterTime;
     alChannel.deletedAtTime = dbChannel.deletedAtTime;
     alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
+    alChannel.platformSource = dbChannel.platformSource;
     alChannel.userCount = dbChannel.userCount;
     alChannel.category = dbChannel.category;
     return alChannel;
@@ -506,6 +508,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
         channel.channelImageURL = dbChannel.channelImageURL;
         channel.deletedAtTime = dbChannel.deletedAtTime;
         channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
+        channel.platformSource = dbChannel.platformSource;
         channel.userCount = dbChannel.userCount;
         channel.category = dbChannel.category;
         return channel;
@@ -599,6 +602,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
                 channel.channelImageURL = dbChannel.channelImageURL;
                 channel.deletedAtTime = dbChannel.deletedAtTime;
                 channel.metadata = [channel getMetaDataDictionary:dbChannel.metadata];
+                channel.platformSource = dbChannel.platformSource;
                 channel.userCount = dbChannel.userCount;
                 channel.category = dbChannel.category;
                 [alChannels addObject:channel];
@@ -708,6 +712,36 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             ALSLog(ALLoggerSeverityError, @"Channel not found in database to update metadata with channelKey : %@", channelKey);
         }
     }
+}
+
+- (void)updatePlatformSource:(NSNumber *)channelKey
+              platformSource:(NSString *)newPlatformSource {
+    
+    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    NSEntityDescription *channelEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CHANNEL"];
+    
+    if (channelEntity) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"channelKey = %@",channelKey];
+        [fetchRequest setEntity:channelEntity];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError *fetchError = nil;
+        NSArray *result = [alDBHandler executeFetchRequest:fetchRequest withError:&fetchError];
+        
+        if (result.count) {
+            DB_CHANNEL *dbChannel = [result objectAtIndex:0];
+            if (newPlatformSource != nil) {
+                dbChannel.platformSource = newPlatformSource;
+            }
+            
+            [alDBHandler saveContext];
+        } else {
+            ALSLog(ALLoggerSeverityError, @"Channel not found in database to update platformSource with channelKey : %@", channelKey);
+        }
+    }
+    
 }
 
 - (void)updateChannelParentKey:(NSNumber *)channelKey
@@ -949,6 +983,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     alChannel.channelImageURL = dbChannel.channelImageURL;
     alChannel.deletedAtTime = dbChannel.deletedAtTime;
     alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
+    alChannel.platformSource = dbChannel.platformSource;
     alChannel.userCount = dbChannel.userCount;
     alChannel.category = dbChannel.category;
     return alChannel;
@@ -987,6 +1022,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
                 alChannel.channelImageURL = dbChannel.channelImageURL;
                 alChannel.deletedAtTime = dbChannel.deletedAtTime;
                 alChannel.metadata = [alChannel getMetaDataDictionary:dbChannel.metadata];
+                alChannel.platformSource = dbChannel.platformSource;
                 alChannel.userCount = dbChannel.userCount;
                 alChannel.category = dbChannel.category;
                 [childArray addObject:alChannel];

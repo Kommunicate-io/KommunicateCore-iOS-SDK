@@ -54,6 +54,8 @@
 
 - (void)updateChannelMetaData:(NSNumber *)channelKey metaData:(NSMutableDictionary *)newMetaData;
 
+- (void)updatePlatformSource:(NSNumber *)channelKey platformSource:(NSString *)newPlatformSource;
+
 - (NSMutableArray *)getListOfAllUsersInChannel:(NSNumber *)key;
 //New Added...
 - (NSUInteger)markConversationAsRead:(NSNumber*)channelKey;

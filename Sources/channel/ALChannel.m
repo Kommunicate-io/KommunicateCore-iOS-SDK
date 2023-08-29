@@ -39,6 +39,8 @@
     self.type = [self getShortFromJsonValue:messageJson[@"type"]];
     
     self.metadata = [[NSMutableDictionary alloc] initWithDictionary:[messageJson objectForKey:@"metadata"]];
+    
+    self.platformSource = [self getStringFromJsonValue:messageJson[@"metadata"][@"source"]];
 
     self.childKeys = [[NSMutableArray alloc] initWithArray:[messageJson objectForKey:@"childKeys"]];
     
