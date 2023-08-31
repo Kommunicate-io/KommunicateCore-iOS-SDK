@@ -40,6 +40,18 @@
     }
 }
 
++ (void)setDeviceDefaultLanguage:(NSString *)languageMetaData {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setObject: languageMetaData forKey:AL_LANGUAGE_METADATA];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getDeviceDefaultLanguage {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    NSString *languageMetaData = [userDefaults objectForKey:AL_LANGUAGE_METADATA];
+    return languageMetaData;
+}
+
 + (void)setNavigationRightButtonHidden:(BOOL)flagValue {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
     [userDefaults setBool:flagValue forKey:AL_LOGOUT_BUTTON_VISIBLITY];

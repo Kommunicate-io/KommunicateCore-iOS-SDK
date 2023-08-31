@@ -22,6 +22,7 @@ static NSString *const AL_LAST_SYNC_TIME = @"com.applozic.userdefault.LAST_SYNC_
 static NSString *const AL_CONVERSATION_DB_SYNCED = @"com.applozic.userdefault.CONVERSATION_DB_SYNCED";
 static NSString *const AL_LOGOUT_BUTTON_VISIBLITY = @"com.applozic.userdefault.LOGOUT_BUTTON_VISIBLITY";
 static NSString *const AL_BOTTOM_TAB_BAR_VISIBLITY = @"com.applozic.userdefault.BOTTOM_TAB_BAR_VISIBLITY";
+static NSString *const AL_LANGUAGE_METADATA = @"com.applozic.userdefault.AL_LANGUAGE_METADATA";
 static NSString *const AL_BACK_BTN_VISIBILITY_ON_CON_LIST = @"com.applozic.userdefault.BACK_BTN_VISIBILITY_ON_CON_LIST";
 static NSString *const AL_CONVERSATION_CONTACT_IMAGE_VISIBILITY = @"com.applozic.userdefault.CONVERSATION_CONTACT_IMAGE_VISIBILITY";
 static NSString *const AL_MSG_LIST_CALL_SUFIX = @"com.applozic.userdefault.MSG_CALL_MADE:";
@@ -84,6 +85,9 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 + (void)setBottomTabBarHidden:(BOOL)visibleStatus;
 
 + (BOOL)isBottomTabBarHidden;
+
++ (void) setDeviceDefaultLanguage : (NSString *) languageCode;
++ (NSString *) getDeviceDefaultLanguage;
 
 + (void)setNavigationRightButtonHidden:(BOOL)flagValue;
 + (BOOL)isNavigationRightButtonHidden;
