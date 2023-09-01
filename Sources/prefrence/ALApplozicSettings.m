@@ -1998,7 +1998,11 @@
 
 + (NSString *)getDefaultOverrideuploadUrl {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    return [userDefaults valueForKey:KM_DEFAULT_UPLOAD_URL];
+    NSString *url = [userDefaults valueForKey:KM_DEFAULT_UPLOAD_URL];
+    if (url) {
+        return url;
+    }
+    return @"";
 }
 
 + (void)setDefaultOverrideuploadHeaders:(NSMutableDictionary *)headers {
