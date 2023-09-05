@@ -40,16 +40,16 @@
     }
 }
 
-+ (void)setDeviceDefaultLanguage:(NSString *)languageMetaData {
++ (void)setDeviceDefaultLanguage:(NSString *)languageCode {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
-    [userDefaults setObject: languageMetaData forKey:AL_LANGUAGE_METADATA];
+    [userDefaults setObject: languageCode forKey:AL_DEVICE_DEFAULT_LANGUAGE];
     [userDefaults synchronize];
 }
 
 + (NSString *)getDeviceDefaultLanguage {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
-    NSString *languageMetaData = [userDefaults objectForKey:AL_LANGUAGE_METADATA];
-    return languageMetaData;
+    NSString *languageCode = [userDefaults objectForKey:AL_DEVICE_DEFAULT_LANGUAGE];
+    return languageCode;
 }
 
 + (void)setNavigationRightButtonHidden:(BOOL)flagValue {
