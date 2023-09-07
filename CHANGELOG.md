@@ -2,6 +2,11 @@
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 
+## [1.1.2] 2023-09-07
+- Passed kmUserLocale in groupMetadata and messageMetaData.
+- Added platoformSource in db.
+- Upgraded minimum SDK version to 13.
+- Fixed Agent App attachment sent issue  
 ## [1.1.1] 2023-08-08
 - Added platform property and default value for platform to be iOS.
 ## [1.1.0] 2023-05-25
