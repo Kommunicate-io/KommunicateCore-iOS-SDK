@@ -120,6 +120,10 @@ static NSString * const AL_TRUE = @"true";
 
     //status
     self.status = [self getNSNumberFromJsonValue:messageJson[@"status"]];
+    
+    // placeholder data for auto suggestion
+        
+    self.autoSuggestionData = [self getStringFromJsonValue:messageJson[@"metadata"][AUTO_SUGGESTION_TYPE_MESSAGE]];
 
     // file meta info
 
@@ -193,6 +197,10 @@ static NSString * const AL_TRUE = @"true";
 
     //TODO:check for SD card
     return (self.fileMeta && !self.imageFilePath);
+}
+
+- (BOOL)isAutoSuggestion {
+    return [_metadata valueForKey:AUTO_SUGGESTION_TYPE_MESSAGE];
 }
 
 - (BOOL)isUploadRequire {
