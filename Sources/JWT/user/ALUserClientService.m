@@ -420,12 +420,14 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
              email:(NSString *)email
             ofUser:(NSString *)userId
     withCompletion:(void (^)(id, NSError *))completion {
+    NSString *forEmailUpdation = @"?elasticUpdate=true&allowEmail=true";
     NSString *userUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/user/update", KBASE_URL];
     NSMutableDictionary *userUpdateDictionary = [NSMutableDictionary new];
     if (phoneNumber) {
         [userUpdateDictionary setObject:phoneNumber forKey:@"phoneNumber"];
     }
     if (email) {
+        userUpdateURLString = [userUpdateURLString stringByAppendingString:forEmailUpdation];
         [userUpdateDictionary setObject:email forKey:@"email"];
     }
     

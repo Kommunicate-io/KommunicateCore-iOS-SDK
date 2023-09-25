@@ -3,6 +3,7 @@
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 
 ## Unreleased
+- Added elastic update for email updation in IOS SDK
 - Added Support For Auto Suggestions Rich Message
 ## [1.1.2] 2023-09-07
 - Passed kmUserLocale in groupMetadata and messageMetaData
