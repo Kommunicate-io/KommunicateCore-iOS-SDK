@@ -33,6 +33,7 @@ static NSString *const AL_MESSAGE_REPLY_KEY = @"AL_REPLY";
 static NSString *const AL_OUT_BOX = @"5";
 static NSString *const AL_IN_BOX = @"4";
 static NSString * const AL_RESET_UNREAD_COUNT = @"AL_RESET_UNREAD_COUNT";
+static NSString *const AUTO_SUGGESTION_TYPE_MESSAGE = @"KM_AUTO_SUGGESTION";
 
 typedef enum {
     AL_NOT_A_REPLY,
@@ -105,6 +106,8 @@ typedef enum {
 
 @property (nonatomic, assign) BOOL msgHidden;
 
+@property (nonatomic, copy) NSString *autoSuggestionData;
+
 - (NSString *)getCreatedAtTime:(BOOL)today;
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 - (BOOL)isDownloadRequired;
@@ -141,4 +144,5 @@ typedef enum {
 - (void)setAsDeletedForAll;
 - (NSMutableDictionary *)combineMetadata:(NSMutableDictionary *)messageMetadata;
 - (BOOL) isAssignmentMessage;
+- (BOOL) isAutoSuggestion;
 @end
