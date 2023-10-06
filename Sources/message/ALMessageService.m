@@ -182,6 +182,8 @@ static ALMessageClientService *alMsgClientService;
             completion(nil, error, nil);
             return;
         }
+        
+        [ALUserDefaultsHandler setShowLoadEarlierOption:(messages.count == 50) forContactId: chatId];
 
         [alContactDBService addUserDetails:userDetailArray];
 
@@ -242,8 +244,9 @@ static ALMessageClientService *alMsgClientService;
                         channelKey:(NSNumber *)channelKey
                     conversationId:(NSNumber *)conversationId
                         startIndex:(NSInteger)startIndex
+                         startTime:(NSNumber *)startTime
                     withCompletion:(void (^)(NSMutableArray *))completion {
-    int rp = 200;
+    int rp = 50;
 
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
     NSFetchRequest *dbMessageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
@@ -259,7 +262,13 @@ static ALMessageClientService *alMsgClientService;
 
     NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
     NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
-    NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2,predicate3]];
+    NSPredicate *compoundPredicate;
+    if(startTime != nil){
+        NSPredicate *predicate4 = [NSPredicate predicateWithFormat:@"createdAt < %lld", [startTime longLongValue]];
+        compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2,predicate3,predicate4]];
+    } else {
+        compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate1,predicate2,predicate3]];
+    }
     [dbMessageFetchRequest setPredicate:compoundPredicate];
     [dbMessageFetchRequest setFetchOffset:startIndex];
     [dbMessageFetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
