@@ -47,6 +47,7 @@ static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNoti
                         channelKey:(NSNumber *)channelKey
                     conversationId:(NSNumber *)conversationId
                         startIndex:(NSInteger)startIndex
+                         startTime:(NSNumber *)startTime
                     withCompletion:(void (^)(NSMutableArray *))completion;
 
 /// This method is used for sending a text message one to one or group conversation.
