@@ -2016,4 +2016,15 @@
     return [userDefaults valueForKey:KM_DEFAULT_UPLOAD_HEADERS];
 }
 
++ (void)setIsSingleThreadedEnabled:(BOOL)flag {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setBool:flag forKey:KM_IS_SINGLE_THREADED];
+    [userDefaults synchronize];
+}
+
++ (BOOL)getIsSingleThreadedEnabled {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults boolForKey:KM_IS_SINGLE_THREADED];
+}
+
 @end

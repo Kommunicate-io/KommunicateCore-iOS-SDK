@@ -167,6 +167,7 @@ static NSString *const KM_ZENDESK_LAST_SYNC_TIME = @"com.applozic.userdefault.KM
 static NSString *const KM_SELECTED_LANGUAGE_FOR_SPEECH_TO_TEXT = @"KM_SELECTED_LANGUAGE_FOR_SPEECH_TO_TEXT";
 static NSString *const KM_DEFAULT_UPLOAD_URL = @"KM_DEFAULT_UPLOAD_URL";
 static NSString *const KM_DEFAULT_UPLOAD_HEADERS = @"KM_DEFAULT_UPLOAD_HEADERS";
+static NSString *const KM_IS_SINGLE_THREADED =  @"KM_IS_SINGLE_THREADED";
 
 @interface ALApplozicSettings : NSObject
 
@@ -668,4 +669,8 @@ static NSString *const KM_DEFAULT_UPLOAD_HEADERS = @"KM_DEFAULT_UPLOAD_HEADERS";
 
 + (void) setDefaultOverrideuploadHeaders: (NSMutableDictionary *) headers;
 + (NSMutableDictionary *) getDefaultOverrideuploadHeaders;
+
++ (void) setIsSingleThreadedEnabled: (BOOL) flag;
++ (BOOL) getIsSingleThreadedEnabled;
+
 @end
