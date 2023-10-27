@@ -1,7 +1,8 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
-
+##[1.1.5] 2023-10-27
+- Upgraded appsetttings api & optimised the create conversation flow
 ## [1.1.4] 2023-10-18
 - Fixed all messages are not loading in conversation screen.
 ## [1.1.3] 2023-09-26
