@@ -210,8 +210,8 @@ static NSString * const AL_TRUE = @"true";
 
 - (BOOL)isHiddenMessage {
     return ((self.contentType == ALMESSAGE_CONTENT_HIDDEN) || [self isVOIPNotificationMessage]
-            || [self isPushNotificationMessage] || ( [self isMessageCategoryHidden] && self.contentType != 0 )
-            || self.getReplyType== AL_REPLY_BUT_HIDDEN || self.isMsgHidden);
+                || [self isPushNotificationMessage] || [self isMessageCategoryHidden]
+                || self.getReplyType== AL_REPLY_BUT_HIDDEN || self.isMsgHidden);
 }
 
 - (BOOL)isVOIPNotificationMessage {
@@ -328,6 +328,11 @@ static NSString * const AL_TRUE = @"true";
 }
 
 - (BOOL)isMessageCategoryHidden {
+    
+    if ([ALApplozicSettings isAgentAppConfigurationEnabled]) {
+        return false;
+    }
+    
     return (self.metadata && [self.metadata valueForKey:@"category"] &&
             [[self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_HIDDEN]);
 }
