@@ -328,6 +328,11 @@ static NSString * const AL_TRUE = @"true";
 }
 
 - (BOOL)isMessageCategoryHidden {
+    
+    if ([ALApplozicSettings isAgentAppConfigurationEnabled]) {
+        return false;
+    }
+    
     return (self.metadata && [self.metadata valueForKey:@"category"] &&
             [[self.metadata valueForKey:@"category"] isEqualToString:AL_CATEGORY_HIDDEN]);
 }
