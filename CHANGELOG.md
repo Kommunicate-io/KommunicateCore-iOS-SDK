@@ -2,7 +2,8 @@
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 ## [1.1.6] 2023-12-23
-- Added fetaure to trigger intents using quick reply
+- Changed UI for typing indicator in iOS SDK
+- Added feature to trigger intents using quick reply
 ## [1.1.5] 2023-10-27
 - Upgraded appsetttings api & optimised the create conversation flow
 ## [1.1.4] 2023-10-18
