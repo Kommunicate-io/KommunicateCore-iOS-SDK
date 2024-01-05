@@ -1,5 +1,5 @@
 PODS:
-  - KommunicateCore-iOS-SDK (1.1.6)
+  - KommunicateCore-iOS-SDK (1.1.7)
 
 DEPENDENCIES:
   - KommunicateCore-iOS-SDK (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  KommunicateCore-iOS-SDK: 544bb6f935d4b66576e179c0f9fe932b15bb81c9
+  KommunicateCore-iOS-SDK: 23cfb68acf81d2e69949434867da1124274f328b
 
 PODFILE CHECKSUM: 7027d57d0977da2f7eeddd9ce9eb5c4b46250a39
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.13.0
