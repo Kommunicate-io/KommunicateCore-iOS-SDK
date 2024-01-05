@@ -304,6 +304,10 @@ static NSString * const AL_TRUE = @"true";
 
 - (BOOL)isMsgHidden {
     
+    if (self.isAssignmentMessage && self.message == nil) {
+        return true;
+    }
+    
     if (self.message && ([self.metadata objectForKey:@"KM_ASSIGN_TO"] != nil || [self.metadata objectForKey:@"KM_ASSIGN_TEAM"] != nil)) {
         return false;
     }
