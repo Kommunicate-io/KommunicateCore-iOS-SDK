@@ -25,6 +25,7 @@ NSString *const AL_Updated_Group_Members = @"Updated_Group_Members";
 NSString *const AL_MESSAGE_LIST = @"AL_MESSAGE_LIST";
 NSString *const AL_MESSAGE_SYNC = @"AL_MESSAGE_SYNC";
 NSString *const AL_CHANNEL_MEMBER_CALL_COMPLETED = @"AL_CHANNEL_MEMBER_CALL_COMPLETED";
+NSNumber *syncCallTriggerTime = 0L;
 
 dispatch_queue_t channelUserbackgroundQueue;
 
@@ -732,7 +733,12 @@ dispatch_queue_t channelUserbackgroundQueue;
 - (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate {
 
     NSNumber *updateAtTime = [ALUserDefaultsHandler getLastSyncChannelTime];
-
+    
+    if ((syncCallTriggerTime != nil || syncCallTriggerTime != 0L) && syncCallTriggerTime == updateAtTime) {
+        return;
+    }
+    
+    syncCallTriggerTime = updateAtTime;
     [self.channelClientService syncCallForChannel:updateAtTime withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
         if (!error) {
             [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
