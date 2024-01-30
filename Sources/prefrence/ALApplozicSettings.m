@@ -2027,4 +2027,15 @@
     return [userDefaults boolForKey:KM_IS_SINGLE_THREADED];
 }
 
++ (void)setIsChatTranscriptSent:(NSString*)groupId {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    [userDefaults setBool:true forKey:groupId];
+    [userDefaults synchronize];
+}
+
++ (BOOL)isChatTranscriptSent:(NSString*)groupId {
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
+    return [userDefaults boolForKey:groupId];
+}
+
 @end

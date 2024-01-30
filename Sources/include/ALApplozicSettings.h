@@ -673,4 +673,7 @@ static NSString *const KM_IS_SINGLE_THREADED =  @"KM_IS_SINGLE_THREADED";
 + (void) setIsSingleThreadedEnabled: (BOOL) flag;
 + (BOOL) getIsSingleThreadedEnabled;
 
++ (void) setIsChatTranscriptSent:(NSString*)groupId;
++ (BOOL) isChatTranscriptSent:(NSString*)groupId;
+
 @end
