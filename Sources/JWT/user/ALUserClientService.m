@@ -377,7 +377,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                      metadata:(NSMutableDictionary *)metadata
                withCompletion:(void (^)(id theJson, NSError * error))completionHandler {
     
-    NSString *userUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/user/update",KBASE_URL];
+    NSString *userUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/user/update?elasticUpdate=true",KBASE_URL];
     
     NSMutableDictionary *userUpdateDictionary = [NSMutableDictionary new];
     if (displayName) {
@@ -420,8 +420,8 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
              email:(NSString *)email
             ofUser:(NSString *)userId
     withCompletion:(void (^)(id, NSError *))completion {
-    NSString *forEmailUpdation = @"?elasticUpdate=true&allowEmail=true";
-    NSString *userUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/user/update", KBASE_URL];
+    NSString *forEmailUpdation = @"&allowEmail=true";
+    NSString *userUpdateURLString = [NSString stringWithFormat:@"%@/rest/ws/user/update?elasticUpdate=true", KBASE_URL];
     NSMutableDictionary *userUpdateDictionary = [NSMutableDictionary new];
     if (phoneNumber) {
         [userUpdateDictionary setObject:phoneNumber forKey:@"phoneNumber"];

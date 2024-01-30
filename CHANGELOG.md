@@ -3,6 +3,8 @@
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 ## Unreleased
 - Zendesk (Zopim) integration optimisations
+## [1.1.7] 2024-01-05
+- Updated the User Update Api
 ## [1.1.6] 2023-12-23
 - Changed UI for typing indicator in iOS SDK
 - Added feature to trigger intents using quick reply
