@@ -2,6 +2,9 @@
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
 
+## [1.1.8] 2024-02-12
+- Zendesk (Zopim) integration optimisations
+- Sync Api optimization
 ## [1.1.7] 2024-01-05
 - Updated the User Update Api
 ## [1.1.6] 2023-12-23
