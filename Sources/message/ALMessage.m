@@ -16,6 +16,7 @@
 
 static NSString * const AL_DELETE_MESSAGE_FOR_KEY = @"AL_DELETE_GROUP_MESSAGE_FOR_ALL";
 static NSString * const AL_TRUE = @"true";
+static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
 
 @implementation ALMessage
 
@@ -408,6 +409,12 @@ static NSString * const AL_TRUE = @"true";
     return self.metadata &&
     [self.metadata valueForKey:AL_DELETE_MESSAGE_FOR_KEY] &&
     [[self.metadata valueForKey:AL_DELETE_MESSAGE_FOR_KEY] isEqualToString:AL_TRUE];
+}
+
+- (BOOL) isConversationDeleted {
+    return self.metadata &&
+    [self.metadata valueForKey:@"action"] &&
+    [[self.metadata valueForKey: @"action"] isEqualToString: AL_CONVERSATION_DELETE_ACTION];
 }
 
 - (instancetype)initWithBuilder:(ALMessageBuilder *)builder {

@@ -135,6 +135,7 @@ typedef enum {
 - (BOOL)isSilentNotification;
 - (BOOL)isDeletedForAll;
 - (BOOL)isMessageSentToServer;
+- (BOOL)isConversationDeleted;
 
 - (instancetype)initWithBuilder:(ALMessageBuilder *)builder;
 + (instancetype)build:(void (^)(ALMessageBuilder *))builder;

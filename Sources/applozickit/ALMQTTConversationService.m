@@ -308,11 +308,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
             ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:[theMessageDict objectForKey:@"message"]];
 
-            if ([alMessage isHiddenMessage]) {
-                ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");
-                [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
-                                           withCompletion:^(NSMutableArray *message, NSError *error) { }];
-            } else {
+//            if ([alMessage isHiddenMessage]) {
+//                ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");
+//                [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
+//                                           withCompletion:^(NSMutableArray *message, NSError *error) { }];
+//            } else {
                 NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
                 [notificationDictionary setObject:[alMessage getLastMessage] forKey:@"alertValue"];
                 [notificationDictionary setObject:[NSNumber numberWithInt:APP_STATE_ACTIVE] forKey:@"updateUI"];
@@ -336,13 +336,16 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                                 [self.mqttConversationDelegate syncCall:alMessage andMessageList:nil];
                             }
                         } else {
+                            if (alMessage.isConversationDeleted) {
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"CONVERSATION_DELETED" object:alMessage];
+                            }
                             [self syncReceivedMessage: alMessage withNSMutableDictionary:notificationDictionary];
                         }
                     }];
                 } else {
                     [self syncReceivedMessage: alMessage withNSMutableDictionary:notificationDictionary];
                 }
-            }
+//            }
         } else if ([type isEqualToString:@"MESSAGE_SENT"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_SENT)]]) {
             NSDictionary *message = [theMessageDict objectForKey:@"message"];
             ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:message];
