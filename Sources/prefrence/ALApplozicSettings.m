@@ -74,64 +74,86 @@
 
 + (void)setColorForSendMessages:(UIColor *)sendMsgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *sendColorData = [NSKeyedArchiver archivedDataWithRootObject:sendMsgColor];
-    [userDefaults setObject:sendColorData forKey:AL_SEND_MSG_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *sendColorData = [NSKeyedArchiver archivedDataWithRootObject:sendMsgColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:sendColorData forKey:AL_SEND_MSG_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving send message color: %@", error);
+    }
 }
 
 + (void)setColorForReceiveMessages:(UIColor *)receiveMsgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:receiveMsgColor];
-    [userDefaults setObject:receiveColorData forKey:AL_RECEIVE_MSG_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:receiveMsgColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:receiveColorData forKey:AL_RECEIVE_MSG_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving send message color: %@", error);
+    }
 }
 
 + (UIColor *)getSendMsgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *sendColorData = [userDefaults objectForKey:AL_SEND_MSG_COLOUR];
-    UIColor *sendColor = [NSKeyedUnarchiver unarchiveObjectWithData:sendColorData];
-    if (sendColor) {
-        return sendColor;
-    }
+    NSError *error;
+    UIColor *sendColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:sendColorData error:&error];
+    if (sendColor && !error) { return sendColor; }
     return [UIColor whiteColor];
 }
 
 + (UIColor *)getReceiveMsgColor {
-    NSUserDefaults *userDefaults  = [ALApplozicSettings getUserDefaults];
+    NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *receiveColorData = [userDefaults objectForKey:AL_RECEIVE_MSG_COLOUR];
-    UIColor *receiveColor = [NSKeyedUnarchiver unarchiveObjectWithData:receiveColorData];
-    if (receiveColor) {
-        return receiveColor;
-    }
+    NSError *error;
+    UIColor *receiveColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:receiveColorData error:&error];
+    if (receiveColor && !error) { return receiveColor; }
     return [UIColor whiteColor];
 }
 
 + (void)setColorForNavigation:(UIColor *)barColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *barColorData = [NSKeyedArchiver archivedDataWithRootObject:barColor];
-    [userDefaults setObject:barColorData forKey:AL_NAVIGATION_BAR_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *barColorData = [NSKeyedArchiver archivedDataWithRootObject:barColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:barColorData forKey:AL_NAVIGATION_BAR_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving naviagtion message color: %@", error);
+    }
 }
 
 + (UIColor *)getColorForNavigation {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *barColorData = [userDefaults objectForKey:AL_NAVIGATION_BAR_COLOUR];
-    UIColor *barColor = [NSKeyedUnarchiver unarchiveObjectWithData:barColorData];
-    return barColor;
+    NSError *error;
+    UIColor *barColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:barColorData error:&error];
+    if (barColor && !error) { return barColor; }
+    return [UIColor whiteColor];
 }
 
 + (void)setColorForNavigationItem:(UIColor *)barItemColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *barItemColorData = [NSKeyedArchiver archivedDataWithRootObject:barItemColor];
-    [userDefaults setObject:barItemColorData forKey:AL_NAVIGATION_BAR_ITEM_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *barItemColorData = [NSKeyedArchiver archivedDataWithRootObject:barItemColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:barItemColorData forKey:AL_NAVIGATION_BAR_ITEM_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving navigation bar item color: %@", error);
+    }
 }
 
 + (UIColor *)getColorForNavigationItem {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *barItemColourData = [userDefaults objectForKey:AL_NAVIGATION_BAR_ITEM_COLOUR];
-    UIColor *barItemColour = [NSKeyedUnarchiver unarchiveObjectWithData:barItemColourData];
-    return barItemColour ? barItemColour : [UIColor whiteColor];
+    NSError *error;
+    UIColor *barItemColour = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:barItemColourData error:&error];
+    if (barItemColour && !error) { return barItemColour; }
+    return [UIColor whiteColor];
 }
 
 + (void)hideRefreshButton:(BOOL)state {
@@ -261,35 +283,48 @@
 
 + (void)setCustomMessageBackgroundColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-
-    NSData *recievedCustomBackgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setValue:recievedCustomBackgroundColorData
-                    forKey:AL_CUSTOM_MSG_BACKGROUND_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *recievedCustomBackgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setValue:recievedCustomBackgroundColorData
+                        forKey:AL_CUSTOM_MSG_BACKGROUND_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving custom message background color: %@", error);
+    }
 }
 
 + (UIColor *)getCustomMessageBackgroundColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *customMessageBackGroundColorData = [userDefaults
                                                 objectForKey:AL_CUSTOM_MSG_BACKGROUND_COLOR];
-    UIColor *customMessageBackGroundColor = [NSKeyedUnarchiver unarchiveObjectWithData:customMessageBackGroundColorData];
-    return customMessageBackGroundColor;
+    NSError *error;
+    UIColor *customMessageBackGroundColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:customMessageBackGroundColorData error:&error];
+    if (customMessageBackGroundColor && !error) { return customMessageBackGroundColor; }
+    return [UIColor whiteColor];
 }
 
 + (void)setCustomMessageTextColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-
-    NSData *recievedCustomBackgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setValue:recievedCustomBackgroundColorData
-                    forKey:AL_CUSTOM_MSG_TEXT_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *recievedCustomBackgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setValue:recievedCustomBackgroundColorData
+                        forKey:AL_CUSTOM_MSG_TEXT_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving custom message text color: %@", error);
+    }
 }
+
 + (UIColor *)getCustomMessageTextColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *customMessageBackGroundColorData = [userDefaults
                                                 objectForKey:AL_CUSTOM_MSG_TEXT_COLOR];
-    UIColor *customMessageBackGroundColor = [NSKeyedUnarchiver unarchiveObjectWithData:customMessageBackGroundColorData];
-    return customMessageBackGroundColor;
+    NSError *error;
+    UIColor *customMessageBackGroundColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:customMessageBackGroundColorData error:&error];
+    if (customMessageBackGroundColor && !error) { return customMessageBackGroundColor; }
+    return [UIColor whiteColor];
 }
 
 + (void)setGroupExitOption:(BOOL)option {
@@ -404,72 +439,107 @@
 
 + (void)setColorForSendButton:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_SEND_BUTTON_BG_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_SEND_BUTTON_BG_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving send button color: %@", error);
+    }
 }
 
 + (UIColor *)getColorForSendButton {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_SEND_BUTTON_BG_COLOR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color;
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return [UIColor whiteColor];
 }
 
 + (void)setColorForTypeMsgBackground:(UIColor *)viewColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *viewColorData = [NSKeyedArchiver archivedDataWithRootObject:viewColor];
-    [userDefaults setObject:viewColorData forKey:AL_TYPE_MSG_BG_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *viewColorData = [NSKeyedArchiver archivedDataWithRootObject:viewColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:viewColorData forKey:AL_TYPE_MSG_BG_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving type message background color: %@", error);
+    }
 }
 
 + (UIColor *)getColorForTypeMsgBackground {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *viewColorData = [userDefaults objectForKey:AL_TYPE_MSG_BG_COLOR];
-    UIColor *viewColor = [NSKeyedUnarchiver unarchiveObjectWithData:viewColorData];
-    return viewColor ? viewColor : [UIColor lightGrayColor];
+    NSError *error;
+    UIColor *viewColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:viewColorData error:&error];
+    if (viewColor && !error) { return viewColor; }
+    return [UIColor lightGrayColor];
 }
 
 + (void)setBGColorForTypingLabel:(UIColor *)bgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *bgColorData = [NSKeyedArchiver archivedDataWithRootObject:bgColor];
-    [userDefaults setObject:bgColorData forKey:AL_TYPING_LABEL_BG_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *bgColorData = [NSKeyedArchiver archivedDataWithRootObject:bgColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:bgColorData forKey:AL_TYPING_LABEL_BG_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving typing label background color: %@", error);
+    }
 }
 
 + (UIColor *)getBGColorForTypingLabel {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *bgColorData = [userDefaults objectForKey:AL_TYPING_LABEL_BG_COLOR];
-    UIColor *bgColor = [NSKeyedUnarchiver unarchiveObjectWithData:bgColorData];
-    return bgColor ? bgColor : [UIColor colorWithRed:242/255.0 green:242/255.0  blue:242/255.0 alpha:1];
+    NSError *error;
+    UIColor *bgColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:bgColorData error:&error];
+    if (bgColor && !error) { return bgColor; }
+    return [UIColor colorWithRed:242/255.0 green:242/255.0 blue:242/255.0 alpha:1];
 }
 
 + (void)setTextColorForTypingLabel:(UIColor *)txtColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *txtColorData = [NSKeyedArchiver archivedDataWithRootObject:txtColor];
-    [userDefaults setObject:txtColorData forKey:AL_TYPING_LABEL_TEXT_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *txtColorData = [NSKeyedArchiver archivedDataWithRootObject:txtColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:txtColorData forKey:AL_TYPING_LABEL_TEXT_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving typing label text color: %@", error);
+    }
 }
 
 + (UIColor *)getTextColorForTypingLabel {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *txtColorData = [userDefaults objectForKey:AL_TYPING_LABEL_TEXT_COLOR];
-    UIColor *txtColor = [NSKeyedUnarchiver unarchiveObjectWithData:txtColorData];
-    return txtColor ? txtColor : [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:0.5];
+    NSError *error;
+    UIColor *txtColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:txtColorData error:&error];
+    if (txtColor && !error) { return txtColor; }
+    return [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:0.5];
 }
 
 + (void)setTextColorForMessageTextView:(UIColor *)txtColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *txtColorData = [NSKeyedArchiver archivedDataWithRootObject:txtColor];
-    [userDefaults setObject:txtColorData forKey:AL_MESSAGE_TEXT_VIEW_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *txtColorData = [NSKeyedArchiver archivedDataWithRootObject:txtColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:txtColorData forKey:AL_MESSAGE_TEXT_VIEW_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving message text view color: %@", error);
+    }
 }
 
 + (UIColor *)getTextColorForMessageTextView {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *txtColorData = [userDefaults objectForKey:AL_MESSAGE_TEXT_VIEW_COLOR];
-    UIColor *txtColor = [NSKeyedUnarchiver unarchiveObjectWithData:txtColorData];
-    return txtColor ? txtColor : [UIColor blackColor];
+    NSError *error;
+    UIColor *txtColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:txtColorData error:&error];
+    if (txtColor && !error) { return txtColor; }
+    return [UIColor blackColor];
 }
 
 
@@ -531,114 +601,170 @@
 
 + (void)setColorForToastBackground:(UIColor *)toastBGColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *toastBGData = [NSKeyedArchiver archivedDataWithRootObject:toastBGColor];
-    [userDefaults setObject:toastBGData forKey:AL_TOAST_BG_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *toastBGData = [NSKeyedArchiver archivedDataWithRootObject:toastBGColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:toastBGData forKey:AL_TOAST_BG_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving toast background color: %@", error);
+    }
 }
 
 + (UIColor *)getColorForToastBackground {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *toastBGData = [userDefaults objectForKey:AL_TOAST_BG_COLOUR];
-    UIColor *toastBGColor = [NSKeyedUnarchiver unarchiveObjectWithData:toastBGData];
-    return toastBGColor ? toastBGColor : [UIColor grayColor];
+    NSError *error;
+    UIColor *toastBGColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:toastBGData error:&error];
+    if (toastBGColor && !error) { return toastBGColor; }
+    return [UIColor grayColor];
 }
 
 + (void)setColorForToastText:(UIColor *)toastTextColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *toastTextData = [NSKeyedArchiver archivedDataWithRootObject:toastTextColor];
-    [userDefaults setObject:toastTextData forKey:AL_TOAST_TEXT_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *toastTextData = [NSKeyedArchiver archivedDataWithRootObject:toastTextColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:toastTextData forKey:AL_TOAST_TEXT_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving toast text color: %@", error);
+    }
 }
 
 + (UIColor *)getColorForToastText {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *toastTextData = [userDefaults objectForKey:AL_TOAST_TEXT_COLOUR];
-    UIColor *toastTextColor = [NSKeyedUnarchiver unarchiveObjectWithData:toastTextData];
-    return toastTextColor ? toastTextColor : [UIColor blackColor];
+    NSError *error;
+    UIColor *toastTextColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:toastTextData error:&error];
+    if (toastTextColor && !error) { return toastTextColor; }
+    return [UIColor blackColor];
 }
 
 + (void)setSendMsgTextColor:(UIColor *)sendMsgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *sendColorData = [NSKeyedArchiver archivedDataWithRootObject:sendMsgColor];
-    [userDefaults setObject:sendColorData forKey:AL_SEND_MSG_TEXT_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *sendColorData = [NSKeyedArchiver archivedDataWithRootObject:sendMsgColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:sendColorData forKey:AL_SEND_MSG_TEXT_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving send message text color: %@", error);
+    }
 }
 
 + (UIColor *)getSendMsgTextColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *sendColorData = [userDefaults objectForKey:AL_SEND_MSG_TEXT_COLOUR];
-    UIColor *sendColor = [NSKeyedUnarchiver unarchiveObjectWithData:sendColorData];
-    return sendColor ? sendColor : [UIColor whiteColor];
+    NSError *error;
+    UIColor *sendColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:sendColorData error:&error];
+    if (sendColor && !error) { return sendColor; }
+    return [UIColor whiteColor];
 }
 
 + (void)setReceiveMsgTextColor:(UIColor *)receiveMsgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:receiveMsgColor];
-    [userDefaults setObject:receiveColorData forKey:AL_RECEIVE_MSG_TEXT_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:receiveMsgColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:receiveColorData forKey:AL_RECEIVE_MSG_TEXT_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving receive message text color: %@", error);
+    }
 }
 
 + (UIColor *)getReceiveMsgTextColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *receiveColorData = [userDefaults objectForKey:AL_RECEIVE_MSG_TEXT_COLOUR];
-    UIColor *receiveColor = [NSKeyedUnarchiver unarchiveObjectWithData:receiveColorData];
-    return receiveColor ? receiveColor : [UIColor grayColor];
+    NSError *error;
+    UIColor *receiveColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:receiveColorData error:&error];
+    if (receiveColor && !error) { return receiveColor; }
+    return [UIColor grayColor];
 }
 
 + (void)setMsgTextViewBGColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_MSG_TEXT_BG_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_MSG_TEXT_BG_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving message text view background color: %@", error);
+    }
 }
 
 + (UIColor *)getMsgTextViewBGColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_MSG_TEXT_BG_COLOUR];
-    UIColor *bgColor = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return bgColor ? bgColor : [UIColor whiteColor];
+    NSError *error;
+    UIColor *bgColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (bgColor && !error) { return bgColor; }
+    return [UIColor whiteColor];
 }
 
 + (void)setPlaceHolderColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_PLACE_HOLDER_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_PLACE_HOLDER_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving placeholder color: %@", error);
+    }
 }
 
 + (UIColor *)getPlaceHolderColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_PLACE_HOLDER_COLOUR];
-    UIColor *bgColor = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return bgColor ? bgColor : [UIColor grayColor];
+    NSError *error;
+    UIColor *bgColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (bgColor && !error) { return bgColor; }
+    return [UIColor grayColor];
 }
 
 + (void)setUnreadCountLabelBGColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_UNREAD_COUNT_LABEL_BG_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_UNREAD_COUNT_LABEL_BG_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving unread count label background color: %@", error);
+    }
 }
 
 + (UIColor *)getUnreadCountLabelBGColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_UNREAD_COUNT_LABEL_BG_COLOUR];
-    UIColor *bgColor = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return bgColor ? bgColor : [UIColor colorWithRed:66.0/255 green:173.0/255 blue:247.0/255 alpha:1];
+    NSError *error;
+    UIColor *bgColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (bgColor && !error) { return bgColor; }
+    return [UIColor colorWithRed:66.0/255 green:173.0/255 blue:247.0/255 alpha:1];
 }
 
 + (void)setStatusBarBGColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_STATUS_BAR_BG_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_STATUS_BAR_BG_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving status bar background color: %@", error);
+    }
 }
 
 + (UIColor *)getStatusBarBGColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_STATUS_BAR_BG_COLOUR];
-    UIColor *bgColor = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return bgColor ? bgColor : [self getColorForNavigation];
+    NSError *error;
+    UIColor *bgColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (bgColor && !error) { return bgColor; }
+    return [self getColorForNavigation];
 }
 
 + (void)setStatusBarStyle:(UIStatusBarStyle)style {
@@ -691,30 +817,44 @@
 
 + (void)setDateColor:(UIColor *)dateColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:dateColor];
-    [userDefaults setObject:colorData forKey:AL_MSG_DATE_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:dateColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_MSG_DATE_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving date color: %@", error);
+    }
 }
 
 + (UIColor *)getDateColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_MSG_DATE_COLOR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:0.5];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return [UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:0.5];
 }
 
 + (void)setMsgDateColor:(UIColor *)dateColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:dateColor];
-    [userDefaults setObject:colorData forKey:AL_MSG_SEPERATE_DATE_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:dateColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_MSG_SEPERATE_DATE_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving message date color: %@", error);
+    }
 }
 
 + (UIColor *)getMsgDateColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_MSG_SEPERATE_DATE_COLOR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor blackColor];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return [UIColor blackColor];
 }
 
 + (void)setReceiverUserProfileOption:(BOOL)flag {
@@ -1273,183 +1413,289 @@
 + (UIColor *)getTabBarBackgroundColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_TABBAR_BACKGROUND_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor colorWithRed:247.0/255 green:247.0/255 blue:247.0/255 alpha:0.5];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return [UIColor colorWithRed:247.0/255 green:247.0/255 blue:247.0/255 alpha:0.5];
 }
 + (void)setTabBarBackgroundColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_TABBAR_BACKGROUND_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_TABBAR_BACKGROUND_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving tab bar background color: %@", error);
+    }
+    
 }
 + (UIColor *)getTabBarSelectedItemColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_TABBAR_SELECTED_ITEM_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor blueColor];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return  color; }
+    return [UIColor blueColor];
 }
 + (void)setTabBarSelectedItemColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_TABBAR_SELECTED_ITEM_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_TABBAR_SELECTED_ITEM_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving tab bar selected item color: %@", error);
+    }
 }
 + (UIColor *)getTabBarUnSelectedItemColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_TABBAR_UNSELECTED_ITEM_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor grayColor];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return [UIColor grayColor];
 }
 + (void)setTabBarUnSelectedItemColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_TABBAR_UNSELECTED_ITEM_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_TABBAR_UNSELECTED_ITEM_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving tab bar unselected item color: %@", error);
+    }
 }
 + (UIColor *)getAttachmentIconColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_ATTACHMENT_ITEM_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor grayColor];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (!error) { return color; }
+    return [UIColor grayColor];
 }
 + (void)setAttachmentIconColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_ATTACHMENT_ITEM_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_ATTACHMENT_ITEM_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving attachment icon color: %@", error);
+    }
 }
 + (UIColor *)getSendIconColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_SEND_ITEM_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor whiteColor];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return  color; }
+    return [UIColor whiteColor];
 }
 + (void)setSendIconColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_SEND_ITEM_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_SEND_ITEM_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving send icon color: %@", error);
+    }
 }
 + (UIColor *)getMessageSubtextColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_MESSAGE_SUBTEXT_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor colorWithRed:144.0/255 green:144.0/255 blue:144.00/255 alpha:1.0];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return [UIColor colorWithRed:144.0/255 green:144.0/255 blue:144.00/255 alpha:1.0];
 }
 + (void)setMessageSubtextColour:(UIColor *)color{
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_MESSAGE_SUBTEXT_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_MESSAGE_SUBTEXT_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving send message sub text color: %@", error);
+    }
 }
 + (UIColor *)getMessageListTextColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_MESSAGE_TEXT_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor colorWithRed:107.0/255 green:107.0/255 blue:107.0/255 alpha:1.0];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return  color; }
+    return [UIColor colorWithRed:107.0/255 green:107.0/255 blue:107.0/255 alpha:1.0];
 }
 + (void)setMessageListTextColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_MESSAGE_TEXT_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_MESSAGE_TEXT_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving message list text color: %@", error);
+    }
 }
 + (UIColor *)getProfileMainColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_PROFILE_MAIN_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor colorWithRed:0.00 green:0.48 blue:1.00 alpha:1.0];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return  color; }
+    return [UIColor colorWithRed:0.00 green:0.48 blue:1.00 alpha:1.0];
 }
 + (void)setProfileMainColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_PROFILE_MAIN_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error){
+        [userDefaults setObject:colorData forKey:AL_PROFILE_MAIN_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving profile main color: %@", error);
+    }
 }
 + (UIColor *)getProfileSubColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_PROFILE_SUB_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor colorWithRed:0.93 green:0.98 blue:1.00 alpha:1.0];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return  color; }
+    return [UIColor colorWithRed:0.93 green:0.98 blue:1.00 alpha:1.0];
 }
 + (void)setProfileSubColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_PROFILE_SUB_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_PROFILE_SUB_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving profile sub color: %@", error);
+    }
 }
 + (UIColor *)getNewContactMainColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_NEW_CONTACT_MAIN_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor colorWithRed:0.00 green:0.48 blue:1.00 alpha:1.0];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return [UIColor colorWithRed:0.00 green:0.48 blue:1.00 alpha:1.0];
 }
 + (void)setNewContactMainColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_NEW_CONTACT_MAIN_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_NEW_CONTACT_MAIN_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving new contact main color: %@", error);
+    }
 }
 + (UIColor *)getNewContactSubColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_NEW_CONTACT_SUB_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor whiteColor];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return  color; }
+    return [UIColor whiteColor];
 }
 + (void)setNewContactSubColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_NEW_CONTACT_SUB_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_NEW_CONTACT_SUB_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving new contact sub color: %@", error);
+    }
 }
 + (UIColor *)getNewContactTextColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_NEW_CONTACT_TEXT_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : nil;
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return nil;
 }
 + (void)setNewContactTextColour:(UIColor *)color{
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_NEW_CONTACT_TEXT_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_NEW_CONTACT_TEXT_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving new contact text color: %@", error);
+    }
 }
 + (UIColor *)getSearchBarTintColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_SEARCHBAR_TINT_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : nil;
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return nil;
 }
 + (void)setSearchBarTintColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_SEARCHBAR_TINT_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_SEARCHBAR_TINT_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving search bar tint color: %@", error);
+    }
 }
 + (UIColor *)getMessagesViewBackgroundColour {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_MESSAGES_VIEW_BG_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor whiteColor];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return color; }
+    return [UIColor whiteColor];
 }
 + (void)setMessagesViewBackgroundColour:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_MESSAGES_VIEW_BG_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_MESSAGES_VIEW_BG_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving message view background color: %@", error);
+    }
 }
 
 + (UIColor *)getChatViewControllerBackgroundColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *colorData = [userDefaults objectForKey:AL_CHAT_VIEW_BG_COLOUR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData:colorData];
-    return color ? color : [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1.0];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:colorData error:&error];
+    if (color && !error) { return  color; }
+    return [UIColor colorWithRed:242.0/255 green:242.0/255 blue:242.0/255 alpha:1.0];
 }
 + (void)setChatViewControllerBackgroundColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:colorData forKey:AL_CHAT_VIEW_BG_COLOUR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_CHAT_VIEW_BG_COLOUR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving chat view controller background color: %@", error);
+    }
 }
 
 + (void)showChannelMembersInfoInNavigationBar:(BOOL)flag {
@@ -1491,16 +1737,23 @@
 
 + (void)setBackgroundColorForAttachmentPlusIcon:(UIColor *)backgroundColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *backgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroundColor];
-    [userDefaults setObject:backgroundColorData forKey:AL_BACKGROUND_COLOR_FOR_ATTACHMENT_PLUS_ICON];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *backgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroundColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:backgroundColorData forKey:AL_BACKGROUND_COLOR_FOR_ATTACHMENT_PLUS_ICON];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving attachment plus icon background color: %@", error);
+    }
 }
 
 + (UIColor *)getBackgroundColorForAttachmentPlusIcon {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *backgroundColorData = [userDefaults objectForKey:AL_BACKGROUND_COLOR_FOR_ATTACHMENT_PLUS_ICON];
-    UIColor *backgroundColor = [NSKeyedUnarchiver unarchiveObjectWithData:backgroundColorData];
-    return backgroundColor;
+    NSError *error;
+    UIColor *backgroundColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:backgroundColorData error:&error];
+    if (!error) { return backgroundColor; }
+    return nil;
 }
 
 + (void)clearAll {
@@ -1554,41 +1807,62 @@
 
 + (void)setBackgroundColorForAudioRecordingView:(UIColor *)backgroundColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *backgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroundColor];
-    [userDefaults setObject:backgroundColorData forKey:AL_AUDIO_RECORDING_VIEW_BACKGROUND_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *backgroundColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroundColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:backgroundColorData forKey:AL_AUDIO_RECORDING_VIEW_BACKGROUND_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving audio recording background color: %@", error);
+    }
 }
 + (UIColor *)getBackgroundColorForAudioRecordingView {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *backgroundColorData = [userDefaults objectForKey:AL_AUDIO_RECORDING_VIEW_BACKGROUND_COLOR];
-    UIColor *backgroundColor = [NSKeyedUnarchiver unarchiveObjectWithData:backgroundColorData];
-    return backgroundColor ? backgroundColor : [UIColor lightGrayColor];
+    NSError *error;
+    UIColor *backgroundColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:backgroundColorData error:&error];
+    if (backgroundColor && !error) { return backgroundColor; }
+    return [UIColor lightGrayColor];
 }
 
 + (void)setColorForSlideToCancelText:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *textColorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:textColorData forKey:AL_SLIDE_TO_CANCEL_TEXT_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *textColorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:textColorData forKey:AL_SLIDE_TO_CANCEL_TEXT_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving slide to cancel color: %@", error);
+    }
 }
 + (UIColor *)getColorForSlideToCancelText {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *textColorData = [userDefaults objectForKey:AL_SLIDE_TO_CANCEL_TEXT_COLOR];
-    UIColor *textColor = [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
-    return textColor ? textColor : [UIColor darkGrayColor];
+    NSError *error;
+    UIColor *textColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:textColorData error:&error];
+    if (textColor && !error) { return textColor; }
+    return [UIColor darkGrayColor];
 }
 
 + (void)setColorForAudioRecordingText:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *textColorData = [NSKeyedArchiver archivedDataWithRootObject:color];
-    [userDefaults setObject:textColorData forKey:AL_AUDIO_RECORDING_TEXT_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *textColorData = [NSKeyedArchiver archivedDataWithRootObject:color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:textColorData forKey:AL_AUDIO_RECORDING_TEXT_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving audio recording text color: %@", error);
+    }
 }
 + (UIColor *)getColorForAudioRecordingText {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *textColorData = [userDefaults objectForKey:AL_AUDIO_RECORDING_TEXT_COLOR];
-    UIColor *textColor = [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
-    return textColor ? textColor : [UIColor redColor];
+    NSError *error;
+    UIColor *textColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:textColorData error:&error];
+    if (textColor && !error) { return  textColor; }
+    return [UIColor redColor];
 }
 
 + (void)setFontForAudioView:(NSString *)font {
@@ -1615,18 +1889,22 @@
 
 + (void)setBackgroundColorForReplyView:(UIColor *)backgroudColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroudColor];
-    [userDefaults setObject:receiveColorData forKey:AL_BACKGROUND_COLOR_FOR_REPLY_VIEW];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:backgroudColor requiringSecureCoding: YES error:&error];
+    if (!error) {
+        [userDefaults setObject:receiveColorData forKey:AL_BACKGROUND_COLOR_FOR_REPLY_VIEW];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving reply view background color: %@", error);
+    }
 }
 
 + (UIColor *)getBackgroundColorForReplyView {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *sendColorData = [userDefaults objectForKey:AL_BACKGROUND_COLOR_FOR_REPLY_VIEW];
-    UIColor *backgroundColor = [NSKeyedUnarchiver unarchiveObjectWithData:sendColorData];
-    if (backgroundColor) {
-        return backgroundColor;
-    }
+    NSError *error;
+    UIColor *backgroundColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:sendColorData error:&error];
+    if (backgroundColor && !error) { return backgroundColor; }
     return [UIColor grayColor];
 }
 
@@ -1651,30 +1929,44 @@
 
 + (void)setChannelActionMessageBgColor:(UIColor *)bgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *bgColorData = [NSKeyedArchiver archivedDataWithRootObject:bgColor];
-    [userDefaults setObject:bgColorData forKey:AL_CHANNEL_ACTION_MESSAGE_BG_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *bgColorData = [NSKeyedArchiver archivedDataWithRootObject:bgColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:bgColorData forKey:AL_CHANNEL_ACTION_MESSAGE_BG_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving channel action message background color: %@", error);
+    }
 }
 
 + (UIColor *)getChannelActionMessageBgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *bgColorData = [userDefaults objectForKey:AL_CHANNEL_ACTION_MESSAGE_BG_COLOR];
-    UIColor *bgColor = [NSKeyedUnarchiver unarchiveObjectWithData:bgColorData];
-    return bgColor ? bgColor : [UIColor lightGrayColor];
+    NSError *error;
+    UIColor *bgColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:bgColorData error:&error];
+    if (bgColor && !error) { return  bgColor; }
+    return [UIColor lightGrayColor];
 }
 
 + (void)setChannelActionMessageTextColor:(UIColor *)textColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *txtColorData = [NSKeyedArchiver archivedDataWithRootObject:textColor];
-    [userDefaults setObject:txtColorData forKey:AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *txtColorData = [NSKeyedArchiver archivedDataWithRootObject:textColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:txtColorData forKey:AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving channel action message text color: %@", error);
+    }
 }
 
 + (UIColor *)getChannelActionMessageTextColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *textColorData = [userDefaults objectForKey:AL_CHANNEL_ACTION_MESSAGE_TEXT_COLOR];
-    UIColor *txtColor = [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
-    return txtColor ? txtColor : [UIColor blackColor];
+    NSError *error;
+    UIColor *txtColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:textColorData error:&error];
+    if (txtColor && !error) { return txtColor; }
+    return [UIColor blackColor];
 }
 
 + (void)setUserIconFirstNameColorCodes:(NSMutableDictionary *)nsMutableDictionary {
@@ -1737,35 +2029,43 @@
 
 + (void)setColorForSentContactMsgLabel:(UIColor *)sentContactLabelMsgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *sendColorData = [NSKeyedArchiver archivedDataWithRootObject:sentContactLabelMsgColor];
-    [userDefaults setObject:sendColorData forKey:AL_SENT_CONTACT_MSG_LABEL_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *sendColorData = [NSKeyedArchiver archivedDataWithRootObject:sentContactLabelMsgColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:sendColorData forKey:AL_SENT_CONTACT_MSG_LABEL_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving sent contact message color: %@", error);
+    }
 }
 
 + (void)setColorForReceivedContactMsgLabel:(UIColor *)receivedMsgColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:receivedMsgColor];
-    [userDefaults setObject:receiveColorData forKey:AL_RECEIVED_CONTACT_MSG_LABEL_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *receiveColorData = [NSKeyedArchiver archivedDataWithRootObject:receivedMsgColor requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:receiveColorData forKey:AL_RECEIVED_CONTACT_MSG_LABEL_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving recived contact message color: %@", error);
+    }
 }
 
 + (UIColor *)getSentContactMsgLabelColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *sentColorData = [userDefaults objectForKey:AL_SENT_CONTACT_MSG_LABEL_COLOR];
-    UIColor *sentContactMsgLabelColor = [NSKeyedUnarchiver unarchiveObjectWithData:sentColorData];
-    if (sentContactMsgLabelColor) {
-        return sentContactMsgLabelColor;
-    }
+    NSError *error;
+    UIColor *sentContactMsgLabelColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:sentColorData error:&error];
+    if (sentContactMsgLabelColor && !error) { return sentContactMsgLabelColor; }
     return [UIColor whiteColor];
 }
 
 + (UIColor *)getReceivedContactMsgLabelColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *receivedColorData = [userDefaults objectForKey:AL_RECEIVED_CONTACT_MSG_LABEL_COLOR];
-    UIColor *recivedContactMsgLabelColor = [NSKeyedUnarchiver unarchiveObjectWithData:receivedColorData];
-    if (recivedContactMsgLabelColor) {
-        return recivedContactMsgLabelColor;
-    }
+    NSError *error;
+    UIColor *recivedContactMsgLabelColor = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:receivedColorData error:&error];
+    if (recivedContactMsgLabelColor && !error) { return recivedContactMsgLabelColor; }
     return [UIColor blackColor];
 }
 
@@ -1798,16 +2098,23 @@
 
 + (void)setImagePreviewBackgroundColor:(UIColor *)color {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
-    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject: color];
-    [userDefaults setObject:colorData forKey:AL_IMAGE_PREVIEW_BACKGROUND_COLOR];
-    [userDefaults synchronize];
+    NSError *error;
+    NSData *colorData = [NSKeyedArchiver archivedDataWithRootObject: color requiringSecureCoding:YES error:&error];
+    if (!error) {
+        [userDefaults setObject:colorData forKey:AL_IMAGE_PREVIEW_BACKGROUND_COLOR];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"Error archiving image preview background color: %@", error);
+    }
 }
 
 + (UIColor *)getImagePreviewBackgroundColor {
     NSUserDefaults *userDefaults = [ALApplozicSettings getUserDefaults];
     NSData *receivedColorData = [userDefaults objectForKey: AL_IMAGE_PREVIEW_BACKGROUND_COLOR];
-    UIColor *color = [NSKeyedUnarchiver unarchiveObjectWithData: receivedColorData];
-    return (color != nil) ? color : [UIColor whiteColor];
+    NSError *error;
+    UIColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIColor class] fromData:receivedColorData error:&error];
+    if (color && !error) { return  color; }
+    return [UIColor whiteColor];
 }
 
 + (void)restrictedMessageRegexPattern:(NSString *)pattern {
