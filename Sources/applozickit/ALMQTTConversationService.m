@@ -307,7 +307,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
             ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
             ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:[theMessageDict objectForKey:@"message"]];
-
+            
+            if (alMessage.isConversationDeleted) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"CONVERSATION_DELETED" object:alMessage];
+            }
+            
             if ([alMessage isHiddenMessage]) {
                 ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");
                 [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
