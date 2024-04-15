@@ -431,6 +431,19 @@
     return (kBaseUrl && ![kBaseUrl isEqualToString:@""]) ? kBaseUrl : @"https://apps.applozic.com";
 }
 
+
++ (void)setChatBaseURL:(NSString *)baseURL {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setValue:baseURL forKey:CHAT_BASE_URL];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getChatBaseURL {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    NSString *kBaseUrl = [userDefaults valueForKey:CHAT_BASE_URL];
+    return (kBaseUrl && ![kBaseUrl isEqualToString:@""]) ? kBaseUrl : @"https://apps.applozic.com";
+}
+
 + (void)setMQTTURL:(NSString *)mqttURL {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
     [userDefaults setValue:mqttURL forKey:APPLOZIC_MQTT_URL];
