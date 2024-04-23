@@ -35,6 +35,7 @@ static NSString *const AL_APP_MODULE_NAME_ID = @"com.applozic.userdefault.APP_MO
 static NSString *const AL_CONTACT_VIEW_LOADED = @"com.applozic.userdefault.CONTACT_VIEW_LOADED";
 static NSString *const AL_USER_INFO_API_CALLED_SUFFIX = @"com.applozic.userdefault.USER_INFO_API_CALLED:";
 static NSString *const APPLOZIC_BASE_URL = @"APPLOZIC_BASE_URL";
+static NSString *const CHAT_BASE_URL = @"CHAT_BASE_URL";
 static NSString *const APPLOZIC_MQTT_URL = @"APPLOZIC_MQTT_URL";
 static NSString *const APPLOZIC_FILE_URL = @"APPLOZIC_FILE_URL";
 static NSString *const APPLOZIC_MQTT_PORT = @"APPLOZIC_MQTT_PORT";
@@ -178,6 +179,9 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 
 + (void)setBASEURL:(NSString *)baseURL;
 + (NSString *)getBASEURL;
+
++ (void)setChatBaseURL: (NSString *)chatBaseURL;
++ (NSString *)getChatBaseURL;
 
 + (void)setMQTTURL:(NSString *)mqttURL;
 + (NSString *)getMQTTURL;
