@@ -72,6 +72,11 @@ static NSMutableDictionary *_notificationDesign;
     [self.contentLabel setTextColor:_contentTextColor];
 }
 
+-(void) setBannerBackgroundColor:(UIColor *)bannerBackgroundColor{
+    _bannerBackgroundColor = bannerBackgroundColor;
+    [self.backgroundBlurView setBackgroundColor:_bannerBackgroundColor];
+}
+
 -(void) setTitleFont:(UIFont *)aTitleFont{
     _titleFont = aTitleFont;
     [self.titleLabel setFont:_titleFont];
@@ -279,7 +284,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             _backgroundBlurView = [[TSBlurView alloc] init];
             self.backgroundBlurView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
             //            self.backgroundBlurView.blurTintColor = [UIColor colorWithHexString:current[@"backgroundColor"]];
-            self.backgroundBlurView.blurTintColor = [UIColor blackColor];
+//            self.backgroundBlurView.blurTintColor = [UIColor redColor];
             [self addSubview:self.backgroundBlurView];
         }
 

@@ -34,6 +34,9 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
                    andForContactId:(NSString *)contactId
                        withGroupId:(NSNumber *)groupID
+                    titleTestColor:(UIColor *)titleTextColor
+                  contentTextColor:(UIColor *)contentTextColor
+                   backgroundColor:(UIColor *)backgroundColor
                  completionHandler:(void (^)(BOOL))handler;
 
 + (NSString *)getFileNameWithCurrentTimeStamp;

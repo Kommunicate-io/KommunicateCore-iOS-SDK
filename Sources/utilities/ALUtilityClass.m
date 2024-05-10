@@ -103,6 +103,9 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
                    andForContactId:(NSString *)contactId
                        withGroupId:(NSNumber *)groupID
+                    titleTestColor:(UIColor *)titleTextColor
+                  contentTextColor:(UIColor *)contentTextColor
+                   backgroundColor:(UIColor *)backgroundColor
                  completionHandler:(void (^)(BOOL))handler {
 
     if ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE) {
@@ -129,9 +132,9 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 
     [[TSMessageView appearance] setTitleFont:[UIFont fontWithName:@"Helvetica Neue" size:18.0]];
     [[TSMessageView appearance] setContentFont:[UIFont fontWithName:@"Helvetica Neue" size:14]];
-    [[TSMessageView appearance] setTitleTextColor:[UIColor whiteColor]];
-    [[TSMessageView appearance] setContentTextColor:[UIColor whiteColor]];
-
+    [[TSMessageView appearance] setTitleTextColor:titleTextColor];
+    [[TSMessageView appearance] setContentTextColor:contentTextColor];
+    [[TSMessageView appearance] setBannerBackgroundColor:backgroundColor];
     [TSMessage showNotificationInViewController:pushAssist.topViewController
                                           title:title
                                        subtitle:toastMessage
