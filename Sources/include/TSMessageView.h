@@ -38,6 +38,10 @@
 @property (nonatomic,strong) UIFont *contentFont UI_APPEARANCE_SELECTOR;
 @property (nonatomic,strong) UIColor *contentTextColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic,strong) UIColor *bannerBackgroundColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic,strong) NSNumber *bannerCornerRadius UI_APPEARANCE_SELECTOR;
+@property (nonatomic,strong) NSNumber *bannerShadowRadius UI_APPEARANCE_SELECTOR;
+@property (nonatomic,strong) NSNumber *shadowOpacity UI_APPEARANCE_SELECTOR;
+@property (nonatomic,strong) UIColor *bannerShadowColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic,strong) UIImage *messageIcon UI_APPEARANCE_SELECTOR;
 @property (nonatomic,strong) UIImage *errorIcon UI_APPEARANCE_SELECTOR;
 @property (nonatomic,strong) UIImage *successIcon UI_APPEARANCE_SELECTOR;

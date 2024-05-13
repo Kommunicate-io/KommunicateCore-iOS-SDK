@@ -11,6 +11,7 @@
 #import "TSBlurView.h"
 #import "TSMessage.h"
 #import "ALUtilityClass.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define TSMessageViewMinimumPadding 15.0
 
@@ -75,6 +76,26 @@ static NSMutableDictionary *_notificationDesign;
 -(void) setBannerBackgroundColor:(UIColor *)bannerBackgroundColor{
     _bannerBackgroundColor = bannerBackgroundColor;
     [self.backgroundBlurView setBackgroundColor:_bannerBackgroundColor];
+}
+
+-(void) setBannerShadowColor:(UIColor *)bannerShadowColor{
+    _bannerShadowColor = bannerShadowColor;
+    self.backgroundBlurView.layer.shadowColor = _bannerShadowColor.CGColor;
+}
+
+-(void) setBannerCornerRadius:(NSNumber *)bannerCornerRadius{
+    _bannerCornerRadius = bannerCornerRadius;
+    self.backgroundBlurView.layer.cornerRadius = [_bannerCornerRadius floatValue];
+}
+
+-(void) setBannerShadowRadius:(NSNumber *)bannerShadowRadius{
+    _bannerShadowRadius = bannerShadowRadius;
+    self.backgroundBlurView.layer.shadowRadius = [_bannerShadowRadius floatValue];
+}
+
+-(void) setShadowOpacity:(NSNumber *)shadowOpacity{
+    _shadowOpacity = shadowOpacity;
+    self.backgroundBlurView.layer.shadowOpacity = [_shadowOpacity floatValue];
 }
 
 -(void) setTitleFont:(UIFont *)aTitleFont{
@@ -281,10 +302,15 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         else
         {
             // On iOS 7 and above use a blur layer instead (not yet finished)
-            _backgroundBlurView = [[TSBlurView alloc] init];
-            self.backgroundBlurView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
+//            _backgroundBlurView = [[TSBlurView alloc] init];
+//            self.backgroundBlurView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
             //            self.backgroundBlurView.blurTintColor = [UIColor colorWithHexString:current[@"backgroundColor"]];
+            _backgroundBlurView = [[TSBlurView alloc] init];
+            self.backgroundBlurView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             [self addSubview:self.backgroundBlurView];
+            self.backgroundBlurView.layer.shadowOffset = CGSizeMake(0, 2);
+            self.backgroundBlurView.layer.shouldRasterize = YES;
+            self.backgroundBlurView.layer.rasterizationScale = [UIScreen mainScreen].scale;
         }
 
         UIColor *fontColor = [UIColor colorWithHexString:[current valueForKey:@"textColor"]];
