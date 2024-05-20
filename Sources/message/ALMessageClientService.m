@@ -548,6 +548,8 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
     }];
 }
 
+NSString *latSyncCallTime = @"";
+
 - (void)getLatestMessageForUser:(NSString *)deviceKeyString
                withMetaDataSync:(BOOL)isMetaDataUpdate
                  withCompletion:(void (^)( ALSyncMessageFeed *, NSError *))completion {
@@ -571,6 +573,9 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
         lastSyncTime = [NSString stringWithFormat:@"%@", [ALUserDefaultsHandler getLastSyncTime]];
         messageSyncParamString = [NSString stringWithFormat:@"lastSyncTime=%@",lastSyncTime];
     }
+    
+    if (![latSyncCallTime  isEqual: @""] && [lastSyncTime isEqual:latSyncCallTime]) { return; }
+    latSyncCallTime = lastSyncTime;
 
     ALSLog(ALLoggerSeverityInfo, @"LAST SYNC TIME IN CALL :  %@", lastSyncTime);
 
