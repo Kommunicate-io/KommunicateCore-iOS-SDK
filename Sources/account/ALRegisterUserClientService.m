@@ -290,7 +290,9 @@
     ALUser *user = [[ALUser alloc] init];
     [user setNotificationMode:ALUserDefaultsHandler.getNotificationMode];
     [user setRegistrationId:apnDeviceToken];
-
+    if (ALApplozicSettings.isAgentAppConfigurationEnabled) {
+        [user setAppModuleName: @"kommunicate-agent-km"];
+    }
     [self updateUser:user withCompletion:^(ALRegistrationResponse *response, NSError *error) {
         completion(response, error);
     }];
@@ -318,7 +320,9 @@
     [user setApplicationId:[ALUserDefaultsHandler getApplicationKey]];
     [user setNotificationMode:alUser.notificationMode];
     [user setPassword:[ALUserDefaultsHandler getPassword]];
-
+    if (alUser.appModuleName) {
+        [user setAppModuleName:alUser.appModuleName];
+    }
     if (alUser.registrationId) {
         [user setRegistrationId:alUser.registrationId];
     } else {
