@@ -1,6 +1,8 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
+## [1.2.1] 2024-05-27
+- Optimized Sync API Call
 ## [1.2.0] 2024-04-23
 - Added Support for EU region.
 ## [1.1.9] 2024-04-10
