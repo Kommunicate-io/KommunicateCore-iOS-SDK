@@ -314,7 +314,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
 
 
         self.textSpaceLeft = 2 * padding;
-        if (image) self.textSpaceLeft += image.size.width + 2 * padding;
+        if (image) self.textSpaceLeft += image.size.width + padding;
 
         // Set up title label
         _titleLabel = [[UILabel alloc] init];
@@ -378,8 +378,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
                                                   image.size.width,
                                                   image.size.height);
             
-            self.iconImageView.layer.cornerRadius=image.size.width/2;
-            self.iconImageView.layer.masksToBounds=YES;
+            self.iconImageView.layer.cornerRadius = image.size.width/2;
+            self.iconImageView.layer.masksToBounds = YES;
             [self addSubview:self.iconImageView];
             
         }
@@ -493,114 +493,48 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
 }
 
 
-- (CGFloat)updateHeightOfMessageView
-{
-    CGFloat currentHeight;
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    CGFloat screenWidth = screenSize.width;
+- (CGFloat)updateHeightOfMessageView {
+    CGFloat currentHeight = 0.0;
     CGFloat padding = [self padding];
-    CGFloat topPadding = padding;
+    CGFloat screenWidth = CGRectGetWidth([UIScreen mainScreen].bounds);
+    CGFloat textSpaceWidth = screenWidth - (padding * 2) - self.textSpaceLeft - self.textSpaceRight;
 
-    if (@available(iOS 11.0, *)) {
-        // Adding full padding adds too much gap in iphone X so, it's 0.3x
-        topPadding = 0.3 * topPadding + self.safeAreaInsets.top;
+    if (self.title.length > 0) {
+        CGSize titleSize = [self.titleLabel sizeThatFits:CGSizeMake(textSpaceWidth, CGFLOAT_MAX)];
+        self.titleLabel.frame = CGRectMake(self.textSpaceLeft, padding * 2 + self.safeAreaInsets.top, textSpaceWidth, titleSize.height);
+        currentHeight += titleSize.height + padding;
     }
 
-    self.titleLabel.frame = CGRectMake(self.textSpaceLeft,
-                                       topPadding,
-                                       screenWidth - padding - self.textSpaceLeft - self.textSpaceRight,
-                                       0.0);
-    [self.titleLabel sizeToFit];
-
-    if ([self.subtitle length])
-    {
-        self.contentLabel.frame = CGRectMake(self.textSpaceLeft,
-                                             self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 5.0,
-                                             screenWidth - padding - self.textSpaceLeft - self.textSpaceRight,
-                                             0.0);
-        [self.contentLabel sizeToFit];
-
-        currentHeight = self.contentLabel.frame.origin.y + self.contentLabel.frame.size.height;
-    }
-    else
-    {
-        // only the title was set
-        currentHeight = self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height;
+    if (self.subtitle.length > 0) {
+        CGFloat contentLabelHeight = [self.contentLabel sizeThatFits:CGSizeMake(textSpaceWidth, CGFLOAT_MAX)].height;
+        self.contentLabel.frame = CGRectMake(self.textSpaceLeft, CGRectGetMaxY(self.titleLabel.frame) + padding - 10, textSpaceWidth, contentLabelHeight);
+        currentHeight += contentLabelHeight + padding;
     }
 
-    currentHeight += padding;
-
-    if (self.iconImageView)
-    {
-        // Check if that makes the popup larger (height)
-        if (self.iconImageView.frame.origin.y + self.iconImageView.frame.size.height + padding > currentHeight)
-        {
-            currentHeight = self.iconImageView.frame.origin.y + self.iconImageView.frame.size.height + padding;
-        }
-        else
-        {
-            // z-align
-            self.iconImageView.center = CGPointMake([self.iconImageView center].x,
-                                                    round(currentHeight / 2.0));
-        }
+    if (self.iconImageView) {
+        CGFloat iconY = self.safeAreaInsets.top + (currentHeight / 4) + (padding / 2);
+        CGFloat iconX = self.textSpaceLeft / 1.7 - CGRectGetWidth(self.iconImageView.frame) / 2;
+        self.iconImageView.frame = CGRectMake(iconX, iconY, CGRectGetWidth(self.iconImageView.frame), CGRectGetHeight(self.iconImageView.frame));
     }
 
-    // z-align button
-    self.button.center = CGPointMake([self.button center].x,
-                                     round(currentHeight / 2.0));
-
-    if (self.messagePosition == TSMessageNotificationPositionTop)
-    {
-        // Correct the border position
-        CGRect borderFrame = self.borderView.frame;
-        borderFrame.origin.y = currentHeight;
-        self.borderView.frame = borderFrame;
+    if (self.button) {
+        CGFloat buttonX = screenWidth - padding - CGRectGetWidth(self.button.frame);
+        CGFloat buttonY = currentHeight + padding;
+        self.button.frame = CGRectMake(buttonX, buttonY, CGRectGetWidth(self.button.frame), CGRectGetHeight(self.button.frame));
+        currentHeight += CGRectGetHeight(self.button.frame) + padding;
     }
 
-    currentHeight += self.borderView.frame.size.height;
-
-    self.frame = CGRectMake(0.0, self.frame.origin.y, self.frame.size.width, currentHeight);
-
-
-    if (self.button)
-    {
-        self.button.frame = CGRectMake(self.frame.size.width - self.textSpaceRight,
-                                       round((self.frame.size.height / 2.0) - self.button.frame.size.height / 2.0),
-                                       self.button.frame.size.width,
-                                       self.button.frame.size.height);
+    if (self.messagePosition == TSMessageNotificationPositionTop) {
+        self.borderView.frame = CGRectMake(self.borderView.frame.origin.x, currentHeight, CGRectGetWidth(self.borderView.frame), CGRectGetHeight(self.borderView.frame));
     }
 
+    currentHeight += CGRectGetHeight(self.borderView.frame);
+    self.frame = CGRectMake(0.0, self.frame.origin.y, screenWidth, currentHeight);
 
-    CGRect backgroundFrame = CGRectMake(self.backgroundImageView.frame.origin.x,
-                                        self.backgroundImageView.frame.origin.y,
-                                        screenWidth,
-                                        currentHeight);
-
-    // increase frame of background view because of the spring animation
-    if ([TSMessage iOS7StyleEnabled])
-    {
-        if (self.messagePosition == TSMessageNotificationPositionTop)
-        {
-            float topOffset = 0.f;
-
-            UINavigationController *navigationController = self.viewController.navigationController;
-            if (!navigationController && [self.viewController isKindOfClass:[UINavigationController class]]) {
-                navigationController = (UINavigationController *)self.viewController;
-            }
-            BOOL isNavBarIsHidden = !navigationController || [TSMessage isNavigationBarInNavigationControllerHidden:navigationController];
-            BOOL isNavBarIsOpaque = !navigationController.navigationBar.isTranslucent && navigationController.navigationBar.alpha == 1;
-
-            if (isNavBarIsHidden || isNavBarIsOpaque) {
-                topOffset = -30.f;
-            }
-            backgroundFrame = UIEdgeInsetsInsetRect(backgroundFrame, UIEdgeInsetsMake(topOffset, 0.f, 0.f, 0.f));
-        }
-        else if (self.messagePosition == TSMessageNotificationPositionBottom)
-        {
-            backgroundFrame = UIEdgeInsetsInsetRect(backgroundFrame, UIEdgeInsetsMake(0.f, 0.f, -30.f, 0.f));
-        }
-    }
-
+    UIWindow *keyWindow = [UIApplication.sharedApplication.windows firstObject];
+    CGFloat statusBarHeight = keyWindow.windowScene.statusBarManager.statusBarFrame.size.height;
+    
+    CGRect backgroundFrame = CGRectMake(padding, statusBarHeight + padding, screenWidth - padding * 2, currentHeight + padding);
     self.backgroundImageView.frame = backgroundFrame;
     self.backgroundBlurView.frame = backgroundFrame;
 
