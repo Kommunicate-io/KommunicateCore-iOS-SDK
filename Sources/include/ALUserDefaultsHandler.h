@@ -30,6 +30,8 @@ static NSString *const AL_BACK_BTN_VISIBILITY_ON_CON_LIST = @"com.applozic.userd
 static NSString *const AL_CONVERSATION_CONTACT_IMAGE_VISIBILITY = @"com.applozic.userdefault.CONVERSATION_CONTACT_IMAGE_VISIBILITY";
 static NSString *const AL_MSG_LIST_CALL_SUFIX = @"com.applozic.userdefault.MSG_CALL_MADE:";
 static NSString *const AL_PROCESSED_NOTIFICATION_IDS  = @"com.applozic.userdefault.PROCESSED_NOTIFICATION_IDS";
+static NSString *const AL_TEAM_MODE_ENABLED  = @"com.applozic.userdefault.TEAM_MODE_ENABLED";
+static NSString *const AL_ASSIGNED_TEAM_IDS  = @"com.applozic.userdefault.ASSIGNED_TEAM_IDS";
 static NSString *const AL_LAST_SEEN_SYNC_TIME = @"com.applozic.userdefault.LAST_SEEN_SYNC_TIME";
 static NSString *const AL_SHOW_LOAD_ERLIER_MESSAGE = @"com.applozic.userdefault.SHOW_LOAD_ERLIER_MESSAGE:";
 static NSString *const AL_LAST_SYNC_CHANNEL_TIME = @"com.applozic.userdefault.LAST_SYNC_CHANNEL_TIME";
@@ -131,6 +133,14 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 + (void)setUserRoleInOrganization:(NSString *)designation;
 
 + (void)setEmailId:(NSString *)emailId;
+
++ (void)setTeamModeEnabled:(BOOL)flagValue;
+
++ (BOOL)isTeamModeEnabled;
+
++ (void)setAssignedTeamIds:(NSMutableArray *)assignedTeamIDs;
+
++ (NSMutableArray*)getAssignedTeamIds;
 
 + (NSString *)getEmailId;
 

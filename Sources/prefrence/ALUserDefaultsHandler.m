@@ -321,6 +321,27 @@
     return [[userDefaults objectForKey:AL_PROCESSED_NOTIFICATION_IDS] mutableCopy];
 }
 
++ (void)setTeamModeEnabled:(BOOL)flagValue {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setBool:flagValue forKey:AL_TEAM_MODE_ENABLED];
+    [userDefaults synchronize];
+}
+
++ (BOOL)isTeamModeEnabled {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    return [userDefaults boolForKey:AL_TEAM_MODE_ENABLED];
+}
+
++ (void)setAssignedTeamIds:(NSMutableArray *)assignedTeamIDs {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setObject:assignedTeamIDs forKey:AL_ASSIGNED_TEAM_IDS];
+}
+
++ (NSMutableArray *)getAssignedTeamIds {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    return [[userDefaults objectForKey:AL_ASSIGNED_TEAM_IDS] mutableCopy];
+}
+
 + (BOOL)isNotificationProcessd:(NSString *)withNotificationId {
     NSMutableArray *mutableArray = [self getProcessedNotificationIds];
     
