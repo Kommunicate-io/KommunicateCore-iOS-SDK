@@ -25,6 +25,7 @@
 static NSString *const NEW_MESSAGE_NOTIFICATION = @"newMessageNotification";
 static NSString *const CONVERSATION_CALL_COMPLETED = @"conversationCallCompleted";
 static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNotification";
+static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_METADATA_UPDATE";
 
 @interface ALMessageService : NSObject
 
