@@ -63,6 +63,7 @@
 - (void)syncMessageMetadata {
     [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
         ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
+        [[NSNotificationCenter defaultCenter] postNotificationName:AL_GROUP_MESSAGE_METADATA_UPDATE object:message userInfo:nil];
     }];
 }
 
