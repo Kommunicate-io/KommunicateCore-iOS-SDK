@@ -575,7 +575,6 @@ NSString *latSyncCallTime = @"";
     }
     
     if (![latSyncCallTime  isEqual: @""] && [lastSyncTime isEqual:latSyncCallTime]) { return; }
-    latSyncCallTime = lastSyncTime;
 
     ALSLog(ALLoggerSeverityInfo, @"LAST SYNC TIME IN CALL :  %@", lastSyncTime);
 
@@ -591,6 +590,7 @@ NSString *latSyncCallTime = @"";
         [ALUserDefaultsHandler setMsgSyncRequired:NO];
         ALSyncMessageFeed *syncResponse = [[ALSyncMessageFeed alloc] initWithJSONString:theJson];
         ALSLog(ALLoggerSeverityInfo, @"LATEST_MESSAGE_JSON: %@", (NSString *)theJson);
+        latSyncCallTime = lastSyncTime;
         completion(syncResponse,nil);
     }];
 }
