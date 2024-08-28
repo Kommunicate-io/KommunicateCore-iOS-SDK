@@ -583,6 +583,7 @@ NSString *latSyncCallTime = @"";
     [self.responseHandler authenticateAndProcessRequest:messageSyncRequest andTag:@"SYNC LATEST MESSAGE URL" WithCompletionHandler:^(id theJson, NSError *theError) {
 
         if (theError) {
+            latSyncCallTime = @"";
             [ALUserDefaultsHandler setMsgSyncRequired:YES];
             completion(nil,theError);
             return;
