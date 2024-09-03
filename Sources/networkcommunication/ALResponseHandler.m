@@ -207,8 +207,9 @@ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NS
 
     // Load the expected public key hashes from the Info.plist
     NSBundle *bundle = [ALUtilityClass getBundle];
-    NSString *plistPath = [bundle pathForResource:@"KMPublicKeyList" ofType:@"plist"];
-    NSArray *kExpectedPublicKeyHashBase64 = [NSDictionary dictionaryWithContentsOfFile:plistPath][@"KMExpectedPublicKeyHashBase64"];
+    NSDictionary *infoPlistDict = [bundle infoDictionary];
+    NSArray *kExpectedPublicKeyHashBase64 = infoPlistDict[@"KMExpectedPublicKeyHashBase64"];
+
     
     if (!kExpectedPublicKeyHashBase64) {
         NSLog(@"Expected public key hashes not found in Info.plist.");
