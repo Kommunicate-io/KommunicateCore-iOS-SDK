@@ -15,5 +15,5 @@ The KommunicateCore-iOS SDK helps you build your own custom UI in your iOS app
   s.requires_arc = true
   s.resources = 'Sources/**/*.{xcassets,xcdatamodeld,json}'
   s.frameworks = "Foundation", "SystemConfiguration"
-  s.pod_target_xcconfig = { 'INFOPLIST_FILE' => '${PODS_TARGET_SRCROOT}/Sources/Resources/Info.plist' }
+  s.pod_target_xcconfig = { 'INFOPLIST_FILE' => '${PODS_TARGET_SRCROOT}/Sources/KommunicateCore-Info.plist' }
 end
