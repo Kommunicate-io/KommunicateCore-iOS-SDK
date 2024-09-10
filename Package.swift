@@ -20,7 +20,8 @@ let package = Package(
             exclude: ["Info.plist",
                       "MQTT/MQTTClient-Prefix.pch"],
             resources: [
-                .process("Resources")
+                .process("Resources"),
+                .process("KommunicateCore-Info.plist")
             ],
             cSettings: [
                 .headerSearchPath(""),
