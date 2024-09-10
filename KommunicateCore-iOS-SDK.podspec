@@ -11,8 +11,9 @@ The KommunicateCore-iOS SDK helps you build your own custom UI in your iOS app
   s.source           = { :git => 'https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK.git', :tag => s.version.to_s }
   s.swift_version = '5.0'
   s.ios.deployment_target = '13.0'
-  s.source_files = 'Sources/**/*.{h,m,swift}'
+  s.source_files = 'Sources/**/*.{h,m,swift,plist}'
   s.requires_arc = true
   s.resources = 'Sources/**/*.{xcassets,xcdatamodeld,json}'
   s.frameworks = "Foundation", "SystemConfiguration"
+  s.pod_target_xcconfig = { 'INFOPLIST_FILE' => '${PODS_TARGET_SRCROOT}/Sources/KommunicateCore-Info.plist' }
 end
