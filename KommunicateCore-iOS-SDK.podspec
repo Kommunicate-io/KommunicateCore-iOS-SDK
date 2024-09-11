@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'KommunicateCore-iOS-SDK'
-  s.version          = '1.2.1'
+  s.version          = '1.2.2'
   s.summary          = 'KommunicateCore-iOS SDK pod'
   s.description      = <<-DESC
 The KommunicateCore-iOS SDK helps you build your own custom UI in your iOS app
