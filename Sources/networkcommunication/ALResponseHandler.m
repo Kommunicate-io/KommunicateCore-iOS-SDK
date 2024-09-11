@@ -10,6 +10,18 @@
 #import "ALUserDefaultsHandler.h"
 #import "ALAuthService.h"
 #import "ALLogger.h"
+#import <Security/Security.h>
+#import <CommonCrypto/CommonCrypto.h>
+#import "ALUtilityClass.h"
+
+// ASN.1 header for RSA 2048 public key
+static const uint8_t rsa2048Asn1Header[] = {
+    0x30, 0x82, 0x01, 0x22, 0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86,
+    0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00, 0x03, 0x82, 0x01, 0x0f, 0x00
+};
+
+@interface ALResponseHandler () <NSURLSessionDelegate>
+@end
 
 @implementation ALResponseHandler
 
@@ -31,7 +43,11 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
                 andTag:(NSString *)tag
  WithCompletionHandler:(void (^)(id, NSError *))reponseCompletion {
 
-    NSURLSessionDataTask *sessionDataTask = [[NSURLSession sharedSession] dataTaskWithRequest:theRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
+                                                              delegate:self
+                                                         delegateQueue:[NSOperationQueue mainQueue]];
+
+    NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:theRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *connectionError) {
 
         NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)response;
 
@@ -178,6 +194,95 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             completion(theJson, theError);
         }];
     }];
+}
+
+- (NSArray<NSString *> *)fetchExpectedPublicKeyHashesFromBundle:(NSBundle *)bundle {
+    // Try fetching from the main bundle info dictionary
+    NSDictionary *infoPlistDict = [bundle infoDictionary];
+    NSArray *keys = infoPlistDict[@"KMExpectedPublicKeyHashBase64"];
+    
+    if (keys != nil) {
+        return keys;
+    }
+    
+    // If not found, try fetching from a specific plist file (For SPM)
+    NSString *plistPath = [bundle pathForResource:@"KommunicateCore-Info" ofType:@"plist"];
+    if (plistPath != nil) {
+        NSDictionary *plistDict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+        keys = plistDict[@"KMExpectedPublicKeyHashBase64"];
+        
+        if (keys != nil) {
+            return keys;
+        }
+    }
+
+    return nil;
+}
+
+- (void)URLSession:(NSURLSession *)session
+didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler {
+
+    if (![challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+        return;
+    }
+
+    // Load the expected public key hashes from the Info.plist
+    NSBundle *bundle = [ALUtilityClass getBundle];
+    NSArray *kExpectedPublicKeyHashBase64 = [self fetchExpectedPublicKeyHashesFromBundle:bundle];
+
+    
+    if (!kExpectedPublicKeyHashBase64) {
+        NSLog(@"Expected public key hashes not found in Info.plist.");
+        completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+        return;
+    }
+    
+    // Extract the server's public key from the challenge
+    SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+    SecCertificateRef serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0);
+    SecKeyRef serverPublicKey = SecCertificateCopyKey(serverCertificate);
+    
+    if (!serverPublicKey) {
+        NSLog(@"Error: Unable to extract public key from certificate.");
+        completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+        return;
+    }
+
+    // Get the public key in raw byte format
+    CFErrorRef error = NULL;
+    NSData *serverPublicKeyData = (__bridge_transfer NSData *)SecKeyCopyExternalRepresentation(serverPublicKey, &error);
+    CFRelease(serverPublicKey);
+    
+    if (error || !serverPublicKeyData) {
+        NSLog(@"Error extracting public key: %@", error ? (__bridge NSError *)error : @"Unknown error");
+        completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+        return;
+    }
+
+    // Prepend ASN.1 header to the public key data
+    NSMutableData *publicKeyWithHeader = [NSMutableData dataWithBytes:rsa2048Asn1Header length:sizeof(rsa2048Asn1Header)];
+    [publicKeyWithHeader appendData:serverPublicKeyData];
+
+    // Calculate the SHA-256 hash of the public key with ASN.1 header
+    unsigned char hashedBytes[CC_SHA256_DIGEST_LENGTH];
+    CC_SHA256(publicKeyWithHeader.bytes, (CC_LONG)publicKeyWithHeader.length, hashedBytes);
+    NSData *publicKeyHash = [NSData dataWithBytes:hashedBytes length:CC_SHA256_DIGEST_LENGTH];
+
+    // Convert public key hash to Base64
+    NSString *publicKeyHashBase64 = [publicKeyHash base64EncodedStringWithOptions:0];
+
+    // Compare with expected public key hashes
+    if ([kExpectedPublicKeyHashBase64 containsObject:publicKeyHashBase64]) {
+        // The hash matches, proceed with the connection
+        NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
+        completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+    } else {
+        // The hash doesn't match, cancel the connection
+        NSLog(@"Public key hash does not match. Connection canceled.");
+        completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+    }
 }
 
 - (void)authenticateRequest:(NSMutableURLRequest *)request

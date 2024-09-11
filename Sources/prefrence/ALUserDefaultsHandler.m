@@ -164,6 +164,39 @@
     return [userDefaults valueForKey:AL_EMAIL_ID];
 }
 
++ (void)setUserImageURL:(NSString *)userImageURL{
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setValue:userImageURL forKey:AL_USER_IMAGE_URL];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getUserImageURL {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    return [userDefaults valueForKey:AL_USER_IMAGE_URL];
+}
+
+
++ (void)setUserContactNumber:(NSString *)userContactNumber{
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setValue:userContactNumber forKey:AL_USER_CONTACT_NUMBER];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getUserContactNumber {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    return [userDefaults valueForKey:AL_USER_CONTACT_NUMBER];
+}
+
++ (void)setUserRoleInOrganization:(NSString *)designation{
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setValue:designation forKey:AL_USER_ROLE_IN_ORGANIZATION];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getUserRoleInOrganization {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    return [userDefaults valueForKey:AL_USER_ROLE_IN_ORGANIZATION];
+}
 
 + (void)setDisplayName:(NSString *)displayName {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
@@ -286,6 +319,27 @@
 + (NSMutableArray *)getProcessedNotificationIds {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
     return [[userDefaults objectForKey:AL_PROCESSED_NOTIFICATION_IDS] mutableCopy];
+}
+
++ (void)setTeamModeEnabled:(BOOL)flagValue {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setBool:flagValue forKey:AL_TEAM_MODE_ENABLED];
+    [userDefaults synchronize];
+}
+
++ (BOOL)isTeamModeEnabled {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    return [userDefaults boolForKey:AL_TEAM_MODE_ENABLED];
+}
+
++ (void)setAssignedTeamIds:(NSMutableArray *)assignedTeamIDs {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setObject:assignedTeamIDs forKey:AL_ASSIGNED_TEAM_IDS];
+}
+
++ (NSMutableArray *)getAssignedTeamIds {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    return [[userDefaults objectForKey:AL_ASSIGNED_TEAM_IDS] mutableCopy];
 }
 
 + (BOOL)isNotificationProcessd:(NSString *)withNotificationId {

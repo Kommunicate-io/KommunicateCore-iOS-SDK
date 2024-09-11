@@ -17,10 +17,10 @@ let package = Package(
             name: "KommunicateCore_iOS_SDK",
             dependencies: [],
             path: "Sources",
-            exclude: ["Info.plist",
-                      "MQTT/MQTTClient-Prefix.pch"],
+            exclude: ["MQTT/MQTTClient-Prefix.pch"],
             resources: [
-                .process("Resources")
+                .process("Resources"),
+                .process("KommunicateCore-Info.plist")
             ],
             cSettings: [
                 .headerSearchPath(""),

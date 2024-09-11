@@ -16,6 +16,9 @@ static NSString *const AL_DEVICE_KEY_STRING = @"com.applozic.userdefault.DEVICE_
 static NSString *const AL_USER_KEY_STRING = @"com.applozic.userdefault.USER_KEY_STRING";
 static NSString *const AL_EMAIL_ID = @"com.applozic.userdefault.EMAIL_ID";
 static NSString *const AL_USER_ID = @"com.applozic.userdefault.USER_ID";
+static NSString *const AL_USER_IMAGE_URL = @"com.applozic.userdefault.AL_USER_IMAGE_URL";
+static NSString *const AL_USER_CONTACT_NUMBER = @"com.applozic.userdefault.AL_USER_PHONE_NUMBER";
+static NSString *const AL_USER_ROLE_IN_ORGANIZATION = @"com.applozic.userdefault.AL_USER_ROLE_IN_ORGANIZATION";
 static NSString *const AL_APN_DEVICE_TOKEN = @"com.applozic.userdefault.APN_DEVICE_TOKEN";
 static NSString *const AL_GOOGLE_MAP_API_KEY = @"com.applozic.userdefault.GOOGLE_MAP_API_KEY";
 static NSString *const AL_LAST_SYNC_TIME = @"com.applozic.userdefault.LAST_SYNC_TIME";
@@ -27,6 +30,8 @@ static NSString *const AL_BACK_BTN_VISIBILITY_ON_CON_LIST = @"com.applozic.userd
 static NSString *const AL_CONVERSATION_CONTACT_IMAGE_VISIBILITY = @"com.applozic.userdefault.CONVERSATION_CONTACT_IMAGE_VISIBILITY";
 static NSString *const AL_MSG_LIST_CALL_SUFIX = @"com.applozic.userdefault.MSG_CALL_MADE:";
 static NSString *const AL_PROCESSED_NOTIFICATION_IDS  = @"com.applozic.userdefault.PROCESSED_NOTIFICATION_IDS";
+static NSString *const AL_TEAM_MODE_ENABLED  = @"com.applozic.userdefault.TEAM_MODE_ENABLED";
+static NSString *const AL_ASSIGNED_TEAM_IDS  = @"com.applozic.userdefault.ASSIGNED_TEAM_IDS";
 static NSString *const AL_LAST_SEEN_SYNC_TIME = @"com.applozic.userdefault.LAST_SEEN_SYNC_TIME";
 static NSString *const AL_SHOW_LOAD_ERLIER_MESSAGE = @"com.applozic.userdefault.SHOW_LOAD_ERLIER_MESSAGE:";
 static NSString *const AL_LAST_SYNC_CHANNEL_TIME = @"com.applozic.userdefault.LAST_SYNC_CHANNEL_TIME";
@@ -121,7 +126,21 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 
 + (void)setDisplayName:(NSString *)displayName;
 
++ (void)setUserContactNumber:(NSString *)userContactNumber;
+
++ (void)setUserImageURL:(NSString *)userImageURL;
+
++ (void)setUserRoleInOrganization:(NSString *)designation;
+
 + (void)setEmailId:(NSString *)emailId;
+
++ (void)setTeamModeEnabled:(BOOL)flagValue;
+
++ (BOOL)isTeamModeEnabled;
+
++ (void)setAssignedTeamIds:(NSMutableArray *)assignedTeamIDs;
+
++ (NSMutableArray*)getAssignedTeamIds;
 
 + (NSString *)getEmailId;
 
@@ -160,6 +179,12 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 + (NSString *)getUserKeyString;
 
 + (NSString *)getDisplayName;
+
++ (NSString *)getUserImageURL;
+
++ (NSString *)getUserContactNumber;
+
++ (NSString *)getUserRoleInOrganization;
 
 + (void)setUserBlockLastTimeStamp:(NSNumber *)lastTimeStamp;
 
