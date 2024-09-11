@@ -196,6 +196,29 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
     }];
 }
 
+- (NSArray<NSString *> *)fetchExpectedPublicKeyHashesFromBundle:(NSBundle *)bundle {
+    // Try fetching from the main bundle info dictionary
+    NSDictionary *infoPlistDict = [bundle infoDictionary];
+    NSArray *keys = infoPlistDict[@"KMExpectedPublicKeyHashBase64"];
+    
+    if (keys != nil) {
+        return keys;
+    }
+    
+    // If not found, try fetching from a specific plist file (For SPM)
+    NSString *plistPath = [bundle pathForResource:@"KommunicateCore-Info" ofType:@"plist"];
+    if (plistPath != nil) {
+        NSDictionary *plistDict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+        keys = plistDict[@"KMExpectedPublicKeyHashBase64"];
+        
+        if (keys != nil) {
+            return keys;
+        }
+    }
+
+    return nil;
+}
+
 - (void)URLSession:(NSURLSession *)session
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler {
@@ -207,8 +230,7 @@ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NS
 
     // Load the expected public key hashes from the Info.plist
     NSBundle *bundle = [ALUtilityClass getBundle];
-    NSDictionary *infoPlistDict = [bundle infoDictionary];
-    NSArray *kExpectedPublicKeyHashBase64 = infoPlistDict[@"KMExpectedPublicKeyHashBase64"];
+    NSArray *kExpectedPublicKeyHashBase64 = [self fetchExpectedPublicKeyHashesFromBundle:bundle];
 
     
     if (!kExpectedPublicKeyHashBase64) {
