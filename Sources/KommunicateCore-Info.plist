@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<string>${PODS_DEVELOPMENT_LANGUAGE}</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,9 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>1.2.2</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>KMExpectedPublicKeyHashBase64</key>
@@ -26,5 +28,7 @@
 		<string>eBImJZIk3VAZor3rKn3UGNQ6+q1fyRGOc4on7UfhdTM=</string>
 		<string>+CqUUNjj8QE7EMiqeL6q8fMkJJt0mTNgmqqODRiwwF0=</string>
 	</array>
+	<key>NSPrincipalClass</key>
+	<string></string>
 </dict>
 </plist>
