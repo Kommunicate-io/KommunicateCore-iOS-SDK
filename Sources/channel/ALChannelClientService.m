@@ -437,6 +437,8 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 #pragma mark - Channel Sync
 
+NSString *latSyncCallTimeForChannel = @"";
+
 - (void)syncCallForChannel:(NSNumber *)updatedAt
       withFetchUserDetails:(BOOL)fetchUserDetails
              andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion {
@@ -446,7 +448,13 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     if (updatedAt != nil || updatedAt != NULL){
         syncChannelParamString  = [NSString stringWithFormat:@"updatedAt=%@", updatedAt];
     }
-
+    
+    NSString *updatedAtString = [updatedAt stringValue];
+    
+    if (![latSyncCallTimeForChannel isEqual: @""] && [updatedAtString isEqual:latSyncCallTimeForChannel]) { return; }
+    
+    latSyncCallTimeForChannel = updatedAtString;
+    
     NSMutableURLRequest *syncChannelRequest = [ALRequestHandler createGETRequestWithUrlString:syncChannelURLString paramString:syncChannelParamString];
 
     [self.responseHandler authenticateAndProcessRequest:syncChannelRequest andTag:@"CHANNEL_SYNCHRONIZATION" WithCompletionHandler:^(id theJson, NSError *error) {
@@ -490,6 +498,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
                                   userInfo:[NSDictionary
                                             dictionaryWithObject:@"Status fail in response"
                                             forKey:NSLocalizedDescriptionKey]];
+                latSyncCallTimeForChannel = @"";
                 completion(error, nil);
                 return;
             }
