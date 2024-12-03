@@ -1,6 +1,10 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
+## [1.2.4] 2024-12-02
+- API call optimisation.
+## [1.2.3] 2024-09-20
+- Resolved the issue related to App Store publishing with the latest Xcode update.
 ## [1.2.2] 2024-09-11
 - Offline Online Message update issue.
 - Delete Message Sync
