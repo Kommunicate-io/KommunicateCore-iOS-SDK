@@ -31,6 +31,7 @@ static NSString *const AL_CONVERSATION_CONTACT_IMAGE_VISIBILITY = @"com.applozic
 static NSString *const AL_MSG_LIST_CALL_SUFIX = @"com.applozic.userdefault.MSG_CALL_MADE:";
 static NSString *const AL_PROCESSED_NOTIFICATION_IDS  = @"com.applozic.userdefault.PROCESSED_NOTIFICATION_IDS";
 static NSString *const AL_TEAM_MODE_ENABLED  = @"com.applozic.userdefault.TEAM_MODE_ENABLED";
+static NSString *const AL_KM_SSL_PINNING_ENABLED = @"com.applozic.userdefault.KM_SSL_PINNING_ENABLED";
 static NSString *const AL_ASSIGNED_TEAM_IDS  = @"com.applozic.userdefault.ASSIGNED_TEAM_IDS";
 static NSString *const AL_LAST_SEEN_SYNC_TIME = @"com.applozic.userdefault.LAST_SEEN_SYNC_TIME";
 static NSString *const AL_SHOW_LOAD_ERLIER_MESSAGE = @"com.applozic.userdefault.SHOW_LOAD_ERLIER_MESSAGE:";
@@ -304,6 +305,9 @@ static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DE
 
 + (void)deactivateLoggedInUser:(BOOL)deactivate;
 + (BOOL)isLoggedInUserDeactivated;
+
++ (void)setKMSSLPinningEnabled:(BOOL)flag;
++ (BOOL)isKMSSLPinningEnabled;
 
 + (void)setChannelListLastSyncGeneratedTime:(NSNumber *)lastSyncGeneratedTime;
 + (NSNumber *)getChannelListLastSyncGeneratedTime;
