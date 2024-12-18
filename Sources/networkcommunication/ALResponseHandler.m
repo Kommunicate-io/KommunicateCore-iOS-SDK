@@ -228,6 +228,13 @@ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NS
         return;
     }
 
+    if (![ALUserDefaultsHandler isKMSSLPinningEnabled]) {
+        // SSL pinning is disabled, trust the server's certificate
+        NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+        completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+        return;
+    }
+    
     // Load the expected public key hashes from the Info.plist
     NSBundle *bundle = [ALUtilityClass getBundle];
     NSArray *kExpectedPublicKeyHashBase64 = [self fetchExpectedPublicKeyHashesFromBundle:bundle];

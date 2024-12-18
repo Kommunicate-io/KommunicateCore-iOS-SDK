@@ -332,6 +332,21 @@
     return [userDefaults boolForKey:AL_TEAM_MODE_ENABLED];
 }
 
++ (void)setKMSSLPinningEnabled:(BOOL)flag {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    [userDefaults setBool:flag forKey:AL_KM_SSL_PINNING_ENABLED];
+    [userDefaults synchronize];
+}
+
++ (BOOL)isKMSSLPinningEnabled {
+    NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
+    // Check if the key exists and return false if the value is null or does not exist
+    if (![userDefaults objectForKey:AL_KM_SSL_PINNING_ENABLED]) {
+        return NO;
+    }
+    return [userDefaults boolForKey:AL_KM_SSL_PINNING_ENABLED];
+}
+
 + (void)setAssignedTeamIds:(NSMutableArray *)assignedTeamIDs {
     NSUserDefaults *userDefaults = [ALUserDefaultsHandler getUserDefaults];
     [userDefaults setObject:assignedTeamIDs forKey:AL_ASSIGNED_TEAM_IDS];
