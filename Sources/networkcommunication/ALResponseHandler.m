@@ -222,16 +222,17 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 - (void)URLSession:(NSURLSession *)session
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler {
-
-    if (![challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
-        return;
-    }
-
+    
+    
     if (![ALUserDefaultsHandler isKMSSLPinningEnabled]) {
         // SSL pinning is disabled, trust the server's certificate
         NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
         completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+        return;
+    }
+
+    if (![challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
         return;
     }
     
