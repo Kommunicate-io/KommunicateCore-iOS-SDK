@@ -17,7 +17,7 @@
 #import "ALUserDetailListFeed.h"
 #import "ALLogger.h"
 
-NSString * const ApplozicDomain = @"Applozic";
+NSString * const KMCoreDomain = @"KMCore";
 
 typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
     MessageKeyNotPresent = 2
@@ -586,7 +586,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                   withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
     
     if (messageKey == nil) {
-        NSError *error =  [NSError errorWithDomain:ApplozicDomain
+        NSError *error =  [NSError errorWithDomain:KMCoreDomain
                                               code:MessageKeyNotPresent
                                           userInfo:@{NSLocalizedDescriptionKey : @"Message key is nil"}];
         completion(nil,error);
@@ -611,7 +611,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:responseString];
         
         if (![apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            NSError *error = [NSError errorWithDomain:ApplozicDomain
+            NSError *error = [NSError errorWithDomain:KMCoreDomain
                                                  code:MessageKeyNotPresent
                                              userInfo:@{NSLocalizedDescriptionKey : @"Failed to report message api error occurred"}];
             completion(nil, error);
