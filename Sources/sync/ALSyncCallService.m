@@ -2,7 +2,7 @@
 //  ALSyncCallService.m
 //  Applozic
 //
-//  Created by Applozic Inc on 12/14/15.
+//  Created by Kommunicate on 12/14/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 

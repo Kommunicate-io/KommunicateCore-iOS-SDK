@@ -2,7 +2,7 @@
 //  ALMQTTConversationService.m
 //  Applozic
 //
-//  Created by Applozic Inc on 11/27/15.
+//  Created by Kommunicate on 11/27/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
