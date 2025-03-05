@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by Divjyot Singh on 05/11/15.
-//  Copyright © 2015 applozic Inc. All rights reserved.
+//  Copyright © 2015 kommunicate. All rights reserved.
 //
 
 static int CONTACT_PAGE_SIZE = 100;

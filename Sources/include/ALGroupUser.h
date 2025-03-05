@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by Sunil on 14/02/18.
-//  Copyright © 2018 applozic Inc. All rights reserved.
+//  Copyright © 2018 kommunicate. All rights reserved.
 //
 #import "ALJson.h"
 #import <Foundation/Foundation.h>

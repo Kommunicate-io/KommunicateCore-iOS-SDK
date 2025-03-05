@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by devashish on 25/04/2016.
-//  Copyright © 2016 applozic Inc. All rights reserved.
+//  Copyright © 2016 kommunicate. All rights reserved.
 //
 
 #import "ALContactsResponse.h"

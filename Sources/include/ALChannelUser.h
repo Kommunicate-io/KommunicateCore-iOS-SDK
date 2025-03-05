@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by Adarsh Kumar Mishra on 12/8/16.
-//  Copyright © 2016 applozic Inc. All rights reserved.
+//  Copyright © 2016 kommunicate. All rights reserved.
 //
 
 #import "ALJson.h"

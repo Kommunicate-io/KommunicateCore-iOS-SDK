@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by Divjyot Singh on 07/01/16.
-//  Copyright © 2016 applozic Inc. All rights reserved.
+//  Copyright © 2016 kommunicate. All rights reserved.
 //
 
 #import "ALPushAssist.h"
