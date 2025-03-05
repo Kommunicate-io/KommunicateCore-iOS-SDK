@@ -49,7 +49,7 @@
         if (!urlRequest
             && !fileUrl) {
 
-            NSError *urlError = [NSError errorWithDomain:@"Applozic"
+            NSError *urlError = [NSError errorWithDomain:@"KMCore"
                                                     code:1
                                                 userInfo:@{NSLocalizedDescriptionKey : @"Failed to get the download url"}];
 
@@ -83,7 +83,7 @@
         if (!urlRequest
             && !fileUrl) {
 
-            NSError *urlError = [NSError errorWithDomain:@"Applozic"
+            NSError *urlError = [NSError errorWithDomain:@"KMCore"
                                                     code:1
                                                 userInfo:@{NSLocalizedDescriptionKey : @"Failed to get the download url"}];
 
@@ -465,7 +465,7 @@
             completion(status, nil);
             return;
         } else {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+            NSError *responseError = [NSError errorWithDomain:@"KMCore"
                                                          code:1
                                                      userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message due to internal error"}];
             completion(nil, responseError);
@@ -501,7 +501,7 @@
             completion(status, nil);
             return;
         } else {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+            NSError *responseError = [NSError errorWithDomain:@"KMCore"
                                                          code:1
                                                      userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message thread due to internal error"}];
             completion(nil, responseError);
@@ -555,7 +555,7 @@ NSString *latSyncCallTime = @"";
                  withCompletion:(void (^)( ALSyncMessageFeed *, NSError *))completion {
     if (!deviceKeyString) {
         NSError *deviceKeyNilError = [NSError
-                                      errorWithDomain:@"Applozic"
+                                      errorWithDomain:@"KMCore"
                                       code:1
                                       userInfo:[NSDictionary
                                                 dictionaryWithObject:@"Device key is nil"
@@ -645,7 +645,7 @@ NSString *latSyncCallTime = @"";
         if (![[theJson valueForKey:@"status"] isEqualToString:AL_RESPONSE_SUCCESS]) {
             ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",theError.description);
             NSError *error = [NSError
-                              errorWithDomain:@"Applozic"
+                              errorWithDomain:@"KMCore"
                               code:1
                               userInfo:[NSDictionary
                                         dictionaryWithObject:@"Status fail in response"
@@ -679,7 +679,7 @@ NSString *latSyncCallTime = @"";
 
     if (!request.searchText || request.searchText.length == 0 ) {
         NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
+                          errorWithDomain:@"KMCore"
                           code:1
                           userInfo:[NSDictionary
                                     dictionaryWithObject:@"Search text is empty or nil"
@@ -707,7 +707,7 @@ NSString *latSyncCallTime = @"";
         if (![[theJson valueForKey:@"status"] isEqualToString:AL_RESPONSE_SUCCESS]) {
             ALSLog(ALLoggerSeverityError, @"Search messages ERROR :: %@",theError.description);
             NSError *error = [NSError
-                              errorWithDomain:@"Applozic"
+                              errorWithDomain:@"KMCore"
                               code:1
                               userInfo:[NSDictionary
                                         dictionaryWithObject:@"Status fail in response"
@@ -822,7 +822,7 @@ NSString *latSyncCallTime = @"";
         if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             completion(response, nil);
         } else {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+            NSError *responseError = [NSError errorWithDomain:@"KMCore"
                                                          code:1
                                                      userInfo:@{NSLocalizedDescriptionKey : @"Failed to delete the message for all"}];
             completion(nil, responseError);

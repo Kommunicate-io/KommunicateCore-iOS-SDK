@@ -325,7 +325,7 @@ dispatch_queue_t channelUserbackgroundQueue;
         }];
     } else {
         ALSLog(ALLoggerSeverityError, @"ERROR : CHANNEL NAME MISSING");
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Channel name is nil" forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Channel name is nil"}];
         completion(nil, failError);
     }
 }
@@ -354,7 +354,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             }
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Channel name is nil" forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Channel name is nil"}];
         ALSLog(ALLoggerSeverityError, @"ERROR : CHANNEL NAME MISSING");
         completion(nil, failError);
     }
@@ -399,13 +399,13 @@ dispatch_queue_t channelUserbackgroundQueue;
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 completion(response.alChannel, nil);
             } else {
-                NSError *failError = [NSError errorWithDomain:@"Applozic" code:0 userInfo:[NSDictionary dictionaryWithObject:@"Failed to report message api error occurred." forKey:NSLocalizedDescriptionKey]];
+                NSError *failError = [NSError errorWithDomain:@"KMCore" code:0 userInfo:[NSDictionary dictionaryWithObject:@"Failed to report message api error occurred." forKey:NSLocalizedDescriptionKey]];
                 completion(nil, failError);
             }
         }];
     } else {
         ALSLog(ALLoggerSeverityError, @"EMPTY_BROADCAST_MEMBER_LIST");
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:0 userInfo:[NSDictionary dictionaryWithObject:@"Empty member list is passed in broadcast." forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:0 userInfo:@{NSLocalizedDescriptionKey : @"Empty member list is passed in broadcast."}];
         completion(nil, failError);
     }
 }
@@ -468,7 +468,7 @@ dispatch_queue_t channelUserbackgroundQueue;
         }];
     } else {
         ALSLog(ALLoggerSeverityError, @"ERROR : CHANNEL NAME MISSING");
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key or userId is nil" forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel key or userId is nil"}];
         completion(nil, failError);
         return;
     }
@@ -496,7 +496,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             completion(error,response);
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key or userId is nil while adding a member." forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel key or userId is nil while adding a member."}];
         completion(failError, nil);
     }
 }
@@ -522,7 +522,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             completion(error,response);
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key or userId is nil while removing a member from channel." forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel key or userId is nil while removing a member from channel."}];
         completion(failError, nil);
     }
 }
@@ -547,7 +547,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             completion(error, response);
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key and clientChannelKey is nil while deleting channel." forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel key and clientChannelKey is nil while deleting channel."}];
         completion(failError, nil);
     }
 }
@@ -571,7 +571,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             completion(error);
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key or userId is nil while leaving Channel." forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel key or userId is nil while leaving Channel."}];
         completion(failError);
     }
 }
@@ -608,7 +608,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             completion(error,response);
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key or userId is nil while leaving Channel." forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel key or userId is nil while leaving Channel."}];
         completion(failError, nil);
     }
 }
@@ -649,7 +649,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             completion(error);
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key or clientChannelKey is nil while updating channel." forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel key or clientChannelKey is nil while updating channel."}];
         completion(failError);
     }
 }
@@ -672,7 +672,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             completion(error,response);
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel key or clientChannelKey is nil while updating channel." forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel key or clientChannelKey is nil while updating channel."}];
         completion(failError, nil);
     }
 }
@@ -719,7 +719,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             completion(error);
         }];
     } else {
-        NSError *failError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Parameter channel or client key or meta data is nil" forKey:NSLocalizedDescriptionKey]];
+        NSError *failError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Parameter channel or client key or meta data is nil"}];
         completion(failError);
     }
 }
@@ -756,9 +756,9 @@ dispatch_queue_t channelUserbackgroundQueue;
 
     if (!channelKey) {
         NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
-                          code:1
-                          userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark conversation read the channelKey is nil" forKey:NSLocalizedDescriptionKey]];
+                                  errorWithDomain:@"KMCore"
+                                  code:1
+                                  userInfo:@{NSLocalizedDescriptionKey : @"Failed to mark conversation read the channelKey is nil"}];
         completion(nil, error);
         return;
     }
@@ -790,15 +790,15 @@ dispatch_queue_t channelUserbackgroundQueue;
 - (void)muteChannel:(ALMuteRequest *)muteRequest withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
     if (!muteRequest) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
-                                            userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute channel ALMuteRequest is nil" forKey:NSLocalizedDescriptionKey]];
+        NSError *nilError = [NSError errorWithDomain:@"KMCore" code:1
+                                                    userInfo:@{NSLocalizedDescriptionKey : @"Failed to mute channel ALMuteRequest is nil"}];
         completion(nil, nilError);
         return;
     }
 
     if (!muteRequest.notificationAfterTime) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
-                                            userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute channel where notificationAfterTime is nil" forKey:NSLocalizedDescriptionKey]];
+        NSError *nilError = [NSError errorWithDomain:@"KMCore" code:1
+                                                    userInfo:@{NSLocalizedDescriptionKey : @"Failed to mute channel where notificationAfterTime is nil"}];
         completion(nil, nilError);
         return;
     }
@@ -836,9 +836,9 @@ dispatch_queue_t channelUserbackgroundQueue;
                    withCompletion:(void(^)(NSMutableArray *channelInfoList, NSError *error))completion {
 
     if (!category) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic"
-                                                code:1
-                                            userInfo:@{NSLocalizedDescriptionKey:@"Category is nil while fetching list channels under category"}];
+        NSError *nilError = [NSError errorWithDomain:@"KMCore"
+                                                        code:1
+                                                    userInfo:@{NSLocalizedDescriptionKey:@"Category is nil while fetching list channels under category"}];
 
         completion(nil, nilError);
         return;
@@ -874,7 +874,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                        withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
     if (!contactsGroupId) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic"
+        NSError *nilError = [NSError errorWithDomain:@"KMCore"
                                                 code:1
                                             userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId is nil while adding a member to contacts group"}];
 
@@ -896,7 +896,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                  withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
     if (!contactsGroupId) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic"
+        NSError *nilError = [NSError errorWithDomain:@"KMCore"
                                                 code:1
                                             userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId is nil while adding a member to contacts group"}];
 
@@ -919,7 +919,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 
     if (!contactsGroupId) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic"
+        NSError *nilError = [NSError errorWithDomain:@"KMCore"
                                                 code:1
                                             userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId is nil while list fetching a list of memebers from contacts group"}];
 
@@ -956,7 +956,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                       withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
     if (!contactsGroupId || !userId) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic"
+        NSError *nilError = [NSError errorWithDomain:@"KMCore"
                                                 code:1
                                             userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId or userId is nil while removing a memeber from contacts group"}];
 
@@ -977,7 +977,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
 
     if (!contactsGroupId || !userId) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic"
+        NSError *nilError = [NSError errorWithDomain:@"KMCore"
                                                 code:1
                                             userInfo:@{NSLocalizedDescriptionKey:@"Contacts GroupId or userId is nil while removing a member from contacts group"}];
 
@@ -1036,7 +1036,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
     if (!channelKey
         && !clientChannelKey) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic"
+        NSError *nilError = [NSError errorWithDomain:@"KMCore"
                                                 code:1
                                             userInfo:@{NSLocalizedDescriptionKey:@"Channel key or client channel key is nil"}];
 
@@ -1107,7 +1107,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
     
     if (!channelInfo.groupMemberList) {
-        NSError *memberError = [NSError errorWithDomain:@"Applozic"
+        NSError *memberError = [NSError errorWithDomain:@"KMCore"
                                                    code:2
                                                userInfo:@{NSLocalizedDescriptionKey:@"Nil in group member list"}];
         

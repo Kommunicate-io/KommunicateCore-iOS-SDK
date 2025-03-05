@@ -24,9 +24,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 -(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
 
     if (![ALUserDefaultsHandler isLoggedIn] || ![ALUserDefaultsHandler getApplicationKey]) {
-        NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
-                                                userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in or applicationId is nil"
-                                                                                     forKey:NSLocalizedDescriptionKey]];
+        NSError *reponseError = [NSError errorWithDomain:@"KMCore"
+                                                    code:1
+                                                userInfo:@{NSLocalizedDescriptionKey: @"User is not logged in or applicationId is nil"}];
         completion(nil, reponseError);
         return;
     }
@@ -57,8 +57,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
             NSError *reponseError =
-            [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON FOR REFRESH AUTH TOKEN"
-                                                                                             forKey:NSLocalizedDescriptionKey]];
+            [NSError errorWithDomain:@"KMCore"
+                                code:1
+                            userInfo:@{NSLocalizedDescriptionKey: @"ERROR IN JSON FOR REFRESH AUTH TOKEN"}];
             completion(nil, reponseError);
             return;
         }
@@ -220,7 +221,9 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 }
 
 - (NSError *)errorWithDescription:(NSString *)reason {
-    return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:reason forKey:NSLocalizedDescriptionKey]];
+    return [NSError errorWithDomain:@"KMCore"
+                               code:1
+                           userInfo:@{NSLocalizedDescriptionKey: reason}];
 }
 
 - (NSError *)checkForServerError:(NSString *)response {

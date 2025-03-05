@@ -98,13 +98,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     @try
     {
         if (![ALUserDefaultsHandler isLoggedIn]) {
-            NSError *userIsNotLoginErrror =  [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+            NSError *userIsNotLoginErrror =  [NSError errorWithDomain:@"KMCore" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
             completion(false, userIsNotLoginErrror);
             return;
         }
 
         if (self.session && self.session.status == MQTTSessionStatusConnecting ) {
-            NSError *sessionConnectingError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"MQTT session connection in progress" forKey:NSLocalizedDescriptionKey]];
+            NSError *sessionConnectingError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"MQTT session connection in progress"}];
             completion(false, sessionConnectingError);
             return;
         }
@@ -190,7 +190,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     dispatch_async(dispatch_get_main_queue (),^{
         @try {
             if (![ALUserDefaultsHandler isLoggedIn]) {
-                NSError *userIsNotLoginErrror =  [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
+                NSError *userIsNotLoginErrror = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"User is not logged in"}];
                 completion(false, userIsNotLoginErrror);
                 return;
             }
@@ -213,7 +213,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                     }
 
                     if (!topic) {
-                        NSError *topicNilError = [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:@"Failed to subscribe topic is nil" forKey:NSLocalizedDescriptionKey]];
+                        NSError *topicNilError = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Failed to subscribe topic is nil"}];
                         completion(false, topicNilError);
                         return;
                     }

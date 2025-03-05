@@ -273,7 +273,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         if ([responseJSONString isKindOfClass:[NSString class]] &&
             [responseJSONString isEqualToString:AL_RESPONSE_ERROR]) {
             NSError *error = [NSError
-                              errorWithDomain:@"Applozic"
+                              errorWithDomain:@"KMCore"
                               code:1
                               userInfo:[NSDictionary dictionaryWithObject:@"Got some error failed to fetch the registered contacts" forKey:NSLocalizedDescriptionKey]];
             completion(nil, error);
@@ -338,7 +338,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                 completionMark(userDetailArray, theError);
             } else {
                 NSError *error = [NSError
-                                  errorWithDomain:@"Applozic"
+                                  errorWithDomain:@"KMCore"
                                   code:1
                                   userInfo:[NSDictionary dictionaryWithObject:@"Failed to fetch user detail" forKey:NSLocalizedDescriptionKey]];
                 completionMark(nil, error);
@@ -404,7 +404,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         ALSLog(ALLoggerSeverityInfo, @"UPDATE_USER_DISPLAY_NAME/PROFILE_IMAGE/USER_STATUS :: %@",(NSString *)theJson);
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
-            NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+            NSError *reponseError = [NSError errorWithDomain:@"KMCore" code:1
                                                     userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON STATUS WHILE UPDATING USER STATUS"
                                                                                          forKey:NSLocalizedDescriptionKey]];
             completionHandler(theJson, reponseError);
@@ -444,7 +444,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         ALAPIResponse *apiResponse = [[ALAPIResponse alloc] initWithJSONString:(NSString *)theJson];
         if ([apiResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
             NSError *reponseError =
-            [NSError errorWithDomain:@"Applozic"
+            [NSError errorWithDomain:@"KMCore"
                                 code:1
                             userInfo: [NSDictionary
                                        dictionaryWithObject:@"Error in updating user"
@@ -486,7 +486,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             }
             completionMark(userDetailArray, nil);
         } else {
-            NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+            NSError *reponseError = [NSError errorWithDomain:@"KMCore" code:1
                                                     userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN JSON STATUS WHILE FETCHING USER DETAILS"
                                                                                          forKey:NSLocalizedDescriptionKey]];
             completionMark(nil, reponseError);

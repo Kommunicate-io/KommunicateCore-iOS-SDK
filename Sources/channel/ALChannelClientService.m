@@ -493,11 +493,9 @@ NSString *latSyncCallTimeForChannel = @"";
                 }
             } else {
                 NSError *error = [NSError
-                                  errorWithDomain:@"Applozic"
+                                  errorWithDomain:@"KMCore"
                                   code:1
-                                  userInfo:[NSDictionary
-                                            dictionaryWithObject:@"Status fail in response"
-                                            forKey:NSLocalizedDescriptionKey]];
+                                  userInfo:@{NSLocalizedDescriptionKey : @"Status fail in response"}];
                 latSyncCallTimeForChannel = @"";
                 completion(error, nil);
                 return;
@@ -745,9 +743,9 @@ NSString *latSyncCallTimeForChannel = @"";
             }
             completion(channelInfoList, nil);
         } else {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+            NSError *responseError = [NSError errorWithDomain:@"KMCore"
                                                          code:1
-                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to channel list for category"}];
+                                                         userInfo:@{NSLocalizedDescriptionKey : @"Failed to channel list for category"}];
             completion(nil, responseError);
         }
     }];
@@ -793,9 +791,10 @@ NSString *latSyncCallTimeForChannel = @"";
             }
             completion(channelInfoList, error);
         } else {
-            NSError *responseError = [NSError errorWithDomain:@"Applozic"
+            NSError *responseError = [NSError errorWithDomain:@"KMCore"
                                                          code:1
-                                                     userInfo:@{NSLocalizedDescriptionKey : @"Failed to get list of channel"}];
+                                                         userInfo:@{NSLocalizedDescriptionKey : @"Failed to get list of channel"}];
+
             completion(nil, responseError);
         }
     }];
@@ -932,9 +931,9 @@ NSString *latSyncCallTimeForChannel = @"";
                             withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
     if (userId == nil) {
-        NSError *responseError = [NSError errorWithDomain:@"Applozic"
+        NSError *responseError = [NSError errorWithDomain:@"KMCore"
                                                      code:1
-                                                 userInfo:@{NSLocalizedDescriptionKey : @"UserId is nil in removing a member from contact group"}];
+                                                     userInfo:@{NSLocalizedDescriptionKey : @"UserId is nil in removing a member from contact group"}];
         completion(nil, responseError);
         return;
     }

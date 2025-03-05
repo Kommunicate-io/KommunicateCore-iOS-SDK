@@ -24,7 +24,7 @@
 
     if (!encodedData) {
         if (error != NULL) {
-            *error = [NSError errorWithDomain:@"Applozic"
+            *error = [NSError errorWithDomain:@"KMCore"
                                          code:1
                                      userInfo:@{NSLocalizedDescriptionKey : @"String to Data conversion error"}];
         }
@@ -133,7 +133,7 @@
 
     if (errorMessage) {
         if (error != NULL) {
-            *error = [NSError errorWithDomain:@"Applozic"
+            *error = [NSError errorWithDomain:@"KMCore"
                                          code:1
                                      userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
         }

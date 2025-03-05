@@ -310,7 +310,7 @@ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NS
 }
 
 - (NSError *)errorWithDescription:(NSString *)reason {
-    return [NSError errorWithDomain:@"Applozic" code:1 userInfo:[NSDictionary dictionaryWithObject:reason forKey:NSLocalizedDescriptionKey]];
+    return [NSError errorWithDomain:@"KMCore" code:1 userInfo:[NSDictionary dictionaryWithObject:reason forKey:NSLocalizedDescriptionKey]];
 }
 
 - (NSError *)checkForServerError:(NSString *)response {

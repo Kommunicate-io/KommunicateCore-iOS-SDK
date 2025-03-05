@@ -154,7 +154,7 @@
         return jWTObj;
     } @catch (NSException *exception) {
         NSString *exceptionMessage =  exception.reason;
-        *error = [NSError errorWithDomain:@"Applozic"
+        *error = [NSError errorWithDomain:@"KMCore"
                                      code:1
                                  userInfo:@{NSLocalizedDescriptionKey : exceptionMessage}];
     }
