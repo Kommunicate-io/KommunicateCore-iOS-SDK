@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by Divjyot Singh on 05/11/15.
-//  Copyright © 2015 applozic Inc. All rights reserved.
+//  Copyright © 2015 kommunicate. All rights reserved.
 //
 
 static int CONTACT_PAGE_SIZE = 100;
@@ -178,7 +178,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (!userId || !displayName) {
         NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
+                          errorWithDomain:@"KMCore"
                           code:1
                           userInfo:[NSDictionary dictionaryWithObject:@"UserId or display name details is missing" forKey:NSLocalizedDescriptionKey]];
         completion(nil, error);
@@ -208,7 +208,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (!contactId) {
         NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
+                          errorWithDomain:@"KMCore"
                           code:1
                           userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark conversation read userId is nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, error);
@@ -243,7 +243,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (!alMessage) {
         NSError *apiError = [NSError
-                             errorWithDomain:@"Applozic"
+                             errorWithDomain:@"KMCore"
                              code:1
                              userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark message as read ALMessage passed as nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, apiError);
@@ -252,7 +252,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (!pairedkeyValue) {
         NSError *apiError = [NSError
-                             errorWithDomain:@"Applozic"
+                             errorWithDomain:@"KMCore"
                              code:1
                              userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark message as read pairedMessageKey passed as nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, apiError);
@@ -274,7 +274,7 @@ static int CONTACT_PAGE_SIZE = 100;
             completion(response, nil);
         } else {
             NSError *apiError = [NSError
-                                 errorWithDomain:@"Applozic"
+                                 errorWithDomain:@"KMCore"
                                  code:1
                                  userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark message as read api error occurred" forKey:NSLocalizedDescriptionKey]];
             completion(nil, apiError);
@@ -301,7 +301,7 @@ static int CONTACT_PAGE_SIZE = 100;
 - (void)blockUser:(NSString *)userId withCompletionHandler:(void(^)(NSError *error, BOOL userBlock))completion {
     if (!userId) {
         NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
+                          errorWithDomain:@"KMCore"
                           code:1
                           userInfo:[NSDictionary dictionaryWithObject:@"Failed to block user where userId is nil" forKey:NSLocalizedDescriptionKey]];
         completion(error, NO);
@@ -317,7 +317,7 @@ static int CONTACT_PAGE_SIZE = 100;
                 return;
             } else {
                 NSError *apiError = [NSError
-                                     errorWithDomain:@"Applozic"
+                                     errorWithDomain:@"KMCore"
                                      code:1
                                      userInfo:[NSDictionary dictionaryWithObject:@"Failed to block user api error occurred" forKey:NSLocalizedDescriptionKey]];
                 completion(apiError, NO);
@@ -352,7 +352,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (!userId) {
         NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
+                          errorWithDomain:@"KMCore"
                           code:1
                           userInfo:[NSDictionary dictionaryWithObject:@"Failed to unblock user where userId is nil" forKey:NSLocalizedDescriptionKey]];
         completion(error, NO);
@@ -369,7 +369,7 @@ static int CONTACT_PAGE_SIZE = 100;
                 return;
             } else {
                 NSError *apiError = [NSError
-                                     errorWithDomain:@"Applozic"
+                                     errorWithDomain:@"KMCore"
                                      code:1
                                      userInfo:[NSDictionary dictionaryWithObject:@"Failed to unblock user api error occurred" forKey:NSLocalizedDescriptionKey]];
                 completion(apiError, NO);
@@ -476,7 +476,7 @@ static int CONTACT_PAGE_SIZE = 100;
                withCompletion:(void (^)(id theJson, NSError *error))completion {
     
     if (!displayName && !imageLink && !status) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *nilError = [NSError errorWithDomain:@"KMCore" code:1
                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update login user details the parameters passed are nil"
                                                                                  forKey:NSLocalizedDescriptionKey]];
         completion(nil, nilError);
@@ -535,7 +535,7 @@ static int CONTACT_PAGE_SIZE = 100;
         withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
     
     if (!oldPassword || !newPassword) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *nilError = [NSError errorWithDomain:@"KMCore" code:1
                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to update old password or new password is nil"
                                                                                  forKey:NSLocalizedDescriptionKey]];
         completion(nil, nilError);
@@ -546,7 +546,7 @@ static int CONTACT_PAGE_SIZE = 100;
         
         if (!theError) {
             if ([alAPIResponse.status isEqualToString:AL_RESPONSE_ERROR]) {
-                NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+                NSError *reponseError = [NSError errorWithDomain:@"KMCore" code:1
                                                         userInfo:[NSDictionary dictionaryWithObject:@"ERROR IN UPDATING PASSWORD"
                                                                                              forKey:NSLocalizedDescriptionKey]];
                 completion(alAPIResponse, reponseError);
@@ -572,7 +572,7 @@ static int CONTACT_PAGE_SIZE = 100;
 - (void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
     if (!userName) {
-        NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *reponseError = [NSError errorWithDomain:@"KMCore" code:1
                                                 userInfo:[NSDictionary dictionaryWithObject:@"Error userName is nil " forKey:NSLocalizedDescriptionKey]];
         completion(nil, reponseError);
         return;
@@ -595,7 +595,7 @@ static int CONTACT_PAGE_SIZE = 100;
             completion(response, error);
             return;
         }
-        NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *reponseError = [NSError errorWithDomain:@"KMCore" code:1
                                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to fetch users due to api error occurred" forKey:NSLocalizedDescriptionKey]];
         
         completion(nil, reponseError);
@@ -641,7 +641,7 @@ static int CONTACT_PAGE_SIZE = 100;
   withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion {
     
     if (!alMuteRequest) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *nilError = [NSError errorWithDomain:@"KMCore" code:1
                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute user ALMuteRequest is nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, nilError);
         return;
@@ -649,7 +649,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     
     if (!alMuteRequest.userId || !alMuteRequest.notificationAfterTime) {
-        NSError *nilError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *nilError = [NSError errorWithDomain:@"KMCore" code:1
                                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute user where userId or notificationAfterTime is nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, nilError);
         return;
@@ -668,7 +668,7 @@ static int CONTACT_PAGE_SIZE = 100;
             return;
         }
         
-        NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *reponseError = [NSError errorWithDomain:@"KMCore" code:1
                                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to mute user api error occurred" forKey:NSLocalizedDescriptionKey]];
         completion(nil, reponseError);
     }];
@@ -680,7 +680,7 @@ static int CONTACT_PAGE_SIZE = 100;
                   withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
     
     if (!messageKey) {
-        NSError *reponseError = [NSError errorWithDomain:@"Applozic" code:1
+        NSError *reponseError = [NSError errorWithDomain:@"KMCore" code:1
                                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to report message the key is nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, reponseError);
         return;
@@ -696,7 +696,7 @@ static int CONTACT_PAGE_SIZE = 100;
     if (!alContact) {
         ALSLog(ALLoggerSeverityError, @"Contact details of logged-in user not present");
         NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
+                          errorWithDomain:@"KMCore"
                           code:1
                           userInfo:[NSDictionary dictionaryWithObject:@"Contact not present" forKey:NSLocalizedDescriptionKey]];
         completion(NO, error);
@@ -730,7 +730,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (![ALUserDefaultsHandler isLoggedIn]) {
         NSError *error = [NSError
-                          errorWithDomain:@"Applozic"
+                          errorWithDomain:@"KMCore"
                           code:1
                           userInfo:[NSDictionary dictionaryWithObject:@"User is not logged in" forKey:NSLocalizedDescriptionKey]];
         completion(nil, error);

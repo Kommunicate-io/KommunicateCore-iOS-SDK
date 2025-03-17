@@ -2,8 +2,8 @@
 //  ALSyncCallService.h
 //  Applozic
 //
-//  Created by Applozic Inc on 12/14/15.
-//  Copyright © 2015 applozic Inc. All rights reserved.
+//  Created by Kommunicate on 12/14/15.
+//  Copyright © 2015 kommunicate. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

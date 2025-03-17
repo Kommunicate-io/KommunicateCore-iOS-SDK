@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by Nitin on 21/10/17.
-//  Copyright © 2017 applozic Inc. All rights reserved.
+//  Copyright © 2017 kommunicate. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

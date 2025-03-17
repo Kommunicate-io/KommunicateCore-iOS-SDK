@@ -3,7 +3,7 @@
 //  ApplozicCore
 //
 //  Created by apple on 12/03/21.
-//  Copyright © 2021 applozic Inc. All rights reserved.
+//  Copyright © 2021 kommunicate. All rights reserved.
 //
 
 #import "ALJWT.h"
@@ -154,7 +154,7 @@
         return jWTObj;
     } @catch (NSException *exception) {
         NSString *exceptionMessage =  exception.reason;
-        *error = [NSError errorWithDomain:@"Applozic"
+        *error = [NSError errorWithDomain:@"KMCore"
                                      code:1
                                  userInfo:@{NSLocalizedDescriptionKey : exceptionMessage}];
     }

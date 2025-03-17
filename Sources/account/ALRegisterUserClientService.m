@@ -3,7 +3,7 @@
 //  ChatApp
 //
 //  Created by devashish on 18/09/2015.
-//  Copyright (c) 2015 AppLogic. All rights reserved.
+//  Copyright (c) 2015 kommunicate. All rights reserved.
 //
 
 #import "ALRegisterUserClientService.h"
@@ -195,7 +195,7 @@
     ALSLog(ALLoggerSeverityInfo, @"ApnDeviceToken ## %@", apnDeviceToken);
 
     if (apnDeviceToken.length == 0) {
-        NSError *error = [NSError errorWithDomain:@"Applozic"
+        NSError *error = [NSError errorWithDomain:@"KMCore"
                                              code:1
                                          userInfo:@{NSLocalizedDescriptionKey : @"ApnDeviceToken can not be empty or nil"}];
 
@@ -217,7 +217,7 @@
                      withCompletion:(void(^)(ALRegistrationResponse *response, NSError *error)) completion {
 
     if (apnsOrVoipDeviceToken.length == 0) {
-        NSError *error = [NSError errorWithDomain:@"Applozic"
+        NSError *error = [NSError errorWithDomain:@"KMCore"
                                              code:1
                                          userInfo:@{NSLocalizedDescriptionKey : @"ApnOrVoipDeviceToken can not be empty or nil"}];
 
@@ -249,7 +249,7 @@
                 return;
             }
             if (![response isRegisteredSuccessfully]) {
-                NSError *error = [NSError errorWithDomain:@"Applozic"
+                NSError *error = [NSError errorWithDomain:@"KMCore"
                                                      code:1
                                                  userInfo:@{NSLocalizedDescriptionKey : response.message}];
                 completion(nil, error);

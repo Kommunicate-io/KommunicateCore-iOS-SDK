@@ -3,7 +3,7 @@
 //  ApplozicCore
 //
 //  Created by Sunil on 11/03/21.
-//  Copyright © 2021 applozic Inc. All rights reserved.
+//  Copyright © 2021 kommunicate. All rights reserved.
 //
 
 #import "ALSecureStore.h"
@@ -24,7 +24,7 @@
 
     if (!encodedData) {
         if (error != NULL) {
-            *error = [NSError errorWithDomain:@"Applozic"
+            *error = [NSError errorWithDomain:@"KMCore"
                                          code:1
                                      userInfo:@{NSLocalizedDescriptionKey : @"String to Data conversion error"}];
         }
@@ -133,7 +133,7 @@
 
     if (errorMessage) {
         if (error != NULL) {
-            *error = [NSError errorWithDomain:@"Applozic"
+            *error = [NSError errorWithDomain:@"KMCore"
                                          code:1
                                      userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
         }

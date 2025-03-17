@@ -3,7 +3,7 @@
 //  ChatApp
 //
 //  Created by devashish on 28/09/2015.
-//  Copyright (c) 2015 AppLogic. All rights reserved.
+//  Copyright (c) 2015 kommunicate. All rights reserved.
 //
 
 // NEW CODES FOR VERSION CODE 105...
