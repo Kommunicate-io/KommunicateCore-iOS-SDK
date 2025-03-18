@@ -1,6 +1,8 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
+## [1.2.6] 2025-03-18
+- Internal code refactor.
 ## [1.2.5] 2024-12-24
 - SSL Pinning Enable Disable Configuration Added.
 ## [1.2.4] 2024-12-02
