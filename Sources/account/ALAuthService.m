@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by Sunil on 11/06/20.
-//  Copyright © 2020 applozic Inc. All rights reserved.
+//  Copyright © 2020 kommunicate. All rights reserved.
 //
 
 #import "ALAuthService.h"
@@ -30,9 +30,9 @@ static NSString *const VALID_UPTO = @"validUpto";
 - (NSError *)decodeAndSaveToken:(NSString *)authToken {
     NSError *jwtError;
     if (!authToken) {
-        NSError *error = [NSError errorWithDomain:@"Applozic"
-                                              code:1
-                                          userInfo:@{NSLocalizedDescriptionKey : @"AuthToken is nil"}];
+        NSError *error = [NSError errorWithDomain:@"KMCore"
+                                             code:1
+                                         userInfo:@{NSLocalizedDescriptionKey : @"AuthToken is nil"}];
         return error;
     }
 

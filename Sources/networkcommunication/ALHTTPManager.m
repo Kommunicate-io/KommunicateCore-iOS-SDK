@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by apple on 25/03/19.
-//  Copyright © 2019 applozic Inc. All rights reserved.
+//  Copyright © 2019 kommunicate. All rights reserved.
 //
 
 #import "ALHTTPManager.h"
@@ -422,7 +422,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
               withFilePath:(NSString *)filePath uploadURL:(NSString *)uploadURL withCompletion:(void(^)(NSData *data,NSError *error))completion {
 
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        NSError *fileError = [NSError errorWithDomain:@"Applozic"
+        NSError *fileError = [NSError errorWithDomain:@"KMCore"
                                                  code:errSSLInternal
                                              userInfo:@{NSLocalizedDescriptionKey : @"File does not exist "}];
 

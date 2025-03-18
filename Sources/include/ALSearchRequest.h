@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by apple on 05/09/19.
-//  Copyright © 2019 applozic Inc. All rights reserved.
+//  Copyright © 2019 kommunicate. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

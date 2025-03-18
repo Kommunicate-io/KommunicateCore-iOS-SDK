@@ -3,7 +3,7 @@
 //  Applozic
 //
 //  Created by Sunil on 25/09/18.
-//  Copyright © 2018 applozic Inc. All rights reserved.
+//  Copyright © 2018 kommunicate. All rights reserved.
 //
 
 #import "ALAttachmentService.h"

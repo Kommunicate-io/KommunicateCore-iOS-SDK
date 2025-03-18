@@ -127,7 +127,7 @@ static ALMessageClientService *alMsgClientService;
                withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion {
 
     if (!messageListRequest) {
-        NSError *messageListRequestError = [NSError errorWithDomain:@"Applozic"
+        NSError *messageListRequestError = [NSError errorWithDomain:@"KMCore"
                                                                code:1
                                                            userInfo:@{NSLocalizedDescriptionKey : @"MessageListRequest is nil"}];
 
@@ -136,7 +136,7 @@ static ALMessageClientService *alMsgClientService;
     }
 
     if (!messageListRequest.userId && !messageListRequest.channelKey) {
-        NSError *requestParametersError = [NSError errorWithDomain:@"Applozic"
+        NSError *requestParametersError = [NSError errorWithDomain:@"KMCore"
                                                               code:1
                                                           userInfo:@{NSLocalizedDescriptionKey : @"UserId and channelKey is nil"}];
         completion(nil, requestParametersError, nil);
@@ -291,7 +291,7 @@ static ALMessageClientService *alMsgClientService;
 - (void)sendMessages:(ALMessage *)alMessage withCompletion:(void(^)(NSString *message, NSError *error)) completion {
 
     if (!alMessage) {
-        NSError *messageError = [NSError errorWithDomain:@"Applozic"
+        NSError *messageError = [NSError errorWithDomain:@"KMCore"
                                                     code:MessageNotPresent
                                                 userInfo:@{NSLocalizedDescriptionKey : @"Empty message passed"}];
 
@@ -334,7 +334,7 @@ static ALMessageClientService *alMsgClientService;
             ALSendMessageResponse *response = [[ALSendMessageResponse alloc] initWithJSONString:apiResponse.response];
 
             if (!response.isSuccess) {
-                theError = [NSError errorWithDomain:@"Applozic" code:1
+                theError = [NSError errorWithDomain:@"KMCore" code:1
                                            userInfo:[NSDictionary
                                                      dictionaryWithObject:@"Error sending message"
                                                      forKey:NSLocalizedDescriptionKey]];
@@ -541,7 +541,7 @@ static ALMessageClientService *alMsgClientService;
 - (void)deleteMessage:(NSString *)keyString andContactId:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion {
 
     if (!keyString) {
-        NSError *responseError = [NSError errorWithDomain:@"Applozic"
+        NSError *responseError = [NSError errorWithDomain:@"KMCore"
                                                      code:1
                                                  userInfo:@{NSLocalizedDescriptionKey : @"Message key is nil"}];
         completion(nil, responseError);
@@ -584,7 +584,7 @@ static ALMessageClientService *alMsgClientService;
 - (void)deleteMessageThread:(NSString *)contactId orChannelKey:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion {
 
     if (!contactId && !channelKey) {
-        NSError *responseError = [NSError errorWithDomain:@"Applozic"
+        NSError *responseError = [NSError errorWithDomain:@"KMCore"
                                                      code:1
                                                  userInfo:@{NSLocalizedDescriptionKey : @"UserId and channelKey is nil"}];
         completion(nil, responseError);
@@ -720,7 +720,7 @@ static ALMessageClientService *alMsgClientService;
                       withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion {
 
     if (!messageKey) {
-        NSError *messageKeyError = [NSError errorWithDomain:@"Applozic"
+        NSError *messageKeyError = [NSError errorWithDomain:@"KMCore"
                                                        code:MessageNotPresent
                                                    userInfo:@{NSLocalizedDescriptionKey : @"Message key passed is nil"}];
         completion(nil, messageKeyError);
@@ -982,7 +982,7 @@ static ALMessageClientService *alMsgClientService;
                     withCompletion:(void (^)(ALAPIResponse *, NSError *))completion {
 
     if (!messageKey || !metadata) {
-        NSError *messageKeyError = [NSError errorWithDomain:@"Applozic"
+        NSError *messageKeyError = [NSError errorWithDomain:@"KMCore"
                                                        code:MessageNotPresent
                                                    userInfo:@{NSLocalizedDescriptionKey : @"Message key or meta data passed is nil"}];
         
@@ -1004,7 +1004,7 @@ static ALMessageClientService *alMsgClientService;
             completion(alAPIResponse, nil);
             return;
         } else {
-            NSError *apiError = [NSError errorWithDomain:@"Applozic"
+            NSError *apiError = [NSError errorWithDomain:@"KMCore"
                                                     code:MessageNotPresent
                                                 userInfo:@{NSLocalizedDescriptionKey : @"Failed to update message meta data due to api error"}];
             completion(nil, apiError);
@@ -1077,7 +1077,7 @@ static ALMessageClientService *alMsgClientService;
 - (void)deleteMessageForAllWithKey:(NSString *)keyString
                     withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
     if (!keyString) {
-        NSError *messageKeyNilError = [NSError errorWithDomain:@"Applozic"
+        NSError *messageKeyNilError = [NSError errorWithDomain:@"KMCore"
                                                           code:1
                                                       userInfo:@{NSLocalizedDescriptionKey : @"Passed message key is nil"}];
         completion(nil, messageKeyNilError);

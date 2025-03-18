@@ -3,7 +3,7 @@
 //  ChatApp
 //
 //  Created by Gaurav Nigam on 09/08/15.
-//  Copyright (c) 2015 AppLogic. All rights reserved.
+//  Copyright (c) 2015 kommunicate. All rights reserved.
 //
 
 #import "ALDBHandler.h"
@@ -177,14 +177,14 @@
                 return error;
             }
         } else {
-            NSError * managedObjectContexterror = [NSError errorWithDomain:@"Applozic"
+            NSError * managedObjectContexterror = [NSError errorWithDomain:@"KMCore"
                                                                       code:1
                                                                   userInfo:@{NSLocalizedDescriptionKey : @"Managed Object Context is nil"}];
 
             return managedObjectContexterror;
         }
     } @catch (NSException *exception) {
-        error = [NSError errorWithDomain:@"Applozic"
+        error = [NSError errorWithDomain:@"KMCore"
                                     code:1
                                 userInfo:@{NSLocalizedDescriptionKey : exception.reason}];
         ALSLog(ALLoggerSeverityError, @"Unresolved NSException in db save %@, %@", exception.reason, [exception userInfo]);
@@ -198,7 +198,7 @@
     @try {
         NSError *error;
         if (!context) {
-            error = [NSError errorWithDomain:@"Applozic" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Managed object context is nil"}];
+            error = [NSError errorWithDomain:@"KMCore" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Managed object context is nil"}];
             completion(error);
             return;
         }

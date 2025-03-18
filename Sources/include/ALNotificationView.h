@@ -3,7 +3,7 @@
 //  ChatApp
 //
 //  Created by Devashish on 06/10/15.
-//  Copyright © 2015 AppLogic. All rights reserved.
+//  Copyright © 2015 kommunicate. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

@@ -3,7 +3,7 @@
 //  ApplozicCore
 //
 //  Created by Sunil on 03/05/21.
-//  Copyright © 2021 applozic Inc. All rights reserved.
+//  Copyright © 2021 kommunicate. All rights reserved.
 //
 
 #import "ALVideoUploadManager.h"
