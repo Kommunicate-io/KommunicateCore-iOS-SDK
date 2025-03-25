@@ -8,7 +8,7 @@
 
 #import "ALDBHandler.h"
 #import "ALUtilityClass.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALLogger.h"
 
 @implementation ALDBHandler

@@ -1,6 +1,6 @@
 //
 //  ALAppLocalNotifications.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 07/01/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
@@ -11,12 +11,12 @@
 #import "ALPushAssist.h"
 #import "ALMessageDBService.h"
 #import "ALMessageService.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALMessageService.h"
 #import "ALUserService.h"
 #import "ALMQTTConversationService.h"
 #import "ALConversationService.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALLogger.h"
 
 @implementation ALAppLocalNotifications
@@ -40,7 +40,7 @@
 }
 
 - (void)dataConnectionHandler {
-    [ALApplozicSettings setupSuiteAndMigrate];
+    [KMCoreSettings setupSuiteAndMigrate];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:)
                                                  name:AL_kReachabilityChangedNotification object:nil];
@@ -94,7 +94,7 @@
             [messageService processPendingMessages];
 
             ALUserService *userService = [ALUserService new];
-            [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
+            [userService blockUserSync: [KMCoreUserDefaultsHandler getUserBlockLastTimeStamp]];
 
         } else {
             ALSLog(ALLoggerSeverityInfo, @"========== ELSE internetConnectionReach ============");

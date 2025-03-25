@@ -1,6 +1,6 @@
 //
 //  ALConversationProxy.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 07/01/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import "ALConversationProxy.h"
 #import "DB_ConversationProxy.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
 @implementation ALConversationProxy
@@ -73,7 +73,7 @@
 - (void)setSenderSMSFormat:(NSString *)senderFormatString {
     
     self.fallBackTemplateForSENDER = [[NSMutableDictionary alloc] init];
-    self.fallBackTemplateForSENDER = [self SMSFormatWithUserID:[ALUserDefaultsHandler getUserId]
+    self.fallBackTemplateForSENDER = [self SMSFormatWithUserID:[KMCoreUserDefaultsHandler getUserId]
                                                      andString:senderFormatString];
 }
 

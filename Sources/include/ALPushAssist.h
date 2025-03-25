@@ -1,6 +1,6 @@
 //
 //  ALPushAssist.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Divjyot Singh on 07/01/16.
 //  Copyright © 2016 kommunicate. All rights reserved.

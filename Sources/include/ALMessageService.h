@@ -138,7 +138,7 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 - (ALMessage*)getMessageByKey:(NSString *)messageKey;
 
 /// This method is used for sync the messages where meta data is updated.
-/// @param deviceKeyString Pass the [ALUserDefaultsHandler getDeviceKeyString].
+/// @param deviceKeyString Pass the [KMCoreUserDefaultsHandler getDeviceKeyString].
 /// @param completion If error in syncing a updated meta data messages then NSError will be their else a array of messages if their is no error in syncing a updated meta data messages.
 + (void)syncMessageMetaData:(NSString *)deviceKeyString withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 

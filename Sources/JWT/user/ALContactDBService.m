@@ -626,7 +626,7 @@
 - (NSMutableArray *)getAllContactsFromDB {
     ALDBHandler *alDBHandler  = [ALDBHandler sharedInstance];
 
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId !=%@ AND deletedAtTime == nil",[ALUserDefaultsHandler getUserId]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId !=%@ AND deletedAtTime == nil",[KMCoreUserDefaultsHandler getUserId]];
     NSFetchRequest *contactListRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_CONTACT"];
     [contactListRequest setPredicate:predicate];
     [contactListRequest setReturnsDistinctResults:YES];

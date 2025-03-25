@@ -9,7 +9,7 @@
 #import "ALPushNotificationService.h"
 #import "ALMessageDBService.h"
 #import "ALUserDetail.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALPushAssist.h"
 #import "ALUserService.h"
 #import "ALRegisterUserClientService.h"
@@ -41,7 +41,7 @@
     if ([self isApplozicNotification:dictionary]) {
         NSString *alertValue;
         ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-        alertValue = ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE ? @"" : [[dictionary valueForKey:@"aps"] valueForKey:@"alert"]);
+        alertValue = ([KMCoreUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE ? @"" : [[dictionary valueForKey:@"aps"] valueForKey:@"alert"]);
 
         self.alSyncCallService = [[ALSyncCallService alloc] init];
         NSMutableDictionary *alertDictionary = [[NSMutableDictionary alloc] init];
@@ -64,7 +64,7 @@
 
         NSString *notificationId = (NSString *)[messageDictionary valueForKey:@"id"];
 
-        if (notificationId && [ALUserDefaultsHandler isNotificationProcessd:notificationId]) {
+        if (notificationId && [KMCoreUserDefaultsHandler isNotificationProcessd:notificationId]) {
             ALSLog(ALLoggerSeverityInfo, @"Returning from ALPUSH because notificationId is already processed... %@",notificationId);
             BOOL isInactive = ([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive);
             if (isInactive &&
@@ -72,7 +72,7 @@
                  [type isEqualToString:self.notificationTypes[@(AL_MESSAGE_SENT)]])) {
                 ALSLog(ALLoggerSeverityInfo, @"ALAPNs : APP_IS_INACTIVE");
                 if ([type isEqualToString:self.notificationTypes[@(AL_MESSAGE_SENT)]]) {
-                    if (([[notificationMessage componentsSeparatedByString:@":"][1] isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]])) {
+                    if (([[notificationMessage componentsSeparatedByString:@":"][1] isEqualToString:[KMCoreUserDefaultsHandler getDeviceKeyString]])) {
                         ALSLog(ALLoggerSeverityInfo, @"APNS: Sent by self-device ignore");
                         return YES;
                     }
@@ -93,7 +93,7 @@
             [alertDictionary setObject:(alertValue ? alertValue : @"") forKey:@"alertValue"];
             [self assitingNotificationMessage:notificationMessage andDictionary:alertDictionary withMetadata:metadataDictionary];
             if (state == UIApplicationStateActive) {
-                [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
+                [ALMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
                                            withCompletion:^(NSMutableArray *message, NSError *error) {
 
                 }];
@@ -105,14 +105,14 @@
 
                 ALSLog(ALLoggerSeverityInfo, @"APNS: APPLOZIC_02 ARRIVED");
                 ALSLog(ALLoggerSeverityInfo, @"\nNotification Message:%@\n\nDeviceString:%@\n", notificationMessage,
-                       [ALUserDefaultsHandler getDeviceKeyString]);
+                       [KMCoreUserDefaultsHandler getDeviceKeyString]);
 
-                if (([[notificationMessage componentsSeparatedByString:@":"][1] isEqualToString:[ALUserDefaultsHandler getDeviceKeyString]])) {
+                if (([[notificationMessage componentsSeparatedByString:@":"][1] isEqualToString:[KMCoreUserDefaultsHandler getDeviceKeyString]])) {
                     ALSLog(ALLoggerSeverityInfo, @"APNS: Sent by self-device");
                     return YES;
                 }
 
-                [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate  withCompletion:^(NSMutableArray *message, NSError *error) {
+                [ALMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate  withCompletion:^(NSMutableArray *message, NSError *error) {
                     ALSLog(ALLoggerSeverityInfo, @"APPLOZIC_02 Sync Call Completed");
                 }];
 
@@ -267,7 +267,7 @@
                 }];
             }
         } else if([type isEqualToString:self.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]) {
-            [ALMessageService syncMessageMetaData:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
+            [ALMessageService syncMessageMetaData:[KMCoreUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
                 ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
             }];
         } else if ([type isEqualToString:self.notificationTypes[@(AL_GROUP_MUTE_NOTIFICATION)]]) {
@@ -284,10 +284,10 @@
                 }
             }
         } else if ([type isEqualToString:self.notificationTypes[@(AL_USER_ACTIVATED)]]) {
-            [ALUserDefaultsHandler deactivateLoggedInUser:NO];
+            [KMCoreUserDefaultsHandler deactivateLoggedInUser:NO];
             [[NSNotificationCenter defaultCenter] postNotificationName:ALLoggedInUserDidChangeDeactivateNotification object:nil userInfo:@{@"DEACTIVATED": @"false"}];
         } else if ([type isEqualToString:self.notificationTypes[@(AL_USER_DEACTIVATED)]]) {
-            [ALUserDefaultsHandler deactivateLoggedInUser:YES];
+            [KMCoreUserDefaultsHandler deactivateLoggedInUser:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:ALLoggedInUserDidChangeDeactivateNotification object:nil userInfo:@{@"DEACTIVATED": @"true"}];
         } else {
             ALSLog(ALLoggerSeverityInfo, @"APNs NOTIFICATION \"%@\" IS NOT HANDLED",type);
@@ -393,7 +393,7 @@
 
 + (void)userSync {
     ALUserService *userService = [ALUserService new];
-    [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
+    [userService blockUserSync: [KMCoreUserDefaultsHandler getUserBlockLastTimeStamp]];
 }
 
 - (BOOL)checkForLaunchNotification:(NSDictionary *)dictionary {

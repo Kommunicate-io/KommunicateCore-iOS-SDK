@@ -1,6 +1,6 @@
 //
 //  ALChannelUser.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Adarsh Kumar Mishra on 12/8/16.
 //  Copyright © 2016 kommunicate. All rights reserved.

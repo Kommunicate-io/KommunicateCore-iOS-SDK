@@ -1,13 +1,13 @@
 //
 //  ALUserDetail.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 26/11/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
 #import "ALUserDetail.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
 @interface ALUserDetail ()

@@ -10,13 +10,13 @@
 #import "ALContact.h"
 #import "ALDBHandler.h"
 #import "DB_Message.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALMessage.h"
 #import "DB_FileMetaInfo.h"
 #import "ALMessageService.h"
 #import "ALContactService.h"
 #import "ALMessageClientService.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALChannelService.h"
 #import "ALChannel.h"
 #import "ALUserService.h"
@@ -332,13 +332,13 @@
 
 - (void)getMessages:(NSMutableArray *)subGroupList {
     if ([self isMessageTableEmpty] ||
-        [ALApplozicSettings getCategoryName] ||
-        ![ALUserDefaultsHandler isInitialMessageListCallDone]) {
+        [KMCoreSettings getCategoryName] ||
+        ![KMCoreUserDefaultsHandler isInitialMessageListCallDone]) {
         [self fetchAndRefreshFromServer:subGroupList];
     } else  {
         /// Db is synced
         /// Fetch data from db
-        if (subGroupList && [ALApplozicSettings getSubGroupLaunchFlag]) {
+        if (subGroupList && [KMCoreSettings getSubGroupLaunchFlag]) {
             /// case for sub group
             [self fetchSubGroupConversations:subGroupList];
         } else {
@@ -354,10 +354,10 @@
             /// save data into the db
             [self addMessageList:theArray skipAddingMessageInDb:NO];
             /// set yes to userdefaults
-            [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
+            [KMCoreUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
             /// add default contacts
             /// fetch data from db
-            if (subGroupList && [ALApplozicSettings getSubGroupLaunchFlag]) {
+            if (subGroupList && [KMCoreSettings getSubGroupLaunchFlag]) {
                 [self fetchSubGroupConversations:subGroupList];
             } else {
                 [self fetchConversationsGroupByContactId];
@@ -367,7 +367,7 @@
 }
 
 - (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)( NSMutableArray *, NSError *))completion {
-    NSString *deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKeyString = [KMCoreUserDefaultsHandler getDeviceKeyString];
 
     [ALMessageService getLatestMessageForUser:deviceKeyString withCompletion:^(NSMutableArray *messageArray, NSError *error) {
         if (error) {
@@ -476,9 +476,9 @@
             if ([messageDictionary[@"groupId"] intValue]==0) {
                 continue;
             }
-            if ([ALApplozicSettings getCategoryName]) {
+            if ([KMCoreSettings getCategoryName]) {
                 ALChannel *channel =  [[ALChannelService new] getChannelByKey:[NSNumber numberWithInt:[messageDictionary[@"groupId"] intValue]]];
-                if(![channel isPartOfCategory:[ALApplozicSettings getCategoryName]]) {
+                if(![channel isPartOfCategory:[KMCoreSettings getCategoryName]]) {
                     continue;
                 }
             }
@@ -686,7 +686,7 @@
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate1;
 
-    if ([ALApplozicSettings getContextualChatOption] &&
+    if ([KMCoreSettings getContextualChatOption] &&
         messageListRequest.conversationId != nil &&
         messageListRequest.conversationId.integerValue != 0) {
         if (messageListRequest.channelKey != nil) {
@@ -877,7 +877,7 @@
         }
 
         [self addMessageList:theArray skipAddingMessageInDb:NO];
-        [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
+        [KMCoreUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
         [self fetchConversationsGroupByContactId];
 
         completionHandler(success);
@@ -899,7 +899,7 @@
             if (alChannel.type == GROUP_OF_TWO) {
                 NSMutableArray *clientKeyArray = [[alChannel.clientChannelKey componentsSeparatedByString:@":"] mutableCopy];
 
-                if (![clientKeyArray containsObject:[ALUserDefaultsHandler getUserId]]) {
+                if (![clientKeyArray containsObject:[KMCoreUserDefaultsHandler getUserId]]) {
                     [subGroupMessageArray removeObject:alMessage];
                 }
             }
@@ -963,7 +963,7 @@
     if (!isNextPage) {
 
         if ([self isMessageTableEmpty] ||
-            ![ALUserDefaultsHandler isInitialMessageListCallDone]) {
+            ![KMCoreUserDefaultsHandler isInitialMessageListCallDone]) {
             [self fetchAndRefreshFromServerWithCompletion:^(NSMutableArray *theArray, NSError *error) {
                 completion(theArray,error);
             }];
@@ -980,14 +980,14 @@
 
 - (void)fetchAndRefreshFromServerWithCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
 
-    if (![ALUserDefaultsHandler getFlagForAllConversationFetched]) {
+    if (![KMCoreUserDefaultsHandler getFlagForAllConversationFetched]) {
         [self getLatestMessagesWithCompletion:^(NSMutableArray *messageArray, NSError *error) {
 
             if (!error) {
                 // save data into the db
                 [self addMessageList:messageArray skipAddingMessageInDb:NO];
                 // set yes to userdefaults
-                [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
+                [KMCoreUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts
                 //fetch data from db
                 completion([self fetchLatestConversationsGroupByContactId:YES], error);
@@ -1010,7 +1010,7 @@
     if (!isNextPage) {
 
         if ([self isMessageTableEmpty] ||
-            ![ALUserDefaultsHandler isInitialMessageListCallDone]) {
+            ![KMCoreUserDefaultsHandler isInitialMessageListCallDone]) {
             [self fetchLatestMesssagesFromServer:isGroup withCompletion:^(NSMutableArray *theArray, NSError *error) {
                 completion(theArray,error);
             }];
@@ -1027,14 +1027,14 @@
 - (void)fetchLatestMesssagesFromServer:(BOOL)isGroupMesssages
                         withCompletion:(void(^)(NSMutableArray *theArray, NSError *error)) completion {
 
-    if(![ALUserDefaultsHandler getFlagForAllConversationFetched]){
+    if(![KMCoreUserDefaultsHandler getFlagForAllConversationFetched]){
         [self getLatestMessagesWithCompletion:^(NSMutableArray *messageArray, NSError *error) {
 
             if (!error) {
                 // save data into the db
                 [self addMessageList:messageArray skipAddingMessageInDb:NO];
                 // set yes to userdefaults
-                [ALUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
+                [KMCoreUserDefaultsHandler setBoolForKey_isConversationDbSynced:YES];
                 // add default contacts
                 //fetch data from db
                 completion([self fetchLatestMesssagesFromDb:isGroupMesssages], error);
@@ -1134,9 +1134,9 @@
             continue;
         }
 
-        if ([ALApplozicSettings getCategoryName]) {
+        if ([KMCoreSettings getCategoryName]) {
             ALChannel *channel = [[ALChannelService new] getChannelByKey:[NSNumber numberWithInt:[messageDictionary[@"groupId"] intValue]]];
-            if (![channel isPartOfCategory:[ALApplozicSettings getCategoryName]]) {
+            if (![channel isPartOfCategory:[KMCoreSettings getCategoryName]]) {
                 continue;
             }
         }
@@ -1194,7 +1194,7 @@
         filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_local.%@", messageObject.key, fileExtension]];
 
         // If 'save video to gallery' is enabled then save to gallery
-        if ([ALApplozicSettings isSaveVideoToGalleryEnabled]) {
+        if ([KMCoreSettings isSaveVideoToGalleryEnabled]) {
             UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, nil, nil);
         }
 

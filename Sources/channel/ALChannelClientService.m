@@ -1,6 +1,6 @@
 //
 //  ALChannelClientService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -781,7 +781,7 @@ NSString *latSyncCallTimeForChannel = @"";
         ALAPIResponse *response = [[ALAPIResponse alloc] initWithJSONString:theJson];
         if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             NSNumber *lastFetchTime = [NSNumber numberWithLong:[[response.response valueForKey:@"lastFetchTime"] longValue]];
-            [ALUserDefaultsHandler setLastGroupFilterSyncTime:lastFetchTime];
+            [KMCoreUserDefaultsHandler setLastGroupFilterSyncTime:lastFetchTime];
 
             NSDictionary *channelFeedDictionary = [response.response valueForKey:@"groups"];
 

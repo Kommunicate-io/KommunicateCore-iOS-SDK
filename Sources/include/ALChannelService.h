@@ -1,6 +1,6 @@
 //
 // ALChannelService.h
-// Applozic
+// Kommunicate
 //
 // Created by devashish on 04/01/2016.
 // Copyright © 2016 kommunicate. All rights reserved.
@@ -10,7 +10,7 @@
 #import "ALChannelFeed.h"
 #import "ALChannelDBService.h"
 #import "ALChannelClientService.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALChannelSyncResponse.h"
 #import "AlChannelFeedResponse.h"
 #import "ALRealTimeUpdate.h"

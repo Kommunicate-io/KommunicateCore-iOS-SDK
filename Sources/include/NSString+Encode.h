@@ -1,6 +1,6 @@
 //
 //  NSString+Encode.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Divjyot Singh on 21/04/16.
 //  Copyright © 2016 kommunicate. All rights reserved.

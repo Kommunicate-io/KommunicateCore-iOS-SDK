@@ -1,6 +1,6 @@
 //
 //  SearchResultCache.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Shivam Pokhriyal on 02/07/19.
 //  Copyright © 2019 kommunicate. All rights reserved.

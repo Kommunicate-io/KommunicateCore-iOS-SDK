@@ -1,6 +1,6 @@
 //
-//  ALApplozicSettings.h
-//  Applozic
+//  KMCoreSettings.h
+//  Kommunicate
 //
 //  Created by devashish on 20/11/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -169,7 +169,7 @@ static NSString *const KM_DEFAULT_UPLOAD_URL = @"KM_DEFAULT_UPLOAD_URL";
 static NSString *const KM_DEFAULT_UPLOAD_HEADERS = @"KM_DEFAULT_UPLOAD_HEADERS";
 static NSString *const KM_IS_SINGLE_THREADED =  @"KM_IS_SINGLE_THREADED";
 
-@interface ALApplozicSettings : NSObject
+@interface KMCoreSettings : NSObject
 
 @property (strong, nonatomic) NSUserDefaults *userDefaults;
 

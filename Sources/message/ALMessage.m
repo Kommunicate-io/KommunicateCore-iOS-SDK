@@ -11,7 +11,7 @@
 #import "ALContact.h"
 #import "ALChannelService.h"
 #import "ALContactDBService.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
 static NSString * const AL_DELETE_MESSAGE_FOR_KEY = @"AL_DELETE_GROUP_MESSAGE_FOR_ALL";
@@ -168,7 +168,7 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
     float minutes;
     if (difference <= 3600) {
         if (difference <= 60) {
-            formattedDateString = NSLocalizedStringWithDefaultValue(@"justNow", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Just Now", @"");
+            formattedDateString = NSLocalizedStringWithDefaultValue(@"justNow", [KMCoreSettings getLocalizableName],[NSBundle mainBundle], @"Just Now", @"");
         } else {
             minutes = difference/60;
             formattedDateString = [NSString stringWithFormat:@"%.0f", minutes];
@@ -226,31 +226,31 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
 - (BOOL)isResetUnreadCountMessage {
     return (self.groupId && self.isChannelContentTypeMessage &&
             self.metadata && [self.metadata  valueForKey:AL_RESET_UNREAD_COUNT]
-            && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:ALUserDefaultsHandler.getUserId]);
+            && [[self.metadata  valueForKey:AL_RESET_UNREAD_COUNT] isEqualToString:KMCoreUserDefaultsHandler.getUserId]);
 }
 
 - (NSString*)getLastMessage {
 
     if (self.contentType == ALMESSAGE_CONTENT_LOCATION) {
-        return NSLocalizedStringWithDefaultValue(@"location", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Location", @"");
+        return NSLocalizedStringWithDefaultValue(@"location", [KMCoreSettings getLocalizableName],[NSBundle mainBundle], @"Location", @"");
     }
 
     if (self.contentType == ALMESSAGE_CONTENT_VCARD) {
-        return NSLocalizedStringWithDefaultValue(@"contact", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Contact", @"");
+        return NSLocalizedStringWithDefaultValue(@"contact", [KMCoreSettings getLocalizableName],[NSBundle mainBundle], @"Contact", @"");
     }
 
     if (self.contentType == ALMESSAGE_CONTENT_AUDIO) {
-        return NSLocalizedStringWithDefaultValue(@"audio", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Audio", @"");
+        return NSLocalizedStringWithDefaultValue(@"audio", [KMCoreSettings getLocalizableName],[NSBundle mainBundle], @"Audio", @"");
     }
 
     if (self.contentType == ALMESSAGE_CONTENT_CAMERA_RECORDING) {
-        return NSLocalizedStringWithDefaultValue(@"video", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Video", @"");
+        return NSLocalizedStringWithDefaultValue(@"video", [KMCoreSettings getLocalizableName],[NSBundle mainBundle], @"Video", @"");
     }
 
     if (self.contentType == ALMESSAGE_CONTENT_ATTACHMENT
         || self.fileMeta != nil
         || self.imageFilePath != nil) {
-        return NSLocalizedStringWithDefaultValue(@"attachment", [ALApplozicSettings getLocalizableName],[NSBundle mainBundle], @"Attachment", @"");
+        return NSLocalizedStringWithDefaultValue(@"attachment", [KMCoreSettings getLocalizableName],[NSBundle mainBundle], @"Attachment", @"");
     }
     if (self.message
         && ![self.message isEqualToString:@""]) {
@@ -315,7 +315,7 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
     BOOL hide = [[self.metadata objectForKey:@"hide"] boolValue];
 
     // Check messages that we need to hide
-    NSArray *keys = [ALApplozicSettings metadataKeysToHideMessages];
+    NSArray *keys = [KMCoreSettings metadataKeysToHideMessages];
     if (keys != nil) {
         for (NSString *key in keys) {
            // If this key is present then it's a hidden message
@@ -334,7 +334,7 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
 
 - (BOOL)isMessageCategoryHidden {
     
-    if ([ALApplozicSettings isAgentAppConfigurationEnabled]) {
+    if ([KMCoreSettings isAgentAppConfigurationEnabled]) {
         return false;
     }
     
@@ -424,10 +424,10 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
         _message = builder.message;
         _contentType = builder.contentType;
         _conversationId = builder.conversationId;
-        _deviceKey  =  [ALUserDefaultsHandler getDeviceKeyString];
+        _deviceKey  =  [KMCoreUserDefaultsHandler getDeviceKeyString];
         _type = @"5";
         _createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
-        _deviceKey = [ALUserDefaultsHandler getDeviceKeyString ];
+        _deviceKey = [KMCoreUserDefaultsHandler getDeviceKeyString ];
         _sendToDevice = NO;
         _shared = NO;
         _fileMeta = nil;
@@ -485,7 +485,7 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
         contact = [alContactDBService loadContactByKey:@"userId" value:self.contactIds];
     }
     
-    return (([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE)
+    return (([KMCoreUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE)
             || (_metadata && ([self isSilentNotification]
                               || [self isHiddenMessage]))
             || (channel && [channel isNotificationMuted])

@@ -1,6 +1,6 @@
 //
 //  ALRealTimeUpdate.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Sunil on 08/03/18.
 //  Copyright © 2018 kommunicate. All rights reserved.

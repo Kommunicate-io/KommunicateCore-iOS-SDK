@@ -1,6 +1,6 @@
 //
 //  ALMessageArrayWrapper.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 17/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ALMessage.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 
 @interface ALMessageArrayWrapper : NSObject
 
