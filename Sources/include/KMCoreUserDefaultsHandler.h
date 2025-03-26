@@ -1,5 +1,5 @@
 //
-//  ALUserDefaultsHandler.h
+//  KMCoreUserDefaultsHandler.h
 //  ChatApp
 //
 //  Created by shaik riyaz on 12/08/15.
@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 
 static NSString *const AL_APPLICATION_KEY = @"com.applozic.userdefault.APPLICATION_KEY";
 static NSString *const AL_EMAIL_VERIFIED = @"com.applozic.userdefault.EMAIL_VERIFIED";
@@ -83,7 +83,7 @@ static NSString *const AL_LOGGED_IN_USER_DEACTIVATED = @"com.applozic.userdefaul
 static NSString *const AL_CHANNEL_LIST_LAST_GENERATED_TIME = @"com.applozic.userdefault.AL_CHANNEL_LIST_LAST_GENERATED_TIME";
 static NSString *const AL_VOIP_DEVICE_TOKEN = @"com.applozic.userdefault.VOIP_DEVICE_TOKEN";
 
-@interface ALUserDefaultsHandler : NSObject
+@interface KMCoreUserDefaultsHandler : NSObject
 
 + (void)setConversationContactImageVisibility:(BOOL)visibility;
 

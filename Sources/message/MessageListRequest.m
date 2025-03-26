@@ -1,13 +1,13 @@
 //
 //  MessageListRequest.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Devashish on 29/02/16.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
 #import "MessageListRequest.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "NSString+Encode.h"
 #import "ALChannel.h"
 #import "ALLogger.h"
@@ -54,7 +54,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
     
     //If first time call add conversationRequire = true;
     
-    if (![ALUserDefaultsHandler isServerCallDoneForMSGList:self.userId]) {
+    if (![KMCoreUserDefaultsHandler isServerCallDoneForMSGList:self.userId]) {
         paramString = [paramString stringByAppendingString:@"&conversationReq=true"];
         ALSLog(ALLoggerSeverityInfo, @"adding conversationRequired true :theParamString :%@",paramString );
     }
@@ -69,7 +69,7 @@ static NSString *const DEFAULT_START_INDEX = @"0";
 - (BOOL)isFirstCall {
     
     NSString *key = self.channelKey != nil ? [self.channelKey stringValue]: self.userId;
-    return (![ALUserDefaultsHandler isServerCallDoneForMSGList:key]);
+    return (![KMCoreUserDefaultsHandler isServerCallDoneForMSGList:key]);
 }
 
 @end

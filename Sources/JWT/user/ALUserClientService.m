@@ -1,6 +1,6 @@
 //
 //  ALUserClientService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Devashish on 21/12/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -9,7 +9,7 @@
 #import "ALUserClientService.h"
 #import <Foundation/Foundation.h>
 #import "ALConstant.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
 #import "NSString+Encode.h"
@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark {
     NSString *userStatusURLString = [NSString stringWithFormat:@"%@/rest/ws/user/status",KBASE_URL];
     if (lastSeenAt == nil) {
-        lastSeenAt = [ALUserDefaultsHandler getLastSyncTime];
+        lastSeenAt = [KMCoreUserDefaultsHandler getLastSyncTime];
         ALSLog(ALLoggerSeverityInfo, @"The lastSeenAt is coming as null seeting default vlaue to %@", lastSeenAt);
     }
     NSString *userStatusParamString = [NSString stringWithFormat:@"lastSeenAt=%@",lastSeenAt];
@@ -61,7 +61,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         } else {
             NSNumber *generatedAt = [theJson valueForKey:@"generatedAt"];
-            [ALUserDefaultsHandler setLastSeenSyncTime:generatedAt];
+            [KMCoreUserDefaultsHandler setLastSeenSyncTime:generatedAt];
             ALLastSeenSyncFeed *responseFeed = [[ALLastSeenSyncFeed alloc] initWithJSONString:(NSString*)theJson];
             completionMark(responseFeed);
         }
@@ -282,7 +282,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REGISTERED_CONTACT_WITH_PAGE_SIZE_JSON : %@", responseJSONString);
         ALContactsResponse *contactResponse = [[ALContactsResponse alloc] initWithJSONString:responseJSONString];
-        [ALUserDefaultsHandler setContactViewLoadStatus:YES];
+        [KMCoreUserDefaultsHandler setContactViewLoadStatus:YES];
         completion(contactResponse, nil);
     }];
 }

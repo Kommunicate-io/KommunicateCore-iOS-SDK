@@ -1,6 +1,6 @@
 //
 //  ALApplicationInfo.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Mukesh Thawani on 05/06/18.
 //  Copyright © 2018 kommunicate. All rights reserved.

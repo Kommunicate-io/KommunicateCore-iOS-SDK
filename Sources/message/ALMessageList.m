@@ -10,7 +10,7 @@
 #import "ALMessage.h"
 #import "ALUserDetail.h"
 #import "ALChannel.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
 @implementation ALMessageList
@@ -38,7 +38,7 @@
     ALSLog(ALLoggerSeverityInfo, @"MESSAGES_DICT_COUNT :: %lu",(unsigned long)messageDictionary.count);
     if (messageDictionary.count == 0) {
         ALSLog(ALLoggerSeverityInfo, @"NO_MORE_MESSAGES");
-        [ALUserDefaultsHandler setFlagForAllConversationFetched: YES];
+        [KMCoreUserDefaultsHandler setFlagForAllConversationFetched: YES];
     }
     
     for (NSDictionary *theDictionary in messageDictionary) {

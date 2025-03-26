@@ -1,6 +1,6 @@
 //
 //  ALContactsResponse.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 25/04/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.

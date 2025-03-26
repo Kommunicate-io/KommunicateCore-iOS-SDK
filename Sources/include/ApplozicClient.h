@@ -1,6 +1,6 @@
 //
 //  ApplozicClient.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Sunil on 12/03/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
@@ -12,7 +12,7 @@
 #import "ALUserService.h"
 #import "ALChannelService.h"
 #import "ALRegistrationResponse.h"
-#import "ALUser.h"
+#import "KMCoreUser.h"
 
 typedef NS_ENUM(NSInteger, ApplozicClientError) {
     MessageNotPresent = 1
@@ -72,9 +72,9 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
 
 /// Login user to apploizc using this method once login success then can perform other tasks.
-/// @param alUser ALUser object which will be having user details about like userId, displayName, and other
+/// @param alUser KMCoreUser object which will be having user details about like userId, displayName, and other
 /// @param completion Will have ALRegistrationResponse which will be having details about the user.
-- (void)loginUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
+- (void)loginUser:(KMCoreUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
 
 /// This method is used for updating APNs device token to applozic server for sending an APNs push notification to iPhone device.
 /// @param apnDeviceToken Pass the apple device token which is required for sending for APNS push notification to iPhone device.

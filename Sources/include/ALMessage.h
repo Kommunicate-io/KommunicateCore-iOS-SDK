@@ -9,7 +9,7 @@
 #import <CoreData/NSManagedObject.h>
 #import "ALJson.h"
 #import "ALFileMetaInfo.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALMessageBuilder.h"
 #import "ALConstant.h"
 

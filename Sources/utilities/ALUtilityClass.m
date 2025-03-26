@@ -12,7 +12,7 @@
 #import "TSMessageView.h"
 #import "ALPushAssist.h"
 #import "ALAppLocalNotifications.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALContactDBService.h"
 #import "ALContact.h"
 #import "ALLogger.h"
@@ -105,7 +105,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
                        withGroupId:(NSNumber *)groupID
                  completionHandler:(void (^)(BOOL))handler {
 
-    if ([ALUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE) {
+    if ([KMCoreUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE) {
         return;
     }
     //3rd Party View is Opened.........
@@ -168,9 +168,9 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     self.msgdate = serverDate;
     
     if ([serverDate isEqualToString:todayDate]) {
-        self.msgdate = NSLocalizedStringWithDefaultValue(@"todayMsgViewText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"today" , @"");
+        self.msgdate = NSLocalizedStringWithDefaultValue(@"todayMsgViewText", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"today" , @"");
     } else if ([serverDate isEqualToString:yesterdayDate]) {
-        self.msgdate = NSLocalizedStringWithDefaultValue(@"yesterdayMsgViewText", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"yesterday" , @"");
+        self.msgdate = NSLocalizedStringWithDefaultValue(@"yesterdayMsgViewText", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"yesterday" , @"");
     }
     
     [format setDateFormat:@"hh:mm a"];
@@ -225,7 +225,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 + (NSString *)getLocationURL:(ALMessage *)alMessage {
     NSString *latLongArgument = [self formatLocationJson:alMessage];
     NSString *finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
-                          latLongArgument,latLongArgument,[ALUserDefaultsHandler getGoogleMapAPIKey]];
+                          latLongArgument,latLongArgument,[KMCoreUserDefaultsHandler getGoogleMapAPIKey]];
     return finalURl;
 }
 
@@ -234,7 +234,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     NSString *latLongArgument = [self formatLocationJson:alMessage];
 
     NSString *staticMapURL = [NSString stringWithFormat:@"http://maps.google.com/maps/api/staticmap?format=png&markers=%@&key=%@&zoom=13&size=%dx%d&scale=1",latLongArgument,
-                              [ALUserDefaultsHandler getGoogleMapAPIKey], 2*(int)withSize.size.width, 2*(int)withSize.size.height];
+                              [KMCoreUserDefaultsHandler getGoogleMapAPIKey], 2*(int)withSize.size.width, 2*(int)withSize.size.height];
     
     return staticMapURL;
 }
@@ -274,7 +274,7 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 + (NSURL *)getAppsGroupDirectory {
 
     NSURL *urlForDocumentsDirectory;
-    NSString *shareExtentionGroupName = [ALApplozicSettings getShareExtentionGroup];
+    NSString *shareExtentionGroupName = [KMCoreSettings getShareExtentionGroup];
     if (shareExtentionGroupName) {
         urlForDocumentsDirectory = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:shareExtentionGroupName];
     }

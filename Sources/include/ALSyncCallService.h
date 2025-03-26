@@ -1,6 +1,6 @@
 //
 //  ALSyncCallService.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Kommunicate on 12/14/15.
 //  Copyright © 2015 kommunicate. All rights reserved.

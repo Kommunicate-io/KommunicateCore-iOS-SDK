@@ -1,6 +1,6 @@
 //
 //  ALAuthService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Sunil on 11/06/20.
 //  Copyright © 2020 kommunicate. All rights reserved.
@@ -36,7 +36,7 @@ static NSString *const VALID_UPTO = @"validUpto";
         return error;
     }
 
-    [ALUserDefaultsHandler setAuthToken:authToken];
+    [KMCoreUserDefaultsHandler setAuthToken:authToken];
 
     ALJWT *jwt = [ALJWT decodeWithJwt:authToken error:&jwtError];
 
@@ -46,11 +46,11 @@ static NSString *const VALID_UPTO = @"validUpto";
         NSNumber *validUptoInMins = [jwtBody objectForKey:VALID_UPTO];
 
         if (createdAtTime != nil) {
-            [ALUserDefaultsHandler setAuthTokenCreatedAtTime:createdAtTime];
+            [KMCoreUserDefaultsHandler setAuthTokenCreatedAtTime:createdAtTime];
         }
 
         if (validUptoInMins != nil) {
-            [ALUserDefaultsHandler setAuthTokenValidUptoInMins:validUptoInMins];
+            [KMCoreUserDefaultsHandler setAuthTokenValidUptoInMins:validUptoInMins];
         }
     }
     return jwtError;
@@ -58,8 +58,8 @@ static NSString *const VALID_UPTO = @"validUpto";
 
 - (BOOL)isAuthTokenValid {
 
-    NSNumber *authTokenCreatedAtTime = [ALUserDefaultsHandler getAuthTokenCreatedAtTime];
-    NSNumber *authTokenValidUptoMins = [ALUserDefaultsHandler getAuthTokenValidUptoMins];
+    NSNumber *authTokenCreatedAtTime = [KMCoreUserDefaultsHandler getAuthTokenCreatedAtTime];
+    NSNumber *authTokenValidUptoMins = [KMCoreUserDefaultsHandler getAuthTokenValidUptoMins];
 
     NSTimeInterval timeInSeconds = [[NSDate date] timeIntervalSince1970] * 1000;
 

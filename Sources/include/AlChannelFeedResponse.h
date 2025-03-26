@@ -1,6 +1,6 @@
 //
 //  AlChannelFeedResponse.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Nitin on 20/10/17.
 //  Copyright © 2017 kommunicate. All rights reserved.

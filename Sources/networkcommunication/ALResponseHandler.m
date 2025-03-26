@@ -7,7 +7,7 @@
 
 #import "ALResponseHandler.h"
 #import "NSData+AES.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALAuthService.h"
 #import "ALLogger.h"
 #import <Security/Security.h>
@@ -101,14 +101,14 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         id theJson = nil;
 
         // DECRYPTING DATA WITH KEY
-        if ([ALUserDefaultsHandler getEncryptionKey] &&
+        if ([KMCoreUserDefaultsHandler getEncryptionKey] &&
             ![tag isEqualToString:@"CREATE ACCOUNT"] &&
             ![tag isEqualToString:@"CREATE FILE URL"] &&
             ![tag isEqualToString:@"UPDATE NOTIFICATION MODE"] &&
             ![tag isEqualToString:@"FILE DOWNLOAD URL"]) {
 
             NSData *base64DecodedData = [[NSData alloc] initWithBase64EncodedData:data options:0];
-            NSData *theData = [base64DecodedData AES128DecryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
+            NSData *theData = [base64DecodedData AES128DecryptedDataWithKey:[KMCoreUserDefaultsHandler getEncryptionKey]];
 
             if (theData == nil) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -228,7 +228,7 @@ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NS
         return;
     }
 
-    if (![ALUserDefaultsHandler isKMSSLPinningEnabled]) {
+    if (![KMCoreUserDefaultsHandler isKMSSLPinningEnabled]) {
         // SSL pinning is disabled, trust the server's certificate
         NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
         completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
@@ -301,9 +301,9 @@ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NS
             return;
         }
         NSMutableURLRequest *urlRequest = request;
-        NSString *authToken = [ALUserDefaultsHandler getAuthToken];
+        NSString *authToken = [KMCoreUserDefaultsHandler getAuthToken];
         if (authToken) {
-            [urlRequest addValue:[ALUserDefaultsHandler getAuthToken] forHTTPHeaderField:@"X-Authorization"];
+            [urlRequest addValue:[KMCoreUserDefaultsHandler getAuthToken] forHTTPHeaderField:@"X-Authorization"];
         }
         completion(urlRequest, nil);
     }];

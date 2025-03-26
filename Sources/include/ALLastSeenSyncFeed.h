@@ -1,6 +1,6 @@
 //
 //  ALLastSeenSyncFeed.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Devashish on 19/12/15.
 //  Copyright © 2015 kommunicate. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  ALMessageInfo.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 17/03/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.

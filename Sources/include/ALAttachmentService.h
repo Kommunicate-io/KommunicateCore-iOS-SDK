@@ -1,6 +1,6 @@
 //
 //  ALAttachmentService.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by sunil on 25/09/18.
 //  Copyright © 2018 kommunicate. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  ALInternalSettings.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Sunil on 13/05/19.
 //  Copyright © 2019 kommunicate. All rights reserved.

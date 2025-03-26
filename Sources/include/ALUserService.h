@@ -1,6 +1,6 @@
 //
 //  ALUserService.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Divjyot Singh on 05/11/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -34,7 +34,7 @@
 - (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark;
 
 /// This method is used for fetching users whose last seen is updated recently.
-/// @param lastSeenAt Pass the last getLastSeenSyncTime from ALUserDefaultsHandler.
+/// @param lastSeenAt Pass the last getLastSeenSyncTime from KMCoreUserDefaultsHandler.
 /// @param completionMark In case of a successful fetch, it will have a list of ALUserDetail array. Otherwise, in case of failure, the error will not be nil.
 - (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark;
 
@@ -75,7 +75,7 @@
 
 - (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError *error))completion;
 
-/// This method is used for fetching a list of top online users based on the onlineContactLimit from ALApplozicSettings
+/// This method is used for fetching a list of top online users based on the onlineContactLimit from KMCoreSettings
 /// @param completion Array of an AL ALUserDetail object in case of successful fetch, else error in the failure of fetching.
 - (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *array, NSError *error))completion;
 

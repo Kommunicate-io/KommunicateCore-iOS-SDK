@@ -1,6 +1,6 @@
 //
 //  ALMuteRequest.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Adarsh Kumar Mishra on 1/12/17.
 //  Copyright © 2017 kommunicate. All rights reserved.

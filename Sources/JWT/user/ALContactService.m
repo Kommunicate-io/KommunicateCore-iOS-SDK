@@ -9,7 +9,7 @@
 #import "ALContactService.h"
 #import "ALContactDBService.h"
 #import "ALDBHandler.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALUserService.h"
 
 @implementation ALContactService

@@ -8,7 +8,7 @@
 
 #import "ALFileMetaInfo.h"
 #import "ALConstant.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 
 @implementation ALFileMetaInfo
 
@@ -43,7 +43,7 @@
 }
 
 - (NSString *)getFullThumbnailUrl:(NSString *)url {
-    if (ALApplozicSettings.isStorageServiceEnabled) {
+    if (KMCoreSettings.isStorageServiceEnabled) {
         NSString *fullUrl = [[NSString alloc] initWithFormat:@"%@%@%@",KBASE_FILE_URL,AL_IMAGE_THUMBNAIL_ENDPOIT,url];
         return fullUrl;
     }

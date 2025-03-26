@@ -7,7 +7,7 @@
 //
 
 #import "ALContact.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 
 @implementation ALContact
 

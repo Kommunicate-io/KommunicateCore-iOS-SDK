@@ -1,6 +1,6 @@
 //
 //  ALMessageWrapper.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Adarsh Kumar Mishra on 12/14/16.
 //  Copyright © 2016 kommunicate. All rights reserved.
@@ -13,7 +13,7 @@
 #import "ALMessageClientService.h"
 #include <tgmath.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALHTTPManager.h"
 #import "ALDownloadTask.h"
 #import "ALLogger.h"
@@ -145,7 +145,7 @@ andWithStatusDelegate:(id)statusDelegate
     
     alMessage.type = @"5";
     alMessage.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
-    alMessage.deviceKey = [ALUserDefaultsHandler getDeviceKeyString ];
+    alMessage.deviceKey = [KMCoreUserDefaultsHandler getDeviceKeyString ];
     alMessage.sendToDevice = NO;
     alMessage.shared = NO;
     alMessage.fileMeta = nil;

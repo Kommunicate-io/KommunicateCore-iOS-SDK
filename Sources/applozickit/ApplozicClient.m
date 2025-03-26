@@ -1,6 +1,6 @@
 //
 //  ApplozicClient.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Sunil on 12/03/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
@@ -25,7 +25,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey {
     self = [super init];
     if (self) {
-        [ALUserDefaultsHandler setApplicationKey:applicationKey];
+        [KMCoreUserDefaultsHandler setApplicationKey:applicationKey];
         [self setUpServices];
     }
     return self;
@@ -36,7 +36,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 - (instancetype)initWithApplicationKey:(NSString *)applicationKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
     self = [super init];
     if (self) {
-        [ALUserDefaultsHandler setApplicationKey:applicationKey];
+        [KMCoreUserDefaultsHandler setApplicationKey:applicationKey];
         alPushNotificationService = [[ALPushNotificationService alloc] init];
         self.delegate = delegate;
         alPushNotificationService.realTimeUpdate = delegate;
@@ -50,7 +50,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 - (void)setUpServices {
 
     //TO-DO move this call later to a differnt method
-    [ALApplozicSettings setupSuiteAndMigrate];
+    [KMCoreSettings setupSuiteAndMigrate];
 
     _messageService = [ALMessageService sharedInstance];
     _messageService.delegate = self.delegate;
@@ -62,14 +62,14 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 #pragma mark - Login
 
-- (void)loginUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
+- (void)loginUser:(KMCoreUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
 
-    if (![ALUserDefaultsHandler getApplicationKey]) {
+    if (![KMCoreUserDefaultsHandler getApplicationKey]) {
         NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"AppID or ApplicationKey is nil its not passed"}];
         completion(nil, applicationKeyNilError);
         return;
     } else if (!alUser) {
-        NSError *alUserNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"ALUser object is nil"}];
+        NSError *alUserNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"KMCoreUser object is nil"}];
         completion(nil, alUserNilError);
         return;
     } else if (!alUser.userId) {
@@ -78,8 +78,8 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
         return;
     }
 
-    [alUser setApplicationId:[ALUserDefaultsHandler getApplicationKey]];
-    [alUser setAppModuleName:[ALUserDefaultsHandler getAppModuleName]];
+    [alUser setApplicationId:[KMCoreUserDefaultsHandler getApplicationKey]];
+    [alUser setAppModuleName:[KMCoreUserDefaultsHandler getAppModuleName]];
 
     ALRegisterUserClientService *registerUserClientService = [[ALRegisterUserClientService alloc] init];
     [registerUserClientService initWithCompletion:alUser withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
@@ -107,7 +107,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
     ALRegisterUserClientService *alUserClientService = [[ALRegisterUserClientService alloc] init];
 
-    if ([ALUserDefaultsHandler getDeviceKeyString]) {
+    if ([KMCoreUserDefaultsHandler getDeviceKeyString]) {
         [alUserClientService logoutWithCompletionHandler:^(ALAPIResponse *response, NSError *error) {
             completion(error, response);
         }];
@@ -119,7 +119,7 @@ NSString *const ApplozicClientDomain = @"ApplozicClient";
 
 - (void)updateApnDeviceTokenWithCompletion:(NSString *)apnDeviceToken
                             withCompletion:(void(^)(ALRegistrationResponse *registrationResponse, NSError *error))completion {
-    if (![ALUserDefaultsHandler getApplicationKey]) {
+    if (![KMCoreUserDefaultsHandler getApplicationKey]) {
         NSError *applicationKeyNilError = [NSError errorWithDomain:ApplozicClientDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"AppID or ApplicationKey is nil its not passed"}];
         completion(nil, applicationKeyNilError);
         return;

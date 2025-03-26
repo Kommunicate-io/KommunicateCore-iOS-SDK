@@ -1,6 +1,6 @@
 //
 //  ALMQTTConversationService.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Kommunicate on 11/27/15.
 //  Copyright © 2015 kommunicate. All rights reserved.

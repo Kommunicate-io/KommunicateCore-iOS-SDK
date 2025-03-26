@@ -49,7 +49,7 @@
             ALFileMetaInfo *fileMeta = [[ALFileMetaInfo alloc] init];
             fileMetaMessage.fileMeta = fileMeta;
 
-            if (ALApplozicSettings.isS3StorageServiceEnabled) {
+            if (KMCoreSettings.isS3StorageServiceEnabled) {
                 [fileMetaMessage.fileMeta populate:jsonDictionary];
             } else {
                 NSDictionary *fileInfo = [jsonDictionary objectForKey:@"fileMeta"];
@@ -182,8 +182,8 @@
 -(NSURLSession *)configureSessionWithMessage:(ALMessage *)message {
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"VIDEO_THUMBNAIL,%@",message.key]];
 
-    if (ALApplozicSettings.getShareExtentionGroup) {
-        config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
+    if (KMCoreSettings.getShareExtentionGroup) {
+        config.sharedContainerIdentifier = KMCoreSettings.getShareExtentionGroup;
     }
 
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:NSOperationQueue.mainQueue];
@@ -212,7 +212,7 @@
     NSMutableData *body = [NSMutableData data];
 
     NSString* fileParamConstant;
-    if (ALApplozicSettings.isS3StorageServiceEnabled) {
+    if (KMCoreSettings.isS3StorageServiceEnabled) {
         fileParamConstant = @"file";
     } else {
         fileParamConstant = @"files[]";

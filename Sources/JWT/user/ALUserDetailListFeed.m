@@ -1,6 +1,6 @@
 //
 //  ALUserDetailListFeed.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Abhishek Thapliyal on 10/13/16.
 //  Copyright © 2016 kommunicate. All rights reserved.

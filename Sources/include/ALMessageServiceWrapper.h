@@ -1,6 +1,6 @@
 //
 //  ALMessageWrapper.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Adarsh Kumar Mishra on 12/14/16.
 //  Copyright © 2016 kommunicate. All rights reserved.

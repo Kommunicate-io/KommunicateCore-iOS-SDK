@@ -1,6 +1,6 @@
 //
 //  ALHTTPManager.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by apple on 25/03/19.
 //  Copyright © 2019 kommunicate. All rights reserved.
@@ -51,7 +51,7 @@ static dispatch_semaphore_t semaphore;
         NSDictionary *fileMetaJSONDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&jsonError];
 
         if (jsonError == nil) {
-            if (ALApplozicSettings.isS3StorageServiceEnabled) {
+            if (KMCoreSettings.isS3StorageServiceEnabled) {
                 [message.fileMeta populate:fileMetaJSONDictionary];
             } else {
                 NSDictionary *fileMetadataDictionary = [fileMetaJSONDictionary objectForKey:@"fileMeta"];
@@ -208,7 +208,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
                 }
 
                 NSString *fileParamConstant;
-                if (ALApplozicSettings.isS3StorageServiceEnabled) {
+                if (KMCoreSettings.isS3StorageServiceEnabled) {
                     fileParamConstant = @"file";
                 } else {
                     fileParamConstant = @"files[]";
@@ -249,8 +249,8 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 
                 NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"FILE,%@",message.key]];
 
-                if (ALApplozicSettings.getShareExtentionGroup) {
-                    config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
+                if (KMCoreSettings.getShareExtentionGroup) {
+                    config.sharedContainerIdentifier = KMCoreSettings.getShareExtentionGroup;
                 }
 
                 NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
@@ -363,8 +363,8 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
                         }
                         NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"FILE,%@",alMessage.key]];
 
-                        if (ALApplozicSettings.getShareExtentionGroup) {
-                            config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
+                        if (KMCoreSettings.getShareExtentionGroup) {
+                            config.sharedContainerIdentifier = KMCoreSettings.getShareExtentionGroup;
                         }
                         NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
                         [self startSession:session withRequest:theRequest];
@@ -383,8 +383,8 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
                         NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"THUMBNAIL,%@", alMessage.key]];
                         config.HTTPMaximumConnectionsPerHost = 2;
 
-                        if (ALApplozicSettings.getShareExtentionGroup) {
-                            config.sharedContainerIdentifier = ALApplozicSettings.getShareExtentionGroup;
+                        if (KMCoreSettings.getShareExtentionGroup) {
+                            config.sharedContainerIdentifier = KMCoreSettings.getShareExtentionGroup;
                         }
 
                         NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
@@ -503,8 +503,8 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 
 - (void)createGETRequestForAttachmentDownloadWithUrlString:(NSString *)fileURL
                                             withCompletion:(void(^)(NSMutableURLRequest *theRequest, NSError *error))completion {
-    if (ALApplozicSettings.isS3StorageServiceEnabled ||
-        ALApplozicSettings.isGoogleCloudServiceEnabled) {
+    if (KMCoreSettings.isS3StorageServiceEnabled ||
+        KMCoreSettings.isGoogleCloudServiceEnabled) {
         NSMutableURLRequest *downloadRequest = [ALRequestHandler createGETRequestWithUrlStringWithoutHeader:fileURL paramString:nil];
         completion(downloadRequest, nil);
     } else {
