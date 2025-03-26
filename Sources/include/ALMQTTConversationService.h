@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "MQTTClient.h"
 #import "ALMessage.h"
-#import "KMCoreUserDetail.h"
 #import "ALSyncCallService.h"
 #import "KMCoreUserDetail.h"
 #import "KMCoreRealTimeUpdate.h"
