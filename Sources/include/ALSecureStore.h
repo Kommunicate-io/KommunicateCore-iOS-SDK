@@ -1,6 +1,6 @@
 //
 //  ALSecureStore.h
-//  ApplozicCore
+//  KommunicateCore
 //
 //  Created by apple on 11/03/21.
 //  Copyright © 2021 kommunicate. All rights reserved.

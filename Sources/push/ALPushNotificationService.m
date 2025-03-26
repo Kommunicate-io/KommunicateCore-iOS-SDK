@@ -8,13 +8,13 @@
 
 #import "ALPushNotificationService.h"
 #import "ALMessageDBService.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALPushAssist.h"
 #import "ALUserService.h"
 #import "ALRegisterUserClientService.h"
 #import "ALAppLocalNotifications.h"
-#import "ApplozicClient.h"
+#import "KommunicateClient.h"
 #import "ALLogger.h"
 #import "ALContactDBService.h"
 
@@ -169,7 +169,7 @@
             }
         } else if ([type isEqualToString:self.notificationTypes[@(AL_USER_CONNECTED)]]) {
 
-            ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
+            KMCoreUserDetail *alUserDetail = [[KMCoreUserDetail alloc] init];
             alUserDetail.userId = notificationMessage;
             alUserDetail.lastSeenAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
             alUserDetail.connected = YES;
@@ -182,7 +182,7 @@
 
             NSArray *parts = [notificationMessage componentsSeparatedByString:@","];
 
-            ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
+            KMCoreUserDetail *alUserDetail = [[KMCoreUserDetail alloc] init];
             alUserDetail.userId = parts[0];
             alUserDetail.lastSeenAtTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
             alUserDetail.connected = NO;
@@ -233,7 +233,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_DETAILS_UPDATE_CALL" object:userId];
             if (self.realTimeUpdate) {
                 ALUserService *userService = [[ALUserService alloc] init];
-                [userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+                [userService updateUserDetail:userId withCompletion:^(KMCoreUserDetail *userDetail) {
                     [self.realTimeUpdate onUserDetailsUpdate:userDetail];
                 }];
             }
@@ -256,7 +256,7 @@
             ALContactDBService *contactDataBaseService = [[ALContactDBService alloc] init];
 
             if ([flag isEqualToString:@"0"]) {
-                ALUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
+                KMCoreUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
                 if(self.realTimeUpdate){
                     [self.realTimeUpdate onUserMuteStatus:userDetail];
                 }

@@ -19,7 +19,7 @@
 
 NSString * const KMCoreDomain = @"KMCore";
 
-typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
+typedef NS_ENUM(NSInteger, KMCoreUserClientError) {
     MessageKeyNotPresent = 2
 };
 
@@ -71,7 +71,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 #pragma mark - User Detail
 
 - (void)userDetailServerCall:(NSString *)contactId
-              withCompletion:(void(^)(ALUserDetail *))completionMark {
+              withCompletion:(void(^)(KMCoreUserDetail *))completionMark {
     NSString *userDetailURLString = [NSString stringWithFormat:@"%@/rest/ws/user/detail",KBASE_URL];
     NSString *userDetailParamString = [NSString stringWithFormat:@"userIds=%@",[contactId urlEncodeUsingNSUTF8StringEncoding]];
     
@@ -88,7 +88,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         if (((NSArray*)theJson).count > 0) {
             ALSLog(ALLoggerSeverityInfo, @"User detail response JSON : %@", (NSString *)theJson);
-            ALUserDetail *userDetailObject = [[ALUserDetail alloc] initWithDictonary:[theJson objectAtIndex:0]];
+            KMCoreUserDetail *userDetailObject = [[KMCoreUserDetail alloc] initWithDictonary:[theJson objectAtIndex:0]];
             completionMark(userDetailObject);
         } else {
             completionMark(nil);
@@ -331,7 +331,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                 NSMutableArray *userDetailArray = [NSMutableArray new];
                 NSDictionary *JSONDictionary = (NSDictionary *)theJson;
                 for (NSDictionary *theDictionary in JSONDictionary) {
-                    ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+                    KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:theDictionary];
                     userDetail.unreadCount = 0;
                     [userDetailArray addObject:userDetail];
                 }
@@ -481,7 +481,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         if ([apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             NSDictionary *JSONDictionary = (NSDictionary *)apiResponse.response;
             for (NSDictionary *theDictionary in JSONDictionary) {
-                ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+                KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:theDictionary];
                 [userDetailArray addObject:userDetail];
             }
             completionMark(userDetailArray, nil);

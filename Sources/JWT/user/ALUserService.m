@@ -21,7 +21,7 @@ static int CONTACT_PAGE_SIZE = 100;
 #import "ALLastSeenSyncFeed.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALUserClientService.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALMessageDBService.h"
 #import "ALContactService.h"
 #import "KMCoreUserDefaultsHandler.h"
@@ -96,7 +96,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     [self.userClientService userLastSeenDetail:lastSeenAt withCompletion:^(ALLastSeenSyncFeed *messageFeed) {
         NSMutableArray *lastSeenUpdateArray = messageFeed.lastSeenArray;
-        for (ALUserDetail *userDetail in lastSeenUpdateArray){
+        for (KMCoreUserDetail *userDetail in lastSeenUpdateArray){
             userDetail.unreadCount = 0;
             [self.contactDBService updateUserDetail:userDetail];
         }
@@ -104,22 +104,22 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark {
+- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(KMCoreUserDetail *))completionMark {
     
     if (!contactId) {
         completionMark(nil);
         return;
     }
     
-    [self.userClientService userDetailServerCall:contactId withCompletion:^(ALUserDetail *userDetail) {
+    [self.userClientService userDetailServerCall:contactId withCompletion:^(KMCoreUserDetail *userDetail) {
         completionMark(userDetail);
     }];
 }
 
 #pragma mark - Update user detail
 
-- (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark {
-    [self userDetailServerCall:userId withCompletion:^(ALUserDetail *userDetail) {
+- (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(KMCoreUserDetail *userDetail))completionMark {
+    [self userDetailServerCall:userId withCompletion:^(KMCoreUserDetail *userDetail) {
         
         if (userDetail) {
             userDetail.unreadCount = 0;
@@ -424,7 +424,7 @@ static int CONTACT_PAGE_SIZE = 100;
         NSDictionary *JSONDictionary = (NSDictionary *)json;
         NSMutableArray *contactArray = [NSMutableArray new];
         if (JSONDictionary.count) {
-            ALUserDetail *userDetail = [ALUserDetail new];
+            KMCoreUserDetail *userDetail = [KMCoreUserDetail new];
             [userDetail parsingDictionaryFromJSON:JSONDictionary];
             NSString *paramString = userDetail.userIdString;
             
@@ -434,7 +434,7 @@ static int CONTACT_PAGE_SIZE = 100;
                     completion(nil, error);
                     return;
                 }
-                for (ALUserDetail *userDetail in userDetailArray) {
+                for (KMCoreUserDetail *userDetail in userDetailArray) {
                     [self.contactDBService updateUserDetail: userDetail];
                     ALContact *contact = [self.contactDBService loadContactByKey:@"userId" value:userDetail.userId];
                     [contactArray addObject:contact];
@@ -516,7 +516,7 @@ static int CONTACT_PAGE_SIZE = 100;
     if (![self.contactService isContactExist:userId]) {
         ALSLog(ALLoggerSeverityError, @"Contact not found fetching for user: %@", userId);
         
-        [self userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
+        [self userDetailServerCall:userId withCompletion:^(KMCoreUserDetail *alUserDetail) {
             [self.contactDBService updateUserDetail:alUserDetail];
             ALContact *alContact = [self.contactDBService loadContactByKey:@"userId" value:userId];
             completion(alContact);
@@ -588,7 +588,7 @@ static int CONTACT_PAGE_SIZE = 100;
             
             NSMutableArray *userDetailArray = (NSMutableArray*)response.response;
             for (NSDictionary *userDeatils in userDetailArray) {
-                ALUserDetail *userDeatil = [[ALUserDetail alloc] initWithDictonary:userDeatils];
+                KMCoreUserDetail *userDeatil = [[KMCoreUserDetail alloc] initWithDictonary:userDeatils];
                 userDeatil.unreadCount = 0;
                 [self.contactDBService updateUserDetail:userDeatil];
             }
@@ -602,7 +602,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     
     [self setUnreadCountZeroForContactId:userId];
     if (delegate) {
@@ -614,7 +614,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Muted user list.
 
-- (void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
+- (void)getMutedUserListWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
                       withCompletion:(void (^)(NSMutableArray *, NSError *))completion {
     
     [self.userClientService getMutedUserListWithCompletion:^(id theJson, NSError *error) {

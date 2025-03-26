@@ -1,20 +1,20 @@
 //
-//  ALUserDetail.m
+//  KMCoreUserDetail.m
 //  Kommunicate
 //
 //  Created by devashish on 26/11/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
-@interface ALUserDetail ()
+@interface KMCoreUserDetail ()
 
 @end
 
-@implementation ALUserDetail
+@implementation KMCoreUserDetail
 
 static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 

@@ -154,7 +154,7 @@
     return [self.alContactDBService isUserDeleted:userId];
 }
 
-- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
+- (KMCoreUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
     return  [self.alContactDBService updateMuteAfterTime:notificationAfterTime andUserId:userId];
 }
 @end

@@ -10,13 +10,13 @@
 #import "ALUploadTask.h"
 #import "ALDownloadTask.h"
 #import "ALMessage.h"
-#import "ApplozicClient.h"
+#import "KommunicateClient.h"
 
 @interface ALHTTPManager : NSObject <NSURLSessionDataDelegate,NSURLSessionDelegate>
 
-@property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<KommunicateAttachmentDelegate>attachmentProgressDelegate;
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 
 @property (nonatomic, strong) NSMutableData *buffer;
 

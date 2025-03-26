@@ -13,7 +13,7 @@
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALChannelSyncResponse.h"
 #import "AlChannelFeedResponse.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreRealTimeUpdate.h"
 #import "ALChannelInfo.h"
 #import "ALChannelClientService.h"
 
@@ -490,9 +490,9 @@ extern NSString *const AL_MESSAGE_SYNC;
 
 /// This method is used for internal purpose.
 /// @param delegate For real time updates callback will be triggered for channel update
-- (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+- (void)syncCallForChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate;
 
-- (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+- (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<KommunicateUpdatesDelegate>)delegate;
 
 /// This method is used for creating a channel.
 /// @param channelInfo Pass the ALChannelInfo which will have details for creating a channel.

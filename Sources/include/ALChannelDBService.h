@@ -15,7 +15,7 @@
 #import "ALConversationProxy.h"
 #import "DB_ConversationProxy.h"
 #import "KMCoreSettings.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreRealTimeUpdate.h"
 
 @interface ALChannelDBService : NSObject
 

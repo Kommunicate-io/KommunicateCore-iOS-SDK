@@ -17,7 +17,7 @@
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALSendMessageResponse.h"
 #import "ALUserService.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALContactDBService.h"
 #import "ALContactService.h"
 #import "ALConversationService.h"
@@ -27,12 +27,12 @@
 #import "KMCoreSettings.h"
 #import <objc/runtime.h>
 #import "ALMQTTConversationService.h"
-#import "ApplozicClient.h"
+#import "KommunicateClient.h"
 #import "ALHTTPManager.h"
 #import "ALUploadTask.h"
 #import "ALLogger.h"
 
-@interface ALMessageService  ()<ApplozicAttachmentDelegate>
+@interface ALMessageService  ()<KommunicateAttachmentDelegate>
 
 @end
 
@@ -373,7 +373,7 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Sync latest messages with delegate
 
 + (void) getLatestMessageForUser:(NSString *)deviceKeyString
-                    withDelegate:(id<ApplozicUpdatesDelegate>)delegate
+                    withDelegate:(id<KommunicateUpdatesDelegate>)delegate
                   withCompletion:(void (^)( NSMutableArray *, NSError *))completion {
     if (!alMsgClientService) {
         alMsgClientService = [[ALMessageClientService alloc] init];
@@ -429,7 +429,7 @@ static ALMessageClientService *alMsgClientService;
 }
 
 + (void)processMessages:(NSMutableArray *)messageArray
-               delegate:(id<ApplozicUpdatesDelegate>)delegate
+               delegate:(id<KommunicateUpdatesDelegate>)delegate
          withCompletion:(void(^)(NSMutableArray *))completion {
     ALUserService *userService = [[ALUserService alloc] init];
     [userService processContactFromMessages:messageArray withCompletion:^{
@@ -737,7 +737,7 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Sent message sync with delegate
 
 + (void)getMessageSENT:(ALMessage *)alMessage
-          withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate
+          withDelegate:(id<KommunicateUpdatesDelegate>)theDelegate
         withCompletion:(void (^)( NSMutableArray *, NSError *))completion {
 
     ALMessage *localMessage = [ALMessageService getMessagefromKeyValuePair:@"key" andValue:alMessage.key];
@@ -845,7 +845,7 @@ static ALMessageClientService *alMsgClientService;
     return [messageDBService createMessageEntity:dbMessage];
 }
 
-+ (void)addOpenGroupMessage:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
++ (void)addOpenGroupMessage:(ALMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     if (!alMessage) {
         return;
     }
@@ -898,7 +898,7 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)saveAndPostMessage:(ALMessage *)message
            withSkipMessage:(BOOL)skip
-              withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+              withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
 
     if (message) {
         NSMutableArray *messageArray = [[NSMutableArray alloc] init];

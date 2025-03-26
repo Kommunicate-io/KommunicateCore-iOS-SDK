@@ -1,5 +1,5 @@
 //
-//  ALUserDetail.h
+//  KMCoreUserDetail.h
 //  Kommunicate
 //
 //  Created by devashish on 26/11/2015.
@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
 
-@interface ALUserDetail : ALJson
+@interface KMCoreUserDetail : ALJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic) BOOL connected;

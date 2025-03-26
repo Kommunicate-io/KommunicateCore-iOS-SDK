@@ -1,6 +1,6 @@
 //
 //  ALVideoUploadManager.m
-//  ApplozicCore
+//  KommunicateCore
 //
 //  Created by Sunil on 03/05/21.
 //  Copyright © 2021 kommunicate. All rights reserved.

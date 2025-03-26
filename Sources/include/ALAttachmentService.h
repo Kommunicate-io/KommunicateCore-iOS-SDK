@@ -10,26 +10,26 @@
 #import "ALMessageDBService.h"
 #import "ALMessage.h"
 #import "ALMessageService.h"
-#import "ALRealTimeUpdate.h"
-#import "ApplozicClient.h"
+#import "KMCoreRealTimeUpdate.h"
+#import "KommunicateClient.h"
 #import "ALHTTPManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ALAttachmentService : NSObject
 
-@property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, strong) id<KommunicateAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 
 + (ALAttachmentService *)sharedInstance;
 
 - (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
-                     withDelegate:(id<ApplozicUpdatesDelegate>)delegate
-           withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+                     withDelegate:(id<KommunicateUpdatesDelegate>)delegate
+           withAttachmentDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate;
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate;
 
-- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate;
+- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate;
 
 @end
 

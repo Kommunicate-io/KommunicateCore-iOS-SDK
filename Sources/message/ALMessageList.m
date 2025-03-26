@@ -8,7 +8,7 @@
 
 #import "ALMessageList.h"
 #import "ALMessage.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALChannel.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
@@ -50,7 +50,7 @@
     NSDictionary *userDetailsDictionary = [messagejson valueForKey:@"userDetails"];
 
     for (NSDictionary *theDictionary in userDetailsDictionary) {
-        ALUserDetail *alUserDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+        KMCoreUserDetail *alUserDetail = [[KMCoreUserDetail alloc] initWithDictonary:theDictionary];
         [userDetailArray addObject:alUserDetail];
     }
     
