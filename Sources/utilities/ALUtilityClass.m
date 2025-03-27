@@ -20,6 +20,9 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 
 NSString * const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
+NSString * const KM_CORE_DEFAULT_APP_GROUP = @"group.com.kommunicate.core.share";
+NSString * const AL_OLD_PREFIX_FOR_KEY = @"com.applozic.";
+NSString * const KM_CORE_PREFIX_FOR_KEY = @"com.kommunicate.core.";
 NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 
 @implementation ALUtilityClass
@@ -412,7 +415,24 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
         && appGroupsId.length > 0) {
         return appGroupsId;
     }
+    return KM_CORE_DEFAULT_APP_GROUP;
+}
+
++ (NSString *)getOldAppGroupsName {
+    NSString *appGroupsId = [[NSBundle mainBundle] objectForInfoDictionaryKey:AL_APP_GROUPS_ACCESS_KEY];
+    if (appGroupsId
+        && appGroupsId.length > 0) {
+        return appGroupsId;
+    }
     return AL_DEFAULT_APP_GROUP;
+}
+
++ (NSString *)getKeyPrefix {
+    return KM_CORE_PREFIX_FOR_KEY;
+}
+
++ (NSString *)getOldKeyPrefix {
+    return AL_OLD_PREFIX_FOR_KEY;
 }
 
 + (NSInteger)randomNumberBetween:(NSInteger)minimum maxNumber:(NSInteger)maximum {

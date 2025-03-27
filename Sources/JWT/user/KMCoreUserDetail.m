@@ -97,7 +97,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 }
 
 - (BOOL)isChatDisabled {
-    return _metadata && [_metadata[AL_DISABLE_USER_CHAT] boolValue];
+    return _metadata && [_metadata[KM_CORE_DISABLE_USER_CHAT] boolValue];
 }
 
 - (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {
