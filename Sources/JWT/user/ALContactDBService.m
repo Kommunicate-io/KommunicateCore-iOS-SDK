@@ -325,24 +325,24 @@
 
 
 - (void)addUserDetails:(NSMutableArray *)userDetails {
-    for (ALUserDetail *alUserDetail in userDetails) {
+    for (KMCoreUserDetail *alUserDetail in userDetails) {
         [self updateUserDetail:alUserDetail];
     }
 }
 
 - (void)addUserDetailsWithoutUnreadCount:(NSMutableArray *)userDetails {
-    for (ALUserDetail *alUserDetail in userDetails) {
+    for (KMCoreUserDetail *alUserDetail in userDetails) {
         alUserDetail.unreadCount = 0;
         [self updateUserDetail:alUserDetail];
     }
 }
 
 
-- (NSMutableArray *)addMuteUserDetailsWithDelegate:(id<ApplozicUpdatesDelegate>)delegate withNSDictionary:(NSDictionary *)jsonNSDictionary {
+- (NSMutableArray *)addMuteUserDetailsWithDelegate:(id<KommunicateUpdatesDelegate>)delegate withNSDictionary:(NSDictionary *)jsonNSDictionary {
     NSMutableArray *userDetailArray = [NSMutableArray new];
 
     for (NSDictionary *theDictionary in jsonNSDictionary) {
-        ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+        KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:theDictionary];
         userDetail.unreadCount = 0;
         [self updateUserDetail:userDetail];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_user_mute_info" object:userDetail];
@@ -359,7 +359,7 @@
 - (void)updateConnectedStatus:(NSString *)userId
                    lastSeenAt:(NSNumber *)lastSeenAt
                     connected:(BOOL)connected {
-    ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
+    KMCoreUserDetail *alUserDetail = [[KMCoreUserDetail alloc] init];
     alUserDetail.lastSeenAtTime = lastSeenAt;
     alUserDetail.connected =  connected;
     alUserDetail.userId = userId;
@@ -367,7 +367,7 @@
     [self updateUserDetail:alUserDetail];
 }
 
-- (BOOL)updateUserDetail:(ALUserDetail *)userDetail {
+- (BOOL)updateUserDetail:(KMCoreUserDetail *)userDetail {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -443,7 +443,7 @@
     return YES;
 }
 
-- (BOOL)updateLastSeenDBUpdate:(ALUserDetail *)userDetail {
+- (BOOL)updateLastSeenDBUpdate:(KMCoreUserDetail *)userDetail {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -612,7 +612,7 @@
 
 - (NSMutableArray*)updateFilteredContacts:(ALContactsResponse *)contactsResponse withLoadContact:(BOOL)isLoadContactFromDb {
     NSMutableArray *contactArray = [NSMutableArray new];
-    for (ALUserDetail *userDetail in contactsResponse.userDetailList) {
+    for (KMCoreUserDetail *userDetail in contactsResponse.userDetailList) {
         userDetail.unreadCount = 0;
         [self updateUserDetail:userDetail];
         if (isLoadContactFromDb) {
@@ -723,7 +723,7 @@
 
 #pragma mark - Update mute time in Database
 
-- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
+- (KMCoreUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
     ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
     
     DB_CONTACT *dbContact = [self getContactByKey:@"userId" value:userId];
@@ -736,9 +736,9 @@
     return [self getUserDetailFromDbContact:dbContact];
 }
 
-- (ALUserDetail *)getUserDetailFromDbContact:(DB_CONTACT *)dbContact{
+- (KMCoreUserDetail *)getUserDetailFromDbContact:(DB_CONTACT *)dbContact{
     
-    ALUserDetail *userDetail = [[ALUserDetail alloc] init];
+    KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] init];
     userDetail.userId = dbContact.userId;
     userDetail.contactNumber = dbContact.contactNumber;
     userDetail.imageLink = dbContact.contactImageUrl;

@@ -29,7 +29,7 @@
     //Todo: update ui
 }
 
-- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     
     if (delegate) {
         if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
@@ -43,7 +43,7 @@
     [self syncCall:alMessage withDelegate:nil];
 }
 
-- (void)updateConnectedStatus:(ALUserDetail *)alUserDetail {
+- (void)updateConnectedStatus:(KMCoreUserDetail *)alUserDetail {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"userUpdate" object:alUserDetail];
     ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
     [contactDBService updateLastSeenDBUpdate:alUserDetail];

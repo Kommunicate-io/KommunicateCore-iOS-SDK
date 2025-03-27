@@ -7,7 +7,7 @@
 //
 
 #import "ALChannelCreateResponse.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALContactDBService.h"
 
 @implementation ALChannelCreateResponse  
@@ -31,7 +31,7 @@
 - (void)pasreUserDetails:(NSMutableArray * ) userDetailJsonArray {
     
     for (NSDictionary *JSONDictionaryObject in userDetailJsonArray) {
-        ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:JSONDictionaryObject];
+        KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:JSONDictionaryObject];
         ALContactDBService *contactDBService = [ALContactDBService new];
         userDetail.unreadCount = 0;
         [contactDBService updateUserDetail: userDetail];

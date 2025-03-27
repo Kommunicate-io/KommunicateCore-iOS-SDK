@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "ALMessage.h"
-#import "ALUserDetail.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreUserDetail.h"
+#import "KMCoreRealTimeUpdate.h"
 
 @interface ALSyncCallService : NSObject
 
@@ -19,9 +19,9 @@
 
 - (void)syncCall:(ALMessage *)alMessage;
 
-- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate;
+- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)theDelegate;
 
-- (void)updateConnectedStatus:(ALUserDetail *)alUserDetail;
+- (void)updateConnectedStatus:(KMCoreUserDetail *)alUserDetail;
 
 - (void)updateTableAtConversationDeleteForContact:(NSString *)contactID
                                    ConversationID:(NSString *)conversationID

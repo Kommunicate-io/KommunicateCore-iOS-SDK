@@ -262,7 +262,7 @@
         alMessage.groupId = channelKey;
     } else {
         alMessage.type = @"4";
-        alMessage.message = @"Welcome to Applozic! Drop a message here or contact us at devashish@applozic.com for any queries. Thanks";//3
+        alMessage.message = @"Welcome to Kommunicate! Drop a message here or contact us at devashish@applozic.com for any queries. Thanks";//3
         alMessage.groupId = nil;
     }
     [messageDBService createMessageEntityForDBInsertionWithMessage:alMessage];
@@ -761,9 +761,9 @@ NSString *latSyncCallTime = @"";
         }
 
         NSDictionary *userDetailDictionary = [theJson valueForKey:@"userDetails"];
-        NSMutableArray<ALUserDetail *> *userDetails = [NSMutableArray new];
+        NSMutableArray<KMCoreUserDetail *> *userDetails = [NSMutableArray new];
         for (NSDictionary *dict in userDetailDictionary) {
-            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary: dict];
+            KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary: dict];
             [userDetails addObject: userDetail];
         }
         [[ALSearchResultCache shared] saveUserDetails: userDetails];

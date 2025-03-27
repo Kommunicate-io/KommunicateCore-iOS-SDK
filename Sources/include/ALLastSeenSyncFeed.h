@@ -7,12 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALJson.h"
 
 @interface ALLastSeenSyncFeed : ALJson
 
-@property(nonatomic) NSMutableArray <ALUserDetail *> *lastSeenArray;
+@property(nonatomic) NSMutableArray <KMCoreUserDetail *> *lastSeenArray;
 
 - (instancetype)initWithJSONString:(NSString *)lastSeenResponse;
 

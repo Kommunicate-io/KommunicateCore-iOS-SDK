@@ -11,12 +11,12 @@
 #import "ALMessageList.h"
 #import "ALMessage.h"
 #import "DB_FileMetaInfo.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALChannelService.h"
 #import "MessageListRequest.h"
 #import "ALMessageInfoResponse.h"
 #import "ALMQTTConversationService.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreRealTimeUpdate.h"
 #import "ALConversationProxy.h"
 #import "ALMessageClientService.h"
 #import "ALUserService.h"
@@ -35,7 +35,7 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 @property (nonatomic, strong) ALUserService *userService;
 @property (nonatomic, strong) ALChannelService *channelService;
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 
 /// This method is used for fetching the one-to-one or group chat messages from the server.
 /// @param messageListRequest Pass the MessageListRequest in case of one-to-one pass the userId or channelKey in case of a group.
@@ -92,7 +92,7 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 + (void)getMessageSENT:(ALMessage *)alMessage withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 
 + (void)getMessageSENT:(ALMessage *)alMessage
-          withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate
+          withDelegate:(id<KommunicateUpdatesDelegate>)theDelegate
         withCompletion:(void (^)(NSMutableArray *, NSError *))completion;
 
 + (ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString*)text;
@@ -119,7 +119,7 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 
 + (void)syncMessages;
 + (void)getLatestMessageForUser:(NSString *)deviceKeyString
-                   withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate
+                   withDelegate:(id<KommunicateUpdatesDelegate>)theDelegate
                  withCompletion:(void (^)(NSMutableArray *, NSError *))completion;
 
 /// This method is used for getting the latest messages for contact or group.
@@ -131,7 +131,7 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
            withOnlyGroups:(BOOL)isGroup
     withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion;
 
-+ (void)addOpenGroupMessage:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
++ (void)addOpenGroupMessage:(ALMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)delegate;
 
 - (ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
 

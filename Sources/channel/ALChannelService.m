@@ -13,7 +13,7 @@
 #import "ALMuteRequest.h"
 #import "ALAPIResponse.h"
 #import "ALContactService.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreRealTimeUpdate.h"
 #import "ALLogger.h"
 #import "ALChannelCreateResponse.h"
 
@@ -730,7 +730,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     [self syncCallForChannelWithDelegate:nil];
 }
 
-- (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)syncCallForChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate {
 
     NSNumber *updateAtTime = [KMCoreUserDefaultsHandler getLastSyncChannelTime];
     
@@ -1136,7 +1136,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }];
 }
 
-- (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     
     [self setUnreadCountZeroForGroupID:channelKey];
     if (delegate) {
@@ -1252,7 +1252,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                                                         object:channel
                                                       userInfo: @{AL_CHANNEL_MEMBER_SAVE_STATUS : operationStatus}];
 }
-- (void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
 
     for (ALChannel *channelObject in channelArray) {
         // Ignore inserting un opened conversation(Which doesn't have user messages, only contains bot messages)

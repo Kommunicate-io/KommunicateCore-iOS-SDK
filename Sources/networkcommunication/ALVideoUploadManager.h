@@ -1,6 +1,6 @@
 //
 //  ALVideoUploadManager.h
-//  ApplozicCore
+//  KommunicateCore
 //
 //  Created by Sunil on 03/05/21.
 //  Copyright © 2021 kommunicate. All rights reserved.
@@ -9,15 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "ALUploadTask.h"
 #import "ALMessage.h"
-#import "ApplozicClient.h"
+#import "KommunicateClient.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ALVideoUploadManager : NSObject <NSURLSessionDataDelegate>
 
-@property (nonatomic, weak) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, weak) id<KommunicateAttachmentDelegate>attachmentProgressDelegate;
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 
 @property (nonatomic, strong) ALUploadTask *uploadTask;
 @property (nonatomic, strong) ALMessageDBService *messageDatabaseService;

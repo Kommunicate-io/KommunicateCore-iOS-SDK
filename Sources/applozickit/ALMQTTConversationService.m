@@ -11,7 +11,7 @@
 #import "ALConstant.h"
 #import "ALMessage.h"
 #import "ALMessageDBService.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALPushAssist.h"
 #import "ALChannelService.h"
 #import "ALContactDBService.h"
@@ -424,7 +424,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 [self.realTimeUpdate onAllMessagesRead:contactId];
             }
         } else if ([type isEqualToString:@"USER_CONNECTED"]||[type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_CONNECTED)]]) {
-            ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
+            KMCoreUserDetail *alUserDetail = [[KMCoreUserDetail alloc] init];
             alUserDetail.userId = [theMessageDict objectForKey:@"message"];
             alUserDetail.lastSeenAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] *1000];
             alUserDetail.connected = YES;
@@ -436,7 +436,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_DISCONNECTED)]]) {
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@","];
 
-            ALUserDetail *alUserDetail = [[ALUserDetail alloc] init];
+            KMCoreUserDetail *alUserDetail = [[KMCoreUserDetail alloc] init];
             alUserDetail.userId = parts[0];
             alUserDetail.lastSeenAtTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
             alUserDetail.connected = NO;
@@ -484,7 +484,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [self.mqttConversationDelegate updateUserDetail:userId];
             if (self.realTimeUpdate) {
                 ALUserService *userService = [[ALUserService alloc] init];
-                [userService updateUserDetail:userId withCompletion:^(ALUserDetail *userDetail) {
+                [userService updateUserDetail:userId withCompletion:^(KMCoreUserDetail *userDetail) {
                     [self.realTimeUpdate onUserDetailsUpdate:userDetail];
                 }];
             }
@@ -533,7 +533,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             ALContactDBService *contactDataBaseService = [[ALContactDBService alloc] init];
 
             if ([flag isEqualToString:@"0"]) {
-                ALUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
+                KMCoreUserDetail *userDetail =  [contactDataBaseService updateMuteAfterTime:0 andUserId:userId];
                 if (self.realTimeUpdate) {
                     [self.realTimeUpdate onUserMuteStatus:userDetail];
                 }

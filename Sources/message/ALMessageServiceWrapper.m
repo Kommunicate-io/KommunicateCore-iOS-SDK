@@ -19,7 +19,7 @@
 #import "ALLogger.h"
 #import "ALUtilityClass.h"
 
-@interface ALMessageServiceWrapper  ()<ApplozicAttachmentDelegate>
+@interface ALMessageServiceWrapper  ()<KommunicateAttachmentDelegate>
 
 @end
 

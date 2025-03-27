@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ALMessage.h"
-#import "ApplozicClient.h"
+#import "KommunicateClient.h"
 
 @protocol MessageServiceWrapperDelegate <NSObject>
 

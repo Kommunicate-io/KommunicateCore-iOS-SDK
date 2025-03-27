@@ -7,7 +7,7 @@
 //
 
 #import "ALContactsResponse.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "KMCoreSettings.h"
 
 @implementation ALContactsResponse
@@ -24,7 +24,7 @@
         self.userDetailList = [NSMutableArray new];
 
         for (NSDictionary *userDictionary in userDetailArray) {
-            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:userDictionary];
+            KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:userDictionary];
             [self.userDetailList addObject:userDetail];
         }
 

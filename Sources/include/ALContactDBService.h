@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "ALContact.h"
 #import "DB_CONTACT.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALUserBlocked.h"
 #import "ALContactsResponse.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreRealTimeUpdate.h"
 
 
 @interface ALContactDBService : NSObject
@@ -39,9 +39,9 @@
 
 - (void)addUserDetails:(NSMutableArray *)userDetails;
 
-- (BOOL)updateUserDetail:(ALUserDetail *)userDetail;
+- (BOOL)updateUserDetail:(KMCoreUserDetail *)userDetail;
 
-- (BOOL)updateLastSeenDBUpdate:(ALUserDetail *)userDetail;
+- (BOOL)updateLastSeenDBUpdate:(KMCoreUserDetail *)userDetail;
 
 - (NSUInteger)markConversationAsDeliveredAndRead:(NSString *)contactId;
 - (NSArray *)getUnreadMessagesForIndividual:(NSString *)contactId;
@@ -59,7 +59,7 @@
 - (NSNumber *)getOverallUnreadCountForContactsFromDB;
 - (BOOL)isUserDeleted:(NSString *)userId;
 - (void)addUserDetailsWithoutUnreadCount:(NSMutableArray *)userDetails;
-- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
-- (NSMutableArray *)addMuteUserDetailsWithDelegate:(id<ApplozicUpdatesDelegate>)delegate withNSDictionary:(NSDictionary *)jsonNSDictionary;
+- (KMCoreUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
+- (NSMutableArray *)addMuteUserDetailsWithDelegate:(id<KommunicateUpdatesDelegate>)delegate withNSDictionary:(NSDictionary *)jsonNSDictionary;
 - (BOOL)addOrUpdateMetadataWithUserId:(NSString *)userId withMetadataKey:(NSString *)key withMetadataValue:(NSString *)value;
 @end
