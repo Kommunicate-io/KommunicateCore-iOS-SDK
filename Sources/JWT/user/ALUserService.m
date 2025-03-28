@@ -708,7 +708,7 @@ static int CONTACT_PAGE_SIZE = 100;
     } else {
         metadata = [[NSMutableDictionary alloc] init];
     }
-    [metadata setObject:[NSNumber numberWithBool:disable] forKey: AL_DISABLE_USER_CHAT];
+    [metadata setObject:[NSNumber numberWithBool:disable] forKey: KM_CORE_DISABLE_USER_CHAT];
     KMCoreUser *user = [[KMCoreUser alloc] init];
     [user setMetadata: metadata];
     [self.userClientService updateUserDisplayName:nil andUserImageLink:nil userStatus:nil metadata:metadata withCompletion:^(id theJson, NSError *error) {
