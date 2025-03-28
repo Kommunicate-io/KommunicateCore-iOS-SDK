@@ -22,7 +22,7 @@
 NSString * const AL_DEFAULT_APP_GROUP = @"group.com.applozic.share";
 NSString * const KM_CORE_DEFAULT_APP_GROUP = @"group.com.kommunicate.core.share";
 NSString * const AL_OLD_PREFIX_FOR_KEY = @"com.applozic.";
-NSString * const KM_CORE_PREFIX_FOR_KEY = @"com.kommunicate.core.";
+NSString * const KM_CORE_PREFIX_FOR_KEY = @"io.kommunicate.core.";
 NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 
 @implementation ALUtilityClass
