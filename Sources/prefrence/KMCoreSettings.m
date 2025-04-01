@@ -1768,7 +1768,7 @@
             [oldUserDefaults removeObjectForKey:defaultKeyString];
             [oldUserDefaults synchronize];
         }
-        if ([defaultKeyString hasPrefix:@"com.kommunciate.core"] &&
+        if ([defaultKeyString hasPrefix:@"io.kommunciate.core"] &&
             ![defaultKeyString isEqualToString:KM_CORE_APN_DEVICE_TOKEN] &&
             ![defaultKeyString isEqualToString:KM_CORE_VOIP_DEVICE_TOKEN]) {
             [userDefaults removeObjectForKey:defaultKeyString];
