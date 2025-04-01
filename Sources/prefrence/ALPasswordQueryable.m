@@ -1,13 +1,13 @@
 //
 //  ALPasswordQueryable.m
-//  ApplozicCore
+//  KommunicateCore
 //
 //  Created by Sunil on 11/03/21.
 //  Copyright © 2021 kommunicate. All rights reserved.
 //
 
 #import "ALPasswordQueryable.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 
 NSString * const AL_KEYCHAIN_GROUPS_ACCESS_KEY = @"ALKeychainGroupsKey";
 

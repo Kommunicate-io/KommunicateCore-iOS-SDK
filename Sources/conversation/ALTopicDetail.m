@@ -1,6 +1,6 @@
 //
 //  ALTopicDetail.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Devashish on 27/02/16.
 //  Copyright © 2016 kommunicate. All rights reserved.

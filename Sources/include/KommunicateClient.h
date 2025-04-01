@@ -1,6 +1,6 @@
 //
-//  ApplozicClient.h
-//  Applozic
+//  KommunicateClient.h
+//  Kommunicate
 //
 //  Created by Sunil on 12/03/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
@@ -12,14 +12,14 @@
 #import "ALUserService.h"
 #import "ALChannelService.h"
 #import "ALRegistrationResponse.h"
-#import "ALUser.h"
+#import "KMCoreUser.h"
 
-typedef NS_ENUM(NSInteger, ApplozicClientError) {
+typedef NS_ENUM(NSInteger, KMCoreClientError) {
     MessageNotPresent = 1
 };
 
 /// This protocol is used for listening attachment upload or download events.
-@protocol ApplozicAttachmentDelegate <NSObject>
+@protocol KommunicateAttachmentDelegate <NSObject>
 
 /// This delegate callback will be called on bytes downloaded in attachment with message object.
 /// @param bytesReceived It will have total bytes received so far.
@@ -52,15 +52,15 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 
 @end
 
-@interface ApplozicClient : NSObject  <NSURLConnectionDataDelegate>
+@interface KommunicateClient : NSObject  <NSURLConnectionDataDelegate>
 
-@property (nonatomic, strong) id<ApplozicAttachmentDelegate>attachmentProgressDelegate;
+@property (nonatomic, strong) id<KommunicateAttachmentDelegate>attachmentProgressDelegate;
 @property (nonatomic, retain) ALMessageService *messageService;
 @property (nonatomic, retain) ALMessageDBService *messageDbService;
 @property (nonatomic, retain) ALUserService *userService;
 @property (nonatomic, retain) ALChannelService *channelService;
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate> delegate;
+@property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 
 /// This is for initialization of the application Key or appID.
 /// @param applicationKey Pass application Key or appID that got from applozic.com.
@@ -69,12 +69,12 @@ typedef NS_ENUM(NSInteger, ApplozicClientError) {
 /// This is for initialization of the application key and sets the real-time delegate events for applozic.
 /// @param applicationKey Pass application key or appID that got from applozic.com.
 /// @param delegate Pass the delegate for real-time event callbacks.
-- (instancetype)initWithApplicationKey:(NSString *)applicationKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+- (instancetype)initWithApplicationKey:(NSString *)applicationKey withDelegate:(id<KommunicateUpdatesDelegate>)delegate;
 
 /// Login user to apploizc using this method once login success then can perform other tasks.
-/// @param alUser ALUser object which will be having user details about like userId, displayName, and other
+/// @param alUser KMCoreUser object which will be having user details about like userId, displayName, and other
 /// @param completion Will have ALRegistrationResponse which will be having details about the user.
-- (void)loginUser:(ALUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
+- (void)loginUser:(KMCoreUser *)alUser withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
 
 /// This method is used for updating APNs device token to applozic server for sending an APNs push notification to iPhone device.
 /// @param apnDeviceToken Pass the apple device token which is required for sending for APNS push notification to iPhone device.

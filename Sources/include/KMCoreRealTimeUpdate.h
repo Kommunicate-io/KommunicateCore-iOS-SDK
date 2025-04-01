@@ -1,6 +1,6 @@
 //
-//  ALRealTimeUpdate.h
-//  Applozic
+//  KMCoreRealTimeUpdate.h
+//  Kommunicate
 //
 //  Created by Sunil on 08/03/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "ALMessage.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALChannel.h"
 
-@protocol ApplozicUpdatesDelegate <NSObject>
+@protocol KommunicateUpdatesDelegate <NSObject>
 
 /// This callback will be called once the new message is received.
 /// @param alMessage Will have ALMessage object which is recieved message.
@@ -24,8 +24,8 @@
 - (void)onMessageSent:(ALMessage *)alMessage;
 
 /// This method will be called once the user details updated like name, profile imageUrl, status etc.
-/// @param userDetail Will have ALUserDetail object which will have user properties.
-- (void)onUserDetailsUpdate:(ALUserDetail *)userDetail;
+/// @param userDetail Will have KMCoreUserDetail object which will have user properties.
+- (void)onUserDetailsUpdate:(KMCoreUserDetail *)userDetail;
 
 /// This method will be called once message is delivered to receiver.
 /// @param message Will have ALMessage object which is delivered message it has status.
@@ -56,8 +56,8 @@
 - (void)onUpdateTypingStatus:(NSString *)userId status:(BOOL)status;
 
 /// This method will be called once the user comes online or goes offline.
-/// @param alUserDetail Will have ALUserDetail object of user.
-- (void)onUpdateLastSeenAtStatus:(ALUserDetail *)alUserDetail;
+/// @param alUserDetail Will have KMCoreUserDetail object of user.
+- (void)onUpdateLastSeenAtStatus:(KMCoreUserDetail *)alUserDetail;
 
 /// This method will be called once the user is blocked or unblocked.
 /// @param userId Will have the user's userId blocked or unblocked.
@@ -79,8 +79,8 @@
 - (void)onMqttConnected;
 
 /// This method will be called once the user muted.
-/// @param userDetail Will have ALUserDetail object.
-- (void)onUserMuteStatus:(ALUserDetail *)userDetail;
+/// @param userDetail Will have KMCoreUserDetail object.
+- (void)onUserMuteStatus:(KMCoreUserDetail *)userDetail;
 
 /// This method will be called after a group has been muted/unmuted.
 /// @param channelKey You will get the channelKey by using this channel key you can get channel and check isNotificationMuted from ALChannel object.
@@ -88,6 +88,6 @@
 
 @end
 
-@interface ALRealTimeUpdate : NSObject
+@interface KMCoreRealTimeUpdate : NSObject
 
 @end

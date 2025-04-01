@@ -1,6 +1,6 @@
 //
 //  ALUserService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Divjyot Singh on 05/11/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -19,15 +19,15 @@ static int CONTACT_PAGE_SIZE = 100;
 #import "ALMessageService.h"
 #import "ALContactDBService.h"
 #import "ALLastSeenSyncFeed.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALUserClientService.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALMessageDBService.h"
 #import "ALContactService.h"
-#import "ALUserDefaultsHandler.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreUserDefaultsHandler.h"
+#import "KMCoreSettings.h"
 #import "NSString+Encode.h"
-#import "ALUser.h"
+#import "KMCoreUser.h"
 #import "ALLogger.h"
 
 @implementation ALUserService
@@ -96,7 +96,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     [self.userClientService userLastSeenDetail:lastSeenAt withCompletion:^(ALLastSeenSyncFeed *messageFeed) {
         NSMutableArray *lastSeenUpdateArray = messageFeed.lastSeenArray;
-        for (ALUserDetail *userDetail in lastSeenUpdateArray){
+        for (KMCoreUserDetail *userDetail in lastSeenUpdateArray){
             userDetail.unreadCount = 0;
             [self.contactDBService updateUserDetail:userDetail];
         }
@@ -104,22 +104,22 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark {
+- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(KMCoreUserDetail *))completionMark {
     
     if (!contactId) {
         completionMark(nil);
         return;
     }
     
-    [self.userClientService userDetailServerCall:contactId withCompletion:^(ALUserDetail *userDetail) {
+    [self.userClientService userDetailServerCall:contactId withCompletion:^(KMCoreUserDetail *userDetail) {
         completionMark(userDetail);
     }];
 }
 
 #pragma mark - Update user detail
 
-- (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark {
-    [self userDetailServerCall:userId withCompletion:^(ALUserDetail *userDetail) {
+- (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(KMCoreUserDetail *userDetail))completionMark {
+    [self userDetailServerCall:userId withCompletion:^(KMCoreUserDetail *userDetail) {
         
         if (userDetail) {
             userDetail.unreadCount = 0;
@@ -336,7 +336,7 @@ static int CONTACT_PAGE_SIZE = 100;
         if (!error) {
             ALUserBlockResponse *userBlockResponse = [[ALUserBlockResponse alloc] initWithJSONString:(NSString *)json];
             [self updateBlockUserStatusToLocalDB:userBlockResponse];
-            [ALUserDefaultsHandler setUserBlockLastTimeStamp:userBlockResponse.generatedAt];
+            [KMCoreUserDefaultsHandler setUserBlockLastTimeStamp:userBlockResponse.generatedAt];
         }
     }];
 }
@@ -389,10 +389,10 @@ static int CONTACT_PAGE_SIZE = 100;
 
 - (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError *error))completion {
     NSNumber *startTime;
-    if (![ALUserDefaultsHandler isContactServerCallIsDone]) {
+    if (![KMCoreUserDefaultsHandler isContactServerCallIsDone]) {
         startTime = 0;
     } else {
-        startTime = [ALApplozicSettings getStartTime];
+        startTime = [KMCoreSettings getStartTime];
     }
     NSUInteger pageSize = (NSUInteger)CONTACT_PAGE_SIZE;
     
@@ -403,7 +403,7 @@ static int CONTACT_PAGE_SIZE = 100;
             return;
         }
         
-        [ALApplozicSettings setStartTime:response.lastFetchTime];
+        [KMCoreSettings setStartTime:response.lastFetchTime];
         [self.contactDBService updateFilteredContacts:response withLoadContact:NO];
         completion(error);
         
@@ -414,7 +414,7 @@ static int CONTACT_PAGE_SIZE = 100;
 #pragma mark - Fetch Online contacts
 
 - (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *array, NSError *error))completion {
-    [self.userClientService fetchOnlineContactFromServer:[ALApplozicSettings getOnlineContactLimit] withCompletion:^(id json, NSError *error) {
+    [self.userClientService fetchOnlineContactFromServer:[KMCoreSettings getOnlineContactLimit] withCompletion:^(id json, NSError *error) {
         
         if (error) {
             completion(nil, error);
@@ -424,7 +424,7 @@ static int CONTACT_PAGE_SIZE = 100;
         NSDictionary *JSONDictionary = (NSDictionary *)json;
         NSMutableArray *contactArray = [NSMutableArray new];
         if (JSONDictionary.count) {
-            ALUserDetail *userDetail = [ALUserDetail new];
+            KMCoreUserDetail *userDetail = [KMCoreUserDetail new];
             [userDetail parsingDictionaryFromJSON:JSONDictionary];
             NSString *paramString = userDetail.userIdString;
             
@@ -434,7 +434,7 @@ static int CONTACT_PAGE_SIZE = 100;
                     completion(nil, error);
                     return;
                 }
-                for (ALUserDetail *userDetail in userDetailArray) {
+                for (KMCoreUserDetail *userDetail in userDetailArray) {
                     [self.contactDBService updateUserDetail: userDetail];
                     ALContact *contact = [self.contactDBService loadContactByKey:@"userId" value:userDetail.userId];
                     [contactArray addObject:contact];
@@ -516,7 +516,7 @@ static int CONTACT_PAGE_SIZE = 100;
     if (![self.contactService isContactExist:userId]) {
         ALSLog(ALLoggerSeverityError, @"Contact not found fetching for user: %@", userId);
         
-        [self userDetailServerCall:userId withCompletion:^(ALUserDetail *alUserDetail) {
+        [self userDetailServerCall:userId withCompletion:^(KMCoreUserDetail *alUserDetail) {
             [self.contactDBService updateUserDetail:alUserDetail];
             ALContact *alContact = [self.contactDBService loadContactByKey:@"userId" value:userId];
             completion(alContact);
@@ -552,7 +552,7 @@ static int CONTACT_PAGE_SIZE = 100;
                 completion(alAPIResponse, reponseError);
                 return;
             }
-            [ALUserDefaultsHandler setPassword:newPassword];
+            [KMCoreUserDefaultsHandler setPassword:newPassword];
         }
         completion(alAPIResponse, theError);
     }];
@@ -588,7 +588,7 @@ static int CONTACT_PAGE_SIZE = 100;
             
             NSMutableArray *userDetailArray = (NSMutableArray*)response.response;
             for (NSDictionary *userDeatils in userDetailArray) {
-                ALUserDetail *userDeatil = [[ALUserDetail alloc] initWithDictonary:userDeatils];
+                KMCoreUserDetail *userDeatil = [[KMCoreUserDetail alloc] initWithDictonary:userDeatils];
                 userDeatil.unreadCount = 0;
                 [self.contactDBService updateUserDetail:userDeatil];
             }
@@ -602,7 +602,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     
     [self setUnreadCountZeroForContactId:userId];
     if (delegate) {
@@ -614,7 +614,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Muted user list.
 
-- (void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
+- (void)getMutedUserListWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
                       withCompletion:(void (^)(NSMutableArray *, NSError *))completion {
     
     [self.userClientService getMutedUserListWithCompletion:^(id theJson, NSError *error) {
@@ -692,7 +692,7 @@ static int CONTACT_PAGE_SIZE = 100;
 }
 
 - (void)disableChat:(BOOL)disable withCompletion:(void (^)(BOOL, NSError *))completion {
-    ALContact *alContact = [self.contactDBService loadContactByKey:@"userId" value:[ALUserDefaultsHandler getUserId]];
+    ALContact *alContact = [self.contactDBService loadContactByKey:@"userId" value:[KMCoreUserDefaultsHandler getUserId]];
     if (!alContact) {
         ALSLog(ALLoggerSeverityError, @"Contact details of logged-in user not present");
         NSError *error = [NSError
@@ -708,13 +708,13 @@ static int CONTACT_PAGE_SIZE = 100;
     } else {
         metadata = [[NSMutableDictionary alloc] init];
     }
-    [metadata setObject:[NSNumber numberWithBool:disable] forKey: AL_DISABLE_USER_CHAT];
-    ALUser *user = [[ALUser alloc] init];
+    [metadata setObject:[NSNumber numberWithBool:disable] forKey: KM_CORE_DISABLE_USER_CHAT];
+    KMCoreUser *user = [[KMCoreUser alloc] init];
     [user setMetadata: metadata];
     [self.userClientService updateUserDisplayName:nil andUserImageLink:nil userStatus:nil metadata:metadata withCompletion:^(id theJson, NSError *error) {
         if (!error) {
             [self.contactDBService updateContactInDatabase: alContact];
-            [ALUserDefaultsHandler disableChat: disable];
+            [KMCoreUserDefaultsHandler disableChat: disable];
             completion(YES, nil);
         } else {
             ALSLog(ALLoggerSeverityError, @"Error while disabling chat for user");
@@ -728,7 +728,7 @@ static int CONTACT_PAGE_SIZE = 100;
 - (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
                                  withCompletion:(void(^)(NSMutableArray *contactArray, NSError *error))completion {
     
-    if (![ALUserDefaultsHandler isLoggedIn]) {
+    if (![KMCoreUserDefaultsHandler isLoggedIn]) {
         NSError *error = [NSError
                           errorWithDomain:@"KMCore"
                           code:1
@@ -739,7 +739,7 @@ static int CONTACT_PAGE_SIZE = 100;
     NSUInteger pageSize = (NSUInteger)CONTACT_PAGE_SIZE;
     NSNumber *startTime;
     if (nextPage) {
-        startTime = [ALApplozicSettings getStartTime];
+        startTime = [KMCoreSettings getStartTime];
     } else {
         startTime = 0;
     }
@@ -752,7 +752,7 @@ static int CONTACT_PAGE_SIZE = 100;
             return;
         }
         
-        [ALApplozicSettings setStartTime:response.lastFetchTime];
+        [KMCoreSettings setStartTime:response.lastFetchTime];
         NSMutableArray *nextPageContactArray = [self.contactDBService updateFilteredContacts:response
                                                                              withLoadContact:nextPage];
         if (nextPage) {

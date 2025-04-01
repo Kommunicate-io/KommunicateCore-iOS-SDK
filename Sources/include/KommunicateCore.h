@@ -1,6 +1,6 @@
 //
-//  ApplozicCore.h
-//  ApplozicCore
+//  KommunicateCore.h
+//  KommunicateCore
 //
 //  Created by apple on 16/02/21.
 //  Copyright © 2021 kommunicate. All rights reserved.
@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-//! Project version number for ApplozicCore.
-FOUNDATION_EXPORT double ApplozicCoreVersionNumber;
+//! Project version number for KommunicateCore.
+FOUNDATION_EXPORT double KommunicateCoreVersionNumber;
 
-//! Project version string for ApplozicCore.
-FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
+//! Project version string for KommunicateCore.
+FOUNDATION_EXPORT const unsigned char KommunicateCoreVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import "PublicHeader.h"
 
@@ -38,14 +38,14 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import "ALRegistrationResponse.h"
 #import "ALRegisterUserClientService.h"
 #import "ALContact.h"
-#import "ALUser.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUser.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "DB_CONTACT.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALContactService.h"
 #import "ALUserService.h"
 #import "ALUserDetailListFeed.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALContactDBService.h"
 #import "ALContactsResponse.h"
 #import "ALUserClientService.h"
@@ -97,8 +97,8 @@ FOUNDATION_EXPORT const unsigned char ApplozicCoreVersionString[];
 #import "MQTTSSLSecurityPolicyDecoder.h"
 #import "MQTTSessionManager.h"
 #import "MQTTSSLSecurityPolicyEncoder.h"
-#import "ApplozicClient.h"
-#import "ALRealTimeUpdate.h"
+#import "KommunicateClient.h"
+#import "KMCoreRealTimeUpdate.h"
 #import "ALAuthService.h"
 #import "ALAttachmentService.h"
 #import "ALAuthClientService.h"

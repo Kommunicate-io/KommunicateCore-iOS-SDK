@@ -1,6 +1,6 @@
 //
 //  ALChannel.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import "ALChannel.h"
 #import "ALChannelUser.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 
 
 @interface ALChannel ()
@@ -101,7 +101,7 @@
     }
     
     for (NSString *userId in self.membersName) {
-        if (!([userId isEqualToString:[ALUserDefaultsHandler getUserId]])) {
+        if (!([userId isEqualToString:[KMCoreUserDefaultsHandler getUserId]])) {
             return userId;
         }
     }
@@ -182,7 +182,7 @@
 
     if (status != nil && ([status isEqualToString:@"2"] || [status isEqualToString:@"3"])) {
         return CLOSED_CONVERSATION;
-    } else if (assignee != nil && ([assignee isEqualToString:[ALUserDefaultsHandler getUserId]])) {
+    } else if (assignee != nil && ([assignee isEqualToString:[KMCoreUserDefaultsHandler getUserId]])) {
         return ASSIGNED_CONVERSATION;
     }
     return ALL_CONVERSATION;

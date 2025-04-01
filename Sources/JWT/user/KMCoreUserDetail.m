@@ -1,20 +1,20 @@
 //
-//  ALUserDetail.m
-//  Applozic
+//  KMCoreUserDetail.m
+//  Kommunicate
 //
 //  Created by devashish on 26/11/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALUserDetail.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDetail.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
-@interface ALUserDetail ()
+@interface KMCoreUserDetail ()
 
 @end
 
-@implementation ALUserDetail
+@implementation KMCoreUserDetail
 
 static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 
@@ -97,7 +97,7 @@ static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 }
 
 - (BOOL)isChatDisabled {
-    return _metadata && [_metadata[AL_DISABLE_USER_CHAT] boolValue];
+    return _metadata && [_metadata[KM_CORE_DISABLE_USER_CHAT] boolValue];
 }
 
 - (NSMutableDictionary *)getMetaDataDictionary:(NSString *)string {

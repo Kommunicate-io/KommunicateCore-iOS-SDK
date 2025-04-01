@@ -1,13 +1,13 @@
 //
 //  ALMessageArrayWrapper.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 17/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
 #import "ALMessageArrayWrapper.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
 @interface ALMessageArrayWrapper ()
@@ -32,7 +32,7 @@
 - (void)addALMessageToMessageArray:(ALMessage *)alMessage {
     if ([self getUpdatedMessageArray].count == 0) {
         ALMessage *dateLabel = [self getDatePrototype:
-                                NSLocalizedStringWithDefaultValue(@"today", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"")
+                                NSLocalizedStringWithDefaultValue(@"today", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"")
                                    andAlMessageObject:alMessage];
         [self.messageArray addObject:dateLabel];
     } else {
@@ -123,7 +123,7 @@
     
     if (tempArray.count == 1) {
         
-        self.dateCellText = NSLocalizedStringWithDefaultValue(@"today", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"");
+        self.dateCellText = NSLocalizedStringWithDefaultValue(@"today", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"");
         
         ALMessage *dateLabel = [self getDatePrototype:self.dateCellText andAlMessageObject:tempArray[0]];
         
@@ -190,10 +190,10 @@
         return NO;
     } else {
         if ([newerDateString isEqualToString:todayDate]) {
-            self.dateCellText = NSLocalizedStringWithDefaultValue(@"today", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"");
+            self.dateCellText = NSLocalizedStringWithDefaultValue(@"today", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"");
             
         } else if([newerDateString isEqualToString:yesterdayDate]) {
-            self.dateCellText = NSLocalizedStringWithDefaultValue(@"yesterday", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Yesterday", @"");
+            self.dateCellText = NSLocalizedStringWithDefaultValue(@"yesterday", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"Yesterday", @"");
         } else {
             [format setDateFormat:@"EEEE MMM dd,yyyy"];
             self.dateCellText = [format stringFromDate:newerDate];
@@ -220,9 +220,9 @@
     NSString *actualDate = @"";
     
     if ([string isEqualToString:todaydate]) {
-        actualDate = NSLocalizedStringWithDefaultValue(@"today", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"");
+        actualDate = NSLocalizedStringWithDefaultValue(@"today", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"Today", @"");
     } else if ([string isEqualToString:yesterdayDate]) {
-        actualDate = NSLocalizedStringWithDefaultValue(@"yesterday", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"Yesterday", @"");
+        actualDate = NSLocalizedStringWithDefaultValue(@"yesterday", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"Yesterday", @"");
     } else {
         [format setDateFormat:@"EEEE MMM dd,yyyy"];
         actualDate = [format stringFromDate:olderDate];
@@ -238,7 +238,7 @@
     if (self.messageArray.count <=0) {
         return newMessageArray;
     }
-    if (firstInNewMessage.createdAtTime > [ALUserDefaultsHandler getLastSyncTime]) {
+    if (firstInNewMessage.createdAtTime > [KMCoreUserDefaultsHandler getLastSyncTime]) {
         return newMessageArray;
     }
     NSMutableArray *tempArray = [NSMutableArray arrayWithArray:newMessageArray];

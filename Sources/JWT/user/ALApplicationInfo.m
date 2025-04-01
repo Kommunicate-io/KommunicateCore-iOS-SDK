@@ -1,6 +1,6 @@
 //
 //  ALApplicationInfo.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Mukesh Thawani on 05/06/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import "ALApplicationInfo.h"
 #import "ALUtilityClass.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALConstant.h"
 
 @implementation ALApplicationInfo
@@ -20,9 +20,9 @@
     if (debugflag) {
         return NO;
     }
-    if ([ALUserDefaultsHandler getUserPricingPackage] == AL_CLOSED
-       || [ALUserDefaultsHandler getUserPricingPackage] == AL_BETA
-       || [ALUserDefaultsHandler getUserPricingPackage] == AL_SUSPENDED) {
+    if ([KMCoreUserDefaultsHandler getUserPricingPackage] == AL_CLOSED
+       || [KMCoreUserDefaultsHandler getUserPricingPackage] == AL_BETA
+       || [KMCoreUserDefaultsHandler getUserPricingPackage] == AL_SUSPENDED) {
         return YES;
     }
     return NO;
@@ -33,7 +33,7 @@
     if (debugflag) {
         return NO;
     }
-    if ([ALUserDefaultsHandler getUserPricingPackage] == AL_STARTER) {
+    if ([KMCoreUserDefaultsHandler getUserPricingPackage] == AL_STARTER) {
         return YES;
     }
     return NO;

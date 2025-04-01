@@ -1,6 +1,6 @@
 //
 //  ALChannelService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 04/01/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
@@ -13,7 +13,7 @@
 #import "ALMuteRequest.h"
 #import "ALAPIResponse.h"
 #import "ALContactService.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreRealTimeUpdate.h"
 #import "ALLogger.h"
 #import "ALChannelCreateResponse.h"
 
@@ -169,7 +169,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 - (BOOL)isLoginUserInChannel:(NSNumber *)channelKey {
     NSMutableArray *memberList = [NSMutableArray arrayWithArray:[self getListOfAllUsersInChannel:channelKey]];
-    return ([memberList containsObject:[ALUserDefaultsHandler getUserId]]);
+    return ([memberList containsObject:[KMCoreUserDefaultsHandler getUserId]]);
 }
 
 #pragma mark - Get list of channels from Database
@@ -345,7 +345,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                                      andMetaData:metaData adminUser:adminUserId withGroupUsers:groupRoleUsers withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
 
             if (!error) {
-                response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
+                response.alChannel.adminKey = [KMCoreUserDefaultsHandler getUserId];
                 [self createChannelEntry:response.alChannel fromMessageList:NO];
                 completion(response.alChannel, error);
             } else {
@@ -458,7 +458,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                                      andMetaData:metaData adminUser:adminUserId withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
 
             if (!error) {
-                response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
+                response.alChannel.adminKey = [KMCoreUserDefaultsHandler getUserId];
                 [self createChannelEntry:response.alChannel fromMessageList:NO];
                 completion(response.alChannel, error);
             } else {
@@ -555,7 +555,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 - (BOOL)checkAdmin:(NSNumber *)channelKey {
     ALChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
     
-    return [channel.adminKey isEqualToString:[ALUserDefaultsHandler getUserId]];
+    return [channel.adminKey isEqualToString:[KMCoreUserDefaultsHandler getUserId]];
 }
 
 #pragma mark - Leave Channel
@@ -730,9 +730,9 @@ dispatch_queue_t channelUserbackgroundQueue;
     [self syncCallForChannelWithDelegate:nil];
 }
 
-- (void)syncCallForChannelWithDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)syncCallForChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate {
 
-    NSNumber *updateAtTime = [ALUserDefaultsHandler getLastSyncChannelTime];
+    NSNumber *updateAtTime = [KMCoreUserDefaultsHandler getLastSyncChannelTime];
     
     if ((syncCallTriggerTime != nil || syncCallTriggerTime != 0L) && syncCallTriggerTime == updateAtTime) {
         return;
@@ -741,7 +741,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     syncCallTriggerTime = updateAtTime;
     [self.channelClientService syncCallForChannel:updateAtTime withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
         if (!error) {
-            [ALUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
+            [KMCoreUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
             [self createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_METADATA" object:nil];
@@ -1126,7 +1126,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                               withGroupUsers:channelInfo.groupRoleUsers
                               withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
         if (!error) {
-            response.alChannel.adminKey = [ALUserDefaultsHandler getUserId];
+            response.alChannel.adminKey = [KMCoreUserDefaultsHandler getUserId];
             [self createChannelEntry:response.alChannel fromMessageList:NO];
             completion(response, error);
         } else {
@@ -1136,7 +1136,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }];
 }
 
-- (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     
     [self setUnreadCountZeroForGroupID:channelKey];
     if (delegate) {
@@ -1176,7 +1176,7 @@ dispatch_queue_t channelUserbackgroundQueue;
             channel.membersName = channel.membersId;
         }
         // As running in a background thread it's important to check if the user is loggedIn otherwise it will continue the operation even after logout
-        if (!ALUserDefaultsHandler.isLoggedIn) {
+        if (!KMCoreUserDefaultsHandler.isLoggedIn) {
             ALSLog(ALLoggerSeverityInfo, @"User is not login returing from channel");
             dispatch_group_leave(group);
             return;
@@ -1208,7 +1208,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                 if (channelUser.role != nil) {
                     newChannelUserX.role = channelUser.role;
                 }
-                if (ALUserDefaultsHandler.isLoggedIn) {
+                if (KMCoreUserDefaultsHandler.isLoggedIn) {
                     [self.channelDBService createChannelUserXEntity:newChannelUserX  withContext:context];
                 } else {
                     // User is not login will break from the inner loop.
@@ -1252,7 +1252,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                                                         object:channel
                                                       userInfo: @{AL_CHANNEL_MEMBER_SAVE_STATUS : operationStatus}];
 }
-- (void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+- (void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
 
     for (ALChannel *channelObject in channelArray) {
         // Ignore inserting un opened conversation(Which doesn't have user messages, only contains bot messages)
@@ -1275,12 +1275,12 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 - (void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError *error))completion {
 
-    [self.channelClientService syncCallForChannel:[ALUserDefaultsHandler getChannelListLastSyncGeneratedTime] withFetchUserDetails:NO andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+    [self.channelClientService syncCallForChannel:[KMCoreUserDefaultsHandler getChannelListLastSyncGeneratedTime] withFetchUserDetails:NO andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
         if (error) {
             completion(nil, error);
             return;
         }
-        [ALUserDefaultsHandler setChannelListLastSyncGeneratedTime:response.generatedAt];
+        [KMCoreUserDefaultsHandler setChannelListLastSyncGeneratedTime:response.generatedAt];
         [self createChannelsAndUpdateInfo:response.alChannelArray withDelegate:nil];
         NSMutableArray *channelArray = [self getAllChannelList];
         completion(channelArray, nil);

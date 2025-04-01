@@ -7,9 +7,9 @@
 
 #import "ALRequestHandler.h"
 #import "ALUtilityClass.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "NSString+Encode.h"
-#import "ALUser.h"
+#import "KMCoreUser.h"
 #import "NSData+AES.h"
 #import "ALAuthService.h"
 #import "ALLogger.h"
@@ -61,8 +61,8 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
 
     if (paramString != nil) {
         NSData *postData = [paramString dataUsingEncoding:NSUTF8StringEncoding];
-        if([ALUserDefaultsHandler getEncryptionKey] && ![urlString hasSuffix:REGISTER_USER_STRING] && ![urlString hasSuffix:@"rest/ws/register/update"]) {
-            NSData *encryptedData = [postData AES128EncryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
+        if([KMCoreUserDefaultsHandler getEncryptionKey] && ![urlString hasSuffix:REGISTER_USER_STRING] && ![urlString hasSuffix:@"rest/ws/register/update"]) {
+            NSData *encryptedData = [postData AES128EncryptedDataWithKey:[KMCoreUserDefaultsHandler getEncryptionKey]];
             NSData *base64Encoded = [encryptedData base64EncodedDataWithOptions:0];
             postData = base64Encoded;
         }
@@ -114,12 +114,12 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
     
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
-    NSString *appMoudle = [ALUserDefaultsHandler getAppModuleName];
+    NSString *appMoudle = [KMCoreUserDefaultsHandler getAppModuleName];
     if (appMoudle) {
         [request addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
     }
     
-    NSString *deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKeyString = [KMCoreUserDefaultsHandler getDeviceKeyString];
     if (deviceKeyString) {
         [request addValue:deviceKeyString forHTTPHeaderField:@"Device-Key"];
     }
@@ -128,12 +128,12 @@ static NSString *const REGISTER_USER_STRING = @"rest/ws/register/client";
         [request addValue:userId forHTTPHeaderField:@"Of-User-Id"];
     }
     
-    if ([ALUserDefaultsHandler getUserRoleType] == 8 && userId != nil) {
+    if ([KMCoreUserDefaultsHandler getUserRoleType] == 8 && userId != nil) {
         NSString *product = @"true";
         [request setValue:product forHTTPHeaderField:@"Apz-Product-App"];
-        [request addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Apz-AppId"];
+        [request addValue:[KMCoreUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Apz-AppId"];
     } else {
-        [request addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
+        [request addValue:[KMCoreUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
     }
 }
 

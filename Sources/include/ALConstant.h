@@ -5,12 +5,12 @@
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 
-#define KBASE_URL ([ALUserDefaultsHandler getBASEURL])
-#define MQTT_URL ([ALUserDefaultsHandler getMQTTURL])
-#define KBASE_FILE_URL ([ALUserDefaultsHandler getFILEURL])
-#define MQTT_PORT ([ALUserDefaultsHandler getMQTTPort])
+#define KBASE_URL ([KMCoreUserDefaultsHandler getBASEURL])
+#define MQTT_URL ([KMCoreUserDefaultsHandler getMQTTURL])
+#define KBASE_FILE_URL ([KMCoreUserDefaultsHandler getFILEURL])
+#define MQTT_PORT ([KMCoreUserDefaultsHandler getMQTTPort])
 
 static NSString *const APPLOZIC_TOPBAR_COLOR = @"ApplozicTopbarColor";
 static NSString *const APPLOZIC_CHAT_BACKGROUND_COLOR = @"ApplozicChatBackgroundColor";

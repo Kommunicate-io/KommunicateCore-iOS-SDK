@@ -1,6 +1,6 @@
 //
 //  ALChannelDBService.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -14,8 +14,8 @@
 #import "ALChannelUserX.h"
 #import "ALConversationProxy.h"
 #import "DB_ConversationProxy.h"
-#import "ALApplozicSettings.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreSettings.h"
+#import "KMCoreRealTimeUpdate.h"
 
 @interface ALChannelDBService : NSObject
 

@@ -1,6 +1,6 @@
 //
 //  ALAuthClientService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Sunil on 15/06/20.
 //  Copyright © 2020 kommunicate. All rights reserved.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALAuthClientService.h"
 #import "ALResponseHandler.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALConstant.h"
 #import "ALLogger.h"
 #import "NSData+AES.h"
@@ -23,7 +23,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
 
 -(void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
 
-    if (![ALUserDefaultsHandler isLoggedIn] || ![ALUserDefaultsHandler getApplicationKey]) {
+    if (![KMCoreUserDefaultsHandler isLoggedIn] || ![KMCoreUserDefaultsHandler getApplicationKey]) {
         NSError *reponseError = [NSError errorWithDomain:@"KMCore"
                                                     code:1
                                                 userInfo:@{NSLocalizedDescriptionKey: @"User is not logged in or applicationId is nil"}];
@@ -32,8 +32,8 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
     }
 
     NSMutableDictionary *JSONDictionary = [NSMutableDictionary new];
-    [JSONDictionary setObject:[ALUserDefaultsHandler getUserId] forKey:USERID];
-    [JSONDictionary setObject:[ALUserDefaultsHandler getApplicationKey] forKey:APPLICATIONID];
+    [JSONDictionary setObject:[KMCoreUserDefaultsHandler getUserId] forKey:USERID];
+    [JSONDictionary setObject:[KMCoreUserDefaultsHandler getApplicationKey] forKey:APPLICATIONID];
 
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:JSONDictionary options:0 error:&error];
@@ -80,16 +80,16 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         [postURLRequest setValue:[NSString stringWithFormat:@"%lu",(unsigned long)[postRequestData length]] forHTTPHeaderField:@"Content-Length"];
     }
     [postURLRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    NSString *appMoudle = [ALUserDefaultsHandler getAppModuleName];
+    NSString *appMoudle = [KMCoreUserDefaultsHandler getAppModuleName];
     if (appMoudle) {
         [postURLRequest addValue:appMoudle forHTTPHeaderField:@"App-Module-Name"];
     }
-    NSString *deviceKeyString = [ALUserDefaultsHandler getDeviceKeyString];
+    NSString *deviceKeyString = [KMCoreUserDefaultsHandler getDeviceKeyString];
 
     if (deviceKeyString) {
         [postURLRequest addValue:deviceKeyString forHTTPHeaderField:@"Device-Key"];
     }
-    [postURLRequest addValue:[ALUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
+    [postURLRequest addValue:[KMCoreUserDefaultsHandler getApplicationKey] forHTTPHeaderField:@"Application-Key"];
     return postURLRequest;
 }
 
@@ -144,14 +144,14 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         id theJson = nil;
 
         // DECRYPTING DATA WITH KEY
-        if ([ALUserDefaultsHandler getEncryptionKey] &&
+        if ([KMCoreUserDefaultsHandler getEncryptionKey] &&
             ![tag isEqualToString:@"CREATE ACCOUNT"] &&
             ![tag isEqualToString:@"CREATE FILE URL"] &&
             ![tag isEqualToString:@"UPDATE NOTIFICATION MODE"] &&
             ![tag isEqualToString:@"FILE DOWNLOAD URL"]) {
 
             NSData *base64DecodedData = [[NSData alloc] initWithBase64EncodedData:data options:0];
-            NSData *theData = [base64DecodedData AES128DecryptedDataWithKey:[ALUserDefaultsHandler getEncryptionKey]];
+            NSData *theData = [base64DecodedData AES128DecryptedDataWithKey:[KMCoreUserDefaultsHandler getEncryptionKey]];
 
             if (theData == nil) {
                 dispatch_async(dispatch_get_main_queue(), ^{

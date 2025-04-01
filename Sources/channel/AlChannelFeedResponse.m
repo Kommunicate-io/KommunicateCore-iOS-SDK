@@ -1,6 +1,6 @@
 //
 //  AlChannelFeedResponse.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Nitin on 20/10/17.
 //  Copyright © 2017 kommunicate. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import "AlChannelFeedResponse.h"
 #import "ALChannelCreateResponse.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALContactDBService.h"
 
 @implementation AlChannelFeedResponse
@@ -34,7 +34,7 @@
 - (void)parseUserDetails:(NSMutableArray *)userDetailJsonArray {
     
     for (NSDictionary *JSONDictionaryObject in userDetailJsonArray) {
-        ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:JSONDictionaryObject];
+        KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:JSONDictionaryObject];
         userDetail.unreadCount = 0;
         ALContactDBService * contactDB = [ALContactDBService new];
         [contactDB updateUserDetail: userDetail];

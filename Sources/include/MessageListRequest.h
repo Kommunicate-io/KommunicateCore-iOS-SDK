@@ -1,6 +1,6 @@
 //
 //  MessageListRequest.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Devashish on 29/02/16.
 //  Copyright © 2016 kommunicate. All rights reserved.

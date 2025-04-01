@@ -1,6 +1,6 @@
 //
 //  ALChannelDBService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -483,7 +483,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
             if (countOfUsers > 2) {
                 int counter = (int)countOfUsers - 2;
-                str = [NSString stringWithFormat:@"+%d %@",counter, NSLocalizedStringWithDefaultValue(@"moreMember", [ALApplozicSettings getLocalizableName], [NSBundle mainBundle], @"more", @"")];
+                str = [NSString stringWithFormat:@"+%d %@",counter, NSLocalizedStringWithDefaultValue(@"moreMember", [KMCoreSettings getLocalizableName], [NSBundle mainBundle], @"more", @"")];
                 listString = [NSString stringWithFormat:@"%@, %@, %@", listArray[0], listArray[1], str];
             }
         }
@@ -860,7 +860,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 - (void)removedMembersArray:(NSMutableArray *)memberArray
               andChannelKey:(NSNumber *)channelKey {
-    if ([memberArray containsObject:[ALUserDefaultsHandler getUserId]]) {
+    if ([memberArray containsObject:[KMCoreUserDefaultsHandler getUserId]]) {
         [self setLeaveFlag:YES forChannel:channelKey];
         NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
         [userInfo setObject:channelKey forKey:@"CHANNEL_KEY"];
@@ -871,7 +871,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
 
 - (void)addedMembersArray:(NSMutableArray *)memberArray
             andChannelKey:(NSNumber *)channelKey {
-    if ([memberArray containsObject:[ALUserDefaultsHandler getUserId]]) {
+    if ([memberArray containsObject:[KMCoreUserDefaultsHandler getUserId]]) {
         [self setLeaveFlag:NO forChannel:channelKey];
         NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
         [userInfo setObject:channelKey forKey:@"CHANNEL_KEY"];

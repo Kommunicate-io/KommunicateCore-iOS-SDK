@@ -1,6 +1,6 @@
 //
 //  ALJWTClaim.h
-//  ApplozicCore
+//  KommunicateCore
 //
 //  Created by apple on 12/03/21.
 //  Copyright © 2021 kommunicate. All rights reserved.
