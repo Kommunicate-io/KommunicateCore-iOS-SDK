@@ -11,7 +11,7 @@
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
 #import "ALMessage.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALMessageDBService.h"
 #import "ALDBHandler.h"
 #import "ALChannelService.h"
@@ -22,9 +22,9 @@
 #import "ALUserBlockResponse.h"
 #import "ALUserService.h"
 #import "NSString+Encode.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALConnectionQueueHandler.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALSearchResultCache.h"
 #import "ALLogger.h"
 
@@ -114,17 +114,17 @@
                         withCompletion:(void(^)(NSMutableURLRequest *urlRequest, NSString *fileUrl)) completion {
 
     NSMutableURLRequest *urlRequest = nil;
-    if ([ALApplozicSettings isGoogleCloudServiceEnabled]) {
+    if ([KMCoreSettings isGoogleCloudServiceEnabled]) {
         NSString *fileURLString = [NSString stringWithFormat:@"%@/files/url",KBASE_FILE_URL];
         NSString *blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
         urlRequest = [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:blobParamString];
         completion(urlRequest, nil);
-    } else if ([ALApplozicSettings isS3StorageServiceEnabled]) {
+    } else if ([KMCoreSettings isS3StorageServiceEnabled]) {
         NSString *fileURLString = [NSString stringWithFormat:@"%@/rest/ws/file/url",KBASE_FILE_URL];
         NSString *blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
         urlRequest = [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:blobParamString];
         completion(urlRequest, nil);
-    } else if ([ALApplozicSettings isStorageServiceEnabled]) {
+    } else if ([KMCoreSettings isStorageServiceEnabled]) {
         NSString *fileURLString = [NSString stringWithFormat:@"%@%@%@",KBASE_FILE_URL,AL_IMAGE_DOWNLOAD_ENDPOINT,blobKey];
         completion(nil, fileURLString);
         return;
@@ -157,11 +157,11 @@
     if (blobKey == nil) {
         return nil;
     }
-    if ([ALApplozicSettings isGoogleCloudServiceEnabled]) {
+    if ([KMCoreSettings isGoogleCloudServiceEnabled]) {
         NSString *fileURLString = [NSString stringWithFormat:@"%@/files/url",KBASE_FILE_URL];
         NSString *blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
         return [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:blobParamString];
-    } else if([ALApplozicSettings isS3StorageServiceEnabled]) {
+    } else if([KMCoreSettings isS3StorageServiceEnabled]) {
         NSString *fileURLString = [NSString stringWithFormat:@"%@/rest/ws/file/url",KBASE_FILE_URL];
         NSString *blobParamString = [@"" stringByAppendingFormat:@"key=%@",blobKey];
         return [ALRequestHandler createGETRequestWithUrlString:fileURLString paramString:blobParamString];
@@ -246,7 +246,7 @@
     alMessage.contactIds = @"applozic";//1
     alMessage.to = @"applozic";//2
     alMessage.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
-    alMessage.deviceKey = [ALUserDefaultsHandler getDeviceKeyString];
+    alMessage.deviceKey = [KMCoreUserDefaultsHandler getDeviceKeyString];
     alMessage.sendToDevice = NO;
     alMessage.shared = NO;
     alMessage.fileMeta = nil;
@@ -262,7 +262,7 @@
         alMessage.groupId = channelKey;
     } else {
         alMessage.type = @"4";
-        alMessage.message = @"Welcome to Applozic! Drop a message here or contact us at devashish@applozic.com for any queries. Thanks";//3
+        alMessage.message = @"Welcome to Kommunicate! Drop a message here or contact us at devashish@applozic.com for any queries. Thanks";//3
         alMessage.groupId = nil;
     }
     [messageDBService createMessageEntityForDBInsertionWithMessage:alMessage];
@@ -284,9 +284,9 @@
         messageListParamString = [NSString stringWithFormat:@"startIndex=%@&mainPageSize=%lu&endTime=%@&deletedGroupIncluded=%@",
                                   @"0", (unsigned long)mainPageSize, startTime,@(YES)];
     }
-    if ([ALApplozicSettings getCategoryName]) {
+    if ([KMCoreSettings getCategoryName]) {
         messageListParamString = [messageListParamString stringByAppendingString:[NSString stringWithFormat:@"&category=%@",
-                                                                                  [ALApplozicSettings getCategoryName]]];
+                                                                                  [KMCoreSettings getCategoryName]]];
     }
 
     NSMutableURLRequest *messageListRequest = [ALRequestHandler createGETRequestWithUrlString:messageListURLString paramString:messageListParamString];
@@ -302,7 +302,7 @@
         ALSLog(ALLoggerSeverityInfo, @"Message list response JSON : %@",theJson);
 
         if (theJson) {
-            [ALUserDefaultsHandler setInitialMessageListCallDone:YES];
+            [KMCoreUserDefaultsHandler setInitialMessageListCallDone:YES];
             if (messageListResponse.userDetailsList) {
                 ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
                 [alContactDBService addUserDetails:messageListResponse.userDetailsList];
@@ -315,12 +315,12 @@
 
             if (messageListResponse.messageList.count > 0) {
                 ALMessage *lastMessage = (ALMessage *)[messageListResponse.messageList lastObject];
-                [ALUserDefaultsHandler setLastMessageListTime:lastMessage.createdAtTime];
+                [KMCoreUserDefaultsHandler setLastMessageListTime:lastMessage.createdAtTime];
             }
         }
         //USER BLOCK SYNC CALL
         ALUserService *userService = [ALUserService new];
-        [userService blockUserSync: [ALUserDefaultsHandler getUserBlockLastTimeStamp]];
+        [userService blockUserSync: [KMCoreUserDefaultsHandler getUserBlockLastTimeStamp]];
 
         completion(messageListResponse, nil);
 
@@ -367,14 +367,14 @@
 
         if (!(messageListRequest.channelType == OPEN)) {
             if (messageListRequest.channelKey != nil) {
-                [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.channelKey stringValue]];
+                [KMCoreUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.channelKey stringValue]];
             } else {
-                [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:messageListRequest.userId];
+                [KMCoreUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:messageListRequest.userId];
             }
         }
 
         if (messageListRequest.conversationId != nil) {
-            [ALUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.conversationId stringValue]];
+            [KMCoreUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.conversationId stringValue]];
         }
 
         ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson
@@ -408,15 +408,15 @@
 }
 
 - (void)sendPhotoForUserInfo:(NSDictionary *)userInfo withCompletion:(void(^)(NSString *message, NSError *error)) completion {
-    if (ALApplozicSettings.getDefaultOverrideuploadUrl.length != 0){
-        completion(ALApplozicSettings.getDefaultOverrideuploadUrl, nil);
-    } else if (ALApplozicSettings.isStorageServiceEnabled) {
+    if (KMCoreSettings.getDefaultOverrideuploadUrl.length != 0){
+        completion(KMCoreSettings.getDefaultOverrideuploadUrl, nil);
+    } else if (KMCoreSettings.isStorageServiceEnabled) {
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);
-    } else if (ALApplozicSettings.isS3StorageServiceEnabled) {
+    } else if (KMCoreSettings.isS3StorageServiceEnabled) {
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_CUSTOM_STORAGE_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);
-    } else if (ALApplozicSettings.isGoogleCloudServiceEnabled){
+    } else if (KMCoreSettings.isGoogleCloudServiceEnabled){
         NSString *fileUploadURLString = [NSString stringWithFormat:@"%@%@", KBASE_FILE_URL, AL_IMAGE_UPLOAD_ENDPOINT];
         completion(fileUploadURLString, nil);
     } else {
@@ -567,10 +567,10 @@ NSString *latSyncCallTime = @"";
     NSString *lastSyncTime;
     NSString *messageSyncParamString;
     if (isMetaDataUpdate) {
-        lastSyncTime = [NSString stringWithFormat:@"%@", [ALUserDefaultsHandler getLastSyncTimeForMetaData]];
+        lastSyncTime = [NSString stringWithFormat:@"%@", [KMCoreUserDefaultsHandler getLastSyncTimeForMetaData]];
         messageSyncParamString = [NSString stringWithFormat:@"lastSyncTime=%@&metadataUpdate=true",lastSyncTime];
     } else {
-        lastSyncTime = [NSString stringWithFormat:@"%@", [ALUserDefaultsHandler getLastSyncTime]];
+        lastSyncTime = [NSString stringWithFormat:@"%@", [KMCoreUserDefaultsHandler getLastSyncTime]];
         messageSyncParamString = [NSString stringWithFormat:@"lastSyncTime=%@",lastSyncTime];
     }
     
@@ -584,12 +584,12 @@ NSString *latSyncCallTime = @"";
 
         if (theError) {
             latSyncCallTime = @"";
-            [ALUserDefaultsHandler setMsgSyncRequired:YES];
+            [KMCoreUserDefaultsHandler setMsgSyncRequired:YES];
             completion(nil,theError);
             return;
         }
 
-        [ALUserDefaultsHandler setMsgSyncRequired:NO];
+        [KMCoreUserDefaultsHandler setMsgSyncRequired:NO];
         ALSyncMessageFeed *syncResponse = [[ALSyncMessageFeed alloc] initWithJSONString:theJson];
         ALSLog(ALLoggerSeverityInfo, @"LATEST_MESSAGE_JSON: %@", (NSString *)theJson);
         completion(syncResponse,nil);
@@ -761,9 +761,9 @@ NSString *latSyncCallTime = @"";
         }
 
         NSDictionary *userDetailDictionary = [theJson valueForKey:@"userDetails"];
-        NSMutableArray<ALUserDetail *> *userDetails = [NSMutableArray new];
+        NSMutableArray<KMCoreUserDetail *> *userDetails = [NSMutableArray new];
         for (NSDictionary *dict in userDetailDictionary) {
-            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary: dict];
+            KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary: dict];
             [userDetails addObject: userDetail];
         }
         [[ALSearchResultCache shared] saveUserDetails: userDetails];

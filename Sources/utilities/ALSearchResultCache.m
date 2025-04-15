@@ -1,6 +1,6 @@
 //
 //  SearchResultCache.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Shivam Pokhriyal on 02/07/19.
 //  Copyright © 2019 kommunicate. All rights reserved.
@@ -31,14 +31,14 @@ NSCache<NSString *, ALContact *> *contactCache;
     }
 }
 
-- (void)saveUserDetails:(NSMutableArray<ALUserDetail *> *)userDetails {
-    for (ALUserDetail *userDetail in userDetails) {
+- (void)saveUserDetails:(NSMutableArray<KMCoreUserDetail *> *)userDetails {
+    for (KMCoreUserDetail *userDetail in userDetails) {
         ALContact *contact = [self parseUserDetail: userDetail];
         [contactCache setObject: contact forKey: contact.userId];
     }
 }
 
-- (ALContact *)parseUserDetail: (ALUserDetail *)userDetail {
+- (ALContact *)parseUserDetail: (KMCoreUserDetail *)userDetail {
     ALContact *contact = [[ALContact alloc] init];
     contact.userId = userDetail.userId;
     contact.connected = userDetail.connected;

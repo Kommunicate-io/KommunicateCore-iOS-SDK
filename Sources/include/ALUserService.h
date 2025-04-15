@@ -1,6 +1,6 @@
 //
 //  ALUserService.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Divjyot Singh on 05/11/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -16,7 +16,7 @@
 #import "ALUserClientService.h"
 #import "ALAPIResponse.h"
 #import "ALUserBlockResponse.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreRealTimeUpdate.h"
 #import "ALMuteRequest.h"
 #import "ALChannelService.h"
 #import "ALContactService.h"
@@ -34,11 +34,11 @@
 - (void)processContactFromMessages:(NSArray *)messagesArr withCompletion:(void(^)(void))completionMark;
 
 /// This method is used for fetching users whose last seen is updated recently.
-/// @param lastSeenAt Pass the last getLastSeenSyncTime from ALUserDefaultsHandler.
-/// @param completionMark In case of a successful fetch, it will have a list of ALUserDetail array. Otherwise, in case of failure, the error will not be nil.
+/// @param lastSeenAt Pass the last getLastSeenSyncTime from KMCoreUserDefaultsHandler.
+/// @param completionMark In case of a successful fetch, it will have a list of KMCoreUserDetail array. Otherwise, in case of failure, the error will not be nil.
 - (void)getLastSeenUpdateForUsers:(NSNumber *)lastSeenAt withCompletion:(void(^)(NSMutableArray *))completionMark;
 
-- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark;
+- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(KMCoreUserDetail *))completionMark;
 
 - (void)updateUserDisplayName:(ALContact *)alContact;
 
@@ -75,8 +75,8 @@
 
 - (void)getListOfRegisteredUsersWithCompletion:(void(^)(NSError *error))completion;
 
-/// This method is used for fetching a list of top online users based on the onlineContactLimit from ALApplozicSettings
-/// @param completion Array of an AL ALUserDetail object in case of successful fetch, else error in the failure of fetching.
+/// This method is used for fetching a list of top online users based on the onlineContactLimit from KMCoreSettings
+/// @param completion Array of an AL KMCoreUserDetail object in case of successful fetch, else error in the failure of fetching.
 - (void)fetchOnlineContactFromServer:(void(^)(NSMutableArray *array, NSError *error))completion;
 
 - (NSNumber *)getTotalUnreadCount;
@@ -95,8 +95,8 @@
 
 /// This method is used for fetching updated user details from the server.
 /// @param userId Pass the userId for which the latest user detail is needed.
-/// @param completionMark ALUserDetail in case of a successful fetch or else it will return nil in case of failure.
-- (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(ALUserDetail *userDetail))completionMark;
+/// @param completionMark KMCoreUserDetail in case of a successful fetch or else it will return nil in case of failure.
+- (void)updateUserDetail:(NSString *)userId withCompletion:(void(^)(KMCoreUserDetail *userDetail))completionMark;
 
 - (void)updateUser:(NSString *)phoneNumber
              email:(NSString *)email
@@ -105,7 +105,7 @@
 
 /// This method is used for fetching user details by passing an array of userIds.
 /// @param userArray Add the userIds and pass it an array for user details.
-/// @param completion Array of ALUserDetail in case of a successful fetch or else it will return NSError in case of failure.
+/// @param completion Array of KMCoreUserDetail in case of a successful fetch or else it will return NSError in case of failure.
 - (void)fetchAndupdateUserDetails:(NSMutableArray *)userArray withCompletion:(void (^)(NSMutableArray *array, NSError *error))completion;
 
 /// This method is used for fetching contact or user details. If a contact exists in the database, it will return from a database, or else it will fetch details from the server and return it.
@@ -121,12 +121,12 @@
 
 - (void)getListOfUsersWithUserName:(NSString *)userName withCompletion:(void(^)(ALAPIResponse *response, NSError *error))completion;
 
-- (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<ApplozicUpdatesDelegate>)delegate;
+- (void)updateConversationReadWithUserId:(NSString *)userId withDelegate:(id<KommunicateUpdatesDelegate>)delegate;
 
 /// This method will fetch the muted users from an applozic server.
-/// @param delegate  If ApplozicUpdatesDelegate is passed, the event for onUserMuteStatus will be called.
-/// @param completion Array of ALUserDetail in case of a successful fetch or else it will return NSError in case of failure.
-- (void)getMutedUserListWithDelegate:(id<ApplozicUpdatesDelegate>)delegate
+/// @param delegate  If KommunicateUpdatesDelegate is passed, the event for onUserMuteStatus will be called.
+/// @param completion Array of KMCoreUserDetail in case of a successful fetch or else it will return NSError in case of failure.
+- (void)getMutedUserListWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
                       withCompletion:(void(^)(NSMutableArray *userDetailArray, NSError *error))completion;
 
 /// This method is used for to mute a user in one to one chat.

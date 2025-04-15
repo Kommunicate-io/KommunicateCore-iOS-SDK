@@ -1,6 +1,6 @@
 //
 //  ALSearchRequest.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by apple on 05/09/19.
 //  Copyright © 2019 kommunicate. All rights reserved.

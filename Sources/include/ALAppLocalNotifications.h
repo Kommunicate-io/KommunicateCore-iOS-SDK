@@ -1,6 +1,6 @@
 //
 //  ALAppLocalNotifications.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 07/01/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.

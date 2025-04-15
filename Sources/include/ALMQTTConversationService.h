@@ -1,6 +1,6 @@
 //
 //  ALMQTTConversationService.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Kommunicate on 11/27/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -9,10 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "MQTTClient.h"
 #import "ALMessage.h"
-#import "ALUserDetail.h"
 #import "ALSyncCallService.h"
-#import "ALUserDetail.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreUserDetail.h"
+#import "KMCoreRealTimeUpdate.h"
 
 extern NSString *const ALChannelDidChangeGroupMuteNotification;
 extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
@@ -24,7 +23,7 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 - (void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status;
 - (void)updateStatusForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateTypingStatus:(NSString *) applicationKey userId:(NSString *)userId status:(BOOL)status;
-- (void)updateLastSeenAtStatus:(ALUserDetail *)alUserDetail;
+- (void)updateLastSeenAtStatus:(KMCoreUserDetail *)alUserDetail;
 - (void)mqttConnectionClosed;
 - (void)userOnlineStatusChanged:(NSString *)contactId status:(NSString *)status;
 
@@ -46,7 +45,7 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 
 @property (nonatomic, weak) id<ALMQTTConversationDelegate>mqttConversationDelegate;
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate>realTimeUpdate;
+@property (nonatomic, weak) id<KommunicateUpdatesDelegate>realTimeUpdate;
 
 @property (nonatomic, readwrite) MQTTSession *session;
 

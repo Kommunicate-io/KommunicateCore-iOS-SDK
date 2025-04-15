@@ -14,25 +14,25 @@
 #import "ALMessageList.h"
 #import "ALDBHandler.h"
 #import "ALConnectionQueueHandler.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALSendMessageResponse.h"
 #import "ALUserService.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALContactDBService.h"
 #import "ALContactService.h"
 #import "ALConversationService.h"
 #import "ALMessage.h"
 #include <tgmath.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import <objc/runtime.h>
 #import "ALMQTTConversationService.h"
-#import "ApplozicClient.h"
+#import "KommunicateClient.h"
 #import "ALHTTPManager.h"
 #import "ALUploadTask.h"
 #import "ALLogger.h"
 
-@interface ALMessageService  ()<ApplozicAttachmentDelegate>
+@interface ALMessageService  ()<KommunicateAttachmentDelegate>
 
 @end
 
@@ -68,9 +68,9 @@ static ALMessageClientService *alMsgClientService;
 }
 
 - (void)getMessagesListGroupByContactswithCompletionService:(void(^)(NSMutableArray *messages, NSError *error))completion {
-    NSNumber *startTime = [ALUserDefaultsHandler isInitialMessageListCallDone] ? [ALUserDefaultsHandler getLastMessageListTime] : nil;
+    NSNumber *startTime = [KMCoreUserDefaultsHandler isInitialMessageListCallDone] ? [KMCoreUserDefaultsHandler getLastMessageListTime] : nil;
 
-    [self.messageClientService getLatestMessageGroupByContact:[ALUserDefaultsHandler getFetchConversationPageSize]
+    [self.messageClientService getLatestMessageGroupByContact:[KMCoreUserDefaultsHandler getFetchConversationPageSize]
                                                     startTime:startTime withCompletion:^(ALMessageList *alMessageList, NSError *error) {
 
         [self getMessageListForUserIfLastIsHiddenMessageinMessageList:alMessageList
@@ -154,7 +154,7 @@ static ALMessageClientService *alMsgClientService;
         chatId = messageListRequest.channelKey != nil ? [messageListRequest.channelKey stringValue] : messageListRequest.userId;
     }
     //Found Record in DB itself ...if not make call to server
-    if (messageList.count > 0 && [ALUserDefaultsHandler isServerCallDoneForMSGList:chatId]) {
+    if (messageList.count > 0 && [KMCoreUserDefaultsHandler isServerCallDoneForMSGList:chatId]) {
         // NSLog(@"the Message List::%@",messageList);
         completion(messageList, nil, nil);
         return;
@@ -183,7 +183,7 @@ static ALMessageClientService *alMsgClientService;
             return;
         }
         
-        [ALUserDefaultsHandler setShowLoadEarlierOption:(messages.count == 50) forContactId: chatId];
+        [KMCoreUserDefaultsHandler setShowLoadEarlierOption:(messages.count == 50) forContactId: chatId];
 
         [alContactDBService addUserDetails:userDetailArray];
 
@@ -252,7 +252,7 @@ static ALMessageClientService *alMsgClientService;
     NSFetchRequest *dbMessageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [dbMessageFetchRequest setFetchLimit:rp];
     NSPredicate *predicate1;
-    if (conversationId && [ALApplozicSettings getContextualChatOption]) {
+    if (conversationId && [KMCoreSettings getContextualChatOption]) {
         predicate1 = [NSPredicate predicateWithFormat:@"conversationId = %d", [conversationId intValue]];
     } else if(isGroup) {
         predicate1 = [NSPredicate predicateWithFormat:@"groupId = %d", [channelKey intValue]];
@@ -373,7 +373,7 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Sync latest messages with delegate
 
 + (void) getLatestMessageForUser:(NSString *)deviceKeyString
-                    withDelegate:(id<ApplozicUpdatesDelegate>)delegate
+                    withDelegate:(id<KommunicateUpdatesDelegate>)delegate
                   withCompletion:(void (^)( NSMutableArray *, NSError *))completion {
     if (!alMsgClientService) {
         alMsgClientService = [[ALMessageClientService alloc] init];
@@ -407,18 +407,18 @@ static ALMessageClientService *alMsgClientService;
                                 [messageArray addObjectsFromArray:messages];
                             }
                             [self processMessages:messageArray delegate:delegate withCompletion:^(NSMutableArray *list) {
-                                [ALUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
+                                [KMCoreUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
                                 completion(list, nil);
                             }];
                         }];
                     } else {
                         [self processMessages:messageArray delegate:delegate withCompletion:^(NSMutableArray *list) {
-                            [ALUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
+                            [KMCoreUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
                             completion(list, nil);
                         }];
                     }
                 } else {
-                    [ALUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
+                    [KMCoreUserDefaultsHandler setLastSyncTime:syncResponse.lastSyncTime];
                     completion(messageArray, error);
                 }
             } else {
@@ -429,7 +429,7 @@ static ALMessageClientService *alMsgClientService;
 }
 
 + (void)processMessages:(NSMutableArray *)messageArray
-               delegate:(id<ApplozicUpdatesDelegate>)delegate
+               delegate:(id<KommunicateUpdatesDelegate>)delegate
          withCompletion:(void(^)(NSMutableArray *))completion {
     ALUserService *userService = [[ALUserService alloc] init];
     [userService processContactFromMessages:messageArray withCompletion:^{
@@ -698,8 +698,8 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Sync latest messages
 
 + (void)syncMessages {
-    if ([ALUserDefaultsHandler isLoggedIn]) {
-        [ALMessageService getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *messageArray, NSError *error) {
+    if ([KMCoreUserDefaultsHandler isLoggedIn]) {
+        [ALMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *messageArray, NSError *error) {
 
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"Error in fetching latest sync messages : %@",error);
@@ -737,12 +737,12 @@ static ALMessageClientService *alMsgClientService;
 #pragma mark - Sent message sync with delegate
 
 + (void)getMessageSENT:(ALMessage *)alMessage
-          withDelegate:(id<ApplozicUpdatesDelegate>)theDelegate
+          withDelegate:(id<KommunicateUpdatesDelegate>)theDelegate
         withCompletion:(void (^)( NSMutableArray *, NSError *))completion {
 
     ALMessage *localMessage = [ALMessageService getMessagefromKeyValuePair:@"key" andValue:alMessage.key];
     if (localMessage.key == nil) {
-        [self getLatestMessageForUser:[ALUserDefaultsHandler getDeviceKeyString]
+        [self getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString]
                          withDelegate:theDelegate
                        withCompletion:^(NSMutableArray *messageArray, NSError *error) {
             completion(messageArray, error);
@@ -799,7 +799,7 @@ static ALMessageClientService *alMsgClientService;
 
     alMessage.type = @"5";
     alMessage.createdAtTime = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
-    alMessage.deviceKey = [ALUserDefaultsHandler getDeviceKeyString ];
+    alMessage.deviceKey = [KMCoreUserDefaultsHandler getDeviceKeyString ];
     alMessage.sendToDevice = NO;
     alMessage.shared = NO;
     alMessage.fileMeta = nil;
@@ -845,7 +845,7 @@ static ALMessageClientService *alMsgClientService;
     return [messageDBService createMessageEntity:dbMessage];
 }
 
-+ (void)addOpenGroupMessage:(ALMessage *)alMessage withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
++ (void)addOpenGroupMessage:(ALMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     if (!alMessage) {
         return;
     }
@@ -898,7 +898,7 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)saveAndPostMessage:(ALMessage *)message
            withSkipMessage:(BOOL)skip
-              withDelegate:(id<ApplozicUpdatesDelegate>)delegate {
+              withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
 
     if (message) {
         NSMutableArray *messageArray = [[NSMutableArray alloc] init];
@@ -966,7 +966,7 @@ static ALMessageClientService *alMsgClientService;
                         [[NSNotificationCenter defaultCenter] postNotificationName:AL_MESSAGE_META_DATA_UPDATE object:message userInfo:nil];
                     }
                 }
-                [ALUserDefaultsHandler setLastSyncTimeForMetaData:syncResponse.lastSyncTime];
+                [KMCoreUserDefaultsHandler setLastSyncTimeForMetaData:syncResponse.lastSyncTime];
                 completion(syncResponse.messagesList, error);
             } else {
                 completion(messageArray, error);
@@ -1093,7 +1093,7 @@ static ALMessageClientService *alMsgClientService;
 
 - (void)getTotalUnreadMessageCountWithCompletionHandler:(void (^)(NSUInteger unreadCount, NSError *error))completion {
     ALUserService *alUserService = [[ALUserService alloc] init];
-    if (![ALUserDefaultsHandler isInitialMessageListCallDone]) {
+    if (![KMCoreUserDefaultsHandler isInitialMessageListCallDone]) {
         ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
         [messageDBService getLatestMessages:NO
                       withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {

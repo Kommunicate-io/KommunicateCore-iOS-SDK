@@ -1,6 +1,6 @@
 //
 //  ALAttachmentService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Sunil on 25/09/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
@@ -9,7 +9,7 @@
 #import "ALAttachmentService.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "ALMessageClientService.h"
-#import "ApplozicClient.h"
+#import "KommunicateClient.h"
 #import "ALMessageService.h"
 #import "ALUtilityClass.h"
 #import "ALVideoUploadManager.h"
@@ -27,8 +27,8 @@
 }
 
 - (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
-                     withDelegate:(id<ApplozicUpdatesDelegate>)delegate
-           withAttachmentDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
+                     withDelegate:(id<KommunicateUpdatesDelegate>)delegate
+           withAttachmentDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate {
     
     if (!attachmentMessage || !attachmentMessage.imageFilePath) {
         return;
@@ -91,7 +91,7 @@
     
 }
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
+- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate {
     
     self.attachmentProgressDelegate = attachmentProgressDelegate;
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];
@@ -99,7 +99,7 @@
     [manager processDownloadForMessage:alMessage isAttachmentDownload:YES];
 }
 
-- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<ApplozicAttachmentDelegate>)attachmentProgressDelegate {
+- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate {
     
     self.attachmentProgressDelegate = attachmentProgressDelegate;
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];

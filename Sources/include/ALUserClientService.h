@@ -1,6 +1,6 @@
 //
 //  ALUserClientService.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by Devashish on 21/12/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -21,7 +21,7 @@
 
 - (void)userLastSeenDetail:(NSNumber *)lastSeenAt withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark;
 
-- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(ALUserDetail *))completionMark;
+- (void)userDetailServerCall:(NSString *)contactId withCompletion:(void(^)(KMCoreUserDetail *))completionMark;
 
 - (void)updateUserDisplayName:(ALContact *)alContact withCompletion:(void(^)(id theJson, NSError *theError))completion;
 

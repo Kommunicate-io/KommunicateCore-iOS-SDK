@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALContact.h"
 #import "DB_CONTACT.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALContactDBService.h"
 
 @interface ALContactService : NSObject
@@ -67,5 +67,5 @@
 /// @param userId Pass the userId of the user to check whether the user is deleted or not.
 - (BOOL)isUserDeleted:(NSString *)userId;
 
-- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
+- (KMCoreUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId;
 @end

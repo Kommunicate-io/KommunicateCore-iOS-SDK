@@ -9,7 +9,7 @@
 #import "ALContactService.h"
 #import "ALContactDBService.h"
 #import "ALDBHandler.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALUserService.h"
 
 @implementation ALContactService
@@ -154,7 +154,7 @@
     return [self.alContactDBService isUserDeleted:userId];
 }
 
-- (ALUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
+- (KMCoreUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
     return  [self.alContactDBService updateMuteAfterTime:notificationAfterTime andUserId:userId];
 }
 @end

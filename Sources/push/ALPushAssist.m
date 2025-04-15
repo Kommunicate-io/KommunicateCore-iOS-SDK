@@ -1,6 +1,6 @@
 //
 //  ALPushAssist.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Divjyot Singh on 07/01/16.
 //  Copyright © 2016 kommunicate. All rights reserved.
@@ -10,8 +10,8 @@
 
 #import "ALPushNotificationService.h"
 #import "ALMessageDBService.h"
-#import "ALUserDetail.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDetail.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALAppLocalNotifications.h"
 #import "ALLogger.h"
 
@@ -30,7 +30,7 @@
 }
 
 - (BOOL)isOurViewOnTop {
-    NSArray *VCList = [ALApplozicSettings getListOfViewControllers];
+    NSArray *VCList = [KMCoreSettings getListOfViewControllers];
     if (VCList) {
         for (NSString * className in VCList) {
             if ([self.topViewController isKindOfClass:NSClassFromString(className)]) {
@@ -42,12 +42,12 @@
 }
 
 - (BOOL)isMessageContainerOnTop {
-    return ([self.topViewController isKindOfClass:NSClassFromString([ALApplozicSettings getMsgContainerVC])]);
+    return ([self.topViewController isKindOfClass:NSClassFromString([KMCoreSettings getMsgContainerVC])]);
 }
 
 - (BOOL)isVOIPViewOnTop {
     ALSLog(ALLoggerSeverityInfo, @"VOIP_VIEW : %@",self.topViewController);
-    return ([self.topViewController isKindOfClass:NSClassFromString([ALApplozicSettings getAudioVideoClassName])]);
+    return ([self.topViewController isKindOfClass:NSClassFromString([KMCoreSettings getAudioVideoClassName])]);
 }
 
 - (UIViewController *)topViewController {
@@ -78,7 +78,7 @@
 }
 
 + (BOOL)isViewObjIsMsgContainerVC:(UIViewController *)viewObj {
-    return ([viewObj isKindOfClass:NSClassFromString([ALApplozicSettings getMsgContainerVC])]);
+    return ([viewObj isKindOfClass:NSClassFromString([KMCoreSettings getMsgContainerVC])]);
 }
 
 @end

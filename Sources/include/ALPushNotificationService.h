@@ -48,17 +48,17 @@ typedef enum
 
 #import <Foundation/Foundation.h>
 #import "ALMessage.h"
-#import "ALUserDetail.h"
+#import "KMCoreUserDetail.h"
 #import "ALSyncCallService.h"
 #import "ALMQTTConversationService.h"
-#import "ALRealTimeUpdate.h"
+#import "KMCoreRealTimeUpdate.h"
 
 static NSString *const APPLOZIC_PREFIX = @"APPLOZIC_";
 static NSString *const APPLOZIC_CATEGORY_KEY = @"category";
 
 @interface ALPushNotificationService : NSObject
 
-@property (nonatomic, weak) id<ApplozicUpdatesDelegate>realTimeUpdate;
+@property (nonatomic, weak) id<KommunicateUpdatesDelegate>realTimeUpdate;
 @property(nonatomic,strong) ALSyncCallService *alSyncCallService;
 
 - (BOOL)isApplozicNotification:(NSDictionary *)dictionary;

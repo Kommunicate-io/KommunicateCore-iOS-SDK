@@ -1,15 +1,15 @@
 //
-//  ALUser.m
+//  KMCoreUser.m
 //  ChatApp
 //
 //  Created by devashish on 18/09/2015.
 //  Copyright (c) 2015 kommunicate. All rights reserved.
 //
 
-#import "ALUser.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUser.h"
+#import "KMCoreUserDefaultsHandler.h"
 
-@implementation ALUser
+@implementation KMCoreUser
 
 -(instancetype)initWithUserId:(NSString *)userId
                      password:(NSString *)password

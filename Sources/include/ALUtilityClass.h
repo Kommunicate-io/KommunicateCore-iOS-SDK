@@ -10,6 +10,9 @@
 #import "ALMessage.h"
 
 extern NSString * const AL_DEFAULT_APP_GROUP;
+extern NSString * const KM_CORE_DEFAULT_APP_GROUP;
+extern NSString * const AL_OLD_PREFIX_FOR_KEY;
+extern NSString * const KM_CORE_PREFIX_FOR_KEY;
 extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 
 @interface ALUtilityClass : NSObject
@@ -55,6 +58,9 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 + (UIImage *)setVideoThumbnail:(NSString *)videoFilePATH;
 + (NSString *)saveImageToDocDirectory:(UIImage *)image;
 + (NSString *)getAppGroupsName;
++ (NSString *)getOldAppGroupsName;
++ (NSString *)getKeyPrefix;
++ (NSString *)getOldKeyPrefix;
 + (NSInteger)randomNumberBetween:(NSInteger)minimum maxNumber:(NSInteger)maximum;
 
 @end

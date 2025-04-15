@@ -1,6 +1,6 @@
 //
 //  ALUserClientService.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Devashish on 21/12/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -9,7 +9,7 @@
 #import "ALUserClientService.h"
 #import <Foundation/Foundation.h>
 #import "ALConstant.h"
-#import "ALUserDefaultsHandler.h"
+#import "KMCoreUserDefaultsHandler.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
 #import "NSString+Encode.h"
@@ -19,7 +19,7 @@
 
 NSString * const KMCoreDomain = @"KMCore";
 
-typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
+typedef NS_ENUM(NSInteger, KMCoreUserClientError) {
     MessageKeyNotPresent = 2
 };
 
@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             withCompletion:(void(^)(ALLastSeenSyncFeed *))completionMark {
     NSString *userStatusURLString = [NSString stringWithFormat:@"%@/rest/ws/user/status",KBASE_URL];
     if (lastSeenAt == nil) {
-        lastSeenAt = [ALUserDefaultsHandler getLastSyncTime];
+        lastSeenAt = [KMCoreUserDefaultsHandler getLastSyncTime];
         ALSLog(ALLoggerSeverityInfo, @"The lastSeenAt is coming as null seeting default vlaue to %@", lastSeenAt);
     }
     NSString *userStatusParamString = [NSString stringWithFormat:@"lastSeenAt=%@",lastSeenAt];
@@ -61,7 +61,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
             return;
         } else {
             NSNumber *generatedAt = [theJson valueForKey:@"generatedAt"];
-            [ALUserDefaultsHandler setLastSeenSyncTime:generatedAt];
+            [KMCoreUserDefaultsHandler setLastSeenSyncTime:generatedAt];
             ALLastSeenSyncFeed *responseFeed = [[ALLastSeenSyncFeed alloc] initWithJSONString:(NSString*)theJson];
             completionMark(responseFeed);
         }
@@ -71,7 +71,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
 #pragma mark - User Detail
 
 - (void)userDetailServerCall:(NSString *)contactId
-              withCompletion:(void(^)(ALUserDetail *))completionMark {
+              withCompletion:(void(^)(KMCoreUserDetail *))completionMark {
     NSString *userDetailURLString = [NSString stringWithFormat:@"%@/rest/ws/user/detail",KBASE_URL];
     NSString *userDetailParamString = [NSString stringWithFormat:@"userIds=%@",[contactId urlEncodeUsingNSUTF8StringEncoding]];
     
@@ -88,7 +88,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         if (((NSArray*)theJson).count > 0) {
             ALSLog(ALLoggerSeverityInfo, @"User detail response JSON : %@", (NSString *)theJson);
-            ALUserDetail *userDetailObject = [[ALUserDetail alloc] initWithDictonary:[theJson objectAtIndex:0]];
+            KMCoreUserDetail *userDetailObject = [[KMCoreUserDetail alloc] initWithDictonary:[theJson objectAtIndex:0]];
             completionMark(userDetailObject);
         } else {
             completionMark(nil);
@@ -282,7 +282,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_REGISTERED_CONTACT_WITH_PAGE_SIZE_JSON : %@", responseJSONString);
         ALContactsResponse *contactResponse = [[ALContactsResponse alloc] initWithJSONString:responseJSONString];
-        [ALUserDefaultsHandler setContactViewLoadStatus:YES];
+        [KMCoreUserDefaultsHandler setContactViewLoadStatus:YES];
         completion(contactResponse, nil);
     }];
 }
@@ -331,7 +331,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
                 NSMutableArray *userDetailArray = [NSMutableArray new];
                 NSDictionary *JSONDictionary = (NSDictionary *)theJson;
                 for (NSDictionary *theDictionary in JSONDictionary) {
-                    ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+                    KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:theDictionary];
                     userDetail.unreadCount = 0;
                     [userDetailArray addObject:userDetail];
                 }
@@ -481,7 +481,7 @@ typedef NS_ENUM(NSInteger, ApplozicUserClientError) {
         if ([apiResponse.status isEqualToString:AL_RESPONSE_SUCCESS]) {
             NSDictionary *JSONDictionary = (NSDictionary *)apiResponse.response;
             for (NSDictionary *theDictionary in JSONDictionary) {
-                ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:theDictionary];
+                KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:theDictionary];
                 [userDetailArray addObject:userDetail];
             }
             completionMark(userDetailArray, nil);

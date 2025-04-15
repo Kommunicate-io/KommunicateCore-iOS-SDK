@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 kommunicate. All rights reserved.
 //
 
-#import "ALApplozicSettings.h"
+#import "KMCoreSettings.h"
 #import "ALUIImage+Utility.h"
 
 #define  DEFAULT_MAX_FILE_UPLOAD_SIZE 25
@@ -40,8 +40,8 @@
 - (NSData *)getCompressedImageData {
     
     CGFloat compression = 1.0f;
-    CGFloat maxCompression = [ALApplozicSettings getMaxCompressionFactor];
-    NSInteger maxSize = ([ALApplozicSettings getMaxImageSizeForUploadInMB] == 0) ? DEFAULT_MAX_FILE_UPLOAD_SIZE : [ALApplozicSettings getMaxImageSizeForUploadInMB];
+    CGFloat maxCompression = [KMCoreSettings getMaxCompressionFactor];
+    NSInteger maxSize = ([KMCoreSettings getMaxImageSizeForUploadInMB] == 0) ? DEFAULT_MAX_FILE_UPLOAD_SIZE : [KMCoreSettings getMaxImageSizeForUploadInMB];
     NSData *imageData = UIImageJPEGRepresentation(self, compression);
     
     while (((imageData.length/1024.0)/1024.0) > maxSize & compression > maxCompression) {

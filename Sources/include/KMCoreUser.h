@@ -1,5 +1,5 @@
 //
-//  ALUser.h
+//  KMCoreUser.h
 //  ChatApp
 //
 //  Created by devashish on 18/09/2015.
@@ -39,7 +39,7 @@ typedef enum
     PLATFORM_IONIC = 10,
 } Platform;
 
-@interface ALUser : ALJson
+@interface KMCoreUser : ALJson
 
 @property NSString *userId;
 @property NSString *email;

@@ -1,14 +1,14 @@
 //
 //  ALContactsResponse.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 25/04/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
 #import "ALContactsResponse.h"
-#import "ALUserDetail.h"
-#import "ALApplozicSettings.h"
+#import "KMCoreUserDetail.h"
+#import "KMCoreSettings.h"
 
 @implementation ALContactsResponse
 
@@ -24,12 +24,12 @@
         self.userDetailList = [NSMutableArray new];
 
         for (NSDictionary *userDictionary in userDetailArray) {
-            ALUserDetail *userDetail = [[ALUserDetail alloc] initWithDictonary:userDictionary];
+            KMCoreUserDetail *userDetail = [[KMCoreUserDetail alloc] initWithDictonary:userDictionary];
             [self.userDetailList addObject:userDetail];
         }
 
         self.lastFetchTime =  [JSONString valueForKey:@"lastFetchTime"];
-        [ALApplozicSettings setStartTime:self.lastFetchTime];
+        [KMCoreSettings setStartTime:self.lastFetchTime];
         
         self.totalUnreadCount = [JSONString valueForKey:@"totalUnreadCount"];
     }

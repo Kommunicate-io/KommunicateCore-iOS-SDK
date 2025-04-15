@@ -1,6 +1,6 @@
 //
 //  DB_ConversationProxy.h
-//  Applozic
+//  Kommunicate
 //
 //  Created by devashish on 13/01/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.

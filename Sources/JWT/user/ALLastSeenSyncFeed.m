@@ -1,6 +1,6 @@
 //
 //  ALLastSeenSyncFeed.m
-//  Applozic
+//  Kommunicate
 //
 //  Created by Devashish on 19/12/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
@@ -19,7 +19,7 @@
 - (void)populateLastSeenDetail:(NSMutableArray *)lastSeenDetailArray {
     NSMutableArray *listArray = [NSMutableArray new];
     for (NSDictionary *userDetailDictionary in lastSeenDetailArray) {
-        ALUserDetail *userLastSeenDetail = [[ALUserDetail alloc] initWithDictonary:userDetailDictionary];
+        KMCoreUserDetail *userLastSeenDetail = [[KMCoreUserDetail alloc] initWithDictonary:userDetailDictionary];
         [listArray addObject:userLastSeenDetail];
     }
     self.lastSeenArray = listArray;
