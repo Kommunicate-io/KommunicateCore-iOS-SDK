@@ -19,6 +19,7 @@
 
 static NSString *const CHANNEL_INFO_URL = @"/rest/ws/group/info";
 static NSString *const CHANNEL_SYNC_URL = @"/rest/ws/group/v5/list";
+static NSString *const CHANNEL_INFO_SYNC_URL = @"/rest/ws/group/v2/info";
 static NSString *const CREATE_CHANNEL_URL = @"/rest/ws/group/v2.1/create";
 static NSString *const DELETE_CHANNEL_URL = @"/rest/ws/group/delete";
 static NSString *const LEFT_CHANNEL_URL = @"/rest/ws/group/left";
@@ -497,6 +498,68 @@ NSString *latSyncCallTimeForChannel = @"";
                                   code:1
                                   userInfo:@{NSLocalizedDescriptionKey : @"Status fail in response"}];
                 latSyncCallTimeForChannel = @"";
+                completion(error, nil);
+                return;
+            }
+        }
+    }];
+}
+
+#pragma mark - Perticular Channel Sync
+
+- (void)syncCallForSpesificChannel:(NSNumber *)groupID
+              withFetchUserDetails:(BOOL)fetchUserDetails
+                     andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion {
+    NSString *syncChannelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CHANNEL_INFO_SYNC_URL];
+    NSString *syncChannelParamString = nil;
+
+    if (groupID != nil || groupID != NULL){
+        syncChannelParamString  = [NSString stringWithFormat:@"groupId=%@", groupID];
+    } else {
+        return;
+    }
+    
+    NSMutableURLRequest *syncChannelRequest = [ALRequestHandler createGETRequestWithUrlString:syncChannelURLString paramString:syncChannelParamString];
+
+    [self.responseHandler authenticateAndProcessRequest:syncChannelRequest andTag:@"CHANNEL_SYNCHRONIZATION" WithCompletionHandler:^(id theJson, NSError *error) {
+
+        ALSLog(ALLoggerSeverityInfo, @"CHANNEL_SYNCHRONIZATION_RESPONSE :: %@", (NSString *)theJson);
+        ALChannelSyncResponse *response = nil;
+        if (error) {
+            ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_SYNCHRONIZATION SERVER CALL REQUEST %@", error);
+            completion(error, nil);
+            return;
+        } else {
+            NSMutableArray *userNotPresentIds = [NSMutableArray new];
+            response = [[ALChannelSyncResponse alloc] initWithSingleChannelJSONString:theJson];
+            if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
+                if (fetchUserDetails) {
+                    ALContactService *contactService = [ALContactService new];
+                    for (ALChannel *channel in response.alChannelArray) {
+
+                        for (NSString *userId in channel.membersName) {
+                            if (![contactService isContactExist:userId]){
+                                [userNotPresentIds addObject:userId];
+                            }
+                        }
+                    }
+
+                    if (userNotPresentIds.count>0) {
+                        ALUserService *alUserService = [ALUserService new];
+                        [alUserService fetchAndupdateUserDetails:userNotPresentIds withCompletion:^(NSMutableArray *userDetailArray, NSError *theError) {
+                            completion(error, response);
+                        }];
+                    } else {
+                        completion(error, response);
+                    }
+                } else {
+                    completion(error, response);
+                }
+            } else {
+                NSError *error = [NSError
+                                  errorWithDomain:@"KMCore"
+                                  code:1
+                                  userInfo:@{NSLocalizedDescriptionKey : @"Status fail in response"}];
                 completion(error, nil);
                 return;
             }

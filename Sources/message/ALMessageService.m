@@ -447,7 +447,7 @@ static ALMessageClientService *alMsgClientService;
                      postNotificationName:@"CONVERSATION_DELETION"
                      object:message.groupId];
                 }
-                [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
+                [[ALChannelService sharedInstance] syncCallForSpesificChannelWithDelegate:delegate channelKey: message.groupId];
             }
 
             [self resetUnreadCountAndUpdate:message];

@@ -31,4 +31,18 @@
     
 }
 
+- (instancetype)initWithSingleChannelJSONString:(NSString *)JSONString {
+    self = [super initWithJSONString:JSONString];
+    self.alChannel = [[ALChannel alloc] init];
+    
+    if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
+        NSDictionary *response = [JSONString valueForKey:@"response"];
+        ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:response];
+        self.alChannel = alChannel;
+        return self;
+    } else {
+        return nil;
+    }
+}
+
 @end

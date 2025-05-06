@@ -87,6 +87,10 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
       withFetchUserDetails:(BOOL)fetchUserDetails
              andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
 
+- (void)syncCallForSpesificChannel:(NSNumber *)channelKey
+      withFetchUserDetails:(BOOL)fetchUserDetails
+             andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
+
 - (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
 - (void)addChildKeyList:(NSMutableArray *)childKeyList
