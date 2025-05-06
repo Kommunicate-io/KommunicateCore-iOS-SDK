@@ -494,8 +494,8 @@ extern NSString *const AL_MESSAGE_SYNC;
 
 /// This method is used for internal purpose.
 /// @param delegate For real time updates callback will be triggered for channel update
-/// @param channelKey For calling fetch API For Spesific Channel
-- (void)syncCallForSpesificChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
+/// @param channelKey For calling fetch API For Specific Channel
+- (void)syncCallForSpecificChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
                                     channelKey:(NSNumber *)channelKey;
 
 - (void)updateConversationReadWithGroupId:(NSNumber *)channelKey withDelegate:(id<KommunicateUpdatesDelegate>)delegate;

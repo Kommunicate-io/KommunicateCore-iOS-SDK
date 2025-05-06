@@ -505,15 +505,15 @@ NSString *latSyncCallTimeForChannel = @"";
     }];
 }
 
-#pragma mark - Perticular Channel Sync
+#pragma mark - Specific Channel Sync
 
-- (void)syncCallForSpesificChannel:(NSNumber *)groupID
+- (void)syncCallForSpecificChannel:(NSNumber *)groupID
               withFetchUserDetails:(BOOL)fetchUserDetails
                      andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion {
     NSString *syncChannelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CHANNEL_INFO_SYNC_URL];
     NSString *syncChannelParamString = nil;
 
-    if (groupID != nil || groupID != NULL){
+    if (groupID != nil && groupID != NULL){
         syncChannelParamString  = [NSString stringWithFormat:@"groupId=%@", groupID];
     } else {
         return;
@@ -535,9 +535,8 @@ NSString *latSyncCallTimeForChannel = @"";
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (fetchUserDetails) {
                     ALContactService *contactService = [ALContactService new];
-                    for (ALChannel *channel in response.alChannelArray) {
-
-                        for (NSString *userId in channel.membersName) {
+                    if (response.alChannel) {
+                        for (NSString *userId in response.alChannel.membersName) {
                             if (![contactService isContactExist:userId]){
                                 [userNotPresentIds addObject:userId];
                             }

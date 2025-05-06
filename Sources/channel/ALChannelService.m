@@ -750,10 +750,10 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 }
 
-- (void)syncCallForSpesificChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
+- (void)syncCallForSpecificChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
                                     channelKey:(NSNumber *)channelKey {
 
-    [self.channelClientService syncCallForSpesificChannel:channelKey withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+    [self.channelClientService syncCallForSpecificChannel:channelKey withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
         if (!error) {
             [self createChannelAndUpdateInfo:response.alChannel withDelegate:delegate];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
