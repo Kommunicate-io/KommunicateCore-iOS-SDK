@@ -750,6 +750,19 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 }
 
+- (void)syncCallForSpecificChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
+                                    channelKey:(NSNumber *)channelKey {
+
+    [self.channelClientService syncCallForSpecificChannel:channelKey withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+        if (!error) {
+            [self createChannelAndUpdateInfo:response.alChannel withDelegate:delegate];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_METADATA" object:nil];
+        }
+    }];
+
+}
+
 #pragma mark - Mark conversation as read
 
 - (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion {
@@ -1269,6 +1282,22 @@ dispatch_queue_t channelUserbackgroundQueue;
 
         [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_channel_Info" object:channelObject];
     }
+}
+
+- (void)createChannelAndUpdateInfo:(ALChannel *)channelObject withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
+    // Ignore inserting un opened conversation(Which doesn't have user messages, only contains bot messages)
+    NSDictionary *metadata = channelObject.metadata;
+    if (metadata && metadata[AL_CHANNEL_CONVERSATION_STATUS] && [metadata[AL_CHANNEL_CONVERSATION_STATUS] isEqual:UN_OPENED_CONVERSATION_STATUS] ) {
+        return;
+    }
+    // Ignore inserting unread count in sync call
+    channelObject.unreadCount = 0;
+    [self createChannelEntry:channelObject fromMessageList:NO];
+    if (delegate) {
+        [delegate onChannelUpdated:channelObject];
+    }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_channel_Info" object:channelObject];
 }
 
 #pragma mark - List of Channels where Login user in Channel

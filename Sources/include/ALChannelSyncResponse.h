@@ -14,6 +14,11 @@
 
 @property (nonatomic, strong) NSMutableArray *alChannelArray;
 
+@property (nonatomic, strong) ALChannel *alChannel;
+
 - (instancetype)initWithJSONString:(NSString *)JSONString;
+
+// Initializer for a single channel
+- (instancetype)initWithSingleChannelJSONString:(NSString *)JSONString;
 
 @end
