@@ -1,5 +1,5 @@
 //
-//  ALMessageList.h
+//  KMCoreMessageList.h
 //  ChatApp
 //
 //  Created by Devashish on 22/09/15.
@@ -10,7 +10,7 @@
 #import "ALJson.h"
 
 
-@interface ALMessageList : ALJson
+@interface KMCoreMessageList : ALJson
 
 @property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) NSMutableArray *connectedUserList;

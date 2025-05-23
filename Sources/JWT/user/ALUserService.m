@@ -13,16 +13,16 @@ static int CONTACT_PAGE_SIZE = 100;
 #import "ALResponseHandler.h"
 #import "ALUtilityClass.h"
 #import "ALSyncMessageFeed.h"
-#import "ALMessageDBService.h"
-#import "ALMessageList.h"
-#import "ALMessageClientService.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageDBService.h"
+#import "KMCoreMessageList.h"
+#import "KMCoreMessageClientService.h"
+#import "KMCoreMessageService.h"
 #import "ALContactDBService.h"
 #import "ALLastSeenSyncFeed.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALUserClientService.h"
 #import "KMCoreUserDetail.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageDBService.h"
 #import "ALContactService.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "KMCoreSettings.h"
@@ -68,7 +68,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     NSMutableOrderedSet *contactIdsArray = [[NSMutableOrderedSet alloc] init ];
     
-    for (ALMessage *alMessage in messagesArr) {
+    for (KMCoreMessage *alMessage in messagesArr) {
         NSString *contactId = alMessage.contactIds;
         if (contactId.length > 0 && ![self.contactService isContactExist:contactId]) {
             [contactIdsArray addObject:contactId];
@@ -237,7 +237,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 #pragma mark - Mark message as read
 
-- (void)markMessageAsRead:(ALMessage *)alMessage
+- (void)markMessageAsRead:(KMCoreMessage *)alMessage
        withPairedkeyValue:(NSString *)pairedkeyValue
            withCompletion:(void (^)(NSString *, NSError *))completion {
     
@@ -245,7 +245,7 @@ static int CONTACT_PAGE_SIZE = 100;
         NSError *apiError = [NSError
                              errorWithDomain:@"KMCore"
                              code:1
-                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark message as read ALMessage passed as nil" forKey:NSLocalizedDescriptionKey]];
+                             userInfo:[NSDictionary dictionaryWithObject:@"Failed to mark message as read KMCoreMessage passed as nil" forKey:NSLocalizedDescriptionKey]];
         completion(nil, apiError);
         return;
     }
@@ -283,7 +283,7 @@ static int CONTACT_PAGE_SIZE = 100;
     }];
 }
 
-- (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage {
+- (void)markConversationReadInDataBaseWithMessage:(KMCoreMessage *)alMessage {
     
     if (alMessage.groupId != NULL) {
         [self.channelService setUnreadCountZeroForGroupID:alMessage.groupId];

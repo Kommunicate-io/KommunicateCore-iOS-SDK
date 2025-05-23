@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ALReachability.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageService.h"
 
 @interface ALAppLocalNotifications : NSObject
 

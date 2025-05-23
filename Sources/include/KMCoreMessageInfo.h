@@ -1,5 +1,5 @@
 //
-//  ALMessageInfo.h
+//  KMCoreMessageInfo.h
 //  Kommunicate
 //
 //  Created by devashish on 17/03/2016.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
 
-@interface ALMessageInfo : ALJson
+@interface KMCoreMessageInfo : ALJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic) short status;

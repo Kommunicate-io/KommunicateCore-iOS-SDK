@@ -7,7 +7,7 @@
 //
 
 #import "KMCoreChannelService.h"
-#import "ALMessageClientService.h"
+#import "KMCoreMessageClientService.h"
 #import "ALConversationService.h"
 #import "KMCoreChannelUser.h"
 #import "ALMuteRequest.h"

@@ -1,5 +1,5 @@
 //
-//  ALMessageDBService.h
+//  KMCoreMessageDBService.h
 //  ChatApp
 //
 //  Created by Devashish on 21/09/15.
@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "DB_FileMetaInfo.h"
 #import "DB_Message.h"
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "ALFileMetaInfo.h"
 #import "MessageListRequest.h"
 #import "ALConversationListRequest.h"
 
-@class ALMessageService;
+@class KMCoreMessageService;
 
-@protocol ALMessagesDelegate <NSObject>
+@protocol KMCoreMessagesDelegate <NSObject>
 
 - (void)getMessagesArray:(NSMutableArray*)messagesArray;
 
@@ -24,15 +24,15 @@
 
 @end
 
-@interface ALMessageDBService : NSObject
+@interface KMCoreMessageDBService : NSObject
 
-@property(nonatomic,weak) id <ALMessagesDelegate>delegate;
+@property(nonatomic,weak) id <KMCoreMessagesDelegate>delegate;
 
-@property(nonatomic, retain) ALMessageService *messageService;
+@property(nonatomic, retain) KMCoreMessageService *messageService;
 
 //Add Message APIS
 - (NSMutableArray *)addMessageList:(NSMutableArray *)messageList skipAddingMessageInDb:(BOOL)skip;
-- (DB_Message *)addMessage:(ALMessage *)message;
+- (DB_Message *)addMessage:(KMCoreMessage *)message;
 - (void)getMessages:(NSMutableArray *)subGroupList;
 - (void)fetchConversationsGroupByContactId;
 - (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)(NSMutableArray *, NSError *))completion;
@@ -64,7 +64,7 @@
 - (void)updateMessageDeliveryReport:(NSString *)messageKeyString withStatus:(int)status;
 - (void)updateDeliveryReportForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateMessageSyncStatus:(NSString *)keyString;
-- (void)updateFileMetaInfo:(ALMessage *)alMessage;
+- (void)updateFileMetaInfo:(KMCoreMessage *)alMessage;
 
 //Delete Message APIS
 - (void)deleteMessageByKey:(NSString *)keyString;
@@ -74,10 +74,10 @@
 - (BOOL)isMessageTableEmpty;
 - (void)deleteAllObjectsInCoreData;
 
-- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)alMessage;
+- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(KMCoreMessage *)alMessage;
 - (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo;
-- (ALMessage *)createMessageEntity:(DB_Message *)dbMessage;
-- (ALMessage*)getMessageByKey:(NSString *)messageKey;
+- (KMCoreMessage *)createMessageEntity:(DB_Message *)dbMessage;
+- (KMCoreMessage*)getMessageByKey:(NSString *)messageKey;
 
 - (NSMutableArray *)fetchLatestConversationsGroupByContactId :(BOOL)isFetchOnCreatedAtTime;
 
@@ -85,9 +85,9 @@
 
 - (NSUInteger)getMessagesCountFromDBForUser:(NSString *)userId;
 
-- (ALMessage *)getLatestMessageForUser:(NSString *)userId;
+- (KMCoreMessage *)getLatestMessageForUser:(NSString *)userId;
 
-- (ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
+- (KMCoreMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
 
 - (void)updateMessageReplyType:(NSString *)messageKeyString replyType:(NSNumber *)type hideFlag:(BOOL)flag;
 
@@ -101,13 +101,13 @@
            withOnlyGroups:(BOOL)isGroup
     withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion;
 
-- (ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
+- (KMCoreMessage *)handleMessageFailedStatus:(KMCoreMessage *)message;
 
-- (DB_Message *)addAttachmentMessage:(ALMessage *)message;
+- (DB_Message *)addAttachmentMessage:(KMCoreMessage *)message;
 
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey withMetadata:(NSMutableDictionary *)metadata;
 
-- (ALMessage *)writeDataAndUpdateMessageInDb:(NSData *)data withMessage:(ALMessage *)message withFileFlag:(BOOL)isFile;
+- (KMCoreMessage *)writeDataAndUpdateMessageInDb:(NSData *)data withMessage:(KMCoreMessage *)message withFileFlag:(BOOL)isFile;
 
 /// Returns a list of last messages for group and contact based on the startTime or endTime
 /// @param conversationListRequest Used for passing the startTime or endTime

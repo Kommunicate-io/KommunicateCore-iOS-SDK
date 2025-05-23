@@ -1,5 +1,5 @@
 //
-//  ALMessage.h
+//  KMCoreMessage.h
 //  ALChat
 //
 //  Copyright (c) 2015 AppLozic. All rights reserved.
@@ -10,7 +10,7 @@
 #import "ALJson.h"
 #import "ALFileMetaInfo.h"
 #import "KMCoreSettings.h"
-#import "ALMessageBuilder.h"
+#import "KMCoreMessageBuilder.h"
 #import "ALConstant.h"
 
 static int const ALMESSAGE_CONTENT_DEFAULT = 0;
@@ -43,7 +43,7 @@ typedef enum {
 }ALReplyType;
 
 
-@interface ALMessage : ALJson
+@interface KMCoreMessage : ALJson
 
 @property (nonatomic, copy) NSString *key;
 
@@ -137,8 +137,8 @@ typedef enum {
 - (BOOL)isMessageSentToServer;
 - (BOOL)isConversationDeleted;
 
-- (instancetype)initWithBuilder:(ALMessageBuilder *)builder;
-+ (instancetype)build:(void (^)(ALMessageBuilder *))builder;
+- (instancetype)initWithBuilder:(KMCoreMessageBuilder *)builder;
++ (instancetype)build:(void (^)(KMCoreMessageBuilder *))builder;
 - (BOOL)isNotificationDisabled;
 - (BOOL)isLinkMessage;
 - (BOOL)isResetUnreadCountMessage;

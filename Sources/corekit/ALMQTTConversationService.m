@@ -9,13 +9,13 @@
 #import "ALMQTTConversationService.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALConstant.h"
-#import "ALMessage.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessage.h"
+#import "KMCoreMessageDBService.h"
 #import "KMCoreUserDetail.h"
 #import "ALPushAssist.h"
 #import "KMCoreChannelService.h"
 #import "ALContactDBService.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageService.h"
 #import "ALUserService.h"
 #import "NSData+AES.h"
 #import "ALDataNetworkConnection.h"
@@ -83,7 +83,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     return sharedInstance;
 }
 
-- (NSString *)getNotificationObjectFromMessage:(ALMessage *)message {
+- (NSString *)getNotificationObjectFromMessage:(KMCoreMessage *)message {
     if (message.groupId != nil) {
         return [NSString stringWithFormat:@"AL_GROUP:%@:%@",message.groupId.stringValue,message.contactIds];
     } else if (message.conversationId != nil) {
@@ -306,7 +306,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         if ([type isEqualToString: @"MESSAGE_RECEIVED"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_SYNC)]]) {
 
             ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
-            ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:[theMessageDict objectForKey:@"message"]];
+            KMCoreMessage *alMessage = [[KMCoreMessage alloc] initWithDictonary:[theMessageDict objectForKey:@"message"]];
             
             if (alMessage.isConversationDeleted) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"CONVERSATION_DELETED" object:alMessage];
@@ -314,7 +314,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             
             if ([alMessage isHiddenMessage]) {
                 ALSLog(ALLoggerSeverityInfo, @"< HIDDEN MESSAGE RECEIVED >");
-                [ALMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
+                [KMCoreMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
                                            withCompletion:^(NSMutableArray *message, NSError *error) { }];
             } else {
                 NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
@@ -331,7 +331,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                                 return;
                             }
 
-                            [ALMessageService addOpenGroupMessage:alMessage withDelegate:self.realTimeUpdate];
+                            [KMCoreMessageService addOpenGroupMessage:alMessage withDelegate:self.realTimeUpdate];
                             if (!pushAssist.isOurViewOnTop) {
                                 [notificationDictionary setObject:@"mqtt" forKey:@"Calledfrom"];
                                 [pushAssist assist:[self getNotificationObjectFromMessage:alMessage] withUserInfo:notificationDictionary ofUser:alMessage.contactIds];
@@ -349,7 +349,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             }
         } else if ([type isEqualToString:@"MESSAGE_SENT"] || [type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_SENT)]]) {
             NSDictionary *message = [theMessageDict objectForKey:@"message"];
-            ALMessage *alMessage = [[ALMessage alloc] initWithDictonary:message];
+            KMCoreMessage *alMessage = [[KMCoreMessage alloc] initWithDictonary:message];
 
             ALSLog(ALLoggerSeverityInfo, @"ALMESSAGE's DeviceKey : %@ \n Current DeviceKey : %@", alMessage.deviceKey, [KMCoreUserDefaultsHandler getDeviceKeyString]);
             if (alMessage.deviceKey && [alMessage.deviceKey isEqualToString:[KMCoreUserDefaultsHandler getDeviceKeyString]]) {
@@ -359,7 +359,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
             [[NSNotificationCenter defaultCenter] postNotificationName:observeSupportGroupMessage object:alMessage];
 
-            [ALMessageService getMessageSENT:alMessage withDelegate: self.realTimeUpdate withCompletion:^(NSMutableArray *messageArray, NSError *error) {
+            [KMCoreMessageService getMessageSENT:alMessage withDelegate: self.realTimeUpdate withCompletion:^(NSMutableArray *messageArray, NSError *error) {
 
                 if (messageArray.count > 0) {
                     [self.alSyncCallService syncCall:alMessage];
@@ -378,8 +378,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             NSString *pairedKey = deliveryParts[0];
             NSString *contactId = (deliveryParts.count > 1) ? deliveryParts[1] : nil;
 
-            ALMessageDBService *messageDataBaseService = [[ALMessageDBService alloc] init];
-            ALMessage *existingMessage = [messageDataBaseService getMessageByKey:pairedKey];
+            KMCoreMessageDBService *messageDataBaseService = [[KMCoreMessageDBService alloc] init];
+            KMCoreMessage *existingMessage = [messageDataBaseService getMessageByKey:pairedKey];
             // Skip the Update of Delivered in case of existing message is DELIVERED_AND_READ already.
             if (existingMessage &&
                 (existingMessage.status.intValue == DELIVERED_AND_READ)) {
@@ -409,8 +409,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED_AND_READ];
             [self.mqttConversationDelegate delivered:pairedKey contactId:contactId withStatus:DELIVERED_AND_READ];
             if (self.realTimeUpdate) {
-                ALMessageDBService *messageDbService = [[ALMessageDBService alloc]init];
-                ALMessage*message = [messageDbService getMessageByKey:pairedKey];
+                KMCoreMessageDBService *messageDbService = [[KMCoreMessageDBService alloc]init];
+                KMCoreMessage*message = [messageDbService getMessageByKey:pairedKey];
                 if (message) {
                     [self.realTimeUpdate onMessageDeliveredAndRead:message withUserId:contactId];
                 }
@@ -495,13 +495,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]) { // MESSAGE_METADATA_UPDATE
             @try {
                 NSDictionary *messageDict = [theMessageDict objectForKey:@"message"];
-                ALMessage *alMessage = [[ALMessage alloc] initWithDictonary: messageDict];
+                KMCoreMessage *alMessage = [[KMCoreMessage alloc] initWithDictonary: messageDict];
                 if (alMessage.groupId != nil) {
                     KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
                     KMCoreChannel *channel = [channelService getChannelByKey:alMessage.groupId];
                     if (channel && channel.isOpenGroup) {
                         if (alMessage.hasAttachment) {
-                            ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+                            KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc] init];
                             [messageDBService updateMessageMetadataOfKey:alMessage.key withMetadata:alMessage.metadata];
                         }
                         [[NSNotificationCenter defaultCenter] postNotificationName:AL_MESSAGE_META_DATA_UPDATE object:alMessage userInfo:nil];
@@ -683,8 +683,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         return NO;
     }
 
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
-    ALMessage *message = [messageDBService getMessageByKey:messageKey];
+    KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc] init];
+    KMCoreMessage *message = [messageDBService getMessageByKey:messageKey];
 
     if (!message) {
         return NO;
@@ -852,11 +852,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     }
 }
 
-- (void)syncReceivedMessage:(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary *)nsMutableDictionary {
+- (void)syncReceivedMessage:(KMCoreMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary *)nsMutableDictionary {
 
     ALPushAssist *pushAssist = [[ALPushAssist alloc] init];
 
-    [ALMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString]
+    [KMCoreMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString]
                                  withDelegate:self.realTimeUpdate
                                withCompletion:^(NSMutableArray *message, NSError *error) {
 

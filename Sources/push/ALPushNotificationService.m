@@ -7,7 +7,7 @@
 //
 
 #import "ALPushNotificationService.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageDBService.h"
 #import "KMCoreUserDetail.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALPushAssist.h"
@@ -40,7 +40,7 @@
 
     if ([self isApplozicNotification:dictionary]) {
         NSString *alertValue;
-        ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+        KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc] init];
         alertValue = ([KMCoreUserDefaultsHandler getNotificationMode] == AL_NOTIFICATION_DISABLE ? @"" : [[dictionary valueForKey:@"aps"] valueForKey:@"alert"]);
 
         self.alSyncCallService = [[ALSyncCallService alloc] init];
@@ -93,7 +93,7 @@
             [alertDictionary setObject:(alertValue ? alertValue : @"") forKey:@"alertValue"];
             [self assitingNotificationMessage:notificationMessage andDictionary:alertDictionary withMetadata:metadataDictionary];
             if (state == UIApplicationStateActive) {
-                [ALMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
+                [KMCoreMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate
                                            withCompletion:^(NSMutableArray *message, NSError *error) {
 
                 }];
@@ -112,7 +112,7 @@
                     return YES;
                 }
 
-                [ALMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate  withCompletion:^(NSMutableArray *message, NSError *error) {
+                [KMCoreMessageService getLatestMessageForUser:[KMCoreUserDefaultsHandler getDeviceKeyString] withDelegate:self.realTimeUpdate  withCompletion:^(NSMutableArray *message, NSError *error) {
                     ALSLog(ALLoggerSeverityInfo, @"APPLOZIC_02 Sync Call Completed");
                 }];
 
@@ -124,7 +124,7 @@
             NSString *pairedKey = deliveryParts[0];
             [self.alSyncCallService updateMessageDeliveryReport:pairedKey withStatus:DELIVERED];
             if (self.realTimeUpdate) {
-                ALMessage *message = [messageDBService getMessageByKey:pairedKey];
+                KMCoreMessage *message = [messageDBService getMessageByKey:pairedKey];
                 if (message) {
                     [self.realTimeUpdate onMessageDelivered:message];
                 }
@@ -137,7 +137,7 @@
             NSString *pairedKey = deliveryParts[0];
             NSString *contactId = deliveryParts.count>1 ? deliveryParts[1]:nil;
 
-            ALMessage *existingMessage = [messageDBService getMessageByKey:pairedKey];
+            KMCoreMessage *existingMessage = [messageDBService getMessageByKey:pairedKey];
             // Skip the Update of Delivered in case of existing message is DELIVERED_AND_READ already.
             if (existingMessage &&
                 (existingMessage.status.intValue == DELIVERED_AND_READ)) {
@@ -267,7 +267,7 @@
                 }];
             }
         } else if([type isEqualToString:self.notificationTypes[@(AL_MESSAGE_METADATA_UPDATE)]]) {
-            [ALMessageService syncMessageMetaData:[KMCoreUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
+            [KMCoreMessageService syncMessageMetaData:[KMCoreUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
                 ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
             }];
         } else if ([type isEqualToString:self.notificationTypes[@(AL_GROUP_MUTE_NOTIFICATION)]]) {

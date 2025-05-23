@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 
 extern NSString * const AL_DEFAULT_APP_GROUP;
 extern NSString * const KM_CORE_DEFAULT_APP_GROUP;
@@ -30,9 +30,9 @@ extern NSString * const AL_APP_GROUPS_ACCESS_KEY;
 
 + (CGSize)getSizeForText:(NSString *)text maxWidth:(CGFloat)width font:(NSString *)fontName fontSize:(float)fontSize;
 
-+ (NSString *)getLocationURL:(ALMessage *)alMessage;
++ (NSString *)getLocationURL:(KMCoreMessage *)alMessage;
 
-+ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize;
++ (NSString *)getLocationURL:(KMCoreMessage *)alMessage size:(CGRect)withSize;
 
 + (void)thirdDisplayNotificationTS:(NSString *)toastMessage
                    andForContactId:(NSString *)contactId

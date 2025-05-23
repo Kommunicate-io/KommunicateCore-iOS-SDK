@@ -52,9 +52,9 @@ NSString *const KommunicateClientDomain = @"KommunicateClient";
     //TO-DO move this call later to a differnt method
     [KMCoreSettings setupSuiteAndMigrate];
 
-    _messageService = [ALMessageService sharedInstance];
+    _messageService = [KMCoreMessageService sharedInstance];
     _messageService.delegate = self.delegate;
-    _messageDbService = [ALMessageDBService new];
+    _messageDbService = [KMCoreMessageDBService new];
     _userService = [ALUserService sharedInstance];
     _channelService = [KMCoreChannelService sharedInstance];
     alAttachmentService = [ALAttachmentService sharedInstance];
@@ -198,7 +198,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 #pragma mark - Send text message
 
-- (void)sendTextMessage:(ALMessage*)alMessage withCompletion:(void(^)(ALMessage *message, NSError *error))completion {
+- (void)sendTextMessage:(KMCoreMessage*)alMessage withCompletion:(void(^)(KMCoreMessage *message, NSError *error))completion {
 
     if (!alMessage) {
         NSError *messageError = [NSError errorWithDomain:KommunicateClientDomain
@@ -225,7 +225,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 #pragma mark - Send Attachment message
 
-- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage {
+- (void)sendMessageWithAttachment:(KMCoreMessage *)attachmentMessage {
     
     if (!attachmentMessage || !attachmentMessage.imageFilePath) {
         return;
@@ -235,7 +235,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 #pragma mark - Download Attachment message
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage {
+- (void)downloadMessageAttachment:(KMCoreMessage *)alMessage {
     if (!alMessage) {
         return;
     }
@@ -436,7 +436,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
            withOnlyGroups:(BOOL)isGroup
     withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion {
 
-    ALMessageService *messageService = [[ALMessageService alloc] init];
+    KMCoreMessageService *messageService = [[KMCoreMessageService alloc] init];
     [messageService getLatestMessages:isNextPage withOnlyGroups:isGroup withCompletionHandler:^(NSMutableArray *messageList, NSError *error) {
         completion(messageList, error);
     }];

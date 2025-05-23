@@ -1,16 +1,16 @@
 //
-//  ALMessageWrapper.m
+//  KMCoreMessageWrapper.m
 //  Kommunicate
 //
 //  Created by Adarsh Kumar Mishra on 12/14/16.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALMessageServiceWrapper.h"
-#import "ALMessageService.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageServiceWrapper.h"
+#import "KMCoreMessageService.h"
+#import "KMCoreMessageDBService.h"
 #import "ALConnectionQueueHandler.h"
-#import "ALMessageClientService.h"
+#import "KMCoreMessageClientService.h"
 #include <tgmath.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "KMCoreSettings.h"
@@ -19,17 +19,17 @@
 #import "ALLogger.h"
 #import "ALUtilityClass.h"
 
-@interface ALMessageServiceWrapper  ()<KommunicateAttachmentDelegate>
+@interface KMCoreMessageServiceWrapper  ()<KommunicateAttachmentDelegate>
 
 @end
 
-@implementation ALMessageServiceWrapper
+@implementation KMCoreMessageServiceWrapper
 
 - (void)sendTextMessage:(NSString*)text andtoContact:(NSString *)toContactId {
     
-    ALMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
+    KMCoreMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:toContactId withText:text];
     
-    [[ALMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
+    [[KMCoreMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
             ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
@@ -42,11 +42,11 @@
 
 - (void)sendTextMessage:(NSString *)messageText andtoContact:(NSString *)contactId orGroupId:(NSNumber *)channelKey {
     
-    ALMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:contactId withText:messageText];
+    KMCoreMessage *alMessage = [self createMessageEntityOfContentType:ALMESSAGE_CONTENT_DEFAULT toSendTo:contactId withText:messageText];
     
     alMessage.groupId = channelKey;
     
-    [[ALMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
+    [[KMCoreMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
             ALSLog(ALLoggerSeverityError, @"REACH_SEND_ERROR : %@",error);
@@ -56,13 +56,13 @@
     }];
 }
 
-- (void) sendMessage:(ALMessage *)alMessage
+- (void) sendMessage:(KMCoreMessage *)alMessage
 withAttachmentAtLocation:(NSString *)attachmentLocalPath
 andWithStatusDelegate:(id)statusDelegate
       andContentType:(short)contentype {
     
     //Message Creation
-    ALMessage *message = alMessage;
+    KMCoreMessage *message = alMessage;
     message.contentType = contentype;
     message.imageFilePath = attachmentLocalPath.lastPathComponent;
     
@@ -85,7 +85,7 @@ andWithStatusDelegate:(id)statusDelegate
     message.fileMeta.size = [NSString stringWithFormat:@"%lu",(unsigned long)imageSize.length];
     
     //DB Addition
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc] init];
     DB_Message *dbMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:message];
     message.msgDBObjectId = [dbMessageEntity objectID];
     dbMessageEntity.inProgress = [NSNumber numberWithBool:YES];
@@ -101,7 +101,7 @@ andWithStatusDelegate:(id)statusDelegate
 
     NSDictionary *messageDictionary = [alMessage dictionary];
     
-    ALMessageClientService *clientService  = [[ALMessageClientService alloc] init];
+    KMCoreMessageClientService *clientService  = [[KMCoreMessageClientService alloc] init];
     [clientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *message, NSError *error) {
         
         if (error) {
@@ -132,11 +132,11 @@ andWithStatusDelegate:(id)statusDelegate
     return fileMetaInfo;
 }
 
-- (ALMessage *)createMessageEntityOfContentType:(int)contentType
+- (KMCoreMessage *)createMessageEntityOfContentType:(int)contentType
                                        toSendTo:(NSString *)to
                                        withText:(NSString *)text {
     
-    ALMessage *alMessage = [ALMessage new];
+    KMCoreMessage *alMessage = [KMCoreMessage new];
     
     alMessage.contactIds = to;//1
     alMessage.to = to;//2
@@ -158,7 +158,7 @@ andWithStatusDelegate:(id)statusDelegate
 }
 
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage {
+- (void)downloadMessageAttachment:(KMCoreMessage *)alMessage {
 
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];
     manager.attachmentProgressDelegate = self;
@@ -166,27 +166,27 @@ andWithStatusDelegate:(id)statusDelegate
 
 }
 
-- (void)onDownloadCompleted:(ALMessage *)alMessage {
+- (void)onDownloadCompleted:(KMCoreMessage *)alMessage {
     [self.messageServiceDelegate DownloadCompleted:alMessage];
 }
 
-- (void)onDownloadFailed:(ALMessage *)alMessage {
+- (void)onDownloadFailed:(KMCoreMessage *)alMessage {
     [self.messageServiceDelegate uploadDownloadFailed:alMessage];
 }
 
-- (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(ALMessage *)alMessage {
+- (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(KMCoreMessage *)alMessage {
     [self.messageServiceDelegate updateBytesDownloaded:(NSUInteger)bytesReceived];
 }
 
-- (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(ALMessage *)alMessage {
+- (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(KMCoreMessage *)alMessage {
     [self.messageServiceDelegate updateBytesUploaded:(NSInteger)bytesSent];
 }
 
-- (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey {
+- (void)onUploadCompleted:(KMCoreMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey {
     [self.messageServiceDelegate uploadCompleted:alMessage];
 }
 
-- (void)onUploadFailed:(ALMessage *)alMessage {
+- (void)onUploadFailed:(KMCoreMessage *)alMessage {
     [self.messageServiceDelegate uploadDownloadFailed:alMessage];
 }
 

@@ -8,12 +8,12 @@
 
 #import "ALVideoUploadManager.h"
 #import "ALConnectionQueueHandler.h"
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "ALUtilityClass.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
 #import "ALLogger.h"
-#import "ALMessageClientService.h"
+#import "KMCoreMessageClientService.h"
 #import "ALHTTPManager.h"
 
 @implementation ALVideoUploadManager
@@ -27,8 +27,8 @@
 }
 
 -(void)setupServices {
-    self.messageDatabaseService  = [[ALMessageDBService alloc]init];
-    self.clientService = [[ALMessageClientService alloc] init];
+    self.messageDatabaseService  = [[KMCoreMessageDBService alloc]init];
+    self.clientService = [[KMCoreMessageClientService alloc] init];
     self.responseHandler = [[ALResponseHandler alloc] init];
 }
 
@@ -39,13 +39,13 @@
     if (self->_uploadTask != nil) {
 
         DB_Message *dbMessage = (DB_Message*)[self.messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
-        ALMessage *message = [self.messageDatabaseService createMessageEntity:dbMessage];
+        KMCoreMessage *message = [self.messageDatabaseService createMessageEntity:dbMessage];
 
         NSError *jsonError = nil;
         NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&jsonError];
 
         if (jsonError == nil) {
-            ALMessage *fileMetaMessage = [[ALMessage alloc] init];
+            KMCoreMessage *fileMetaMessage = [[KMCoreMessage alloc] init];
             ALFileMetaInfo *fileMeta = [[ALFileMetaInfo alloc] init];
             fileMetaMessage.fileMeta = fileMeta;
 
@@ -103,7 +103,7 @@
     }
 }
 
-- (void)uploadTheVideo:(ALMessage *)message {
+- (void)uploadTheVideo:(KMCoreMessage *)message {
     NSMutableArray *urlSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
 
     for (NSURLSession *session in urlSessionArray) {
@@ -179,7 +179,7 @@
     }
 }
 
--(NSURLSession *)configureSessionWithMessage:(ALMessage *)message {
+-(NSURLSession *)configureSessionWithMessage:(KMCoreMessage *)message {
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NSString stringWithFormat:@"VIDEO_THUMBNAIL,%@",message.key]];
 
     if (KMCoreSettings.getShareExtentionGroup) {
@@ -191,10 +191,10 @@
     return session;
 }
 
-- (void)handleUploadFailedStateWithMessage:(ALMessage *)message {
-    ALMessage *failedMessage = [[ALMessageService sharedInstance] handleMessageFailedStatus:message];
+- (void)handleUploadFailedStateWithMessage:(KMCoreMessage *)message {
+    KMCoreMessage *failedMessage = [[KMCoreMessageService sharedInstance] handleMessageFailedStatus:message];
     if (self.attachmentProgressDelegate) {
-        [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:failedMessage]];
+        [self.attachmentProgressDelegate onUploadFailed:[[KMCoreMessageService sharedInstance] handleMessageFailedStatus:failedMessage]];
     }
 }
 

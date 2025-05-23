@@ -8,10 +8,10 @@
 
 #import "ALHTTPManager.h"
 #import "ALLogger.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageDBService.h"
 #import "ALConnectionQueueHandler.h"
 #import "ALUtilityClass.h"
-#import "ALMessageClientService.h"
+#import "KMCoreMessageClientService.h"
 
 @implementation ALHTTPManager
 
@@ -31,7 +31,7 @@ static dispatch_semaphore_t semaphore;
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
 
-    ALMessageDBService *messageDatabaseService = [[ALMessageDBService alloc]init];
+    KMCoreMessageDBService *messageDatabaseService = [[KMCoreMessageDBService alloc]init];
 
     if (self->_downloadTask != nil) {
         [self->_buffer appendData:data];
@@ -44,7 +44,7 @@ static dispatch_semaphore_t semaphore;
     } else if (self->_uploadTask != nil) {
 
         DB_Message *dbMessage = (DB_Message *)[messageDatabaseService getMessageByKey:@"key" value:self->_uploadTask.identifier];
-        ALMessage *message = [messageDatabaseService createMessageEntity:dbMessage];
+        KMCoreMessage *message = [messageDatabaseService createMessageEntity:dbMessage];
 
         ALFileMetaInfo *existingFileMeta = message.fileMeta;
         NSError *jsonError = nil;
@@ -62,23 +62,23 @@ static dispatch_semaphore_t semaphore;
                 message.fileMeta.thumbnailUrl = dbMessage.fileMetaInfo.thumbnailUrl;
                 message.fileMeta.thumbnailBlobKey = dbMessage.fileMetaInfo.thumbnailBlobKeyString;
             }
-            ALMessage *alMessage = [ALMessageService processFileUploadSucess:message];
+            KMCoreMessage *alMessage = [KMCoreMessageService processFileUploadSucess:message];
 
             if (!alMessage) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (self.attachmentProgressDelegate) {
                         message.fileMeta = existingFileMeta;
-                        [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:message]];
+                        [self.attachmentProgressDelegate onUploadFailed:[[KMCoreMessageService sharedInstance] handleMessageFailedStatus:message]];
                     }
                 });
                 return;
             }
-            [[ALMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
+            [[KMCoreMessageService sharedInstance] sendMessages:alMessage withCompletion:^(NSString *message, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (error) {
                         ALSLog(ALLoggerSeverityError, @"ERROR IN POSTING Data:: %@", error);
                         if (self.attachmentProgressDelegate) {
-                            [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:alMessage]];
+                            [self.attachmentProgressDelegate onUploadFailed:[[KMCoreMessageService sharedInstance] handleMessageFailedStatus:alMessage]];
                         }
                     } else {
                         if (self.attachmentProgressDelegate) {
@@ -105,12 +105,12 @@ static dispatch_semaphore_t semaphore;
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
 
-    ALMessageDBService *messageDatabaseService = [[ALMessageDBService alloc]init];
+    KMCoreMessageDBService *messageDatabaseService = [[KMCoreMessageDBService alloc]init];
 
     if (error == nil && [task.response isKindOfClass:[NSHTTPURLResponse class]] && [(NSHTTPURLResponse *)task.response statusCode] == 200) {
         if (self->_downloadTask != nil) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                ALMessage *alMessage = [messageDatabaseService writeDataAndUpdateMessageInDb:self.buffer withMessage:self->_downloadTask.message withFileFlag:!self->_downloadTask.isThumbnail];
+                KMCoreMessage *alMessage = [messageDatabaseService writeDataAndUpdateMessageInDb:self.buffer withMessage:self->_downloadTask.message withFileFlag:!self->_downloadTask.isThumbnail];
 
                 if (self.attachmentProgressDelegate) {
                     [self.attachmentProgressDelegate onDownloadCompleted:alMessage];
@@ -148,7 +148,7 @@ didReceiveResponse:(NSURLResponse *)response
    didSendBodyData:(int64_t)bytesSent
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
-    ALMessageDBService *messageDatabaseService = [[ALMessageDBService alloc]init];
+    KMCoreMessageDBService *messageDatabaseService = [[KMCoreMessageDBService alloc]init];
 
     if (self->_uploadTask != nil && self.attachmentProgressDelegate != nil) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -157,7 +157,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
     }
 }
 
-- (void)processUploadFileForMessage:(ALMessage *)message uploadURL:(NSString *)uploadURL {
+- (void)processUploadFileForMessage:(KMCoreMessage *)message uploadURL:(NSString *)uploadURL {
 
     ALUploadTask *alUploadTask = [[ALUploadTask alloc]init];
     alUploadTask.identifier = message.key;
@@ -271,7 +271,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 
 }
 
-- (void)processDownloadForMessage:(ALMessage *) alMessage
+- (void)processDownloadForMessage:(KMCoreMessage *) alMessage
              isAttachmentDownload:(BOOL) attachmentDownloadFlag {
 
     ALDownloadTask *downloadTask = [[ALDownloadTask alloc]init];
@@ -312,9 +312,9 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
     }
 
     NSData *data = [[NSData alloc] initWithContentsOfFile:filePath];
-    ALMessageClientService *messageClientService = [[ALMessageClientService alloc]init];
+    KMCoreMessageClientService *messageClientService = [[KMCoreMessageClientService alloc]init];
     if (data) {
-        ALMessageDBService *messageDbService = [[ALMessageDBService alloc] init];
+        KMCoreMessageDBService *messageDbService = [[KMCoreMessageDBService alloc] init];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             DB_Message *messageEntity = [self updateDbMessageWithKey:alMessage.key withFileName:fileName withAttachmentFlag:attachmentDownloadFlag];
             if (messageEntity) {
@@ -484,7 +484,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
                     withAttachmentFlag:(BOOL)isAttachmentDownload {
     DB_Message *messageEntity = nil;
     @try {
-        ALMessageDBService *messageDatabase = [[ALMessageDBService alloc] init];
+        KMCoreMessageDBService *messageDatabase = [[KMCoreMessageDBService alloc] init];
         messageEntity = (DB_Message*)[messageDatabase getMessageByKey:@"key" value:key];
         if (isAttachmentDownload) {
             messageEntity.inProgress = [NSNumber numberWithBool:NO];

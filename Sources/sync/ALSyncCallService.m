@@ -7,29 +7,29 @@
 //
 
 #import "ALSyncCallService.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageDBService.h"
 #import "ALContactDBService.h"
 #import "KMCoreChannelService.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageService.h"
 #import "ALLogger.h"
 
 @implementation ALSyncCallService
 
 
 - (void)updateMessageDeliveryReport:(NSString *)messageKey withStatus:(int)status {
-    ALMessageDBService *alMessageDBService = [[ALMessageDBService alloc] init];
+    KMCoreMessageDBService *alMessageDBService = [[KMCoreMessageDBService alloc] init];
     [alMessageDBService updateMessageDeliveryReport:messageKey withStatus:status];
     ALSLog(ALLoggerSeverityInfo, @"delivery report for %@", messageKey);
     //Todo: update ui
 }
 
 - (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status {
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc] init];
     [messageDBService updateDeliveryReportForContact:contactId withStatus:status];
     //Todo: update ui
 }
 
-- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
+- (void)syncCall:(KMCoreMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     
     if (delegate) {
         if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
@@ -39,7 +39,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"MQTT_APPLOZIC_01" object:alMessage];
 }
 
-- (void)syncCall:(ALMessage *)alMessage {
+- (void)syncCall:(KMCoreMessage *)alMessage {
     [self syncCall:alMessage withDelegate:nil];
 }
 
@@ -53,7 +53,7 @@
                                    ConversationID:(NSString *)conversationID
                                        ChannelKey:(NSNumber *)channelKey {
     
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc] init];
     [messageDBService deleteAllMessagesByContact:contactID orChannelKey:channelKey];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CONVERSATION_DELETION"
                                                         object:(contactID ? contactID :channelKey)];
@@ -61,7 +61,7 @@
 }
 
 - (void)syncMessageMetadata {
-    [ALMessageService syncMessageMetaData:[KMCoreUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
+    [KMCoreMessageService syncMessageMetaData:[KMCoreUserDefaultsHandler getDeviceKeyString] withCompletion:^(NSMutableArray *message, NSError *error) {
         ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
         [[NSNotificationCenter defaultCenter] postNotificationName:AL_GROUP_MESSAGE_METADATA_UPDATE object:message userInfo:nil];
     }];

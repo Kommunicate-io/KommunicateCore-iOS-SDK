@@ -1,5 +1,5 @@
 //
-//  ALMessageWrapper.h
+//  KMCoreMessageWrapper.h
 //  Kommunicate
 //
 //  Created by Adarsh Kumar Mishra on 12/14/16.
@@ -8,7 +8,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "KommunicateClient.h"
 
 @protocol MessageServiceWrapperDelegate <NSObject>
@@ -17,13 +17,13 @@
 
 - (void)updateBytesDownloaded:(NSUInteger)bytesReceived;
 - (void)updateBytesUploaded:(NSUInteger)bytesSent;
-- (void)uploadDownloadFailed:(ALMessage *)alMessage;
-- (void)uploadCompleted:(ALMessage *)alMessage;
-- (void)DownloadCompleted:(ALMessage *)alMessage;
+- (void)uploadDownloadFailed:(KMCoreMessage *)alMessage;
+- (void)uploadCompleted:(KMCoreMessage *)alMessage;
+- (void)DownloadCompleted:(KMCoreMessage *)alMessage;
 
 @end
 
-@interface ALMessageServiceWrapper : NSObject
+@interface KMCoreMessageServiceWrapper : NSObject
 
 @property (strong, nonatomic) id <MessageServiceWrapperDelegate> messageServiceDelegate;
 
@@ -31,14 +31,14 @@
 
 - (void)sendTextMessage:(NSString *)messageText andtoContact:(NSString *)contactId orGroupId:(NSNumber *)channelKey;
 
-- (void)sendMessage:(ALMessage *)alMessage
+- (void)sendMessage:(KMCoreMessage *)alMessage
 withAttachmentAtLocation:(NSString *)attachmentLocalPath
 andWithStatusDelegate:(id)statusDelegate
      andContentType:(short)contentype;
 
-- (void)downloadMessageAttachment:(ALMessage*)alMessage;
+- (void)downloadMessageAttachment:(KMCoreMessage*)alMessage;
 
-- (ALMessage *)createMessageEntityOfContentType:(int)contentType
+- (KMCoreMessage *)createMessageEntityOfContentType:(int)contentType
                                        toSendTo:(NSString *)to
                                        withText:(NSString *)text;
 

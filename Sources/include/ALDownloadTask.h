@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 
 @interface ALDownloadTask : NSObject
 
@@ -15,6 +15,6 @@
 
 @property (nonatomic, copy) NSString *fileName;
 
-@property (nonatomic, strong) ALMessage *message;
+@property (nonatomic, strong) KMCoreMessage *message;
 
 @end

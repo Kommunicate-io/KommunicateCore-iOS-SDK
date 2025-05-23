@@ -1,17 +1,17 @@
 //
-//  ALMessageInfoResponse.h
+//  KMCoreMessageInfoResponse.h
 //  Kommunicate
 //
 //  Created by devashish on 17/03/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALMessageInfo.h"
+#import "KMCoreMessageInfo.h"
 #import "ALAPIResponse.h"
 
-@interface ALMessageInfoResponse : ALAPIResponse
+@interface KMCoreMessageInfoResponse : ALAPIResponse
 
-@property(nonatomic, strong) NSMutableArray <ALMessageInfo *> *msgInfoList;
+@property(nonatomic, strong) NSMutableArray <KMCoreMessageInfo *> *msgInfoList;
 
 - (instancetype)initWithJSONString:(NSString *)JSONString;
 

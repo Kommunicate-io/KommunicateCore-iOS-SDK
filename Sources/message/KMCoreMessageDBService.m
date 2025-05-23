@@ -1,21 +1,21 @@
 //
-//  ALMessageDBService.m
+//  KMCoreMessageDBService.m
 //  ChatApp
 //
 //  Created by Devashish on 21/09/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALMessageDBService.h"
+#import "KMCoreMessageDBService.h"
 #import "ALContact.h"
 #import "KMCoreDBHandler.h"
 #import "DB_Message.h"
 #import "KMCoreUserDefaultsHandler.h"
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "DB_FileMetaInfo.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageService.h"
 #import "ALContactService.h"
-#import "ALMessageClientService.h"
+#import "KMCoreMessageClientService.h"
 #import "KMCoreSettings.h"
 #import "KMCoreChannelService.h"
 #import "KMCoreChannel.h"
@@ -23,7 +23,7 @@
 #import "ALUtilityClass.h"
 #import "ALLogger.h"
 
-@implementation ALMessageDBService
+@implementation KMCoreMessageDBService
 
 #pragma mark - Init
 
@@ -39,7 +39,7 @@
 #pragma mark - Setup service
 
 -(void)setupServices {
-    self.messageService = [[ALMessageService alloc] init];
+    self.messageService = [[KMCoreMessageService alloc] init];
 }
 
 - (NSMutableArray *)addMessageList:(NSMutableArray *)messageList
@@ -47,7 +47,7 @@
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
 
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
-    for (ALMessage *alMessage in messageList) {
+    for (KMCoreMessage *alMessage in messageList) {
 
         if (skip && !alMessage.fileMeta) {
             [messageArray addObject:alMessage];
@@ -84,7 +84,7 @@
 
 #pragma mark - Add message in Database
 
-- (DB_Message *)addMessage:(ALMessage *)message {
+- (DB_Message *)addMessage:(KMCoreMessage *)message {
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     DB_Message *dbMessage = [self createMessageEntityForDBInsertionWithMessage:message];
 
@@ -328,7 +328,7 @@
     return nil;
 }
 
-#pragma mark - ALMessagesViewController DB Operations.
+#pragma mark - KMCoreMessagesViewController DB Operations.
 
 - (void)getMessages:(NSMutableArray *)subGroupList {
     if ([self isMessageTableEmpty] ||
@@ -369,7 +369,7 @@
 - (void)fetchAndRefreshQuickConversationWithCompletion:(void (^)( NSMutableArray *, NSError *))completion {
     NSString *deviceKeyString = [KMCoreUserDefaultsHandler getDeviceKeyString];
 
-    [ALMessageService getLatestMessageForUser:deviceKeyString withCompletion:^(NSMutableArray *messageArray, NSError *error) {
+    [KMCoreMessageService getLatestMessageForUser:deviceKeyString withCompletion:^(NSMutableArray *messageArray, NSError *error) {
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Failed to fetch the latest messages for user with error: %@",error);
             completion (nil, error);
@@ -491,7 +491,7 @@
             if (groupMessageArray.count > 0) {
                 DB_Message *dbMessageEntity = groupMessageArray.firstObject;
                 if (groupMessageArray.count) {
-                    ALMessage *alMessage = [self createMessageEntity:dbMessageEntity];
+                    KMCoreMessage *alMessage = [self createMessageEntity:dbMessageEntity];
                     [messagesArray addObject:alMessage];
                 }
             }
@@ -528,7 +528,7 @@
             if (fetchArray.count > 0) {
                 DB_Message *dbMessageEntity = fetchArray.firstObject;
                 if (fetchArray.count) {
-                    ALMessage *alMessage = [self createMessageEntity:dbMessageEntity];
+                    KMCoreMessage *alMessage = [self createMessageEntity:dbMessageEntity];
                     [messagesArray addObject:alMessage];
                 }
             }
@@ -542,7 +542,7 @@
     return sortedArray;
 }
 
-- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)alMessage {
+- (DB_Message *)createMessageEntityForDBInsertionWithMessage:(KMCoreMessage *)alMessage {
 
     //Runs at MessageList viewing/opening... ONLY FIRST TIME
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
@@ -609,12 +609,12 @@
     return fileMetaInfo;
 }
 
-- (ALMessage *)createMessageEntity:(DB_Message *)dbMessage {
+- (KMCoreMessage *)createMessageEntity:(DB_Message *)dbMessage {
 
     if (!dbMessage) {
         return nil;
     }
-    ALMessage *alMessage = [ALMessage new];
+    KMCoreMessage *alMessage = [KMCoreMessage new];
 
     alMessage.msgDBObjectId = [dbMessage objectID];
     alMessage.key = dbMessage.key;
@@ -664,7 +664,7 @@
     return alMessage;
 }
 
-- (void)updateFileMetaInfo:(ALMessage *)alMessage {
+- (void)updateFileMetaInfo:(KMCoreMessage *)alMessage {
     DB_Message *dbMessage = (DB_Message*)[self getMeesageById:alMessage.msgDBObjectId];
     if (dbMessage) {
         dbMessage.fileMetaInfo.key = alMessage.fileMeta.key;
@@ -727,7 +727,7 @@
     NSMutableArray *msgArray = [[NSMutableArray alloc]init];
     if (messageArray.count) {
         for (DB_Message *theEntity in messageArray) {
-            ALMessage *alMessage = [self createMessageEntity:theEntity];
+            KMCoreMessage *alMessage = [self createMessageEntity:theEntity];
             [msgArray addObject:alMessage];
         }
     }
@@ -766,7 +766,7 @@
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
     if (messages.count > 0) {
         for (DB_Message * theEntity in messages) {
-            ALMessage * alMessage = [self createMessageEntity:theEntity];
+            KMCoreMessage * alMessage = [self createMessageEntity:theEntity];
             [messageArray addObject:alMessage];
         }
     }
@@ -791,7 +791,7 @@
 
     if (messages.count > 0) {
         for (DB_Message *dbMessage in messages) {
-            ALMessage *alMessage = [self createMessageEntity:dbMessage];
+            KMCoreMessage *alMessage = [self createMessageEntity:dbMessage];
             if ([alMessage.groupId isEqualToNumber:[NSNumber numberWithInt:0]]) {
                 ALSLog(ALLoggerSeverityInfo, @"groupId is coming as 0..setting it null" );
                 alMessage.groupId = NULL;
@@ -817,7 +817,7 @@
 
 #pragma mark - Get latest message for User/Channel
 
-- (ALMessage *)getLatestMessageForUser:(NSString *)userId {
+- (KMCoreMessage *)getLatestMessageForUser:(NSString *)userId {
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactId = %@ and groupId = nil and deletedFlag = %@",userId,@(NO)];
@@ -830,14 +830,14 @@
 
     if(messagesArray.count) {
         DB_Message *dbMessage = [messagesArray objectAtIndex:0];
-        ALMessage *alMessage = [self createMessageEntity:dbMessage];
+        KMCoreMessage *alMessage = [self createMessageEntity:dbMessage];
         return alMessage;
     }
 
     return nil;
 }
 
-- (ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey
+- (KMCoreMessage *)getLatestMessageForChannel:(NSNumber *)channelKey
                  excludeChannelOperations:(BOOL)flag {
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
@@ -858,7 +858,7 @@
 
     if (messagesArray.count) {
         DB_Message *dbMessage = [messagesArray objectAtIndex:0];
-        ALMessage *alMessage = [self createMessageEntity:dbMessage];
+        KMCoreMessage *alMessage = [self createMessageEntity:dbMessage];
         return alMessage;
     }
 
@@ -893,7 +893,7 @@
     NSMutableArray *subGroupMessageArray = [NSMutableArray new];
 
     for (KMCoreChannel *alChannel in subGroupList) {
-        ALMessage *alMessage = [self getLatestMessageForChannel:alChannel.key excludeChannelOperations:NO];
+        KMCoreMessage *alMessage = [self getLatestMessageForChannel:alChannel.key excludeChannelOperations:NO];
         if (alMessage) {
             [subGroupMessageArray addObject:alMessage];
             if (alChannel.type == GROUP_OF_TWO) {
@@ -934,7 +934,7 @@
 
 #pragma mark - Get message by message key
 
-- (ALMessage*)getMessageByKey:(NSString*)messageKey {
+- (KMCoreMessage*)getMessageByKey:(NSString*)messageKey {
     DB_Message *dbMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKey];
     return [self createMessageEntity:dbMessage];
 }
@@ -1099,7 +1099,7 @@
 
         if (fetchArray.count) {
             DB_Message *dbMessageEntity = fetchArray.firstObject;
-            ALMessage *alMessage = [self createMessageEntity:dbMessageEntity];
+            KMCoreMessage *alMessage = [self createMessageEntity:dbMessageEntity];
             [messagesArray addObject:alMessage];
         }
     }
@@ -1148,14 +1148,14 @@
         NSArray *groupMessageArray = [alDBHandler executeFetchRequest:messageFetchRequest withError:nil];
         if (groupMessageArray.count) {
             DB_Message *dbMessageEntity = groupMessageArray.firstObject;
-            ALMessage *alMessage = [self createMessageEntity:dbMessageEntity];
+            KMCoreMessage *alMessage = [self createMessageEntity:dbMessageEntity];
             [messagesArray addObject:alMessage];
         }
     }
     return messagesArray;
 }
 
-- (ALMessage *)handleMessageFailedStatus:(ALMessage *)message {
+- (KMCoreMessage *)handleMessageFailedStatus:(KMCoreMessage *)message {
     if (!message.msgDBObjectId) {
         return nil;
     }
@@ -1172,10 +1172,10 @@
     return message;
 }
 
-- (ALMessage *)writeDataAndUpdateMessageInDb:(NSData *)data
-                                 withMessage:(ALMessage *)message
+- (KMCoreMessage *)writeDataAndUpdateMessageInDb:(NSData *)data
+                                 withMessage:(KMCoreMessage *)message
                                 withFileFlag:(BOOL)isFile {
-    ALMessage *messageObject = message;
+    KMCoreMessage *messageObject = message;
     DB_Message *messageEntity = (DB_Message *)[self getMessageByKey:@"key" value:messageObject.key];
 
     NSData *imageData;
@@ -1223,15 +1223,15 @@
 
     if (messageEntity) {
         [[KMCoreDBHandler sharedInstance] saveContext];
-        return [[ALMessageDBService new] createMessageEntity:messageEntity];
+        return [[KMCoreMessageDBService new] createMessageEntity:messageEntity];
     }
     return messageObject;
 }
 
-- (DB_Message*)addAttachmentMessage:(ALMessage *)message {
+- (DB_Message*)addAttachmentMessage:(KMCoreMessage *)message {
 
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc] init];
     DB_Message *dbMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:message];
 
     if (dbMessageEntity) {

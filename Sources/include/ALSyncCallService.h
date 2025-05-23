@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "KMCoreUserDetail.h"
 #import "KMCoreRealTimeUpdate.h"
 
@@ -17,9 +17,9 @@
 
 - (void)updateDeliveryStatusForContact:(NSString *)contactId withStatus:(int)status;
 
-- (void)syncCall:(ALMessage *)alMessage;
+- (void)syncCall:(KMCoreMessage *)alMessage;
 
-- (void)syncCall:(ALMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)theDelegate;
+- (void)syncCall:(KMCoreMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)theDelegate;
 
 - (void)updateConnectedStatus:(KMCoreUserDetail *)alUserDetail;
 

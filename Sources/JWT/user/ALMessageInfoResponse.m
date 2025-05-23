@@ -1,14 +1,14 @@
 //
-//  ALMessageInfoResponse.m
+//  KMCoreMessageInfoResponse.m
 //  Kommunicate
 //
 //  Created by devashish on 17/03/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALMessageInfoResponse.h"
+#import "KMCoreMessageInfoResponse.h"
 
-@implementation ALMessageInfoResponse
+@implementation KMCoreMessageInfoResponse
 
 - (instancetype)initWithJSONString:(NSString *)JSONString {
     self = [super initWithJSONString:JSONString];
@@ -19,7 +19,7 @@
         NSMutableArray *responseArray = [JSONString valueForKey:@"response"];
         
         for(NSDictionary *JSONDictionaryObject in responseArray) {
-            ALMessageInfo *messageInfoObject = [[ALMessageInfo alloc] initWithDictonary:JSONDictionaryObject];
+            KMCoreMessageInfo *messageInfoObject = [[KMCoreMessageInfo alloc] initWithDictonary:JSONDictionaryObject];
             [self.msgInfoList addObject:messageInfoObject];
         }
         

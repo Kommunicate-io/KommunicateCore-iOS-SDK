@@ -1,14 +1,14 @@
 //
-//  ALMessageInfo.m
+//  KMCoreMessageInfo.m
 //  Kommunicate
 //
 //  Created by devashish on 17/03/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALMessageInfo.h"
+#import "KMCoreMessageInfo.h"
 
-@implementation ALMessageInfo
+@implementation KMCoreMessageInfo
 
 - (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];

@@ -22,7 +22,7 @@
  *********************/
 
 
-- (instancetype)initWithAlMessage:(ALMessage *)alMessage withAlertMessage:(NSString *)alertMessage {
+- (instancetype)initWithAlMessage:(KMCoreMessage *)alMessage withAlertMessage:(NSString *)alertMessage {
     self = [super init];
     self.text =[self getNotificationText:alMessage];
     self.textColor = [UIColor whiteColor];
@@ -36,7 +36,7 @@
     return self;
 }
 
-- (NSString*)getNotificationText:(ALMessage *)alMessage {
+- (NSString*)getNotificationText:(KMCoreMessage *)alMessage {
     
     if (alMessage.contentType == ALMESSAGE_CONTENT_LOCATION) {
         return NSLocalizedStringWithDefaultValue(@"shareadLocationText", [KMCoreSettings getLocalizableName],[NSBundle mainBundle], @"Shared a Location", @"") ;

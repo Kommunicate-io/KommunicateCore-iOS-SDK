@@ -1,18 +1,18 @@
 //
-//  ALMessageClientService.m
+//  KMCoreMessageClientService.m
 //  ChatApp
 //
 //  Created by devashish on 02/10/2015.
 //  Copyright (c) 2015 kommunicate. All rights reserved.
 //
 
-#import "ALMessageClientService.h"
+#import "KMCoreMessageClientService.h"
 #import "ALConstant.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "KMCoreUserDefaultsHandler.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageDBService.h"
 #import "KMCoreDBHandler.h"
 #import "KMCoreChannelService.h"
 #import "ALSyncMessageFeed.h"
@@ -28,7 +28,7 @@
 #import "ALSearchResultCache.h"
 #import "ALLogger.h"
 
-@implementation ALMessageClientService
+@implementation KMCoreMessageClientService
 
 - (instancetype)init {
     self = [super init];
@@ -228,7 +228,7 @@
 }
 
 
-- (void)downloadImageThumbnailUrl:(ALMessage *)message
+- (void)downloadImageThumbnailUrl:(KMCoreMessage *)message
                    withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion {
     [self downloadImageThumbnailUrl:message.fileMeta.thumbnailUrl
                             blobKey:message.fileMeta.thumbnailBlobKey
@@ -239,9 +239,9 @@
 
 - (void)addWelcomeMessage:(NSNumber *)channelKey {
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc]init];
+    KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc]init];
 
-    ALMessage *alMessage = [ALMessage new];
+    KMCoreMessage *alMessage = [KMCoreMessage new];
 
     alMessage.contactIds = @"applozic";//1
     alMessage.to = @"applozic";//2
@@ -272,7 +272,7 @@
 
 - (void)getLatestMessageGroupByContact:(NSUInteger)mainPageSize
                              startTime:(NSNumber *)startTime
-                        withCompletion:(void(^)(ALMessageList *alMessageList, NSError *error)) completion {
+                        withCompletion:(void(^)(KMCoreMessageList *alMessageList, NSError *error)) completion {
     ALSLog(ALLoggerSeverityInfo, @"\nGet Latest Messages \t State:- User Login ");
 
     NSString *messageListURLString = [NSString stringWithFormat:@"%@/rest/ws/message/list",KBASE_URL];
@@ -298,7 +298,7 @@
             return;
         }
 
-        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson];
+        KMCoreMessageList *messageListResponse = [[KMCoreMessageList alloc] initWithJSONString:theJson];
         ALSLog(ALLoggerSeverityInfo, @"Message list response JSON : %@",theJson);
 
         if (theJson) {
@@ -314,7 +314,7 @@
             /// Next time onwards this saved time will be used. as the start time
 
             if (messageListResponse.messageList.count > 0) {
-                ALMessage *lastMessage = (ALMessage *)[messageListResponse.messageList lastObject];
+                KMCoreMessage *lastMessage = (KMCoreMessage *)[messageListResponse.messageList lastObject];
                 [KMCoreUserDefaultsHandler setLastMessageListTime:lastMessage.createdAtTime];
             }
         }
@@ -341,7 +341,7 @@
             return;
         }
 
-        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson];
+        KMCoreMessageList *messageListResponse = [[KMCoreMessageList alloc] initWithJSONString:theJson];
 
         KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
         [channelService callForChannelServiceForDBInsertion:theJson];
@@ -377,11 +377,11 @@
             [KMCoreUserDefaultsHandler setServerCallDoneForMSGList:true forContactId:[messageListRequest.conversationId stringValue]];
         }
 
-        ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson
+        KMCoreMessageList *messageListResponse = [[KMCoreMessageList alloc] initWithJSONString:theJson
                                                                          andWithUserId:messageListRequest.userId
                                                                           andWithGroup:messageListRequest.channelKey];
 
-        ALMessageDBService *alMessageDBService = [[ALMessageDBService alloc] init];
+        KMCoreMessageDBService *alMessageDBService = [[KMCoreMessageDBService alloc] init];
         [alMessageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
         ALConversationService *alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
@@ -496,7 +496,7 @@
         NSString *status = (NSString *)[theJson valueForKey:@"status"];
         ALSLog(ALLoggerSeverityInfo, @"Response of delete message thread: %@", (NSString *)theJson);
         if (status != nil && [status isEqualToString:AL_RESPONSE_SUCCESS]) {
-            ALMessageDBService * dbService = [[ALMessageDBService alloc] init];
+            KMCoreMessageDBService * dbService = [[KMCoreMessageDBService alloc] init];
             [dbService deleteAllMessagesByContact:contactId orChannelKey:channelKey];
             completion(status, nil);
             return;
@@ -529,7 +529,7 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
 }
 
 - (void)getCurrentMessageInformation:(NSString *)messageKey
-               withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion {
+               withCompletionHandler:(void(^)(KMCoreMessageInfoResponse *msgInfo, NSError *theError))completion {
     NSString *messageInfoURLString = [NSString stringWithFormat:@"%@/rest/ws/message/info", KBASE_URL];
     NSString *messageKeyParamString = [NSString stringWithFormat:@"key=%@", messageKey];
 
@@ -542,7 +542,7 @@ withCompletionHandler:(void(^)(id theJson, NSError *theError))completion {
             completion(nil, theError);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"Response of Message information API JSON : %@", (NSString *)theJson);
-            ALMessageInfoResponse *messageInfoObject = [[ALMessageInfoResponse alloc] initWithJSONString:(NSString *)theJson];
+            KMCoreMessageInfoResponse *messageInfoObject = [[KMCoreMessageInfoResponse alloc] initWithJSONString:(NSString *)theJson];
             completion(messageInfoObject, theError);
         }
     }];
@@ -624,7 +624,7 @@ NSString *latSyncCallTime = @"";
 }
 
 - (void)searchMessage:(NSString *)key
-       withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {
+       withCompletion:(void (^)(NSMutableArray<KMCoreMessage *> *, NSError *))completion {
     ALSLog(ALLoggerSeverityInfo, @"Search messages with %@", key);
     NSString *messageSearchURLString = [NSString stringWithFormat:@"%@/rest/ws/group/support", KBASE_URL];
     NSString *messageSearchParamString = [NSString stringWithFormat:@"search=%@", [key urlEncodeUsingNSUTF8StringEncoding]];
@@ -661,10 +661,10 @@ NSString *latSyncCallTime = @"";
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)theJson);
-        NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
+        NSMutableArray<KMCoreMessage *> *messages = [NSMutableArray new];
         NSDictionary *messageDictionary = [response valueForKey: @"message"];
         for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
+            KMCoreMessage *message = [[KMCoreMessage alloc] initWithDictonary: dict];
             [messages addObject: message];
         }
         KMCoreChannelFeed *channelFeed = [[KMCoreChannelFeed alloc] initWithJSONString: response];
@@ -675,7 +675,7 @@ NSString *latSyncCallTime = @"";
 }
 
 - (void)searchMessageWith:(ALSearchRequest *)request
-           withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {
+           withCompletion:(void (^)(NSMutableArray<KMCoreMessage *> *, NSError *))completion {
 
     if (!request.searchText || request.searchText.length == 0 ) {
         NSError *error = [NSError
@@ -723,10 +723,10 @@ NSString *latSyncCallTime = @"";
             return;
         }
         ALSLog(ALLoggerSeverityInfo, @"Search messages RESPONSE :: %@", (NSString *)theJson);
-        NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
+        NSMutableArray<KMCoreMessage *> *messages = [NSMutableArray new];
         NSDictionary *messageDictionary = [response valueForKey: @"message"];
         for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
+            KMCoreMessage *message = [[KMCoreMessage alloc] initWithDictonary: dict];
             [messages addObject: message];
         }
         KMCoreChannelFeed *channelFeed = [[KMCoreChannelFeed alloc] initWithJSONString: response];
@@ -738,7 +738,7 @@ NSString *latSyncCallTime = @"";
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                      isSearch:(BOOL)flag
-               withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion {
+               withCompletion:(void (^)(NSMutableArray<KMCoreMessage *> *, NSError *))completion {
     NSString *messageThreadURLString = [NSString stringWithFormat: @"%@/rest/ws/message/list", KBASE_URL];
     NSMutableURLRequest *messageThreadRequest = [ALRequestHandler
                                                  createGETRequestWithUrlString: messageThreadURLString
@@ -754,9 +754,9 @@ NSString *latSyncCallTime = @"";
         ALSLog(ALLoggerSeverityInfo, @"Messages fetched succesfully :: %@", (NSString *)theJson);
 
         NSDictionary *messageDictionary = [theJson valueForKey:@"message"];
-        NSMutableArray<ALMessage *> *messages = [NSMutableArray new];
+        NSMutableArray<KMCoreMessage *> *messages = [NSMutableArray new];
         for (NSDictionary *dict in messageDictionary) {
-            ALMessage *message = [[ALMessage alloc] initWithDictonary:dict];
+            KMCoreMessage *message = [[KMCoreMessage alloc] initWithDictonary:dict];
             [messages addObject: message];
         }
 

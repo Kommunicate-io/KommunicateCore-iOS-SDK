@@ -1,5 +1,5 @@
 //
-//  ALMessageClientService.h
+//  KMCoreMessageClientService.h
 //  ChatApp
 //
 //  Created by devashish on 02/10/2015.
@@ -7,16 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
-#import "ALMessageList.h"
+#import "KMCoreMessage.h"
+#import "KMCoreMessageList.h"
 #import "ALSyncMessageFeed.h"
 #import "MessageListRequest.h"
-#import "ALMessageInfoResponse.h"
+#import "KMCoreMessageInfoResponse.h"
 #import "ALContactDBService.h"
 #import "ALSearchRequest.h"
 #import "ALResponseHandler.h"
 
-@interface ALMessageClientService : NSObject
+@interface KMCoreMessageClientService : NSObject
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
@@ -24,7 +24,7 @@
 
 - (void)getLatestMessageGroupByContact:(NSUInteger)mainPageSize
                              startTime:(NSNumber *)startTime
-                        withCompletion:(void(^)(ALMessageList *alMessageList, NSError *error))completion;
+                        withCompletion:(void(^)(KMCoreMessageList *alMessageList, NSError *error))completion;
 
 - (void)getMessagesListGroupByContactswithCompletion:(void(^)(NSMutableArray *messages, NSError *error)) completion;
 
@@ -46,7 +46,7 @@
 - (void)sendMessage:(NSDictionary *)userInfo withCompletionHandler:(void(^)(id theJson, NSError *theError))completion;
 
 - (void)getCurrentMessageInformation:(NSString *)messageKey
-               withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion;
+               withCompletionHandler:(void(^)(KMCoreMessageInfoResponse *msgInfo, NSError *theError))completion;
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                 withOpenGroup:(BOOL)isOpenGroup
@@ -60,7 +60,7 @@
                           blobKey:(NSString *)blobKey
                        completion:(void(^)(NSString *fileURL, NSError *error)) completion;
 
-- (void)downloadImageThumbnailUrl:(ALMessage *)message
+- (void)downloadImageThumbnailUrl:(KMCoreMessage *)message
                    withCompletion:(void(^)(NSString *fileURL, NSError *error)) completion DEPRECATED_ATTRIBUTE;
 - (void)downloadImageThumbnailUrlV2:(NSString *)url
                             isS3URL:(BOOL)isS3URL
@@ -77,11 +77,11 @@
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                      isSearch:(BOOL)flag
-               withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
+               withCompletion:(void (^)(NSMutableArray<KMCoreMessage *> *, NSError *))completion;
 
-- (void)searchMessage:(NSString *)key withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
+- (void)searchMessage:(NSString *)key withCompletion:(void (^)(NSMutableArray<KMCoreMessage *> *, NSError *))completion;
 
-- (void)searchMessageWith:(ALSearchRequest *)request withCompletion:(void (^)(NSMutableArray<ALMessage *> *, NSError *))completion;
+- (void)searchMessageWith:(ALSearchRequest *)request withCompletion:(void (^)(NSMutableArray<KMCoreMessage *> *, NSError *))completion;
 
 - (void)getMessagesWithkeys:(NSMutableArray<NSString *> *)keys
               withCompletion:(void(^)(ALAPIResponse* response, NSError *error))completion;

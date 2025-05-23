@@ -1,11 +1,11 @@
 //
-//  ALMessage.m
+//  KMCoreMessage.m
 //  ALChat
 //
 //  Copyright (c) 2015 AppLozic. All rights reserved.
 //
 
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "ALUtilityClass.h"
 #import "KMCoreChannel.h"
 #import "ALContact.h"
@@ -18,7 +18,7 @@ static NSString * const AL_DELETE_MESSAGE_FOR_KEY = @"AL_DELETE_GROUP_MESSAGE_FO
 static NSString * const AL_TRUE = @"true";
 static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
 
-@implementation ALMessage
+@implementation KMCoreMessage
 
 - (NSNumber *)getGroupId {
     if ([self.groupId isEqualToNumber:[NSNumber numberWithInt:0]]) {
@@ -417,7 +417,7 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
     [[self.metadata valueForKey: @"action"] isEqualToString: AL_CONVERSATION_DELETE_ACTION];
 }
 
-- (instancetype)initWithBuilder:(ALMessageBuilder *)builder {
+- (instancetype)initWithBuilder:(KMCoreMessageBuilder *)builder {
     if (self = [super init]) {
         _contactIds = builder.to;
         _to = builder.to;
@@ -468,10 +468,10 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
     return fileMetaInfo;
 }
 
-+ (instancetype)build:(void (^)(ALMessageBuilder *))builder {
-    ALMessageBuilder *alMessageBuilder = [ALMessageBuilder new];
++ (instancetype)build:(void (^)(KMCoreMessageBuilder *))builder {
+    KMCoreMessageBuilder *alMessageBuilder = [KMCoreMessageBuilder new];
     builder(alMessageBuilder);
-    return [[ALMessage alloc] initWithBuilder:alMessageBuilder];
+    return [[KMCoreMessage alloc] initWithBuilder:alMessageBuilder];
 }
 
 - (BOOL)isNotificationDisabled {

@@ -1,19 +1,19 @@
 //
-//  ALMessageList.m
+//  KMCoreMessageList.m
 //  ChatApp
 //
 //  Created by Devashish on 22/09/15.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALMessageList.h"
-#import "ALMessage.h"
+#import "KMCoreMessageList.h"
+#import "KMCoreMessage.h"
 #import "KMCoreUserDetail.h"
 #import "KMCoreChannel.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
-@implementation ALMessageList
+@implementation KMCoreMessageList
 
 
 - (id)initWithJSONString:(NSString *)syncMessageResponse {
@@ -42,7 +42,7 @@
     }
     
     for (NSDictionary *theDictionary in messageDictionary) {
-        ALMessage *message = [[ALMessage alloc] initWithDictonary:theDictionary];
+        KMCoreMessage *message = [[KMCoreMessage alloc] initWithDictonary:theDictionary];
         [messagesArray addObject:message];
     }
     self.messageList = messagesArray;

@@ -8,9 +8,9 @@
 
 #import "ALAttachmentService.h"
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "ALMessageClientService.h"
+#import "KMCoreMessageClientService.h"
 #import "KommunicateClient.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageService.h"
 #import "ALUtilityClass.h"
 #import "ALVideoUploadManager.h"
 
@@ -26,7 +26,7 @@
     return sharedInstance;
 }
 
-- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
+- (void)sendMessageWithAttachment:(KMCoreMessage *)attachmentMessage
                      withDelegate:(id<KommunicateUpdatesDelegate>)delegate
            withAttachmentDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate {
     
@@ -50,7 +50,7 @@
     
     //DB Addition
     
-    ALMessageDBService *alMessageDbService = [[ALMessageDBService alloc]init];
+    KMCoreMessageDBService *alMessageDbService = [[KMCoreMessageDBService alloc]init];
     
     DB_Message *dbMessage = [alMessageDbService addAttachmentMessage:attachmentMessage];
     
@@ -72,12 +72,12 @@
     } else {
         NSDictionary *messageDictionary = [attachmentMessage dictionary];
         
-        ALMessageClientService *clientService  = [[ALMessageClientService alloc]init];
+        KMCoreMessageClientService *clientService  = [[KMCoreMessageClientService alloc]init];
         [clientService sendPhotoForUserInfo:messageDictionary withCompletion:^(NSString *responseUrl, NSError *error) {
             
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [self.attachmentProgressDelegate onUploadFailed:[[ALMessageService sharedInstance] handleMessageFailedStatus:attachmentMessage]];
+                    [self.attachmentProgressDelegate onUploadFailed:[[KMCoreMessageService sharedInstance] handleMessageFailedStatus:attachmentMessage]];
                 });
                 return;
             }
@@ -91,7 +91,7 @@
     
 }
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate {
+- (void)downloadMessageAttachment:(KMCoreMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate {
     
     self.attachmentProgressDelegate = attachmentProgressDelegate;
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];
@@ -99,7 +99,7 @@
     [manager processDownloadForMessage:alMessage isAttachmentDownload:YES];
 }
 
-- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate {
+- (void)downloadImageThumbnail:(KMCoreMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate {
     
     self.attachmentProgressDelegate = attachmentProgressDelegate;
     ALHTTPManager *manager = [[ALHTTPManager alloc] init];

@@ -1,5 +1,5 @@
 //
-// ALMessageService.h
+// KMCoreMessageService.h
 // ALChat
 //
 // Copyright (c) 2015 AppLozic. All rights reserved.
@@ -8,17 +8,17 @@
 #import <Foundation/Foundation.h>
 #import "ALConstant.h"
 #import "ALSyncMessageFeed.h"
-#import "ALMessageList.h"
-#import "ALMessage.h"
+#import "KMCoreMessageList.h"
+#import "KMCoreMessage.h"
 #import "DB_FileMetaInfo.h"
 #import "KMCoreUserDetail.h"
 #import "KMCoreChannelService.h"
 #import "MessageListRequest.h"
-#import "ALMessageInfoResponse.h"
+#import "KMCoreMessageInfoResponse.h"
 #import "ALMQTTConversationService.h"
 #import "KMCoreRealTimeUpdate.h"
 #import "ALConversationProxy.h"
-#import "ALMessageClientService.h"
+#import "KMCoreMessageClientService.h"
 #import "ALUserService.h"
 #import "KMCoreChannelService.h"
 
@@ -27,11 +27,11 @@ static NSString *const CONVERSATION_CALL_COMPLETED = @"conversationCallCompleted
 static NSString *const AL_MESSAGE_META_DATA_UPDATE = @"messageMetaDataUpdateNotification";
 static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_METADATA_UPDATE";
 
-@interface ALMessageService : NSObject
+@interface KMCoreMessageService : NSObject
 
-+ (ALMessageService *)sharedInstance;
++ (KMCoreMessageService *)sharedInstance;
 
-@property (nonatomic, strong) ALMessageClientService *messageClientService;
+@property (nonatomic, strong) KMCoreMessageClientService *messageClientService;
 @property (nonatomic, strong) ALUserService *userService;
 @property (nonatomic, strong) KMCoreChannelService *channelService;
 
@@ -39,7 +39,7 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 
 /// This method is used for fetching the one-to-one or group chat messages from the server.
 /// @param messageListRequest Pass the MessageListRequest in case of one-to-one pass the userId or channelKey in case of a group.
-/// @param completion If messages are fetched successfully, it will have a list of ALMessage objects; else, it will have NSError in case any error comes.
+/// @param completion If messages are fetched successfully, it will have a list of KMCoreMessage objects; else, it will have NSError in case any error comes.
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                withCompletion:(void(^)(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray)) completion;
 
@@ -52,13 +52,13 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
                     withCompletion:(void (^)(NSMutableArray *))completion;
 
 /// This method is used for sending a text message one to one or group conversation.
-/// @param message Pass the ALMessage object for sending a text message.
+/// @param message Pass the KMCoreMessage object for sending a text message.
 /// @param completion If success in sending a message the NSError will be nil; else, if there is an error in sending a message the NSError will not be nil.
-- (void)sendMessages:(ALMessage *)message withCompletion:(void(^)(NSString *message, NSError *error)) completion;
+- (void)sendMessages:(KMCoreMessage *)message withCompletion:(void(^)(NSString *message, NSError *error)) completion;
 
 + (void)getLatestMessageForUser:(NSString *)deviceKeyString withCompletion:(void(^)(NSMutableArray *message, NSError *error)) completion;
 
-+ (ALMessage *)processFileUploadSucess:(ALMessage *)message;
++ (KMCoreMessage *)processFileUploadSucess:(KMCoreMessage *)message;
 
 /// This method is used for deleting the message thread or conversation in a one-to-one or group chat.
 /// @param contactId Pass the userId in case deleting the conversation for one-to-one; otherwise, it will be nil.
@@ -76,46 +76,46 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 
 - (void)processPendingMessages;
 
-+ (ALMessage *)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString*)value;
++ (KMCoreMessage *)getMessagefromKeyValuePair:(NSString *)key andValue:(NSString*)value;
 
 /// This method is used for fetching the message information which will have delivered and read for users in group chat.
 /// @param messageKey Pass the message key from the message object.
 /// @param completion If success in fetching the message information then NSError will be nil else on failure in fetching message information then NSError will not be nil.
 - (void)getMessageInformationWithMessageKey:(NSString *)messageKey
-                      withCompletionHandler:(void(^)(ALMessageInfoResponse *msgInfo, NSError *theError))completion;
+                      withCompletionHandler:(void(^)(KMCoreMessageInfoResponse *msgInfo, NSError *theError))completion;
 
-+ (void)multiUserSendMessage:(ALMessage *)alMessage
++ (void)multiUserSendMessage:(KMCoreMessage *)alMessage
                   toContacts:(NSMutableArray *)contactIdsArray
                     toGroups:(NSMutableArray *)channelKeysArray
               withCompletion:(void(^)(NSString * json, NSError * error)) completion;
 
-+ (void)getMessageSENT:(ALMessage *)alMessage withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
++ (void)getMessageSENT:(KMCoreMessage *)alMessage withCompletion:(void (^)( NSMutableArray *, NSError *))completion;
 
-+ (void)getMessageSENT:(ALMessage *)alMessage
++ (void)getMessageSENT:(KMCoreMessage *)alMessage
           withDelegate:(id<KommunicateUpdatesDelegate>)theDelegate
         withCompletion:(void (^)(NSMutableArray *, NSError *))completion;
 
-+ (ALMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString*)text;
++ (KMCoreMessage *)createCustomTextMessageEntitySendTo:(NSString *)to withText:(NSString*)text;
 
-- (void)getMessageListForUserIfLastIsHiddenMessageinMessageList:(ALMessageList *)alMessageList
+- (void)getMessageListForUserIfLastIsHiddenMessageinMessageList:(KMCoreMessageList *)alMessageList
                                                  withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion;
 
 - (void)getMessagesListGroupByContactswithCompletionService:(void(^)(NSMutableArray *messages, NSError *error))completion;
 
-+ (ALMessage *)createHiddenMessageEntitySentTo:(NSString *)to withText:(NSString*)text;
++ (KMCoreMessage *)createHiddenMessageEntitySentTo:(NSString *)to withText:(NSString*)text;
 
-+ (ALMessage *)createMessageWithMetaData:(NSMutableDictionary *)metaData
++ (KMCoreMessage *)createMessageWithMetaData:(NSMutableDictionary *)metaData
                           andContentType:(short)contentType
                            andReceiverId:(NSString *)receiverId
                           andMessageText:(NSString *)msgTxt;
 
 - (NSUInteger)getMessagsCountForUser:(NSString *)userId;
 
-- (ALMessage *)getLatestMessageForUser:(NSString *)userId;
+- (KMCoreMessage *)getLatestMessageForUser:(NSString *)userId;
 
-- (ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
+- (KMCoreMessage *)getLatestMessageForChannel:(NSNumber *)channelKey excludeChannelOperations:(BOOL)flag;
 
-- (ALMessage *)getALMessageByKey:(NSString *)messageReplyId;
+- (KMCoreMessage *)getKMCoreMessageByKey:(NSString *)messageReplyId;
 
 + (void)syncMessages;
 + (void)getLatestMessageForUser:(NSString *)deviceKeyString
@@ -126,16 +126,16 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 /// @param isNextPage If you want to load the next set of messages pass YES or true to load else pass NO or false.
 /// @param isGroup To get groups messages only then pass YES or true it will give group latest messages else
 /// to get only user latest messages then pass NO or false.
-/// @param completion Array of messages of type ALMessage and error if failed to get the messages.
+/// @param completion Array of messages of type KMCoreMessage and error if failed to get the messages.
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
     withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error)) completion;
 
-+ (void)addOpenGroupMessage:(ALMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)delegate;
++ (void)addOpenGroupMessage:(KMCoreMessage *)alMessage withDelegate:(id<KommunicateUpdatesDelegate>)delegate;
 
-- (ALMessage *)handleMessageFailedStatus:(ALMessage *)message;
+- (KMCoreMessage *)handleMessageFailedStatus:(KMCoreMessage *)message;
 
-- (ALMessage*)getMessageByKey:(NSString *)messageKey;
+- (KMCoreMessage*)getMessageByKey:(NSString *)messageKey;
 
 /// This method is used for sync the messages where meta data is updated.
 /// @param deviceKeyString Pass the [KMCoreUserDefaultsHandler getDeviceKeyString].
@@ -153,10 +153,10 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 /// This method is used for fetching messages based on the message keys.
 /// @param keys Pass the array of message keys.
 /// @param completion If there is no error in fetching messages, then it will have an array of messages. else it will have nil.
-- (void)fetchReplyMessages:(NSMutableArray<NSString *> *)keys withCompletion: (void(^)(NSMutableArray<ALMessage *>*messages))completion;
+- (void)fetchReplyMessages:(NSMutableArray<NSString *> *)keys withCompletion: (void(^)(NSMutableArray<KMCoreMessage *>*messages))completion;
 
 /// This method is used for deleting a message for all.
-/// @param keyString Pass the message key from ALMessage object.
+/// @param keyString Pass the message key from KMCoreMessage object.
 /// @param completion If an error in deleting a message for all then NSError will not be nil else on successful delete error will be nil.
 - (void)deleteMessageForAllWithKey:(NSString *)keyString
                     withCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion;

@@ -9,7 +9,7 @@
 #import "ALPushAssist.h"
 
 #import "ALPushNotificationService.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageDBService.h"
 #import "KMCoreUserDetail.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALAppLocalNotifications.h"

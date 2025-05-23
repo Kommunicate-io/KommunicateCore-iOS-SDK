@@ -1,5 +1,5 @@
 //
-//  ALMessageBuilder.h
+//  KMCoreMessageBuilder.h
 //  Kommunicate
 //
 //  Created by apple on 04/07/18.
@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ALMessageBuilder : NSObject
+@interface KMCoreMessageBuilder : NSObject
 
 @property (nonatomic, copy) NSString *to;
 

@@ -1,5 +1,5 @@
 //
-//  ALMessageArrayWrapper.h
+//  KMCoreMessageArrayWrapper.h
 //  Kommunicate
 //
 //  Created by devashish on 17/12/2015.
@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "KMCoreSettings.h"
 
-@interface ALMessageArrayWrapper : NSObject
+@interface KMCoreMessageArrayWrapper : NSObject
 
 @property (nonatomic, strong) NSMutableArray *messageArray;
 
@@ -22,16 +22,16 @@
 
 - (void)addObjectToMessageArray:(NSMutableArray *)paramMessageArray;
 
-- (void)addALMessageToMessageArray:(ALMessage *)alMessage;
+- (void)addKMCoreMessageToMessageArray:(KMCoreMessage *)alMessage;
 
 - (void)removeObjectFromMessageArray:(NSMutableArray *)paramMessageArray;
 
-- (void)removeALMessageFromMessageArray:(ALMessage *)alMessage;
+- (void)removeKMCoreMessageFromMessageArray:(KMCoreMessage *)alMessage;
 
 - (void)addLatestObjectToArray:(NSMutableArray *)paramMessageArray;
 
-- (ALMessage *)getDatePrototype:(NSString *)messageText andAlMessageObject:(ALMessage *)almessage;
+- (KMCoreMessage *)getDatePrototype:(NSString *)messageText andAlMessageObject:(KMCoreMessage *)almessage;
 
-- (NSString *)msgAtTop:(ALMessage *)almessage;
+- (NSString *)msgAtTop:(KMCoreMessage *)almessage;
 
 @end
