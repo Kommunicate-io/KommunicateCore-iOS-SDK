@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface KMCoreMessageInfo : ALJson
+@interface KMCoreMessageInfo : KMCoreJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic) short status;

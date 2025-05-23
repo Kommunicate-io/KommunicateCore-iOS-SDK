@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface KMCoreChannelInfo : ALJson
+@interface KMCoreChannelInfo : KMCoreJson
 
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSString *clientGroupId;

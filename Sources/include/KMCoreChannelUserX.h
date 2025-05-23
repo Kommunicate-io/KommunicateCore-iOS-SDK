@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/NSManagedObject.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
 
 
@@ -21,7 +21,7 @@ typedef enum
 
 
 
-@interface KMCoreChannelUserX : ALJson
+@interface KMCoreChannelUserX : KMCoreJson
 
 @property (nonatomic, strong) NSString *userKey;
 @property (nonatomic, strong) NSNumber *key;

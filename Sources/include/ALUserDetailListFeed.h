@@ -6,9 +6,9 @@
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface ALUserDetailListFeed : ALJson
+@interface ALUserDetailListFeed : KMCoreJson
 
 @property (nonatomic, strong) NSMutableArray *userIdList;
 

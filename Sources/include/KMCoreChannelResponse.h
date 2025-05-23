@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/NSManagedObject.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import "KMCoreConversationProxy.h"
 
-@interface KMCoreChannelResponse :  ALJson
+@interface KMCoreChannelResponse :  KMCoreJson
 
 @property (nonatomic, strong) NSNumber *key;
 @property (nonatomic, strong) NSString *clientGroupId;

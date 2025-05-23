@@ -29,7 +29,7 @@ FOUNDATION_EXPORT const unsigned char KommunicateCoreVersionString[];
 #import "KMCoreMessageBuilder.h"
 #import "KMCoreMessageInfoResponse.h"
 #import "KMCoreMessageInfo.h"
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import "ALFileMetaInfo.h"
 #import "DB_FileMetaInfo.h"
 #import "ALLastSeenSyncFeed.h"

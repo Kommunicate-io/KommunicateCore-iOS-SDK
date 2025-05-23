@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import "ALTopicDetail.h"
 #import "DB_ConversationProxy.h"
 
-@interface KMCoreConversationProxy : ALJson
+@interface KMCoreConversationProxy : KMCoreJson
 
 @property (nonatomic, strong) NSNumber *Id;
 @property (nonatomic, strong) NSString *topicId;

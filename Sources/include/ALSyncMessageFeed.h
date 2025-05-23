@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface ALSyncMessageFeed : ALJson
+@interface ALSyncMessageFeed : KMCoreJson
 
 @property(nonatomic,copy) NSNumber *lastSyncTime;
 

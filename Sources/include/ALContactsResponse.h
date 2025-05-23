@@ -6,9 +6,9 @@
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface ALContactsResponse : ALJson
+@interface ALContactsResponse : KMCoreJson
 
 @property (nonatomic, strong) NSNumber *lastFetchTime;
 @property (nonatomic, strong) NSNumber *totalUnreadCount;

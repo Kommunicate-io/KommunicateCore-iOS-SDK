@@ -1,5 +1,5 @@
 //
-//  ALJson.h
+//  KMCoreJson.h
 //  LearnApp
 //
 //  Created by devashish on 24/07/2015.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ALJson : NSObject
+@interface KMCoreJson : NSObject
 
 - (instancetype)initWithJSONString:(NSString *)JSONString;
 

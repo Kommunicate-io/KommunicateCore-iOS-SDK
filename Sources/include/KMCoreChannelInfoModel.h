@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import "KMCoreChannelResponse.h"
 
-@interface KMCoreChannelInfoModel : ALJson
+@interface KMCoreChannelInfoModel : KMCoreJson
 
 @property (nonatomic, strong)  NSDictionary *channel;
 

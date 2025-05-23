@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "KMCoreUserDetail.h"
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface ALLastSeenSyncFeed : ALJson
+@interface ALLastSeenSyncFeed : KMCoreJson
 
 @property(nonatomic) NSMutableArray <KMCoreUserDetail *> *lastSeenArray;
 

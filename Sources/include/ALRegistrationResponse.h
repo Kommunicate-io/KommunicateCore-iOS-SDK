@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface ALRegistrationResponse : ALJson
+@interface ALRegistrationResponse : KMCoreJson
 
 @property NSString *message;
 @property NSString *deviceKey;

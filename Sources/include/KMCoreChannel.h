@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/NSManagedObject.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import "KMCoreConversationProxy.h"
 
 static NSString *const AL_CHANNEL_DEFAULT_MUTE = @"MUTE";
@@ -44,7 +44,7 @@ typedef enum {
     CLOSED_CONVERSATION = 3
 } CONVERSATION_CATEGORY;
 
-@interface KMCoreChannel : ALJson
+@interface KMCoreChannel : KMCoreJson
 
 @property (nonatomic, strong) NSNumber *key;
 @property (nonatomic, strong) NSString *clientChannelKey;

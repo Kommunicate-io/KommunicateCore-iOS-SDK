@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/NSManagedObject.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import "ALFileMetaInfo.h"
 #import "KMCoreSettings.h"
 #import "KMCoreMessageBuilder.h"
@@ -43,7 +43,7 @@ typedef enum {
 }ALReplyType;
 
 
-@interface KMCoreMessage : ALJson
+@interface KMCoreMessage : KMCoreJson
 
 @property (nonatomic, copy) NSString *key;
 

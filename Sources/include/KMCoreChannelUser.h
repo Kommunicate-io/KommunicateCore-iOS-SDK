@@ -6,9 +6,9 @@
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface KMCoreChannelUser : ALJson
+@interface KMCoreChannelUser : KMCoreJson
 
 @property (nonatomic, strong) NSNumber *role;
 @property (nonatomic, strong) NSString *userId;

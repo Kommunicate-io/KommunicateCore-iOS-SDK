@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import "KMCoreChannel.h"
 
-@interface KMCoreChannelFeed : ALJson
+@interface KMCoreChannelFeed : KMCoreJson
 
 @property (nonatomic) NSMutableArray <KMCoreChannel *> *channelFeedsList;
 

@@ -1,17 +1,17 @@
 //
-//  ALJson.m
+//  KMCoreJson.m
 //  LearnApp
 //
 //  Created by devashish on 24/07/2015.
 //  Copyright (c) 2015 devashish. All rights reserved.
 //
 
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import <objc/runtime.h>
 #import "ALFileMetaInfo.h"
 #import "ALLogger.h"
 
-@implementation ALJson
+@implementation KMCoreJson
 
 - (instancetype)init {
     self = [super init];
@@ -69,7 +69,7 @@
         }
         free(properties);
     } @catch (NSException *exception) {
-        ALSLog(ALLoggerSeverityInfo, @"Exception in ALJson %@",exception);
+        ALSLog(ALLoggerSeverityInfo, @"Exception in KMCoreJson %@",exception);
     }
     return dictionary;
 }

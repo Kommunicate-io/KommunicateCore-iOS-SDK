@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
 
-@interface KMCoreMessageList : ALJson
+@interface KMCoreMessageList : KMCoreJson
 
 @property (nonatomic) NSMutableArray *messageList;
 @property (nonatomic) NSMutableArray *connectedUserList;

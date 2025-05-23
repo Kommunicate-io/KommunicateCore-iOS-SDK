@@ -8,7 +8,7 @@
 
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
 typedef enum
 {
@@ -39,7 +39,7 @@ typedef enum
     PLATFORM_IONIC = 10,
 } Platform;
 
-@interface KMCoreUser : ALJson
+@interface KMCoreUser : KMCoreJson
 
 @property NSString *userId;
 @property NSString *email;

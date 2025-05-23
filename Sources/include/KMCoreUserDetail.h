@@ -8,9 +8,9 @@
 
 #import <CoreData/NSManagedObject.h>
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface KMCoreUserDetail : ALJson
+@interface KMCoreUserDetail : KMCoreJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic) BOOL connected;

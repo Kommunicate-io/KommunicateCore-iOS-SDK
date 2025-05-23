@@ -5,10 +5,10 @@
 //  Created by Sunil on 14/02/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
 //
-#import "ALJson.h"
+#import "KMCoreJson.h"
 #import <Foundation/Foundation.h>
 
-@interface ALGroupUser : ALJson
+@interface ALGroupUser : KMCoreJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic, strong) NSNumber *groupRole;
