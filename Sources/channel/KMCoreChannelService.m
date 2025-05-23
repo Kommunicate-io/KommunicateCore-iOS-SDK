@@ -1,23 +1,23 @@
 //
-//  ALChannelService.m
+//  KMCoreChannelService.m
 //  Kommunicate
 //
 //  Created by devashish on 04/01/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALMessageClientService.h"
 #import "ALConversationService.h"
-#import "ALChannelUser.h"
+#import "KMCoreChannelUser.h"
 #import "ALMuteRequest.h"
 #import "ALAPIResponse.h"
 #import "ALContactService.h"
 #import "KMCoreRealTimeUpdate.h"
 #import "ALLogger.h"
-#import "ALChannelCreateResponse.h"
+#import "KMCoreChannelCreateResponse.h"
 
-@implementation ALChannelService
+@implementation KMCoreChannelService
 
 static int const AL_CHANNEL_MEMBER_BATCH_SIZE = 100;
 NSString *const AL_CHANNEL_MEMBER_SAVE_STATUS = @"AL_CHANNEL_MEMBER_SAVE_STATUS";
@@ -29,11 +29,11 @@ NSNumber *syncCallTriggerTime = 0L;
 
 dispatch_queue_t channelUserbackgroundQueue;
 
-+ (ALChannelService *)sharedInstance {
-    static ALChannelService *sharedInstance = nil;
++ (KMCoreChannelService *)sharedInstance {
+    static KMCoreChannelService *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[ALChannelService alloc] init];
+        sharedInstance = [[KMCoreChannelService alloc] init];
     });
     return sharedInstance;
 }
@@ -51,12 +51,12 @@ dispatch_queue_t channelUserbackgroundQueue;
 #pragma mark - Setup services
 
 -(void)setupServices {
-    self.channelClientService = [[ALChannelClientService alloc] init];
-    self.channelDBService = [[ALChannelDBService alloc] init];
+    self.channelClientService = [[KMCoreChannelClientService alloc] init];
+    self.channelDBService = [[KMCoreChannelDBService alloc] init];
 }
 
 - (void)callForChannelServiceForDBInsertion:(NSString *)theJson {
-    ALChannelFeed *alChannelFeed = [[ALChannelFeed alloc] initWithJSONString:theJson];
+    KMCoreChannelFeed *alChannelFeed = [[KMCoreChannelFeed alloc] initWithJSONString:theJson];
     [self.channelDBService insertChannel:alChannelFeed.channelFeedsList];
 
     //callForChannelProxy inserting in DB...
@@ -66,16 +66,16 @@ dispatch_queue_t channelUserbackgroundQueue;
     [self saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];
 }
 
-- (void)processChildGroups:(ALChannel *)alChannel {
+- (void)processChildGroups:(KMCoreChannel *)alChannel {
     //Get INFO of Child
     for (NSNumber *channelKey in alChannel.childKeys) {
-        [self getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
+        [self getChannelInformation:channelKey orClientChannelKey:nil withCompletion:^(KMCoreChannel *alChannel3) {
             
         }];
     }
 }
 
-- (ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey{
+- (KMCoreChannelUserX *)loadChannelUserX:(NSNumber *)channelKey{
     return [self.channelDBService loadChannelUserX:channelKey];
 }
 
@@ -83,7 +83,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 - (void)getChannelInformation:(NSNumber *)channelKey
            orClientChannelKey:(NSString *)clientChannelKey
-               withCompletion:(void (^)(ALChannel *alChannel3)) completion {
+               withCompletion:(void (^)(KMCoreChannel *alChannel3)) completion {
 
     if (!channelKey
         && !clientChannelKey) {
@@ -91,7 +91,7 @@ dispatch_queue_t channelUserbackgroundQueue;
         return;
     }
 
-    ALChannel *alChannel1;
+    KMCoreChannel *alChannel1;
     if (clientChannelKey) {
         alChannel1 = [self fetchChannelWithClientChannelKey:clientChannelKey];
     } else {
@@ -101,7 +101,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     if (alChannel1) {
         completion(alChannel1);
     } else {
-        [self.channelClientService getChannelInfo:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALChannel *channel) {
+        [self.channelClientService getChannelInfo:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, KMCoreChannel *channel) {
             
             if (!error) {
                 [self createChannelEntry:channel fromMessageList:NO];
@@ -114,14 +114,14 @@ dispatch_queue_t channelUserbackgroundQueue;
 #pragma mark - Conversation Closed
 
 + (BOOL)isConversationClosed:(NSNumber *)groupId {
-    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+    KMCoreChannelDBService *channelDBService = [[KMCoreChannelDBService alloc] init];
     return [channelDBService isConversaionClosed:groupId];
 }
 
 #pragma mark - Channel Deleted
 
 + (BOOL)isChannelDeleted:(NSNumber *)groupId {
-    ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+    KMCoreChannelDBService *channelDBService = [[KMCoreChannelDBService alloc] init];
     BOOL flag = [channelDBService isChannelDeleted:groupId];
     return flag;
 }
@@ -129,8 +129,8 @@ dispatch_queue_t channelUserbackgroundQueue;
 #pragma mark - Channel Muted
 
 + (BOOL)isChannelMuted:(NSNumber *)groupId {
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    ALChannel *channel = [channelService getChannelByKey:groupId];
+    KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
+    KMCoreChannel *channel = [channelService getChannelByKey:groupId];
     return [channel isNotificationMuted];
 }
 
@@ -143,8 +143,8 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 #pragma mark - Get channel by channelkey from Database
 
-- (ALChannel *)getChannelByKey:(NSNumber *)channelKey {
-    ALChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
+- (KMCoreChannel *)getChannelByKey:(NSNumber *)channelKey {
+    KMCoreChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
     return channel;
 }
 
@@ -162,8 +162,8 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 #pragma mark - Get channel by client channelkey from Database
 
-- (ALChannel *)fetchChannelWithClientChannelKey:(NSString *)clientChannelKey {
-    ALChannel *channel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
+- (KMCoreChannel *)fetchChannelWithClientChannelKey:(NSString *)clientChannelKey {
+    KMCoreChannel *channel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
     return channel;
 }
 
@@ -183,7 +183,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
     [metadata setObject:@"CLOSE" forKey:AL_CHANNEL_CONVERSATION_STATUS];
     
-    ALChannelService *channelService = [ALChannelService new];
+    KMCoreChannelService *channelService = [KMCoreChannelService new];
     [channelService updateChannel:groupId
                        andNewName:nil
                       andImageURL:nil
@@ -281,7 +281,7 @@ dispatch_queue_t channelUserbackgroundQueue;
    orClientChannelKey:(NSString *)clientChannelKey
        andMembersList:(NSMutableArray *)memberArray
          andImageLink:(NSString *)imageLink
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion {
+       withCompletion:(void(^)(KMCoreChannel *alChannel, NSError *error))completion {
     
     /* GROUP META DATA DICTIONARY
      
@@ -291,7 +291,7 @@ dispatch_queue_t channelUserbackgroundQueue;
      */
     
     [self createChannel:channelName orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:PUBLIC
-            andMetaData:nil withCompletion:^(ALChannel *alChannel, NSError *error) {
+            andMetaData:nil withCompletion:^(KMCoreChannel *alChannel, NSError *error) {
 
         completion(alChannel, error);
     }];
@@ -303,9 +303,9 @@ dispatch_queue_t channelUserbackgroundQueue;
          andImageLink:(NSString *)imageLink
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion {
+       withCompletion:(void(^)(KMCoreChannel *alChannel, NSError *error))completion {
     
-    [self createChannel:channelName orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:nil withCompletion:^(ALChannel *alChannel, NSError *error) {
+    [self createChannel:channelName orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:nil withCompletion:^(KMCoreChannel *alChannel, NSError *error) {
         completion(alChannel, error);
     }];
 }
@@ -318,9 +318,9 @@ dispatch_queue_t channelUserbackgroundQueue;
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion {
+       withCompletion:(void(^)(KMCoreChannel *alChannel, NSError *error))completion {
     if (channelName != nil) {
-        [self createChannel:channelName orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:adminUserId withGroupUsers:nil withCompletion:^(ALChannel *alChannel, NSError *error) {
+        [self createChannel:channelName orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:adminUserId withGroupUsers:nil withCompletion:^(KMCoreChannel *alChannel, NSError *error) {
             completion(alChannel, error);
         }];
     } else {
@@ -339,10 +339,10 @@ dispatch_queue_t channelUserbackgroundQueue;
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
        withGroupUsers:(NSMutableArray *)groupRoleUsers
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion {
+       withCompletion:(void(^)(KMCoreChannel *alChannel, NSError *error))completion {
     if (channelName != nil) {
         [self.channelClientService createChannel:channelName andParentChannelKey:nil orClientChannelKey:(NSString *)clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:(short)type
-                                     andMetaData:metaData adminUser:adminUserId withGroupUsers:groupRoleUsers withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
+                                     andMetaData:metaData adminUser:adminUserId withGroupUsers:groupRoleUsers withCompletion:^(NSError *error, KMCoreChannelCreateResponse *response) {
 
             if (!error) {
                 response.alChannel.adminKey = [KMCoreUserDefaultsHandler getUserId];
@@ -365,7 +365,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 - (void)createBroadcastChannelWithMembersList:(NSMutableArray *)memberArray
                                   andMetaData:(NSMutableDictionary *)metaData
-                               withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion {
+                               withCompletion:(void(^)(KMCoreChannel *alChannel, NSError *error))completion {
     
     if (memberArray.count) {
         NSMutableArray *nameArray = [NSMutableArray new];
@@ -383,14 +383,14 @@ dispatch_queue_t channelUserbackgroundQueue;
             broadcastName = [nameArray componentsJoinedByString:@","];
         }
 
-        ALChannelInfo *channelInfo = [[ALChannelInfo alloc] init];
+        KMCoreChannelInfo *channelInfo = [[KMCoreChannelInfo alloc] init];
         channelInfo.groupName = broadcastName;
         channelInfo.groupMemberList = memberArray;
         channelInfo.type = BROADCAST;
         channelInfo.metadata = metaData;
 
         [self createChannelWithChannelInfo:channelInfo
-                            withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+                            withCompletion:^(KMCoreChannelCreateResponse *response, NSError *error) {
             if (error) {
                 completion(nil, error);
                 return;
@@ -433,9 +433,9 @@ dispatch_queue_t channelUserbackgroundQueue;
          andImageLink:(NSString *)imageLink
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion {
+       withCompletion:(void(^)(KMCoreChannel *alChannel, NSError *error))completion {
     
-    [self createChannel:channelName andParentChannelKey:parentChannelKey orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:nil withCompletion:^(ALChannel *alChannel, NSError *error) {
+    [self createChannel:channelName andParentChannelKey:parentChannelKey orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:nil withCompletion:^(KMCoreChannel *alChannel, NSError *error) {
         
         completion(alChannel, error);
     }];
@@ -451,11 +451,11 @@ dispatch_queue_t channelUserbackgroundQueue;
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
-       withCompletion:(void(^)(ALChannel *alChannel, NSError *error))completion {
+       withCompletion:(void(^)(KMCoreChannel *alChannel, NSError *error))completion {
     if (channelName != nil) {
         [self.channelClientService createChannel:channelName andParentChannelKey:parentChannelKey orClientChannelKey:clientChannelKey
                                   andMembersList:memberArray andImageLink:imageLink channelType:(short)type
-                                     andMetaData:metaData adminUser:adminUserId withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
+                                     andMetaData:metaData adminUser:adminUserId withCompletion:^(NSError *error, KMCoreChannelCreateResponse *response) {
 
             if (!error) {
                 response.alChannel.adminKey = [KMCoreUserDefaultsHandler getUserId];
@@ -487,7 +487,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (clientChannelKey != nil) {
-                    ALChannel *alChannel = [weakSelf.channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    KMCoreChannel *alChannel = [weakSelf.channelDBService loadChannelByClientChannelKey:clientChannelKey];
                     [weakSelf.channelDBService addMemberToChannel:userId andChannelKey:alChannel.key];
                 } else {
                     [weakSelf.channelDBService addMemberToChannel:userId andChannelKey:channelKey];
@@ -513,7 +513,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (clientChannelKey != nil) {
-                    ALChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    KMCoreChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
                     [self.channelDBService removeMemberFromChannel:userId andChannelKey:alChannel.key];
                 } else {
                     [self.channelDBService removeMemberFromChannel:userId andChannelKey:channelKey];
@@ -538,7 +538,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (clientChannelKey != nil) {
-                    ALChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    KMCoreChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
                     [self.channelDBService deleteChannel:alChannel.key];
                 } else {
                     [self.channelDBService deleteChannel:channelKey];
@@ -553,7 +553,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 }
 
 - (BOOL)checkAdmin:(NSNumber *)channelKey {
-    ALChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
+    KMCoreChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
     
     return [channel.adminKey isEqualToString:[KMCoreUserDefaultsHandler getUserId]];
 }
@@ -584,7 +584,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     
     if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
         if (clientChannelKey != nil) {
-            ALChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
+            KMCoreChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
             [self.channelDBService removeMemberFromChannel:userId andChannelKey:alChannel.key];
             [self.channelDBService setLeaveFlag:YES forChannel:alChannel.key];
         } else {
@@ -689,10 +689,10 @@ dispatch_queue_t channelUserbackgroundQueue;
     
     if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
         if (clientChannelKey != nil) {
-            ALChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
+            KMCoreChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
             [self.channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag orChannelUsers:channelUsers];
         } else {
-            ALChannel *alChannel = [self.channelDBService loadChannelByKey:channelKey];
+            KMCoreChannel *alChannel = [self.channelDBService loadChannelByKey:channelKey];
             [self.channelDBService updateChannel:alChannel.key andNewName:newName orImageURL:imageURL orChildKeys:childKeysList isUpdatingMetaData:flag orChannelUsers:channelUsers];
         }
         
@@ -710,7 +710,7 @@ dispatch_queue_t channelUserbackgroundQueue;
         [self.channelClientService updateChannelMetaData:channelKey orClientChannelKey:clientChannelKey metadata:metaData andCompletion:^(NSError *error, ALAPIResponse *response) {
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (clientChannelKey != nil) {
-                    ALChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
+                    KMCoreChannel *alChannel = [self.channelDBService loadChannelByClientChannelKey:clientChannelKey];
                     [self.channelDBService updateChannelMetaData:alChannel.key metaData:metaData];
                 } else if (channelKey != nil) {
                     [self.channelDBService updateChannelMetaData:channelKey metaData:metaData];
@@ -739,7 +739,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
     
     syncCallTriggerTime = updateAtTime;
-    [self.channelClientService syncCallForChannel:updateAtTime withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+    [self.channelClientService syncCallForChannel:updateAtTime withFetchUserDetails:YES andCompletion:^(NSError *error, KMCoreChannelSyncResponse *response) {
         if (!error) {
             [KMCoreUserDefaultsHandler setLastSyncChannelTime:response.generatedAt];
             [self createChannelsAndUpdateInfo:response.alChannelArray withDelegate:delegate];
@@ -753,7 +753,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 - (void)syncCallForSpecificChannelWithDelegate:(id<KommunicateUpdatesDelegate>)delegate
                                     channelKey:(NSNumber *)channelKey {
 
-    [self.channelClientService syncCallForSpecificChannel:channelKey withFetchUserDetails:YES andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+    [self.channelClientService syncCallForSpecificChannel:channelKey withFetchUserDetails:YES andCompletion:^(NSError *error, KMCoreChannelSyncResponse *response) {
         if (!error) {
             [self createChannelAndUpdateInfo:response.alChannel withDelegate:delegate];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UPDATE_CHANNEL_NAME" object:nil];
@@ -794,7 +794,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 - (void)setUnreadCountZeroForGroupID:(NSNumber *)channelKey {
     [self.channelDBService updateUnreadCountChannel:channelKey unreadCount:[NSNumber numberWithInt:0]];
     
-    ALChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
+    KMCoreChannel *channel = [self.channelDBService loadChannelByKey:channelKey];
     channel.unreadCount = [NSNumber numberWithInt:0];
 }
 
@@ -836,7 +836,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     [self.channelClientService getChannelInfoByIdsOrClientIds:channelIds orClinetChannelIds:clientChannelIds
                                                withCompletion:^(NSMutableArray *channelInfoList, NSError *error) {
 
-        for (ALChannel *channel in channelInfoList) {
+        for (KMCoreChannel *channel in channelInfoList) {
             [self createChannelEntry:channel fromMessageList:NO];
         }
         completion(channelInfoList,error);
@@ -859,7 +859,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
     [self.channelClientService getChannelListForCategory:category withCompletion:^(NSMutableArray *channelInfoList, NSError *error) {
 
-        for (ALChannel *channel in channelInfoList) {
+        for (KMCoreChannel *channel in channelInfoList) {
             [self createChannelEntry:channel fromMessageList:NO];
         }
         completion(channelInfoList,error);
@@ -872,7 +872,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
     [self.channelClientService getAllChannelsForApplications:endTime withCompletion:^(NSMutableArray *channelInfoList, NSError *error) {
         
-        for (ALChannel *channel in channelInfoList) {
+        for (KMCoreChannel *channel in channelInfoList) {
             [self createChannelEntry:channel fromMessageList:NO];
         }
         completion(channelInfoList,error);
@@ -928,7 +928,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 - (void)getMembersFromContactGroupOfType:(NSString *)contactsGroupId
                            withGroupType:(short)groupType
-                          withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
+                          withCompletion:(void(^)(NSError *error, KMCoreChannel *channel)) completion {
 
 
     if (!contactsGroupId) {
@@ -941,10 +941,10 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
     
     if (contactsGroupId) {
-        [self.channelClientService getMembersFromContactGroupOfType:contactsGroupId withGroupType:groupType withCompletion:^(NSError *error, ALChannel *channel) {
+        [self.channelClientService getMembersFromContactGroupOfType:contactsGroupId withGroupType:groupType withCompletion:^(NSError *error, KMCoreChannel *channel) {
             
             if (!error && channel) {
-                ALChannelService *channelService = [[ALChannelService alloc] init];
+                KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
                 [channelService createChannelEntry:channel fromMessageList:NO];
                 completion(error, channel);
             } else {
@@ -1028,8 +1028,8 @@ dispatch_queue_t channelUserbackgroundQueue;
         [self.channelClientService getMultipleContactGroup:contactGroupIds withCompletion:^(NSError *error, NSArray *channels) {
             
             if (channels) {
-                for (ALChannel *channel in channels) {
-                    ALChannelService *channelService = [[ALChannelService alloc] init];
+                for (KMCoreChannel *channel in channels) {
+                    KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
                     [channelService createChannelEntry:channel fromMessageList:NO];
                     [memberUserIds addObjectsFromArray:channel.membersId];
                 }
@@ -1045,7 +1045,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 - (void)getChannelInformationByResponse:(NSNumber *)channelKey
                      orClientChannelKey:(NSString *)clientChannelKey
-                         withCompletion:(void (^)(NSError *error, ALChannel *alChannel3, AlChannelFeedResponse *channelResponse)) completion {
+                         withCompletion:(void (^)(NSError *error, KMCoreChannel *alChannel3, KMCoreChannelFeedResponse *channelResponse)) completion {
 
     if (!channelKey
         && !clientChannelKey) {
@@ -1057,7 +1057,7 @@ dispatch_queue_t channelUserbackgroundQueue;
         return;
     }
 
-    ALChannel *alChannel1;
+    KMCoreChannel *alChannel1;
     if (clientChannelKey) {
         alChannel1 = [self fetchChannelWithClientChannelKey:clientChannelKey];
     } else {
@@ -1067,7 +1067,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     if (alChannel1) {
         completion(nil,alChannel1,nil);
     } else {
-        [self.channelClientService getChannelInformationResponse:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, AlChannelFeedResponse *response) {
+        [self.channelClientService getChannelInformationResponse:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, KMCoreChannelFeedResponse *response) {
             
             if (!error && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 [self createChannelEntry:response.alChannel fromMessageList:NO];
@@ -1112,8 +1112,8 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 #pragma mark - Channel Create with response
 
-- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
-                      withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
+- (void)createChannelWithChannelInfo:(KMCoreChannelInfo *)channelInfo
+                      withCompletion:(void(^)(KMCoreChannelCreateResponse *response, NSError *error))completion {
     
     if (!channelInfo.type) {
         channelInfo.type = PUBLIC;
@@ -1137,7 +1137,7 @@ dispatch_queue_t channelUserbackgroundQueue;
                                  andMetaData:channelInfo.metadata
                                    adminUser:channelInfo.admin
                               withGroupUsers:channelInfo.groupRoleUsers
-                              withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
+                              withCompletion:^(NSError *error, KMCoreChannelCreateResponse *response) {
         if (!error) {
             response.alChannel.adminKey = [KMCoreUserDefaultsHandler getUserId];
             [self createChannelEntry:response.alChannel fromMessageList:NO];
@@ -1159,7 +1159,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"Update_unread_count" object:dict];
 }
 
-- (void)createChannelEntry:(ALChannel *)channel fromMessageList:(BOOL)isFromMessageList {
+- (void)createChannelEntry:(KMCoreChannel *)channel fromMessageList:(BOOL)isFromMessageList {
     if (!channel) {
         return;
     }
@@ -1168,12 +1168,12 @@ dispatch_queue_t channelUserbackgroundQueue;
 
     [theDBHandler saveContext];
 
-    NSMutableArray <ALChannel *> *channelFeedArray = [[NSMutableArray alloc] init];
+    NSMutableArray <KMCoreChannel *> *channelFeedArray = [[NSMutableArray alloc] init];
     [channelFeedArray addObject:channel];
     [self saveChannelUsersAndChannelDetails:channelFeedArray  calledFromMessageList:isFromMessageList];
 }
 
-- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <ALChannel *>*)channelFeedsList calledFromMessageList:(BOOL)isFromMessageList {
+- (void)saveChannelUsersAndChannelDetails:(NSMutableArray <KMCoreChannel *>*)channelFeedsList calledFromMessageList:(BOOL)isFromMessageList {
 
     if (!channelFeedsList.count) {
         return;
@@ -1182,7 +1182,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
     dispatch_group_t group = dispatch_group_create();
 
-    for (ALChannel *channel in channelFeedsList) {
+    for (KMCoreChannel *channel in channelFeedsList) {
         dispatch_group_enter(group);
 
         if (channel.membersName == nil) {
@@ -1203,14 +1203,14 @@ dispatch_queue_t channelUserbackgroundQueue;
 
             int count = 0;
             __block BOOL isProccessFailed = NO;
-            for (ALChannelUser *channelUser in channel.groupUsers) {
+            for (KMCoreChannelUser *channelUser in channel.groupUsers) {
 
                 if (isProccessFailed) {
                     ALSLog(ALLoggerSeverityError, @"Save failed will break from the for loop");
                     break;
                 }
 
-                ALChannelUserX *newChannelUserX = [[ALChannelUserX alloc] init];
+                KMCoreChannelUserX *newChannelUserX = [[KMCoreChannelUserX alloc] init];
                 newChannelUserX.key = channel.key;
                 if (channelUser.userId != nil) {
                     newChannelUserX.userKey = channelUser.userId;
@@ -1260,14 +1260,14 @@ dispatch_queue_t channelUserbackgroundQueue;
     });
 }
 
-- (void)sendChannelSaveStatusNotification:(NSString *)operationStatus withChannel:(ALChannel *)channel {
+- (void)sendChannelSaveStatusNotification:(NSString *)operationStatus withChannel:(KMCoreChannel *)channel {
     [[NSNotificationCenter defaultCenter] postNotificationName:AL_Updated_Group_Members
                                                         object:channel
                                                       userInfo: @{AL_CHANNEL_MEMBER_SAVE_STATUS : operationStatus}];
 }
 - (void)createChannelsAndUpdateInfo:(NSMutableArray *)channelArray withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
 
-    for (ALChannel *channelObject in channelArray) {
+    for (KMCoreChannel *channelObject in channelArray) {
         // Ignore inserting un opened conversation(Which doesn't have user messages, only contains bot messages)
         NSDictionary *metadata = channelObject.metadata;
         if (metadata && metadata[AL_CHANNEL_CONVERSATION_STATUS] && [metadata[AL_CHANNEL_CONVERSATION_STATUS] isEqual:UN_OPENED_CONVERSATION_STATUS] ) {
@@ -1284,7 +1284,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     }
 }
 
-- (void)createChannelAndUpdateInfo:(ALChannel *)channelObject withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
+- (void)createChannelAndUpdateInfo:(KMCoreChannel *)channelObject withDelegate:(id<KommunicateUpdatesDelegate>)delegate {
     // Ignore inserting un opened conversation(Which doesn't have user messages, only contains bot messages)
     NSDictionary *metadata = channelObject.metadata;
     if (metadata && metadata[AL_CHANNEL_CONVERSATION_STATUS] && [metadata[AL_CHANNEL_CONVERSATION_STATUS] isEqual:UN_OPENED_CONVERSATION_STATUS] ) {
@@ -1304,7 +1304,7 @@ dispatch_queue_t channelUserbackgroundQueue;
 
 - (void)getListOfChannelWithCompletion:(void(^)(NSMutableArray *channelArray, NSError *error))completion {
 
-    [self.channelClientService syncCallForChannel:[KMCoreUserDefaultsHandler getChannelListLastSyncGeneratedTime] withFetchUserDetails:NO andCompletion:^(NSError *error, ALChannelSyncResponse *response) {
+    [self.channelClientService syncCallForChannel:[KMCoreUserDefaultsHandler getChannelListLastSyncGeneratedTime] withFetchUserDetails:NO andCompletion:^(NSError *error, KMCoreChannelSyncResponse *response) {
         if (error) {
             completion(nil, error);
             return;

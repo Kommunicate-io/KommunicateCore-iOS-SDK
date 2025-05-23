@@ -56,7 +56,7 @@ NSString *const KommunicateClientDomain = @"KommunicateClient";
     _messageService.delegate = self.delegate;
     _messageDbService = [ALMessageDBService new];
     _userService = [ALUserService sharedInstance];
-    _channelService = [ALChannelService sharedInstance];
+    _channelService = [KMCoreChannelService sharedInstance];
     alAttachmentService = [ALAttachmentService sharedInstance];
 }
 
@@ -244,11 +244,11 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 #pragma mark - Channel/Group methods
 
-- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo
-                      withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion {
+- (void)createChannelWithChannelInfo:(KMCoreChannelInfo *)channelInfo
+                      withCompletion:(void(^)(KMCoreChannelCreateResponse *response, NSError *error))completion {
 
-    ALChannelService *channelService = [[ALChannelService alloc] init];
-    [channelService createChannelWithChannelInfo:channelInfo withCompletion:^(ALChannelCreateResponse *response, NSError *error) {
+    KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
+    [channelService createChannelWithChannelInfo:channelInfo withCompletion:^(KMCoreChannelCreateResponse *response, NSError *error) {
         completion(response, error);
     }];
 }
@@ -258,7 +258,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                        orClientChannelKey:(NSString *)clientChannelKey
                            withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
+    KMCoreChannelService *alChannelService = [[KMCoreChannelService alloc] init];
     [alChannelService removeMemberFromChannel:userId andChannelKey:channelKey
                            orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
@@ -270,7 +270,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                       orClientChannelKey:(NSString *)clientChannelKey
                           withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
+    KMCoreChannelService *alChannelService = [[KMCoreChannelService alloc] init];
     [alChannelService leaveChannelWithChannelKey:channelKey andUserId:userId orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
@@ -282,7 +282,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                   orClientChannelKey:(NSString *)clientChannelKey
                       withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
 
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
+    KMCoreChannelService *alChannelService = [[KMCoreChannelService alloc] init];
     [alChannelService addMemberToChannel:userId andChannelKey:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
@@ -297,7 +297,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
                            metadata:(NSMutableDictionary *)metaData
                      orChannelUsers:(NSMutableArray *)channelUsers
                      withCompletion:(void(^)(NSError *error, ALAPIResponse *response))completion {
-    ALChannelService *alChannelService = [[ALChannelService alloc] init];
+    KMCoreChannelService *alChannelService = [[KMCoreChannelService alloc] init];
     [alChannelService updateChannelWithChannelKey:channelKey andNewName:newName andImageURL:imageURL orClientChannelKey:clientChannelKey isUpdatingMetaData:flag metadata:metaData orChildKeys:nil orChannelUsers:channelUsers withCompletion:^(NSError *error, ALAPIResponse *response) {
         completion(error, response);
     }];
@@ -306,10 +306,10 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
 
 - (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
                          orClientChannelKey:(NSString *)clientChannelKey
-                             withCompletion:(void(^)(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse))completion {
+                             withCompletion:(void(^)(NSError *error, KMCoreChannel *alChannel, KMCoreChannelFeedResponse *channelResponse))completion {
 
-    ALChannelService *channelService = [[ALChannelService alloc]init];
-    [channelService getChannelInformationByResponse:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse) {
+    KMCoreChannelService *channelService = [[KMCoreChannelService alloc]init];
+    [channelService getChannelInformationByResponse:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, KMCoreChannel *alChannel, KMCoreChannelFeedResponse *channelResponse) {
         completion(error, alChannel, channelResponse);
     }];
 
@@ -343,7 +343,7 @@ withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error)) co
     alMuteRequest.id = channelKey;
     alMuteRequest.notificationAfterTime= notificationTime;
 
-    ALChannelService *alChannelService = [[ALChannelService alloc]init];
+    KMCoreChannelService *alChannelService = [[KMCoreChannelService alloc]init];
     [alChannelService muteChannel:alMuteRequest withCompletion:^(ALAPIResponse *response, NSError *error) {
         completion(response, error);
     }];

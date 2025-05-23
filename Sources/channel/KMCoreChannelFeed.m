@@ -1,15 +1,15 @@
 //
-//  ALChannelFeed.m
+//  KMCoreChannelFeed.m
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALChannelFeed.h"
+#import "KMCoreChannelFeed.h"
 #import "ALConversationProxy.h"
 
-@implementation ALChannelFeed
+@implementation KMCoreChannelFeed
 
 - (id)initWithJSONString:(NSString *)JSONString {
     [self parseMessage:JSONString];
@@ -20,7 +20,7 @@
     NSMutableArray *channelFeedArray = [NSMutableArray new];
     NSDictionary *channelFeedDictionary = [json valueForKey:@"groupFeeds"];
     for (NSDictionary *theDictionary in channelFeedDictionary) {
-        ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:theDictionary];
+        KMCoreChannel *alChannel = [[KMCoreChannel alloc] initWithDictonary:theDictionary];
         [channelFeedArray addObject:alChannel];
     }
     self.channelFeedsList = channelFeedArray;

@@ -1,12 +1,12 @@
 //
-//  ALChannelClientService.m
+//  KMCoreChannelClientService.m
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALChannelClientService.h"
+#import "KMCoreChannelClientService.h"
 #import "NSString+Encode.h"
 #import "ALContactService.h"
 #import "ALUserClientService.h"
@@ -46,11 +46,11 @@ static NSString *const REMOVE_SUB_GROUP = @"/rest/ws/group/remove/subgroup";
 static NSString *const ADD_MULTIPLE_SUB_GROUP = @"/rest/ws/group/add/subgroups";
 static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgroups";
 
-@interface ALChannelClientService ()
+@interface KMCoreChannelClientService ()
 
 @end
 
-@implementation ALChannelClientService
+@implementation KMCoreChannelClientService
 
 #pragma mark - Init
 
@@ -72,7 +72,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
 
 - (void)getChannelInfo:(NSNumber *)channelKey
     orClientChannelKey:(NSString *)clientChannelKey
-        withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
+        withCompletion:(void(^)(NSError *error, KMCoreChannel *channel)) completion {
     NSString *channelInfoURLString = [NSString stringWithFormat:@"%@/rest/ws/group/info", KBASE_URL];
     NSString *channelInfoParamString = [NSString stringWithFormat:@"groupId=%@", channelKey];
     if (clientChannelKey) {
@@ -89,7 +89,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
             return;
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
-            ALChannelCreateResponse *response = [[ALChannelCreateResponse alloc] initWithJSONString:theJson];
+            KMCoreChannelCreateResponse *response = [[KMCoreChannelCreateResponse alloc] initWithJSONString:theJson];
             NSMutableArray *members = response.alChannel.membersId;
             ALContactService *contactService = [ALContactService new];
             NSMutableArray *userNotPresentIds =[NSMutableArray new];
@@ -119,9 +119,9 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
-       withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion {
+       withCompletion:(void(^)(NSError *error, KMCoreChannelCreateResponse *response))completion {
     
-    [self createChannel:channelName andParentChannelKey:parentChannelKey orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:adminUserId withGroupUsers:nil withCompletion:^(NSError *error, ALChannelCreateResponse *response) {
+    [self createChannel:channelName andParentChannelKey:parentChannelKey orClientChannelKey:clientChannelKey andMembersList:memberArray andImageLink:imageLink channelType:type andMetaData:metaData adminUser:adminUserId withGroupUsers:nil withCompletion:^(NSError *error, KMCoreChannelCreateResponse *response) {
         
         completion(error, response);
     }];
@@ -138,7 +138,7 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
        withGroupUsers:(NSMutableArray *)groupRoleUsers
-       withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion {
+       withCompletion:(void(^)(NSError *error, KMCoreChannelCreateResponse *response))completion {
     
     NSString *channelCreateURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CHANNEL_URL];
     NSMutableDictionary *channelDictionary = [NSMutableDictionary new];
@@ -175,12 +175,12 @@ static NSString *const REMOVE_MULTIPLE_SUB_GROUP = @"/rest/ws/group/remove/subgr
     NSMutableURLRequest *channelCreateRequest = [ALRequestHandler createPOSTRequestWithUrlString:channelCreateURLString paramString:channelCreateParamString];
     [self.responseHandler authenticateAndProcessRequest:channelCreateRequest andTag:@"CREATE_CHANNEL" WithCompletionHandler:^(id theJson, NSError *theError) {
 
-        ALChannelCreateResponse *response = nil;
+        KMCoreChannelCreateResponse *response = nil;
 
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CREATE_CHANNEL :: %@", theError);
         } else {
-            response = [[ALChannelCreateResponse alloc] initWithJSONString:theJson];
+            response = [[KMCoreChannelCreateResponse alloc] initWithJSONString:theJson];
         }
         ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CREATE_CHANNEL :: %@", (NSString *)theJson);
         completion(theError, response);
@@ -442,7 +442,7 @@ NSString *latSyncCallTimeForChannel = @"";
 
 - (void)syncCallForChannel:(NSNumber *)updatedAt
       withFetchUserDetails:(BOOL)fetchUserDetails
-             andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion {
+             andCompletion:(void(^)(NSError *error, KMCoreChannelSyncResponse *response))completion {
     NSString *syncChannelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CHANNEL_SYNC_URL];
     NSString *syncChannelParamString = nil;
 
@@ -461,18 +461,18 @@ NSString *latSyncCallTimeForChannel = @"";
     [self.responseHandler authenticateAndProcessRequest:syncChannelRequest andTag:@"CHANNEL_SYNCHRONIZATION" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALSLog(ALLoggerSeverityInfo, @"CHANNEL_SYNCHRONIZATION_RESPONSE :: %@", (NSString *)theJson);
-        ALChannelSyncResponse *response = nil;
+        KMCoreChannelSyncResponse *response = nil;
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_SYNCHRONIZATION SERVER CALL REQUEST %@", error);
             completion(error, nil);
             return;
         } else {
             NSMutableArray *userNotPresentIds = [NSMutableArray new];
-            response = [[ALChannelSyncResponse alloc] initWithJSONString:theJson];
+            response = [[KMCoreChannelSyncResponse alloc] initWithJSONString:theJson];
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (fetchUserDetails) {
                     ALContactService *contactService = [ALContactService new];
-                    for (ALChannel *channel in response.alChannelArray) {
+                    for (KMCoreChannel *channel in response.alChannelArray) {
 
                         for (NSString *userId in channel.membersName) {
                             if (![contactService isContactExist:userId]){
@@ -509,7 +509,7 @@ NSString *latSyncCallTimeForChannel = @"";
 
 - (void)syncCallForSpecificChannel:(NSNumber *)groupID
               withFetchUserDetails:(BOOL)fetchUserDetails
-                     andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion {
+                     andCompletion:(void(^)(NSError *error, KMCoreChannelSyncResponse *response))completion {
     NSString *syncChannelURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CHANNEL_INFO_SYNC_URL];
     NSString *syncChannelParamString = nil;
 
@@ -524,14 +524,14 @@ NSString *latSyncCallTimeForChannel = @"";
     [self.responseHandler authenticateAndProcessRequest:syncChannelRequest andTag:@"CHANNEL_SYNCHRONIZATION" WithCompletionHandler:^(id theJson, NSError *error) {
 
         ALSLog(ALLoggerSeverityInfo, @"CHANNEL_SYNCHRONIZATION_RESPONSE :: %@", (NSString *)theJson);
-        ALChannelSyncResponse *response = nil;
+        KMCoreChannelSyncResponse *response = nil;
         if (error) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CHANNEL_SYNCHRONIZATION SERVER CALL REQUEST %@", error);
             completion(error, nil);
             return;
         } else {
             NSMutableArray *userNotPresentIds = [NSMutableArray new];
-            response = [[ALChannelSyncResponse alloc] initWithSingleChannelJSONString:theJson];
+            response = [[KMCoreChannelSyncResponse alloc] initWithSingleChannelJSONString:theJson];
             if ([response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
                 if (fetchUserDetails) {
                     ALContactService *contactService = [ALContactService new];
@@ -761,7 +761,7 @@ NSString *latSyncCallTimeForChannel = @"";
         NSMutableArray *array = (NSMutableArray *)response.response;
 
         for (NSMutableDictionary *dic  in array) {
-            ALChannel *channel = [[ALChannel alloc] initWithDictonary:dic];
+            KMCoreChannel *channel = [[KMCoreChannel alloc] initWithDictonary:dic];
             [channelInfoList addObject:channel];
         }
         completion(channelInfoList, error);
@@ -800,7 +800,7 @@ NSString *latSyncCallTimeForChannel = @"";
             NSMutableArray *array = (NSMutableArray *)response.response;
 
             for (NSMutableDictionary *dic  in array) {
-                ALChannel *channel = [[ALChannel alloc] initWithDictonary:dic];
+                KMCoreChannel *channel = [[KMCoreChannel alloc] initWithDictonary:dic];
                 [channelInfoList addObject:channel];
             }
             completion(channelInfoList, nil);
@@ -848,7 +848,7 @@ NSString *latSyncCallTimeForChannel = @"";
             NSDictionary *channelFeedDictionary = [response.response valueForKey:@"groups"];
 
             for (NSMutableDictionary *dic in channelFeedDictionary) {
-                ALChannel *channel = [[ALChannel alloc] initWithDictonary:dic];
+                KMCoreChannel *channel = [[KMCoreChannel alloc] initWithDictonary:dic];
                 [channelInfoList addObject:channel];
             }
             completion(channelInfoList, error);
@@ -921,8 +921,8 @@ NSString *latSyncCallTimeForChannel = @"";
 }
 
 - (void)getMembersFromContactGroup:(NSString *)contactGroupId
-                    withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
-    [self getMembersFromContactGroupOfType:contactGroupId withGroupType:0 withCompletion:^(NSError *error, ALChannel *channel) {
+                    withCompletion:(void(^)(NSError *error, KMCoreChannel *channel)) completion {
+    [self getMembersFromContactGroupOfType:contactGroupId withGroupType:0 withCompletion:^(NSError *error, KMCoreChannel *channel) {
         
         completion(error, channel);
         
@@ -933,7 +933,7 @@ NSString *latSyncCallTimeForChannel = @"";
 
 - (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
                            withGroupType:(short)groupType
-                          withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion {
+                          withCompletion:(void(^)(NSError *error, KMCoreChannel *channel)) completion {
     
     NSString *membersFromContactGroupURLString = [NSString stringWithFormat:@"%@/rest/ws/group/%@/get", KBASE_URL,contactGroupId];
     NSString *membersFromContactGroupParamString = nil;
@@ -951,7 +951,7 @@ NSString *latSyncCallTimeForChannel = @"";
             completion(error, nil);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"GET CONTACTS GROUP_MEMBERS :: %@", theJson);
-            ALChannelCreateResponse *response = [[ALChannelCreateResponse alloc] initWithJSONString:theJson];
+            KMCoreChannelCreateResponse *response = [[KMCoreChannelCreateResponse alloc] initWithJSONString:theJson];
             NSMutableArray *membersUserId = response.alChannel.membersId;
             ALContactService *contactService = [ALContactService new];
 
@@ -1025,7 +1025,7 @@ NSString *latSyncCallTimeForChannel = @"";
 
 - (void)getChannelInformationResponse:(NSNumber *)channelKey
                    orClientChannelKey:(NSString *)clientChannelKey
-                       withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion {
+                       withCompletion:(void(^)(NSError *error, KMCoreChannelFeedResponse *response)) completion {
     NSString *channelInfoURLString = [NSString stringWithFormat:@"%@/rest/ws/group/info", KBASE_URL];
     NSString *channelInfoParamString = [NSString stringWithFormat:@"groupId=%@", channelKey];
     if (clientChannelKey) {
@@ -1040,7 +1040,7 @@ NSString *latSyncCallTimeForChannel = @"";
             completion(error, nil);
         } else {
             ALSLog(ALLoggerSeverityInfo, @"RESPONSE_CHANNEL_INFORMATION :: %@", theJson);
-            AlChannelFeedResponse *response = [[AlChannelFeedResponse alloc] initWithJSONString:theJson];
+            KMCoreChannelFeedResponse *response = [[KMCoreChannelFeedResponse alloc] initWithJSONString:theJson];
 
             if ([response.status isEqualToString: AL_RESPONSE_SUCCESS]) {
                 NSMutableArray *members = response.alChannel.membersId;
@@ -1098,7 +1098,7 @@ NSString *latSyncCallTimeForChannel = @"";
             ALContactService *contactService = [ALContactService new];
 
             for (NSDictionary *theDictionary in channelResponse) {
-                ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:theDictionary];
+                KMCoreChannel *alChannel = [[KMCoreChannel alloc] initWithDictonary:theDictionary];
                 [theChannelFeedArray addObject:alChannel];
 
                 for (NSString *userId in alChannel.membersId) {

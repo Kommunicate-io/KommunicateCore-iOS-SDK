@@ -9,7 +9,7 @@
 #import "ALSyncCallService.h"
 #import "ALMessageDBService.h"
 #import "ALContactDBService.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALMessageService.h"
 #import "ALLogger.h"
 
@@ -33,7 +33,7 @@
     
     if (delegate) {
         if (alMessage.groupId != nil && alMessage.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
-            [[ALChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
+            [[KMCoreChannelService sharedInstance] syncCallForChannelWithDelegate:delegate];
         }
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"MQTT_APPLOZIC_01" object:alMessage];

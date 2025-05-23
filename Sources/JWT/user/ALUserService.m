@@ -57,7 +57,7 @@ static int CONTACT_PAGE_SIZE = 100;
 
 -(void)setupServices {
     self.userClientService = [[ALUserClientService alloc] init];
-    self.channelService = [[ALChannelService alloc] init];
+    self.channelService = [[KMCoreChannelService alloc] init];
     self.contactDBService = [[ALContactDBService alloc] init];
     self.contactService = [[ALContactService alloc] init];
 }
@@ -287,7 +287,7 @@ static int CONTACT_PAGE_SIZE = 100;
     
     if (alMessage.groupId != NULL) {
         [self.channelService setUnreadCountZeroForGroupID:alMessage.groupId];
-        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+        KMCoreChannelDBService *channelDBService = [[KMCoreChannelDBService alloc] init];
         [channelDBService markConversationAsRead:alMessage.groupId];
     } else {
         [self setUnreadCountZeroForContactId:alMessage.contactIds];
@@ -452,7 +452,7 @@ static int CONTACT_PAGE_SIZE = 100;
 - (NSNumber *)getTotalUnreadCount {
     NSNumber *contactUnreadCount = [self.contactService getOverallUnreadCountForContact];
     
-    ALChannelService *channelService = [ALChannelService new];
+    KMCoreChannelService *channelService = [KMCoreChannelService new];
     NSNumber *channelUnreadCount = [channelService getOverallUnreadCountForChannel];
     
     int totalCount = [contactUnreadCount intValue] + [channelUnreadCount intValue];

@@ -1,14 +1,14 @@
 //
-//  ALChannelSyncResponse.m
+//  KMCoreChannelSyncResponse.m
 //  Kommunicate
 //
 //  Created by devashish on 16/02/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALChannelSyncResponse.h"
+#import "KMCoreChannelSyncResponse.h"
 
-@implementation ALChannelSyncResponse
+@implementation KMCoreChannelSyncResponse
 
 - (instancetype)initWithJSONString:(NSString *)JSONString {
     self = [super initWithJSONString:JSONString];
@@ -20,7 +20,7 @@
         NSMutableArray *responseArray = [response valueForKey:@"groupPxys"];
 
         for (NSDictionary *JSONDictionaryObject in responseArray) {
-            ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionaryObject];
+            KMCoreChannel *alChannel = [[KMCoreChannel alloc] initWithDictonary:JSONDictionaryObject];
             [self.alChannelArray addObject:alChannel];
         }
         
@@ -33,11 +33,11 @@
 
 - (instancetype)initWithSingleChannelJSONString:(NSString *)JSONString {
     self = [super initWithJSONString:JSONString];
-    self.alChannel = [[ALChannel alloc] init];
+    self.alChannel = [[KMCoreChannel alloc] init];
     
     if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSDictionary *response = [JSONString valueForKey:@"response"];
-        ALChannel *alChannel = [[ALChannel alloc] initWithDictonary:response];
+        KMCoreChannel *alChannel = [[KMCoreChannel alloc] initWithDictonary:response];
         self.alChannel = alChannel;
         return self;
     } else {

@@ -1,5 +1,5 @@
 //
-//  ALChannelDBService.h
+//  KMCoreChannelDBService.h
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
@@ -7,37 +7,37 @@
 //  class for databse actios for group
 
 #import <Foundation/Foundation.h>
-#import "ALChannel.h"
+#import "KMCoreChannel.h"
 #import "DB_CHANNEL.h"
 #import "DB_CHANNEL_USER_X.h"
 #import "ALDBHandler.h"
-#import "ALChannelUserX.h"
+#import "KMCoreChannelUserX.h"
 #import "ALConversationProxy.h"
 #import "DB_ConversationProxy.h"
 #import "KMCoreSettings.h"
 #import "KMCoreRealTimeUpdate.h"
 
-@interface ALChannelDBService : NSObject
+@interface KMCoreChannelDBService : NSObject
 
 - (void)addMemberToChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey;
 
 - (void)insertChannel:(NSMutableArray *)channelList;
 
-- (DB_CHANNEL *)createChannelEntity:(ALChannel *)channel;
+- (DB_CHANNEL *)createChannelEntity:(KMCoreChannel *)channel;
 
 - (void)insertChannelUserX:(NSMutableArray *)channelUserX;
 
-- (DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserXList;
+- (DB_CHANNEL_USER_X *)createChannelUserXEntity:(KMCoreChannelUserX *)channelUserXList;
 
 - (NSMutableArray *)getChannelMembersList:(NSNumber *)channelKey;
 
-- (ALChannel *)loadChannelByKey:(NSNumber *)key;
+- (KMCoreChannel *)loadChannelByKey:(NSNumber *)key;
 
 - (DB_CHANNEL *)getChannelByKey:(NSNumber *)key;
 
 - (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key;
 
-- (ALChannel *)checkChannelEntity:(NSNumber *)channelKey;
+- (KMCoreChannel *)checkChannelEntity:(NSNumber *)channelKey;
 
 - (void)removeMemberFromChannel:(NSString *)userId andChannelKey:(NSNumber *)channelKey;
 
@@ -83,7 +83,7 @@
 
 - (NSNumber *)getOverallUnreadCountForChannelFromDB;
 
-- (ALChannel *)loadChannelByClientChannelKey:(NSString *)clientChannelKey;
+- (KMCoreChannel *)loadChannelByClientChannelKey:(NSString *)clientChannelKey;
 
 - (void)removedMembersArray:(NSMutableArray *)memberArray andChannelKey:(NSNumber *)channelKey;
 
@@ -95,9 +95,9 @@
 
 - (DB_CHANNEL_USER_X *)getChannelUserX:(NSNumber *)channelKey;
 
-- (ALChannelUserX *)loadChannelUserX:(NSNumber *)channelKey;
+- (KMCoreChannelUserX *)loadChannelUserX:(NSNumber *)channelKey;
 
-- (ALChannelUserX *)loadChannelUserXByUserId:(NSNumber *)channelKey andUserId:(NSString *)userId;
+- (KMCoreChannelUserX *)loadChannelUserXByUserId:(NSNumber *)channelKey andUserId:(NSString *)userId;
 
 - (void)updateParentKeyInChannelUserX:(NSNumber *)channelKey andWithParentKey:(NSNumber *)parentKey addUserId:(NSString *)userId;
 
@@ -112,7 +112,7 @@
 
 - (void)getUserInSupportGroup:(NSNumber *)channelKey withCompletion:(void(^)(NSString *userId)) completion;
 
-- (DB_CHANNEL_USER_X *)createChannelUserXEntity:(ALChannelUserX *)channelUserX withContext:(NSManagedObjectContext *)context;
+- (DB_CHANNEL_USER_X *)createChannelUserXEntity:(KMCoreChannelUserX *)channelUserX withContext:(NSManagedObjectContext *)context;
 
 - (void)deleteMembers:(NSNumber *)key;
 

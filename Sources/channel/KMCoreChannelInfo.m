@@ -1,13 +1,13 @@
 //
-//  ALChannelInfo.m
+//  KMCoreChannelInfo.m
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALChannelInfo.h"
+#import "KMCoreChannelInfo.h"
 
-@implementation ALChannelInfo
+@implementation KMCoreChannelInfo
 
 @end

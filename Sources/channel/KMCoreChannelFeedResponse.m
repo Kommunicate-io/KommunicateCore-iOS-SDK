@@ -1,17 +1,17 @@
 //
-//  AlChannelFeedResponse.m
+//  KMCoreChannelFeedResponse.m
 //  Kommunicate
 //
 //  Created by Nitin on 20/10/17.
 //  Copyright © 2017 kommunicate. All rights reserved.
 //
 
-#import "AlChannelFeedResponse.h"
-#import "ALChannelCreateResponse.h"
+#import "KMCoreChannelFeedResponse.h"
+#import "KMCoreChannelCreateResponse.h"
 #import "KMCoreUserDetail.h"
 #import "ALContactDBService.h"
 
-@implementation AlChannelFeedResponse
+@implementation KMCoreChannelFeedResponse
 
 
 - (instancetype)initWithJSONString:(NSString *)JSONString {
@@ -19,7 +19,7 @@
     
     if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSDictionary *JSONDictionary = [JSONString valueForKey:@"response"];
-        self.alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionary];
+        self.alChannel = [[KMCoreChannel alloc] initWithDictonary:JSONDictionary];
         [self parseUserDetails:[[NSMutableArray alloc] initWithArray:[JSONDictionary objectForKey:@"users"]]];
         return self;
     } else {

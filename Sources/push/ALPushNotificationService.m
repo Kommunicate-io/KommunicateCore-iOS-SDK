@@ -192,7 +192,7 @@
                 [self.realTimeUpdate onUpdateLastSeenAtStatus:alUserDetail];
             }
         } else if ([type isEqualToString:@"APPLOZIC_15"]) {
-            ALChannelService *channelService = [[ALChannelService alloc] init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
             [channelService syncCallForChannel];
         } else if ([type isEqualToString:self.notificationTypes[@(AL_CONVERSATION_DELETED_NEW)]] ||
                    [type isEqualToString:@"CONVERSATION_DELETED"]) {
@@ -244,7 +244,7 @@
             [userService updateConversationReadWithUserId:userId withDelegate:self.realTimeUpdate];
         } else if ([type isEqualToString:self.notificationTypes[@(AL_GROUP_CONVERSATION_READ)]]) {
             //Conversation read for channel
-            ALChannelService *channelService = [[ALChannelService alloc] init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
             NSNumber *channelKey = [NSNumber numberWithInt:[[messageDictionary objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
         } else if([type isEqualToString:self.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]){
@@ -271,13 +271,13 @@
                 ALSLog(ALLoggerSeverityInfo, @"Successfully updated message metadata");
             }];
         } else if ([type isEqualToString:self.notificationTypes[@(AL_GROUP_MUTE_NOTIFICATION)]]) {
-            ALChannelService *channelService = [[ALChannelService alloc] init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
             NSArray *parts = [[messageDictionary objectForKey:@"message"] componentsSeparatedByString:@":"];
             if (parts.count == 2) {
                 NSNumber * channelKey = [NSNumber numberWithInt:[parts[0] intValue]];
                 NSNumber * notificationMuteTillTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
                 [channelService updateMuteAfterTime:notificationMuteTillTime andChnnelKey:channelKey];
-                [[NSNotificationCenter defaultCenter] postNotificationName:ALChannelDidChangeGroupMuteNotification object:nil userInfo:@{@"CHANNEL_KEY": channelKey}];
+                [[NSNotificationCenter defaultCenter] postNotificationName:KMCoreChannelDidChangeGroupMuteNotification object:nil userInfo:@{@"CHANNEL_KEY": channelKey}];
 
                 if (self.realTimeUpdate) {
                     [self.realTimeUpdate onChannelMute:channelKey];

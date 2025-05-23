@@ -18,7 +18,7 @@
 #import "ALUserBlockResponse.h"
 #import "KMCoreRealTimeUpdate.h"
 #import "ALMuteRequest.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALContactService.h"
 #import "ALContactDBService.h"
 
@@ -27,7 +27,7 @@
 + (ALUserService *)sharedInstance;
 
 @property (nonatomic, strong) ALUserClientService *userClientService;
-@property (nonatomic, strong) ALChannelService *channelService;
+@property (nonatomic, strong) KMCoreChannelService *channelService;
 @property (nonatomic, strong) ALContactDBService *contactDBService;
 @property (nonatomic, strong) ALContactService *contactService;
 

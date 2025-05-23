@@ -116,8 +116,8 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     ALContactDBService *contactDatabase = [[ALContactDBService alloc] init];
     contact = [contactDatabase loadContactByKey:@"userId" value:contactId];
 
-    ALChannel *channel = nil;
-    ALChannelDBService *channelDatabaseService = [[ALChannelDBService alloc] init];
+    KMCoreChannel *channel = nil;
+    KMCoreChannelDBService *channelDatabaseService = [[KMCoreChannelDBService alloc] init];
 
     NSString *title;
     if (groupID != nil) {

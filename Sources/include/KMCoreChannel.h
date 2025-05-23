@@ -1,5 +1,5 @@
 //
-//  ALChannel.h
+//  KMCoreChannel.h
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
@@ -44,7 +44,7 @@ typedef enum {
     CLOSED_CONVERSATION = 3
 } CONVERSATION_CATEGORY;
 
-@interface ALChannel : ALJson
+@interface KMCoreChannel : ALJson
 
 @property (nonatomic, strong) NSNumber *key;
 @property (nonatomic, strong) NSString *clientChannelKey;

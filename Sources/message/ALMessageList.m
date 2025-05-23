@@ -9,7 +9,7 @@
 #import "ALMessageList.h"
 #import "ALMessage.h"
 #import "KMCoreUserDetail.h"
-#import "ALChannel.h"
+#import "KMCoreChannel.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 

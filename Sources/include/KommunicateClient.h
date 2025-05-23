@@ -10,7 +10,7 @@
 #import "ALMessageService.h"
 #import "ALMessageDBService.h"
 #import "ALUserService.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALRegistrationResponse.h"
 #import "KMCoreUser.h"
 
@@ -58,7 +58,7 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
 @property (nonatomic, retain) ALMessageService *messageService;
 @property (nonatomic, retain) ALMessageDBService *messageDbService;
 @property (nonatomic, retain) ALUserService *userService;
-@property (nonatomic, retain) ALChannelService *channelService;
+@property (nonatomic, retain) KMCoreChannelService *channelService;
 
 @property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 
@@ -114,7 +114,7 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
 /// GROUP_OF_TWO = 7
 /// @param channelInfo Pass information about group deatils.
 /// @param completion it will be having complete  deatils about channel and status, if its error or success else it will have NSError.
-- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
+- (void)createChannelWithChannelInfo:(KMCoreChannelInfo *)channelInfo withCompletion:(void(^)(KMCoreChannelCreateResponse *response, NSError *error))completion;
 
 /// This method is used for removing a member from the group.
 /// @param userId Pass userId that wanted to remove from group/channel.
@@ -167,10 +167,10 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
 /// This method is used for getting channel/group information.
 /// @param channelKey Pass channelKey for the group/channel you want a deatils.
 /// @param clientChannelKey If you have client channelKey pass else pass it as nil.
-/// @param completion ALChannel object will have complete details of channel/group and AlChannelFeedResponse if any API error comes in group/channel then check channelResponse else check for NSError
+/// @param completion KMCoreChannel object will have complete details of channel/group and KMCoreChannelFeedResponse if any API error comes in group/channel then check channelResponse else check for NSError
 - (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
                          orClientChannelKey:(NSString *)clientChannelKey
-                             withCompletion:(void(^)(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse))completion;
+                             withCompletion:(void(^)(NSError *error, KMCoreChannel *alChannel, KMCoreChannelFeedResponse *channelResponse))completion;
 
 /// This method is used for logout user from applozic this will clear all data of login user.
 /// @param completion ALAPIResponse will be having a complete response like status else it will have NSError.

@@ -1,5 +1,5 @@
 //
-//  ALChannelUserX.h
+//  KMCoreChannelUserX.h
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
@@ -21,7 +21,7 @@ typedef enum
 
 
 
-@interface ALChannelUserX : ALJson
+@interface KMCoreChannelUserX : ALJson
 
 @property (nonatomic, strong) NSString *userKey;
 @property (nonatomic, strong) NSNumber *key;

@@ -64,7 +64,7 @@ static ALMessageClientService *alMsgClientService;
 - (void)setUpServices {
     self.messageClientService = [[ALMessageClientService alloc] init];
     self.userService = [[ALUserService alloc] init];
-    self.channelService = [[ALChannelService alloc] init];
+    self.channelService = [[KMCoreChannelService alloc] init];
 }
 
 - (void)getMessagesListGroupByContactswithCompletionService:(void(^)(NSMutableArray *messages, NSError *error))completion {
@@ -163,7 +163,7 @@ static ALMessageClientService *alMsgClientService;
     }
 
     if (messageListRequest.channelKey != nil) {
-        ALChannel *alChannel = [self.channelService getChannelByKey:messageListRequest.channelKey];
+        KMCoreChannel *alChannel = [self.channelService getChannelByKey:messageListRequest.channelKey];
         if (alChannel) {
             messageListRequest.channelType = alChannel.type;
         }
@@ -304,9 +304,9 @@ static ALMessageClientService *alMsgClientService;
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversationTableNotification" object:alMessage userInfo:nil];
 
-    ALChannel *channel;
+    KMCoreChannel *channel;
     if (alMessage.groupId != nil) {
-        ALChannelService *channelService = [[ALChannelService alloc]init];
+        KMCoreChannelService *channelService = [[KMCoreChannelService alloc]init];
         channel  = [channelService getChannelByKey:alMessage.groupId];
     }
 
@@ -447,7 +447,7 @@ static ALMessageClientService *alMsgClientService;
                      postNotificationName:@"CONVERSATION_DELETION"
                      object:message.groupId];
                 }
-                [[ALChannelService sharedInstance] syncCallForSpecificChannelWithDelegate:delegate channelKey: message.groupId];
+                [[KMCoreChannelService sharedInstance] syncCallForSpecificChannelWithDelegate:delegate channelKey: message.groupId];
             }
 
             [self resetUnreadCountAndUpdate:message];
@@ -482,8 +482,8 @@ static ALMessageClientService *alMsgClientService;
 
     if (message.groupId != nil) {
         NSNumber *groupId = message.groupId;
-        ALChannelDBService *channelDBService =[[ALChannelDBService alloc] init];
-        ALChannel *channel = [channelDBService loadChannelByKey:groupId];
+        KMCoreChannelDBService *channelDBService =[[KMCoreChannelDBService alloc] init];
+        KMCoreChannel *channel = [channelDBService loadChannelByKey:groupId];
         if (![message isResetUnreadCountMessage]) {
             channel.unreadCount = [NSNumber numberWithInt:channel.unreadCount.intValue+1];
             [channelDBService updateUnreadCountChannel:message.groupId unreadCount:channel.unreadCount];
@@ -507,7 +507,7 @@ static ALMessageClientService *alMsgClientService;
 + (BOOL)resetUnreadCountAndUpdate:(ALMessage *)message {
 
     if ([message isResetUnreadCountMessage]) {
-        ALChannelDBService *channelDBService = [[ALChannelDBService alloc] init];
+        KMCoreChannelDBService *channelDBService = [[KMCoreChannelDBService alloc] init];
         [channelDBService updateUnreadCountChannel:message.groupId unreadCount:[NSNumber numberWithInt:0]];
         return YES;
     }
@@ -859,7 +859,7 @@ static ALMessageClientService *alMsgClientService;
     for (int i=0; i<singleMessageArray.count; i++) {
         ALMessage *message = singleMessageArray[i];
         if (message.groupId != nil && message.contentType == ALMESSAGE_CHANNEL_NOTIFICATION) {
-            ALChannelService *channelService = [[ALChannelService alloc] init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
             [channelService syncCallForChannelWithDelegate:delegate];
             if ([message isMsgHidden]) {
                 [singleMessageArray removeObjectAtIndex:i];
@@ -1122,13 +1122,13 @@ static ALMessageClientService *alMsgClientService;
         }
         NSUInteger unreadCount = 0;
 
-        ALChannelService *channelService = [[ALChannelService alloc] init];
+        KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
         ALContactDBService *contactDBService = [[ALContactDBService alloc] init];
         
         for (ALMessage *message in messageListArray) {
             if (message.groupId &&
                 message.groupId.integerValue != 0) {
-                ALChannel *channel = [channelService getChannelByKey:message.groupId];
+                KMCoreChannel *channel = [channelService getChannelByKey:message.groupId];
                 if (channel && channel.unreadCount.integerValue > 0) {
                     unreadCount += 1;
                 }

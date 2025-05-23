@@ -1,14 +1,14 @@
 //
-//  ALChannelUserX.m
+//  KMCoreChannelUserX.m
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALChannelUserX.h"
+#import "KMCoreChannelUserX.h"
 
-@implementation ALChannelUserX
+@implementation KMCoreChannelUserX
 
 - (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];

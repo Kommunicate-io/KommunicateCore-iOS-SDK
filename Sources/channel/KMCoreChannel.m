@@ -1,21 +1,21 @@
 //
-//  ALChannel.m
+//  KMCoreChannel.m
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
 //  Copyright © 2015 kommunicate. All rights reserved.
 //
 
-#import "ALChannel.h"
-#import "ALChannelUser.h"
+#import "KMCoreChannel.h"
+#import "KMCoreChannelUser.h"
 #import "KMCoreUserDefaultsHandler.h"
 
 
-@interface ALChannel ()
+@interface KMCoreChannel ()
 
 @end
 
-@implementation ALChannel
+@implementation KMCoreChannel
 
 @synthesize membersName = _membersName;
 
@@ -55,21 +55,21 @@
     NSMutableArray *userArray = [NSMutableArray new];
 
     for (NSDictionary *dict in channelDetailGroup) {
-        ALChannelUser *channelUser = [[ALChannelUser alloc] initWithDictonary:dict];
+        KMCoreChannelUser *channelUser = [[KMCoreChannelUser alloc] initWithDictonary:dict];
         [userArray addObject:channelUser];
     }
     self.groupUsers = userArray;
     
     // Channel conversation status
     if (self.metadata) {
-        self.category = [ALChannel getConversationCategory:self.metadata];
+        self.category = [KMCoreChannel getConversationCategory:self.metadata];
     } else {
         self.category = ALL_CONVERSATION;
     }
 }
 
 - (NSNumber *)getChannelMemberParentKey:(NSString *)userId {
-    for (ALChannelUser *channelUser in self.groupUsers) {
+    for (KMCoreChannelUser *channelUser in self.groupUsers) {
         if (userId && [userId isEqualToString:channelUser.userId]) {
             return channelUser.parentGroupKey;
         }

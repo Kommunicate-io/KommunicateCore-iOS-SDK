@@ -1,5 +1,5 @@
 //
-//  ALChannelClientService.h
+//  KMCoreChannelClientService.h
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
@@ -10,27 +10,27 @@
 #import "ALConstant.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
-#import "ALChannel.h"
-#import "ALChannelUserX.h"
-#import "ALChannelDBService.h"
-#import "ALChannelFeed.h"
-#import "ALChannelCreateResponse.h"
-#import "ALChannelSyncResponse.h"
+#import "KMCoreChannel.h"
+#import "KMCoreChannelUserX.h"
+#import "KMCoreChannelDBService.h"
+#import "KMCoreChannelFeed.h"
+#import "KMCoreChannelCreateResponse.h"
+#import "KMCoreChannelSyncResponse.h"
 #import "ALMuteRequest.h"
 #import "ALAPIResponse.h"
-#import "AlChannelFeedResponse.h"
+#import "KMCoreChannelFeedResponse.h"
 #import "ALMuteRequest.h"
 #import "ALResponseHandler.h"
 
 static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 
-@interface ALChannelClientService : NSObject
+@interface KMCoreChannelClientService : NSObject
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
 - (void)getChannelInfo:(NSNumber *)channelKey
     orClientChannelKey:(NSString *)clientChannelKey
-        withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
+        withCompletion:(void(^)(NSError *error, KMCoreChannel *channel)) completion;
 
 - (void)createChannel:(NSString *)channelName
   andParentChannelKey:(NSNumber *)parentChannelKey
@@ -40,7 +40,7 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
           channelType:(short)type
           andMetaData:(NSMutableDictionary *)metaData
             adminUser:(NSString *)adminUserId
-       withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion;
+       withCompletion:(void(^)(NSError *error, KMCoreChannelCreateResponse *response))completion;
 
 - (void)addMemberToChannel:(NSString *)userId
         orClientChannelKey:(NSString *)clientChannelKey
@@ -81,15 +81,15 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 
 - (void)getChannelInformationResponse:(NSNumber *)channelKey
                    orClientChannelKey:(NSString *)clientChannelKey
-                       withCompletion:(void(^)(NSError *error, AlChannelFeedResponse *response)) completion;
+                       withCompletion:(void(^)(NSError *error, KMCoreChannelFeedResponse *response)) completion;
 
 - (void)syncCallForChannel:(NSNumber *)updatedAt
       withFetchUserDetails:(BOOL)fetchUserDetails
-             andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
+             andCompletion:(void(^)(NSError *error, KMCoreChannelSyncResponse *response))completion;
 
 - (void)syncCallForSpecificChannel:(NSNumber *)channelKey
       withFetchUserDetails:(BOOL)fetchUserDetails
-             andCompletion:(void(^)(NSError *error, ALChannelSyncResponse *response))completion;
+             andCompletion:(void(^)(NSError *error, KMCoreChannelSyncResponse *response))completion;
 
 - (void)markConversationAsRead:(NSNumber *)channelKey withCompletion:(void (^)(NSString *, NSError *))completion;
 
@@ -132,9 +132,9 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
 
 - (void)getMembersFromContactGroupOfType:(NSString *)contactGroupId
                             withGroupType:(short)groupType
-                           withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
+                           withCompletion:(void(^)(NSError *error, KMCoreChannel *channel)) completion;
 
-- (void)getMembersFromContactGroup:(NSString *)contactGroupId withCompletion:(void(^)(NSError *error, ALChannel *channel)) completion;
+- (void)getMembersFromContactGroup:(NSString *)contactGroupId withCompletion:(void(^)(NSError *error, KMCoreChannel *channel)) completion;
 
 - (void)removeMemberFromContactGroup:(NSString *)contactsGroupId
                           withUserId:(NSString *)userId
@@ -156,6 +156,6 @@ static NSString *const GROUP_FETCH_BATCH_SIZE = @"100";
           andMetaData:(NSMutableDictionary *)metaData
            adminUser :(NSString *)adminUserId
       withGroupUsers :(NSMutableArray *)groupRoleUsers
-       withCompletion:(void(^)(NSError *error, ALChannelCreateResponse *response))completion;
+       withCompletion:(void(^)(NSError *error, KMCoreChannelCreateResponse *response))completion;
 
 @end

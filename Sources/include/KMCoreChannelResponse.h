@@ -1,5 +1,5 @@
 //
-//  AlChannelResponse.h
+//  KMCoreChannelResponse.h
 //  Kommunicate
 //
 //  Created by Nitin on 21/10/17.
@@ -11,7 +11,7 @@
 #import "ALJson.h"
 #import "ALConversationProxy.h"
 
-@interface AlChannelResponse :  ALJson
+@interface KMCoreChannelResponse :  ALJson
 
 @property (nonatomic, strong) NSNumber *key;
 @property (nonatomic, strong) NSString *clientGroupId;

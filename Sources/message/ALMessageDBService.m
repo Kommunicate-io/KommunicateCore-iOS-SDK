@@ -17,8 +17,8 @@
 #import "ALContactService.h"
 #import "ALMessageClientService.h"
 #import "KMCoreSettings.h"
-#import "ALChannelService.h"
-#import "ALChannel.h"
+#import "KMCoreChannelService.h"
+#import "KMCoreChannel.h"
 #import "ALUserService.h"
 #import "ALUtilityClass.h"
 #import "ALLogger.h"
@@ -228,7 +228,7 @@
         NSPredicate *predicate;
         if (key != nil) {
             predicate = [NSPredicate predicateWithFormat:@"groupId = %@",key];
-            ALChannelService *channelService = [[ALChannelService alloc] init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
             [channelService setUnreadCountZeroForGroupID:key];
         } else {
             predicate = [NSPredicate predicateWithFormat:@"contactId = %@ AND groupId = %@",contactId,nil];
@@ -477,7 +477,7 @@
                 continue;
             }
             if ([KMCoreSettings getCategoryName]) {
-                ALChannel *channel =  [[ALChannelService new] getChannelByKey:[NSNumber numberWithInt:[messageDictionary[@"groupId"] intValue]]];
+                KMCoreChannel *channel =  [[KMCoreChannelService new] getChannelByKey:[NSNumber numberWithInt:[messageDictionary[@"groupId"] intValue]]];
                 if(![channel isPartOfCategory:[KMCoreSettings getCategoryName]]) {
                     continue;
                 }
@@ -892,7 +892,7 @@
 - (void)fetchSubGroupConversations:(NSMutableArray *)subGroupList {
     NSMutableArray *subGroupMessageArray = [NSMutableArray new];
 
-    for (ALChannel *alChannel in subGroupList) {
+    for (KMCoreChannel *alChannel in subGroupList) {
         ALMessage *alMessage = [self getLatestMessageForChannel:alChannel.key excludeChannelOperations:NO];
         if (alMessage) {
             [subGroupMessageArray addObject:alMessage];
@@ -1135,7 +1135,7 @@
         }
 
         if ([KMCoreSettings getCategoryName]) {
-            ALChannel *channel = [[ALChannelService new] getChannelByKey:[NSNumber numberWithInt:[messageDictionary[@"groupId"] intValue]]];
+            KMCoreChannel *channel = [[KMCoreChannelService new] getChannelByKey:[NSNumber numberWithInt:[messageDictionary[@"groupId"] intValue]]];
             if (![channel isPartOfCategory:[KMCoreSettings getCategoryName]]) {
                 continue;
             }

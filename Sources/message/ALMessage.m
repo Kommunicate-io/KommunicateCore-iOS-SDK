@@ -7,9 +7,9 @@
 
 #import "ALMessage.h"
 #import "ALUtilityClass.h"
-#import "ALChannel.h"
+#import "KMCoreChannel.h"
 #import "ALContact.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALContactDBService.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
@@ -475,10 +475,10 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
 }
 
 - (BOOL)isNotificationDisabled {
-    ALChannel *channel;
+    KMCoreChannel *channel;
     ALContact *contact;
     if (self.groupId != nil) {
-        ALChannelService *channelService = [[ALChannelService alloc] init];
+        KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
         channel = [channelService getChannelByKey:self.groupId];
     } else {
         ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALMessage.h"
 #import "KMCoreUserDetail.h"
-#import "ALChannel.h"
+#import "KMCoreChannel.h"
 
 @protocol KommunicateUpdatesDelegate <NSObject>
 
@@ -65,8 +65,8 @@
 - (void)onUserBlockedOrUnBlocked:(NSString *)userId andBlockFlag:(BOOL)flag;
 
 /// This method will be called once their is any change in Channel.
-/// @param channel It will have ALChannel object.
-- (void)onChannelUpdated:(ALChannel *)channel;
+/// @param channel It will have KMCoreChannel object.
+- (void)onChannelUpdated:(KMCoreChannel *)channel;
 
 /// This will be called once the receiver read the message conversation.
 /// @param userId Will have receiver userId who has read the conversation.
@@ -83,7 +83,7 @@
 - (void)onUserMuteStatus:(KMCoreUserDetail *)userDetail;
 
 /// This method will be called after a group has been muted/unmuted.
-/// @param channelKey You will get the channelKey by using this channel key you can get channel and check isNotificationMuted from ALChannel object.
+/// @param channelKey You will get the channelKey by using this channel key you can get channel and check isNotificationMuted from KMCoreChannel object.
 - (void)onChannelMute:(NSNumber *)channelKey;
 
 @end

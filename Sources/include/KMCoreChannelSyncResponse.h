@@ -1,5 +1,5 @@
 //
-//  ALChannelSyncResponse.h
+//  KMCoreChannelSyncResponse.h
 //  Kommunicate
 //
 //  Created by devashish on 16/02/2016.
@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "ALAPIResponse.h"
-#import "ALChannel.h"
+#import "KMCoreChannel.h"
 
-@interface ALChannelSyncResponse : ALAPIResponse
+@interface KMCoreChannelSyncResponse : ALAPIResponse
 
 @property (nonatomic, strong) NSMutableArray *alChannelArray;
 
-@property (nonatomic, strong) ALChannel *alChannel;
+@property (nonatomic, strong) KMCoreChannel *alChannel;
 
 - (instancetype)initWithJSONString:(NSString *)JSONString;
 

@@ -14,7 +14,7 @@
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALMessageDBService.h"
 #import "ALDBHandler.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALSyncMessageFeed.h"
 #import "ALUtilityClass.h"
 #import "ALConversationService.h"
@@ -307,7 +307,7 @@
                 ALContactDBService *alContactDBService = [[ALContactDBService alloc] init];
                 [alContactDBService addUserDetails:messageListResponse.userDetailsList];
             }
-            ALChannelService *channelService = [[ALChannelService alloc] init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
             [channelService callForChannelServiceForDBInsertion:theJson];
 
             /// Save the last message created time for calling the message list API.
@@ -343,7 +343,7 @@
 
         ALMessageList *messageListResponse = [[ALMessageList alloc] initWithJSONString:theJson];
 
-        ALChannelService *channelService = [[ALChannelService alloc] init];
+        KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
         [channelService callForChannelServiceForDBInsertion:theJson];
         completion(messageListResponse.messageList , nil);
     }];
@@ -386,7 +386,7 @@
         ALConversationService *alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
 
-        ALChannelService *channelService = [[ALChannelService alloc] init];
+        KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
         [channelService callForChannelServiceForDBInsertion:theJson];
         ALSLog(ALLoggerSeverityInfo, @"Message thread response : %@",(NSString *)theJson);
         completion(messageListResponse.messageList, nil, messageListResponse.userDetailsList);
@@ -395,9 +395,9 @@
 
 - (void)getMessageListForUser:(MessageListRequest *)messageListRequest
                withCompletion:(void (^)(NSMutableArray *, NSError *, NSMutableArray *))completion {
-    ALChannel *channel = nil;
+    KMCoreChannel *channel = nil;
     if (messageListRequest.channelKey != nil) {
-        channel = [[ALChannelService sharedInstance] getChannelByKey:messageListRequest.channelKey];
+        channel = [[KMCoreChannelService sharedInstance] getChannelByKey:messageListRequest.channelKey];
     }
 
     [self getMessageListForUser:messageListRequest withOpenGroup:(channel != nil && channel.type == OPEN) withCompletion:^(NSMutableArray *messages, NSError *error, NSMutableArray *userDetailArray) {
@@ -667,7 +667,7 @@ NSString *latSyncCallTime = @"";
             ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
             [messages addObject: message];
         }
-        ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
+        KMCoreChannelFeed *channelFeed = [[KMCoreChannelFeed alloc] initWithJSONString: response];
         [[ALSearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
         completion(messages, nil);
         return;
@@ -729,7 +729,7 @@ NSString *latSyncCallTime = @"";
             ALMessage *message = [[ALMessage alloc] initWithDictonary: dict];
             [messages addObject: message];
         }
-        ALChannelFeed *channelFeed = [[ALChannelFeed alloc] initWithJSONString: response];
+        KMCoreChannelFeed *channelFeed = [[KMCoreChannelFeed alloc] initWithJSONString: response];
         [[ALSearchResultCache shared] saveChannels: channelFeed.channelFeedsList];
         completion(messages, nil);
         return;
@@ -768,12 +768,12 @@ NSString *latSyncCallTime = @"";
         }
         [[ALSearchResultCache shared] saveUserDetails: userDetails];
 
-        ALChannelFeed *alChannelFeed = [[ALChannelFeed alloc] initWithJSONString:theJson];
+        KMCoreChannelFeed *alChannelFeed = [[KMCoreChannelFeed alloc] initWithJSONString:theJson];
 
         ALConversationService *alConversationService = [[ALConversationService alloc] init];
         [alConversationService addConversations:alChannelFeed.conversationProxyList];
 
-        ALChannelService *channelService = [[ALChannelService alloc] init];
+        KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
         [channelService saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];
         completion(messages, nil);
     }];

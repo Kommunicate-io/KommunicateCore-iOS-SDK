@@ -67,7 +67,7 @@
 
 - (void)showNativeNotificationWithcompletionHandler:(void (^)(BOOL))handler {
     if (self.groupId != nil) {
-        [[ALChannelService new] getChannelInformation:self.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel3) {
+        [[KMCoreChannelService new] getChannelInformation:self.groupId orClientChannelKey:nil withCompletion:^(KMCoreChannel *alChannel3) {
             [self buildAndShowNotificationWithcompletionHandler:^(BOOL response){
                 handler(response);
             }];
@@ -93,8 +93,8 @@
     ALContactDBService * contactDbService = [[ALContactDBService alloc] init];
     ALContact *alContact = [contactDbService loadContactByKey:@"userId" value:self.contactId];
 
-    ALChannel *alChannel = nil;
-    ALChannelDBService *channelDbService = [[ALChannelDBService alloc] init];
+    KMCoreChannel *alChannel = nil;
+    KMCoreChannelDBService *channelDbService = [[KMCoreChannelDBService alloc] init];
 
     if (self.groupId && self.groupId.intValue != 0) {
         NSString *contactName;

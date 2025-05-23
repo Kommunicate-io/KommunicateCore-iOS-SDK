@@ -12,7 +12,7 @@
 #import "ALMessage.h"
 #import "DB_FileMetaInfo.h"
 #import "KMCoreUserDetail.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "MessageListRequest.h"
 #import "ALMessageInfoResponse.h"
 #import "ALMQTTConversationService.h"
@@ -20,7 +20,7 @@
 #import "ALConversationProxy.h"
 #import "ALMessageClientService.h"
 #import "ALUserService.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 
 static NSString *const NEW_MESSAGE_NOTIFICATION = @"newMessageNotification";
 static NSString *const CONVERSATION_CALL_COMPLETED = @"conversationCallCompleted";
@@ -33,7 +33,7 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
 
 @property (nonatomic, strong) ALMessageClientService *messageClientService;
 @property (nonatomic, strong) ALUserService *userService;
-@property (nonatomic, strong) ALChannelService *channelService;
+@property (nonatomic, strong) KMCoreChannelService *channelService;
 
 @property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 

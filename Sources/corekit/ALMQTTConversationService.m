@@ -13,7 +13,7 @@
 #import "ALMessageDBService.h"
 #import "KMCoreUserDetail.h"
 #import "ALPushAssist.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALContactDBService.h"
 #import "ALMessageService.h"
 #import "ALUserService.h"
@@ -28,7 +28,7 @@
 static NSString *const MQTT_TOPIC_STATUS = @"status-v2";
 static NSString *const MQTT_ENCRYPTION_SUB_KEY = @"encr-";
 static NSString *const observeSupportGroupMessage = @"observeSupportGroupMessage";
-NSString *const ALChannelDidChangeGroupMuteNotification = @"ALChannelDidChangeGroupMuteNotification";
+NSString *const KMCoreChannelDidChangeGroupMuteNotification = @"KMCoreChannelDidChangeGroupMuteNotification";
 NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUserDidChangeDeactivateNotification";
 NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
@@ -322,8 +322,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 [notificationDictionary setObject:[NSNumber numberWithInt:APP_STATE_ACTIVE] forKey:@"updateUI"];
 
                 if (alMessage.groupId != nil) {
-                    ALChannelService *channelService = [[ALChannelService alloc] init];
-                    [channelService getChannelInformation:alMessage.groupId orClientChannelKey:nil withCompletion:^(ALChannel *alChannel) {
+                    KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
+                    [channelService getChannelInformation:alMessage.groupId orClientChannelKey:nil withCompletion:^(KMCoreChannel *alChannel) {
 
                         if (alChannel && alChannel.type == OPEN) {
                             if (alMessage.deviceKey && [alMessage.deviceKey isEqualToString:[KMCoreUserDefaultsHandler getDeviceKeyString]]) {
@@ -446,7 +446,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 [self.realTimeUpdate onUpdateLastSeenAtStatus: alUserDetail];
             }
         } else if ([type isEqualToString:@"APPLOZIC_15"]) {
-            ALChannelService *channelService = [[ALChannelService alloc] init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
             [channelService syncCallForChannel];
             // TODO HANDLE
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_CONVERSATION_DELETED_NEW)]] ||
@@ -497,8 +497,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 NSDictionary *messageDict = [theMessageDict objectForKey:@"message"];
                 ALMessage *alMessage = [[ALMessage alloc] initWithDictonary: messageDict];
                 if (alMessage.groupId != nil) {
-                    ALChannelService *channelService = [[ALChannelService alloc] init];
-                    ALChannel *channel = [channelService getChannelByKey:alMessage.groupId];
+                    KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
+                    KMCoreChannel *channel = [channelService getChannelByKey:alMessage.groupId];
                     if (channel && channel.isOpenGroup) {
                         if (alMessage.hasAttachment) {
                             ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
@@ -522,7 +522,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_CONVERSATION_READ)]]) {
             //Conversation read for channel
-            ALChannelService *channelService = [[ALChannelService alloc]init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc]init];
             NSNumber *channelKey = [NSNumber numberWithInt:[[theMessageDict objectForKey:@"message"] intValue]];
             [channelService updateConversationReadWithGroupId:channelKey withDelegate:self.realTimeUpdate];
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_USER_MUTE_NOTIFICATION)]]) {
@@ -545,13 +545,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
                 }];
             }
         } else if ([type isEqualToString:pushNotificationService.notificationTypes[@(AL_GROUP_MUTE_NOTIFICATION)]]) {
-            ALChannelService *channelService = [[ALChannelService alloc] init];
+            KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
             NSArray *parts = [[theMessageDict objectForKey:@"message"] componentsSeparatedByString:@":"];
             if (parts.count == 2) {
                 NSNumber *channelKey = [NSNumber numberWithInt:[parts[0] intValue]];
                 NSNumber *notificationMuteTillTime = [NSNumber numberWithDouble:[parts[1] doubleValue]];
                 [channelService updateMuteAfterTime:notificationMuteTillTime andChnnelKey:channelKey];
-                [[NSNotificationCenter defaultCenter] postNotificationName:ALChannelDidChangeGroupMuteNotification object:nil userInfo:@{@"CHANNEL_KEY": channelKey}];
+                [[NSNotificationCenter defaultCenter] postNotificationName:KMCoreChannelDidChangeGroupMuteNotification object:nil userInfo:@{@"CHANNEL_KEY": channelKey}];
 
                 if (self.realTimeUpdate) {
                     [self.realTimeUpdate onChannelMute:channelKey];

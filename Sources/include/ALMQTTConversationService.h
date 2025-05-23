@@ -13,7 +13,7 @@
 #import "KMCoreUserDetail.h"
 #import "KMCoreRealTimeUpdate.h"
 
-extern NSString *const ALChannelDidChangeGroupMuteNotification;
+extern NSString *const KMCoreChannelDidChangeGroupMuteNotification;
 extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 

@@ -1,16 +1,16 @@
 //
-//  ALChannelOfTwoMetaData.m
+//  KMCoreChannelOfTwoMetaData.m
 //  Kommunicate
 //
 //  Created by Mihir on 02/05/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
 //
 
-#import "ALChannelOfTwoMetaData.h"
+#import "KMCoreChannelOfTwoMetaData.h"
 
-@implementation ALChannelOfTwoMetaData
+@implementation KMCoreChannelOfTwoMetaData
 
-- (NSMutableDictionary *)toDict:(ALChannelOfTwoMetaData *)metadata {
+- (NSMutableDictionary *)toDict:(KMCoreChannelOfTwoMetaData *)metadata {
     NSMutableDictionary *metaData = [NSMutableDictionary new];
     [metaData setObject:metadata.title forKey:@"title"];
     [metaData setObject:metadata.price forKey:@"price"];

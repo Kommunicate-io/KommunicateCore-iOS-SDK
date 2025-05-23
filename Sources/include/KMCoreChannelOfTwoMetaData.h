@@ -1,5 +1,5 @@
 //
-//  ALChannelOfTwoMetaData.h
+//  KMCoreChannelOfTwoMetaData.h
 //  Kommunicate
 //
 //  Created by Mihir on 02/05/18.
@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ALChannelOfTwoMetaData : NSObject
+@interface KMCoreChannelOfTwoMetaData : NSObject
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *price;
 @property (nonatomic, strong) NSString *link;
-- (NSMutableDictionary *)toDict:(ALChannelOfTwoMetaData *)metadata;
+- (NSMutableDictionary *)toDict:(KMCoreChannelOfTwoMetaData *)metadata;
 @end

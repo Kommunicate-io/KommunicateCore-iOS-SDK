@@ -1,5 +1,5 @@
 //
-//  AlChannelInfoModel.h
+//  KMCoreChannelInfoModel.h
 //  Kommunicate
 //
 //  Created by Nitin on 21/10/17.
@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
-#import "AlChannelResponse.h"
+#import "KMCoreChannelResponse.h"
 
-@interface AlChannelInfoModel : ALJson
+@interface KMCoreChannelInfoModel : ALJson
 
 @property (nonatomic, strong)  NSDictionary *channel;
 

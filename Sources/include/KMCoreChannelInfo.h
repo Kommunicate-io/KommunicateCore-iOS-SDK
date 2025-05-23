@@ -1,5 +1,5 @@
 //
-//  ALChannelInfo.h
+//  KMCoreChannelInfo.h
 //  Kommunicate
 //
 //  Created by devashish on 28/12/2015.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALJson.h"
 
-@interface ALChannelInfo : ALJson
+@interface KMCoreChannelInfo : ALJson
 
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSString *clientGroupId;

@@ -1,23 +1,23 @@
 //
-//  ALChannelResponse.m
+//  KMCoreChannelResponse.m
 //  Kommunicate
 //
 //  Created by devashish on 12/02/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALChannelCreateResponse.h"
+#import "KMCoreChannelCreateResponse.h"
 #import "KMCoreUserDetail.h"
 #import "ALContactDBService.h"
 
-@implementation ALChannelCreateResponse  
+@implementation KMCoreChannelCreateResponse  
 
 - (instancetype)initWithJSONString:(NSString *)JSONString {
    self = [super initWithJSONString:JSONString];
     
     if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSDictionary *JSONDictionary = [JSONString valueForKey:@"response"];
-        self.alChannel = [[ALChannel alloc] initWithDictonary:JSONDictionary];
+        self.alChannel = [[KMCoreChannel alloc] initWithDictonary:JSONDictionary];
         [self pasreUserDetails:[[NSMutableArray alloc] initWithArray:[JSONDictionary objectForKey:@"users"]]];
 
         return self;

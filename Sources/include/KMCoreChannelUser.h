@@ -1,5 +1,5 @@
 //
-//  ALChannelUser.h
+//  KMCoreChannelUser.h
 //  Kommunicate
 //
 //  Created by Adarsh Kumar Mishra on 12/8/16.
@@ -8,7 +8,7 @@
 
 #import "ALJson.h"
 
-@interface ALChannelUser : ALJson
+@interface KMCoreChannelUser : ALJson
 
 @property (nonatomic, strong) NSNumber *role;
 @property (nonatomic, strong) NSString *userId;
