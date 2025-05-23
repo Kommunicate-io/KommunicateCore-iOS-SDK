@@ -17,7 +17,7 @@
     
     if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSDictionary *JSONDictionary = [[JSONString valueForKey:@"response"] valueForKey:@"conversationPxy"];
-        self.alConversationProxy = [[KMCoreConversationProxy alloc] initWithDictonary:JSONDictionary];
+        self.conversationProxy = [[KMCoreConversationProxy alloc] initWithDictonary:JSONDictionary];
         
         return self;
     } else {

@@ -1,14 +1,14 @@
 //
-//  ALGroupUser.m
+//  KMCoreGroupUser.m
 //  Kommunicate
 //
 //  Created by Sunil on 14/02/18.
 //  Copyright © 2018 kommunicate. All rights reserved.
 //
 
-#import "ALGroupUser.h"
+#import "KMCoreGroupUser.h"
 
-@implementation ALGroupUser
+@implementation KMCoreGroupUser
 
 - (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];

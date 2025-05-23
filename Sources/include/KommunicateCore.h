@@ -61,7 +61,7 @@ FOUNDATION_EXPORT const unsigned char KommunicateCoreVersionString[];
 #import "KMCoreChannelInfo.h"
 #import "KMCoreChannelInfoModel.h"
 #import "KMCoreChannelResponse.h"
-#import "ALGroupUser.h"
+#import "KMCoreGroupUser.h"
 #import "KMCoreChannelUser.h"
 #import "KMCoreChannelOfTwoMetaData.h"
 #import "KMCoreChannelService.h"

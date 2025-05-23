@@ -32,12 +32,12 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
 
 #pragma mark - Create conversation
 
-- (void)createConversation:(KMCoreConversationProxy *)alConversationProxy
+- (void)createConversation:(KMCoreConversationProxy *)conversationProxy
             withCompletion:(void(^)(NSError *error, KMCoreConversationCreateResponse *response))completion {
     
     NSString *conversationURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CONVERSATION_URL];
     
-    NSDictionary *dictionaryToSend = [NSDictionary dictionaryWithDictionary:[KMCoreConversationProxy getDictionaryForCreate:alConversationProxy]];
+    NSDictionary *dictionaryToSend = [NSDictionary dictionaryWithDictionary:[KMCoreConversationProxy getDictionaryForCreate:conversationProxy]];
     
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionaryToSend options:0 error:&error];
@@ -57,11 +57,11 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
     }];
 }
 
-- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
+- (void)fetchTopicDetails:(NSNumber *)conversationProxyID
             andCompletion:(void (^)(NSError *, ALAPIResponse *))completion {
     
     NSString *conversationDetailURLString = [NSString stringWithFormat:@"%@%@",KBASE_URL, FETCH_CONVERSATION_DETAILS];
-    NSString *conversationDetailParamString = [NSString stringWithFormat:@"id=%@",alConversationProxyID];
+    NSString *conversationDetailParamString = [NSString stringWithFormat:@"id=%@",conversationProxyID];
     
     NSMutableURLRequest *conversationDetailRequest =  [ALRequestHandler createGETRequestWithUrlString:conversationDetailURLString paramString:conversationDetailParamString];
     

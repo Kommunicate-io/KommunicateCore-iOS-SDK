@@ -12,6 +12,6 @@
 
 @interface KMCoreConversationCreateResponse : ALAPIResponse
 
-@property (nonatomic, strong) KMCoreConversationProxy *alConversationProxy;
+@property (nonatomic, strong) KMCoreConversationProxy *conversationProxy;
 - (instancetype)initWithJSONString:(NSString *)JSONString;
 @end

@@ -1,5 +1,5 @@
 //
-//  ALGroupUser.h
+//  KMCoreGroupUser.h
 //  Kommunicate
 //
 //  Created by Sunil on 14/02/18.
@@ -8,7 +8,7 @@
 #import "KMCoreJson.h"
 #import <Foundation/Foundation.h>
 
-@interface ALGroupUser : KMCoreJson
+@interface KMCoreGroupUser : KMCoreJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic, strong) NSNumber *groupRole;

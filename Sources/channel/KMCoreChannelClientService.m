@@ -1043,7 +1043,7 @@ NSString *latSyncCallTimeForChannel = @"";
             KMCoreChannelFeedResponse *response = [[KMCoreChannelFeedResponse alloc] initWithJSONString:theJson];
 
             if ([response.status isEqualToString: AL_RESPONSE_SUCCESS]) {
-                NSMutableArray *members = response.alChannel.membersId;
+                NSMutableArray *members = response.kmCoreChannel.membersId;
                 ALContactService *contactService = [ALContactService new];
                 NSMutableArray *userNotPresentIds = [NSMutableArray new];
                 for (NSString *userId in members) {

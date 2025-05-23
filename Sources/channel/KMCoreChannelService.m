@@ -1070,8 +1070,8 @@ dispatch_queue_t channelUserbackgroundQueue;
         [self.channelClientService getChannelInformationResponse:channelKey orClientChannelKey:clientChannelKey withCompletion:^(NSError *error, KMCoreChannelFeedResponse *response) {
             
             if (!error && [response.status isEqualToString:AL_RESPONSE_SUCCESS]) {
-                [self createChannelEntry:response.alChannel fromMessageList:NO];
-                completion(nil, response.alChannel, nil);
+                [self createChannelEntry:response.kmCoreChannel fromMessageList:NO];
+                completion(nil, response.kmCoreChannel, nil);
             } else {
                 completion(error, nil, response);
             }

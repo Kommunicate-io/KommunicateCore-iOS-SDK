@@ -55,13 +55,13 @@
 
 - (KMCoreConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
-    KMCoreConversationProxy *alConversationProxy = [[KMCoreConversationProxy alloc]init];
-    alConversationProxy.groupId = dbConversation.groupId;
-    alConversationProxy.userId = dbConversation.userId;
-    alConversationProxy.topicDetailJson = dbConversation.topicDetailJson;
-    alConversationProxy.topicId = dbConversation.topicId;
-    alConversationProxy.Id = dbConversation.iD;
-    return alConversationProxy;
+    KMCoreConversationProxy *conversationProxy = [[KMCoreConversationProxy alloc]init];
+    conversationProxy.groupId = dbConversation.groupId;
+    conversationProxy.userId = dbConversation.userId;
+    conversationProxy.topicDetailJson = dbConversation.topicDetailJson;
+    conversationProxy.topicId = dbConversation.topicId;
+    conversationProxy.Id = dbConversation.iD;
+    return conversationProxy;
 }
 
 #pragma mark - Get conversation list for UserId
@@ -111,11 +111,11 @@
 
 #pragma mark - Create conversation
 
-- (void)createConversation:(KMCoreConversationProxy *)alConversationProxy
+- (void)createConversation:(KMCoreConversationProxy *)conversationProxy
             withCompletion:(void(^)(NSError *error, KMCoreConversationProxy *proxy))completion {
     
     
-    NSArray *conversationArray = [[NSArray alloc] initWithArray:[self getConversationProxyListForUserID:alConversationProxy.userId andTopicId:alConversationProxy.topicId]];
+    NSArray *conversationArray = [[NSArray alloc] initWithArray:[self getConversationProxyListForUserID:conversationProxy.userId andTopicId:conversationProxy.topicId]];
     
     
     if (conversationArray.count != 0) {
@@ -123,15 +123,15 @@
         ALSLog(ALLoggerSeverityInfo, @"Conversation Proxy List Found In DB :%@",conversationProxy.topicDetailJson);
         completion(nil, conversationProxy);
     } else {
-        [self.conversationClientService createConversation:alConversationProxy withCompletion:^(NSError *error, KMCoreConversationCreateResponse *response) {
+        [self.conversationClientService createConversation:conversationProxy withCompletion:^(NSError *error, KMCoreConversationCreateResponse *response) {
             
             if (!error) {
-                NSMutableArray *proxyArr = [[NSMutableArray alloc] initWithObjects:response.alConversationProxy, nil];
+                NSMutableArray *proxyArr = [[NSMutableArray alloc] initWithObjects:response.conversationProxy, nil];
                 [self addConversations:proxyArr];
             } else {
                 ALSLog(ALLoggerSeverityError, @"KMCoreConversationService : Error creatingConversation ");
             }
-            completion(error, response.alConversationProxy);
+            completion(error, response.conversationProxy);
         }];
     }
     
@@ -139,18 +139,18 @@
 
 #pragma mark - Fetch topic detail
 
-- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
-           withCompletion:(void(^)(NSError *error, KMCoreConversationProxy *alConversationProxy))completion {
+- (void)fetchTopicDetails:(NSNumber *)conversationProxyID
+           withCompletion:(void(^)(NSError *error, KMCoreConversationProxy *conversationProxy))completion {
     
-    KMCoreConversationProxy *alConversationProxy = [self getConversationByKey:alConversationProxyID];
+    KMCoreConversationProxy *conversationProxy = [self getConversationByKey:conversationProxyID];
     
-    if (alConversationProxy != nil){
+    if (conversationProxy != nil){
         ALSLog(ALLoggerSeverityInfo, @"Conversation/Topic Alerady exists");
-        completion(nil, alConversationProxy);
+        completion(nil, conversationProxy);
         return;
     }
     
-    [self.conversationClientService fetchTopicDetails:alConversationProxyID andCompletion:^(NSError *error, ALAPIResponse *response) {
+    [self.conversationClientService fetchTopicDetails:conversationProxyID andCompletion:^(NSError *error, ALAPIResponse *response) {
         
         if (!error) {
             ALSLog(ALLoggerSeverityInfo, @"ALAPIResponse: FETCH TOPIC DEATIL  %@",response);

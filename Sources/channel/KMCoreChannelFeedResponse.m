@@ -19,7 +19,7 @@
     
     if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSDictionary *JSONDictionary = [JSONString valueForKey:@"response"];
-        self.alChannel = [[KMCoreChannel alloc] initWithDictonary:JSONDictionary];
+        self.kmCoreChannel = [[KMCoreChannel alloc] initWithDictonary:JSONDictionary];
         [self parseUserDetails:[[NSMutableArray alloc] initWithArray:[JSONDictionary objectForKey:@"users"]]];
         return self;
     } else {

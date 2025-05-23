@@ -28,7 +28,7 @@
 - (void)parseMessage:(id)messageJson;
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 - (ALTopicDetail *)getTopicDetail;
-+ (NSMutableDictionary *)getDictionaryForCreate:(KMCoreConversationProxy *)alConversationProxy;
++ (NSMutableDictionary *)getDictionaryForCreate:(KMCoreConversationProxy *)conversationProxy;
 - (void)setSenderSMSFormat:(NSString *)senderFormatString;
 - (void)setReceiverSMSFormat:(NSString *)recieverFormatString;
 

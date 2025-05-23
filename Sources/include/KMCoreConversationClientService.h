@@ -15,8 +15,8 @@
 @interface KMCoreConversationClientService : NSObject
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
-- (void)createConversation:(KMCoreConversationProxy *)alConversationProxy
+- (void)createConversation:(KMCoreConversationProxy *)conversationProxy
            withCompletion:(void(^)(NSError *error, KMCoreConversationCreateResponse *response))completion;
 
-- (void)fetchTopicDetails:(NSNumber *)alConversationProxyID andCompletion:(void (^)(NSError *, ALAPIResponse *))completion;
+- (void)fetchTopicDetails:(NSNumber *)conversationProxyID andCompletion:(void (^)(NSError *, ALAPIResponse *))completion;
 @end

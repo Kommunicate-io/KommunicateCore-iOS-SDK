@@ -12,7 +12,7 @@
 
 @interface KMCoreChannelFeedResponse : ALAPIResponse
 
-@property (nonatomic, strong) KMCoreChannel *alChannel;
+@property (nonatomic, strong) KMCoreChannel *kmCoreChannel;
 @property (nonatomic, strong) NSDictionary *errorResponse;
 
 - (instancetype)initWithJSONString:(NSString *)JSONString;
