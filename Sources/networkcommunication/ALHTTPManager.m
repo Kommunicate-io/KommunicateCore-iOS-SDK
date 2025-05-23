@@ -493,7 +493,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
         } else {
             messageEntity.fileMetaInfo.thumbnailFilePath = fileName;
         }
-        [[ALDBHandler sharedInstance] saveContext];
+        [[KMCoreDBHandler sharedInstance] saveContext];
     } @catch (NSException *exception) {
         ALSLog(ALLoggerSeverityError, @"NSException while update db message: %@",exception.reason);
     } @finally {

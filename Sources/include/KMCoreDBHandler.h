@@ -1,5 +1,5 @@
 //
-//  ALDBHandler.h
+//  KMCoreDBHandler.h
 //  ChatApp
 //
 //  Created by Gaurav Nigam on 09/08/15.
@@ -11,7 +11,7 @@
 
 static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
-@interface ALDBHandler : NSObject
+@interface KMCoreDBHandler : NSObject
 
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 
@@ -21,7 +21,7 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 
 - (NSError *)saveContext;
 
-+ (ALDBHandler *)sharedInstance;
++ (KMCoreDBHandler *)sharedInstance;
 
 - (void)saveWithContext:(NSManagedObjectContext *)context
              completion:(void (^)(NSError *error))completion;

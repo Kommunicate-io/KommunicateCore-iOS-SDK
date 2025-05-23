@@ -90,7 +90,7 @@ andWithStatusDelegate:(id)statusDelegate
     message.msgDBObjectId = [dbMessageEntity objectID];
     dbMessageEntity.inProgress = [NSNumber numberWithBool:YES];
     dbMessageEntity.isUploadFailed = [NSNumber numberWithBool:NO];
-    NSError *error =  [[ALDBHandler sharedInstance] saveContext];
+    NSError *error =  [[KMCoreDBHandler sharedInstance] saveContext];
 
     if (self.messageServiceDelegate && error) {
         dbMessageEntity.inProgress = [NSNumber numberWithBool:NO];

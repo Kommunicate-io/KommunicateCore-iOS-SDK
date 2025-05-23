@@ -7,7 +7,7 @@
 //
 
 #import "ALConversationDBService.h"
-#import "ALDBHandler.h"
+#import "KMCoreDBHandler.h"
 #import "ALLogger.h"
 
 @implementation ALConversationDBService
@@ -17,7 +17,7 @@
         return;
     }
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     
     for (ALConversationProxy *proxy in proxyArray) {
         [self createConversationProxy:proxy];
@@ -32,7 +32,7 @@
 
 - (void)insertConversationProxyTopicDetails:(NSMutableArray*)proxyArray {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     
     for (ALConversationProxy *proxy in proxyArray) {
         DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:proxy.Id];
@@ -51,7 +51,7 @@
 }
 
 - (DB_ConversationProxy *)createConversationProxy:(ALConversationProxy *)conversationProxy {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:conversationProxy.Id];
     if (!dbConversationProxy) {
         dbConversationProxy = (DB_ConversationProxy*)[alDBHandler insertNewObjectForEntityForName:@"DB_ConversationProxy"];
@@ -71,7 +71,7 @@
 
 
 - (DB_ConversationProxy *)getConversationProxyByKey:(NSNumber *)Id {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     NSEntityDescription *conversationEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
@@ -90,7 +90,7 @@
 }
 
 - (NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     NSEntityDescription *conversationEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
@@ -114,7 +114,7 @@
 - (NSArray*)getConversationProxyListFromDBForUserID:(NSString*)userId
                                          andTopicId:(NSString*)topicId {
     
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *conversationEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
 
@@ -137,7 +137,7 @@
 
 - (NSArray*)getConversationProxyListFromDBWithChannelKey:(NSNumber *)channelKey {
     
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *conversationEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_ConversationProxy"];
 

@@ -12,7 +12,7 @@
 #import "ALSyncMessageFeed.h"
 #import "ALMessageDBService.h"
 #import "ALMessageList.h"
-#import "ALDBHandler.h"
+#import "KMCoreDBHandler.h"
 #import "ALConnectionQueueHandler.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALSendMessageResponse.h"
@@ -248,7 +248,7 @@ static ALMessageClientService *alMsgClientService;
                     withCompletion:(void (^)(NSMutableArray *))completion {
     int rp = 50;
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *dbMessageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [dbMessageFetchRequest setFetchLimit:rp];
     NSPredicate *predicate1;
@@ -549,7 +549,7 @@ static ALMessageClientService *alMsgClientService;
     }
 
     //db
-    ALDBHandler *dbHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *dbHandler = [KMCoreDBHandler sharedInstance];
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc]init];
     DB_Message *dbMessage = (DB_Message *)[messageDBService getMessageByKey:@"key" value:keyString];
     [dbMessage setDeletedFlag:[NSNumber numberWithBool:YES]];
@@ -627,7 +627,7 @@ static ALMessageClientService *alMsgClientService;
     message.fileMetaKey = message.fileMeta.key;
     message.msgDBObjectId = [dbMessage objectID];
 
-    NSError *error = [[ALDBHandler sharedInstance] saveContext];
+    NSError *error = [[KMCoreDBHandler sharedInstance] saveContext];
     if (error) {
         ALSLog(ALLoggerSeverityError, @"Failed to save the file meta in db %@",error);
         return nil;
@@ -672,7 +672,7 @@ static ALMessageClientService *alMsgClientService;
             dbMessage.inProgress = [NSNumber numberWithBool:YES];
             dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
 
-            NSError *error = [[ALDBHandler sharedInstance] saveContext];
+            NSError *error = [[KMCoreDBHandler sharedInstance] saveContext];
 
             if (error) {
                 NSLog(@"Failed to save the flags for message error %@",error);

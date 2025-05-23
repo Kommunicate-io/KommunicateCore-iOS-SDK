@@ -1163,7 +1163,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     if (!channel) {
         return;
     }
-    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *theDBHandler = [KMCoreDBHandler sharedInstance];
     [self.channelDBService createChannelEntity:channel];
 
     [theDBHandler saveContext];
@@ -1179,7 +1179,7 @@ dispatch_queue_t channelUserbackgroundQueue;
         return;
     }
 
-    ALDBHandler *theDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *theDBHandler = [KMCoreDBHandler sharedInstance];
     dispatch_group_t group = dispatch_group_create();
 
     for (KMCoreChannel *channel in channelFeedsList) {

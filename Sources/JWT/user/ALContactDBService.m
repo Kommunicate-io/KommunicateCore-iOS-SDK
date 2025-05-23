@@ -7,7 +7,7 @@
 //
 
 #import "ALContactDBService.h"
-#import "ALDBHandler.h"
+#import "KMCoreDBHandler.h"
 #import "ALConstant.h"
 #import "DB_Message.h"
 #import "ALSearchResultCache.h"
@@ -36,7 +36,7 @@
 
 - (BOOL)purgeContact:(ALContact *)contact {
     
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CONTACT"];
@@ -71,7 +71,7 @@
 }
 
 - (BOOL)purgeAllContact {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
@@ -125,7 +125,7 @@
 
 - (BOOL)updateContactInDatabase:(ALContact *)contact {
     
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
@@ -204,7 +204,7 @@
 
 - (BOOL)setUnreadCountDB:(ALContact *)contact {
     
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CONTACT"];
     if (contactEntity) {
@@ -297,7 +297,7 @@
 
 - (DB_CONTACT *)getContactByKey:(NSString *)key
                           value:(NSString*)value {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CONTACT"];
     if (contactEntity) {
@@ -368,7 +368,7 @@
 }
 
 - (BOOL)updateUserDetail:(KMCoreUserDetail *)userDetail {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CONTACT"];
@@ -444,7 +444,7 @@
 }
 
 - (BOOL)updateLastSeenDBUpdate:(KMCoreUserDetail *)userDetail {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CONTACT"];
@@ -476,7 +476,7 @@
 - (NSUInteger)markConversationAsDeliveredAndRead:(NSString *)contactId {
     NSArray *messages =  [self getUnreadMessagesForIndividual:contactId];
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     for (DB_Message *dbMessage in messages) {
         dbMessage.status = @(DELIVERED_AND_READ);
     }
@@ -493,7 +493,7 @@
 - (NSArray *)getUnreadMessagesForIndividual:(NSString *)contactId {
     
     //Runs at Opening AND Leaving ChatVC AND Opening MessageList..
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_Message"];
@@ -518,7 +518,7 @@
 
 - (BOOL)setBlockUser:(NSString *)userId
      andBlockedState:(BOOL)flag {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CONTACT"];
 
@@ -559,7 +559,7 @@
 
 - (BOOL)setBlockByUser:(NSString *)userId
      andBlockedByState:(BOOL)flag {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CONTACT"];
     
@@ -585,7 +585,7 @@
 }
 
 - (NSMutableArray *)getListOfBlockedUsers {
-    ALDBHandler *alDBHandler  = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler  = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *contactEntity = [alDBHandler  entityDescriptionWithEntityForName:@"DB_CONTACT"];
 
@@ -624,7 +624,7 @@
 }
 
 - (NSMutableArray *)getAllContactsFromDB {
-    ALDBHandler *alDBHandler  = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler  = [KMCoreDBHandler sharedInstance];
 
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId !=%@ AND deletedAtTime == nil",[KMCoreUserDefaultsHandler getUserId]];
     NSFetchRequest *contactListRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_CONTACT"];
@@ -704,7 +704,7 @@
 
 #pragma mark - Insert new contact in Database
 - (BOOL)insertNewContact:(ALContact*)contact {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     DB_CONTACT *dbContact = (DB_CONTACT *)[alDBHandler insertNewObjectForEntityForName:@"DB_CONTACT"];
 
     if (dbContact) {
@@ -724,7 +724,7 @@
 #pragma mark - Update mute time in Database
 
 - (KMCoreUserDetail *)updateMuteAfterTime:(NSNumber *)notificationAfterTime andUserId:(NSString *)userId {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     
     DB_CONTACT *dbContact = [self getContactByKey:@"userId" value:userId];
     
@@ -761,7 +761,7 @@
         return isSuccess;
     }
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     NSEntityDescription *contactEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_CONTACT"];

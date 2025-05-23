@@ -78,7 +78,7 @@ FOUNDATION_EXPORT const unsigned char KommunicateCoreVersionString[];
 #import "ALLogger.h"
 #import "ALPushNotificationService.h"
 #import "MQTTClient.h"
-#import "ALDBHandler.h"
+#import "KMCoreDBHandler.h"
 #import "ALRequestHandler.h"
 #import "ALUtilityClass.h"
 #import "ALResponseHandler.h"

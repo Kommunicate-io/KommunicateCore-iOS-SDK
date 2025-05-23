@@ -67,7 +67,7 @@
             dbMessage.fileMetaInfo.thumbnailUrl = message.fileMeta.thumbnailUrl;
 
             NSDictionary *userInfo = [message dictionary];
-            [[ALDBHandler sharedInstance] saveContext];
+            [[KMCoreDBHandler sharedInstance] saveContext];
 
             [self.clientService sendPhotoForUserInfo:userInfo withCompletion:^(NSString *url, NSError *error) {
 

@@ -1,20 +1,20 @@
 //
-//  ALDBHandler.m
+//  KMCoreDBHandler.m
 //  ChatApp
 //
 //  Created by Gaurav Nigam on 09/08/15.
 //  Copyright (c) 2015 kommunicate. All rights reserved.
 //
 
-#import "ALDBHandler.h"
+#import "KMCoreDBHandler.h"
 #import "ALUtilityClass.h"
 #import "KMCoreSettings.h"
 #import "ALLogger.h"
 
-@implementation ALDBHandler
+@implementation KMCoreDBHandler
 
-+ (ALDBHandler *)sharedInstance {
-    static ALDBHandler *sharedMyManager = nil;
++ (KMCoreDBHandler *)sharedInstance {
+    static KMCoreDBHandler *sharedMyManager = nil;
     
     static dispatch_once_t onceToken;
     
@@ -334,7 +334,7 @@
 #if SWIFT_PACKAGE
     return SWIFTPM_MODULE_BUNDLE;
 #else
-    return [NSBundle bundleForClass:[ALDBHandler class]];
+    return [NSBundle bundleForClass:[KMCoreDBHandler class]];
 #endif
 }
 

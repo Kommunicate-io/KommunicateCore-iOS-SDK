@@ -8,7 +8,7 @@
 
 #import "ALMessageDBService.h"
 #import "ALContact.h"
-#import "ALDBHandler.h"
+#import "KMCoreDBHandler.h"
 #import "DB_Message.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALMessage.h"
@@ -46,7 +46,7 @@
              skipAddingMessageInDb:(BOOL)skip {
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     for (ALMessage *alMessage in messageList) {
 
         if (skip && !alMessage.fileMeta) {
@@ -85,7 +85,7 @@
 #pragma mark - Add message in Database
 
 - (DB_Message *)addMessage:(ALMessage *)message {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     DB_Message *dbMessage = [self createMessageEntityForDBInsertionWithMessage:message];
 
     if (dbMessage) {
@@ -117,7 +117,7 @@
 }
 
 - (NSManagedObject *)getMeesageById:(NSManagedObjectID *)objectID {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSManagedObject *messageManagedObject = [alDBHandler existingObjectWithID:objectID];
     return messageManagedObject;
 }
@@ -125,7 +125,7 @@
 - (void)updateDeliveryReportForContact:(NSString *)contactId
                             withStatus:(int)status {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     NSEntityDescription *dbMessasgeEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_Message"];
@@ -168,7 +168,7 @@
 - (void)updateMessageDeliveryReport:(NSString *)messageKeyString
                          withStatus:(int)status {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
 
     NSManagedObject *dbMessage = [self getMessageByKey:@"key" value:messageKeyString];
 
@@ -185,7 +185,7 @@
 
 - (void)updateMessageSyncStatus:(NSString *)keyString {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSManagedObject *dbMessage = [self getMessageByKey:@"keyString" value:keyString];
     if (dbMessage) {
         [dbMessage setValue:@"1" forKey:@"isSent"];
@@ -202,7 +202,7 @@
 #pragma mark - Delete message by messagekey
 
 - (void)deleteMessageByKey:(NSString *)keyString {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSManagedObject *message = [self getMessageByKey:@"key" value:keyString];
 
     if (message) {
@@ -220,7 +220,7 @@
 
 - (void)deleteAllMessagesByContact:(NSString *)contactId
                       orChannelKey:(NSNumber *)key {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *dbMessageEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_Message"];
 
@@ -260,7 +260,7 @@
 #pragma mark - Message table is empty
 
 - (BOOL)isMessageTableEmpty {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSEntityDescription *dbMessageEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_Message"];
     if (dbMessageEntity) {
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -276,7 +276,7 @@
 #pragma mark - Delete all objects in Database tables
 
 - (void)deleteAllObjectsInCoreData {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSArray *allEntities = alDBHandler.managedObjectModel.entities;
     if (allEntities.count) {
         for (NSEntityDescription *entityDescription in allEntities) {
@@ -310,7 +310,7 @@
 - (NSManagedObject *)getMessageByKey:(NSString *)key value:(NSString *)value {
 
     //Runs at MessageList viewing/opening...ONLY FIRST TIME AND if delete an msg
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *dbMessageEntity = [alDBHandler entityDescriptionWithEntityForName:@"DB_Message"];
     if (dbMessageEntity) {
@@ -406,7 +406,7 @@
 - (NSArray *)getMessageList:(int)messageCount messageTypeOnlyReceived:(BOOL)received {
 
     // Get the latest record
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [messageRequest setResultType:NSDictionaryResultType];
     [messageRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
@@ -454,7 +454,7 @@
         predicateCreatedAt = [NSPredicate predicateWithFormat:@"createdAt >= %@",conversationListRequest.startTimeStamp];
     }
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     /// get all unique contacts
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     [messageFetchRequest setResultType:NSDictionaryResultType];
@@ -545,7 +545,7 @@
 - (DB_Message *)createMessageEntityForDBInsertionWithMessage:(ALMessage *)alMessage {
 
     //Runs at MessageList viewing/opening... ONLY FIRST TIME
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
 
     DB_Message *dbMessageEntity = (DB_Message *)[alDBHandler insertNewObjectForEntityForName:@"DB_Message"];
 
@@ -590,7 +590,7 @@
 }
 
 - (DB_FileMetaInfo *)createFileMetaInfoEntityForDBInsertionWithMessage:(ALFileMetaInfo *)fileInfo {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     DB_FileMetaInfo *fileMetaInfo = (DB_FileMetaInfo *)[alDBHandler insertNewObjectForEntityForName:@"DB_FileMetaInfo"];
 
     if (fileMetaInfo) {
@@ -677,12 +677,12 @@
         dbMessage.fileMetaInfo.size = alMessage.fileMeta.size;
         dbMessage.fileMetaInfo.suUserKeyString = alMessage.fileMeta.userKey;
         dbMessage.fileMetaInfo.url = alMessage.fileMeta.url;
-        [[ALDBHandler sharedInstance] saveContext];
+        [[KMCoreDBHandler sharedInstance] saveContext];
     }
 }
 
 - (NSMutableArray *)getMessageListForContactWithCreatedAt:(MessageListRequest *)messageListRequest {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate1;
 
@@ -739,7 +739,7 @@
 - (NSMutableArray *)getAllMessagesWithAttachmentForContact:(NSString *)contactId
                                              andChannelKey:(NSNumber *)channelKey
                                  onlyDownloadedAttachments:(BOOL)onlyDownloaded {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate1;
 
@@ -779,7 +779,7 @@
 
 - (NSMutableArray *)getPendingMessages {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     messageFetchRequest.predicate = [NSPredicate predicateWithFormat:@"sentToServer = %@ and type= %@ and deletedFlag = %@",@"0",@"5",@(NO)];
 
@@ -806,7 +806,7 @@
 }
 
 - (NSUInteger)getMessagesCountFromDBForUser:(NSString *)userId {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil",userId];
     [messageFetchRequest setPredicate:predicate];
@@ -818,7 +818,7 @@
 #pragma mark - Get latest message for User/Channel
 
 - (ALMessage *)getLatestMessageForUser:(NSString *)userId {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactId = %@ and groupId = nil and deletedFlag = %@",userId,@(NO)];
     [messageFetchRequest setPredicate:predicate];
@@ -839,7 +839,7 @@
 
 - (ALMessage *)getLatestMessageForChannel:(NSNumber *)channelKey
                  excludeChannelOperations:(BOOL)flag {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSFetchRequest *messageFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_Message"];
 
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"groupId = %@ and deletedFlag = %@",channelKey,@(NO)];
@@ -917,7 +917,7 @@
 
 - (void)updateMessageReplyType:(NSString *)messageKeyString replyType:(NSNumber *)type hideFlag:(BOOL)flag {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
 
     DB_Message *replyMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKeyString];
 
@@ -945,7 +945,7 @@
         return;
     }
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     dbMessage.key = messageKeyString;
     dbMessage.inProgress = [NSNumber numberWithBool:NO];
     dbMessage.isUploadFailed = [NSNumber numberWithBool:NO];
@@ -1068,7 +1068,7 @@
 
 - (NSMutableArray *)getLatestMessagesForContact {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSMutableArray *messagesArray = [NSMutableArray new];
 
     // Find all message only have contact ...
@@ -1108,7 +1108,7 @@
 
 - (NSMutableArray *)getLatestMessagesForGroup {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSMutableArray *messagesArray = [NSMutableArray new];
 
     // get all unique contacts
@@ -1167,7 +1167,7 @@
         dbMessage.inProgress = [NSNumber numberWithBool:NO];
         dbMessage.isUploadFailed = [NSNumber numberWithBool:YES];
         dbMessage.sentToServer= [NSNumber numberWithBool:NO];
-        [[ALDBHandler sharedInstance] saveContext];
+        [[KMCoreDBHandler sharedInstance] saveContext];
     }
     return message;
 }
@@ -1222,7 +1222,7 @@
     [imageData writeToFile:filePath atomically:YES];
 
     if (messageEntity) {
-        [[ALDBHandler sharedInstance] saveContext];
+        [[KMCoreDBHandler sharedInstance] saveContext];
         return [[ALMessageDBService new] createMessageEntity:messageEntity];
     }
     return messageObject;
@@ -1230,7 +1230,7 @@
 
 - (DB_Message*)addAttachmentMessage:(ALMessage *)message {
 
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
     DB_Message *dbMessageEntity = [messageDBService createMessageEntityForDBInsertionWithMessage:message];
 
@@ -1253,7 +1253,7 @@
 - (void)updateMessageMetadataOfKey:(NSString *)messageKey
                       withMetadata:(NSMutableDictionary *)metadata {
     ALSLog(ALLoggerSeverityInfo, @"Updating message metadata in local db for key : %@", messageKey);
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
 
     DB_Message *dbMessage = (DB_Message *)[self getMessageByKey:@"key" value:messageKey];
     if (dbMessage) {

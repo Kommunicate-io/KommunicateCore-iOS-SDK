@@ -13,7 +13,7 @@
 #import "ALMessage.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALMessageDBService.h"
-#import "ALDBHandler.h"
+#import "KMCoreDBHandler.h"
 #import "KMCoreChannelService.h"
 #import "ALSyncMessageFeed.h"
 #import "ALUtilityClass.h"
@@ -238,7 +238,7 @@
 }
 
 - (void)addWelcomeMessage:(NSNumber *)channelKey {
-    ALDBHandler *alDBHandler = [ALDBHandler sharedInstance];
+    KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     ALMessageDBService *messageDBService = [[ALMessageDBService alloc]init];
 
     ALMessage *alMessage = [ALMessage new];
