@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/NSManagedObject.h>
 #import "ALJson.h"
-#import "ALConversationProxy.h"
+#import "KMCoreConversationProxy.h"
 
 @interface KMCoreChannelResponse :  ALJson
 
@@ -21,7 +21,7 @@
 @property (nonatomic) short type;
 @property (nonatomic, strong) NSNumber *userCount;
 @property (nonatomic, strong) NSNumber *unreadCount;
-@property (nonatomic, strong) ALConversationProxy *conversationProxy;
+@property (nonatomic, strong) KMCoreConversationProxy *conversationProxy;
 @property (nonatomic, strong) NSNumber *notificationAfterTime;
 @property (nonatomic, strong) NSNumber *deletedAtTime;
 @property (nonatomic, strong) NSMutableDictionary *metadata;

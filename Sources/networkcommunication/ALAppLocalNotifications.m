@@ -15,7 +15,7 @@
 #import "KMCoreMessageService.h"
 #import "ALUserService.h"
 #import "ALMQTTConversationService.h"
-#import "ALConversationService.h"
+#import "KMCoreConversationService.h"
 #import "KMCoreSettings.h"
 #import "ALLogger.h"
 

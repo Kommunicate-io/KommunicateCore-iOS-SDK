@@ -1,5 +1,5 @@
 //
-//  ALConversationClientService.h
+//  KMCoreConversationClientService.h
 //  Kommunicate
 //
 //  Created by Divjyot Singh on 04/03/16.
@@ -8,15 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "ALConstant.h"
-#import "ALConversationCreateResponse.h"
-#import "ALConversationProxy.h"
+#import "KMCoreConversationCreateResponse.h"
+#import "KMCoreConversationProxy.h"
 #import "ALResponseHandler.h"
 
-@interface ALConversationClientService : NSObject
+@interface KMCoreConversationClientService : NSObject
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
-- (void)createConversation:(ALConversationProxy *)alConversationProxy
-           withCompletion:(void(^)(NSError *error, ALConversationCreateResponse *response))completion;
+- (void)createConversation:(KMCoreConversationProxy *)alConversationProxy
+           withCompletion:(void(^)(NSError *error, KMCoreConversationCreateResponse *response))completion;
 
 - (void)fetchTopicDetails:(NSNumber *)alConversationProxyID andCompletion:(void (^)(NSError *, ALAPIResponse *))completion;
 @end

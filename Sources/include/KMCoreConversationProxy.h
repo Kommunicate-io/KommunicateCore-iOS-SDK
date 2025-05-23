@@ -1,5 +1,5 @@
 //
-//  ALConversationProxy.h
+//  KMCoreConversationProxy.h
 //  Kommunicate
 //
 //  Created by devashish on 07/01/2016.
@@ -11,7 +11,7 @@
 #import "ALTopicDetail.h"
 #import "DB_ConversationProxy.h"
 
-@interface ALConversationProxy : ALJson
+@interface KMCoreConversationProxy : ALJson
 
 @property (nonatomic, strong) NSNumber *Id;
 @property (nonatomic, strong) NSString *topicId;
@@ -28,7 +28,7 @@
 - (void)parseMessage:(id)messageJson;
 - (id)initWithDictonary:(NSDictionary *)messageDictonary;
 - (ALTopicDetail *)getTopicDetail;
-+ (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy;
++ (NSMutableDictionary *)getDictionaryForCreate:(KMCoreConversationProxy *)alConversationProxy;
 - (void)setSenderSMSFormat:(NSString *)senderFormatString;
 - (void)setReceiverSMSFormat:(NSString *)recieverFormatString;
 

@@ -57,7 +57,7 @@
     NSDictionary *conversationProxyDictionary = [messagejson valueForKey:@"conversationPxys"];
     
     for (NSDictionary *theDictionary in conversationProxyDictionary) {
-        ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:theDictionary];
+        KMCoreConversationProxy *conversationProxy = [[KMCoreConversationProxy alloc] initWithDictonary:theDictionary];
         conversationProxy.userId = self.userId;
         conversationProxy.groupId = self.groupId;
         [conversationProxyList addObject:conversationProxy];

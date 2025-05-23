@@ -1,19 +1,19 @@
 //
-//  ALConversationService.m
+//  KMCoreConversationService.m
 //  Kommunicate
 //
 //  Created by Devashish on 27/02/16.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALConversationService.h"
-#import "ALConversationProxy.h"
-#import "ALConversationDBService.h"
+#import "KMCoreConversationService.h"
+#import "KMCoreConversationProxy.h"
+#import "KMCoreConversationDBService.h"
 #import "DB_ConversationProxy.h"
-#import "ALConversationClientService.h"
+#import "KMCoreConversationClientService.h"
 #import "ALLogger.h"
 
-@implementation ALConversationService
+@implementation KMCoreConversationService
 
 #pragma mark - Init
 
@@ -28,13 +28,13 @@
 #pragma mark - Setup service
 
 -(void)setupServices {
-    self.conversationClientService = [[ALConversationClientService alloc] init];
-    self.conversationDBService = [[ALConversationDBService alloc] init];
+    self.conversationClientService = [[KMCoreConversationClientService alloc] init];
+    self.conversationDBService = [[KMCoreConversationDBService alloc] init];
 }
 
 #pragma mark - Get conversation by key
 
-- (ALConversationProxy *)getConversationByKey:(NSNumber *)conversationKey {
+- (KMCoreConversationProxy *)getConversationByKey:(NSNumber *)conversationKey {
     
     DB_ConversationProxy *dbConversation = [self.conversationDBService getConversationProxyByKey:conversationKey];
     if (dbConversation == nil) {
@@ -53,9 +53,9 @@
     [self.conversationDBService insertConversationProxyTopicDetails:conversations];
 }
 
-- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
+- (KMCoreConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
-    ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc]init];
+    KMCoreConversationProxy *alConversationProxy = [[KMCoreConversationProxy alloc]init];
     alConversationProxy.groupId = dbConversation.groupId;
     alConversationProxy.userId = dbConversation.userId;
     alConversationProxy.topicDetailJson = dbConversation.topicDetailJson;
@@ -74,7 +74,7 @@
         return result;
     }
     for (DB_ConversationProxy *dbConversation in conversationArray) {
-        ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
+        KMCoreConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
     
@@ -92,7 +92,7 @@
         return result;
     }
     for (DB_ConversationProxy *dbConversation in conversationArray) {
-        ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
+        KMCoreConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
     return result;
@@ -103,7 +103,7 @@
     NSArray *conversationArray = [self.conversationDBService getConversationProxyListFromDBWithChannelKey:channelKey];
     
     for (DB_ConversationProxy *dbConversation in conversationArray) {
-        ALConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
+        KMCoreConversationProxy *conversation = [self convertAlConversationProxy:dbConversation];
         [result addObject:conversation];
     }
     return  result;
@@ -111,25 +111,25 @@
 
 #pragma mark - Create conversation
 
-- (void)createConversation:(ALConversationProxy *)alConversationProxy
-            withCompletion:(void(^)(NSError *error, ALConversationProxy *proxy))completion {
+- (void)createConversation:(KMCoreConversationProxy *)alConversationProxy
+            withCompletion:(void(^)(NSError *error, KMCoreConversationProxy *proxy))completion {
     
     
     NSArray *conversationArray = [[NSArray alloc] initWithArray:[self getConversationProxyListForUserID:alConversationProxy.userId andTopicId:alConversationProxy.topicId]];
     
     
     if (conversationArray.count != 0) {
-        ALConversationProxy *conversationProxy = conversationArray[0];
+        KMCoreConversationProxy *conversationProxy = conversationArray[0];
         ALSLog(ALLoggerSeverityInfo, @"Conversation Proxy List Found In DB :%@",conversationProxy.topicDetailJson);
         completion(nil, conversationProxy);
     } else {
-        [self.conversationClientService createConversation:alConversationProxy withCompletion:^(NSError *error, ALConversationCreateResponse *response) {
+        [self.conversationClientService createConversation:alConversationProxy withCompletion:^(NSError *error, KMCoreConversationCreateResponse *response) {
             
             if (!error) {
                 NSMutableArray *proxyArr = [[NSMutableArray alloc] initWithObjects:response.alConversationProxy, nil];
                 [self addConversations:proxyArr];
             } else {
-                ALSLog(ALLoggerSeverityError, @"ALConversationService : Error creatingConversation ");
+                ALSLog(ALLoggerSeverityError, @"KMCoreConversationService : Error creatingConversation ");
             }
             completion(error, response.alConversationProxy);
         }];
@@ -140,9 +140,9 @@
 #pragma mark - Fetch topic detail
 
 - (void)fetchTopicDetails:(NSNumber *)alConversationProxyID
-           withCompletion:(void(^)(NSError *error, ALConversationProxy *alConversationProxy))completion {
+           withCompletion:(void(^)(NSError *error, KMCoreConversationProxy *alConversationProxy))completion {
     
-    ALConversationProxy *alConversationProxy = [self getConversationByKey:alConversationProxyID];
+    KMCoreConversationProxy *alConversationProxy = [self getConversationByKey:alConversationProxyID];
     
     if (alConversationProxy != nil){
         ALSLog(ALLoggerSeverityInfo, @"Conversation/Topic Alerady exists");
@@ -154,7 +154,7 @@
         
         if (!error) {
             ALSLog(ALLoggerSeverityInfo, @"ALAPIResponse: FETCH TOPIC DEATIL  %@",response);
-            ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:response.response];
+            KMCoreConversationProxy *conversationProxy = [[KMCoreConversationProxy alloc] initWithDictonary:response.response];
             NSMutableArray *conversationProxyArray = [[NSMutableArray alloc] initWithObjects:conversationProxy, nil];
             [self addConversations:conversationProxyArray];
             completion(nil, conversationProxy);

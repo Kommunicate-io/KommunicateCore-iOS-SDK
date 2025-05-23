@@ -1,13 +1,13 @@
 //
-//  ALConversationClientService.m
+//  KMCoreConversationClientService.m
 //  Kommunicate
 //
 //  Created by Divjyot Singh on 04/03/16.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALConversationClientService.h"
-#import "ALConversationDBService.h"
+#import "KMCoreConversationClientService.h"
+#import "KMCoreConversationDBService.h"
 #import "ALRequestHandler.h"
 #import "ALResponseHandler.h"
 #import "ALLogger.h"
@@ -15,7 +15,7 @@
 static NSString *const CREATE_CONVERSATION_URL = @"/rest/ws/conversation/id";
 static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topicId";
 
-@implementation ALConversationClientService
+@implementation KMCoreConversationClientService
 
 - (instancetype)init
 {
@@ -32,12 +32,12 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
 
 #pragma mark - Create conversation
 
-- (void)createConversation:(ALConversationProxy *)alConversationProxy
-            withCompletion:(void(^)(NSError *error, ALConversationCreateResponse *response))completion {
+- (void)createConversation:(KMCoreConversationProxy *)alConversationProxy
+            withCompletion:(void(^)(NSError *error, KMCoreConversationCreateResponse *response))completion {
     
     NSString *conversationURLString = [NSString stringWithFormat:@"%@%@", KBASE_URL, CREATE_CONVERSATION_URL];
     
-    NSDictionary *dictionaryToSend = [NSDictionary dictionaryWithDictionary:[ALConversationProxy getDictionaryForCreate:alConversationProxy]];
+    NSDictionary *dictionaryToSend = [NSDictionary dictionaryWithDictionary:[KMCoreConversationProxy getDictionaryForCreate:alConversationProxy]];
     
     NSError *error;
     NSData *postdata = [NSJSONSerialization dataWithJSONObject:dictionaryToSend options:0 error:&error];
@@ -45,12 +45,12 @@ static NSString *const FETCH_CONVERSATION_DETAILS = @"/rest/ws/conversation/topi
     NSMutableURLRequest *conversationRequest = [ALRequestHandler createPOSTRequestWithUrlString:conversationURLString paramString:conversationParamString];
     [self.responseHandler authenticateAndProcessRequest:conversationRequest andTag:@"CREATE_CONVERSATION" WithCompletionHandler:^(id theJson, NSError *theError) {
         
-        ALConversationCreateResponse *response = nil;
+        KMCoreConversationCreateResponse *response = nil;
         
         if (theError) {
             ALSLog(ALLoggerSeverityError, @"ERROR IN CREATE_CONVERSATION %@", theError);
         } else {
-            response = [[ALConversationCreateResponse alloc] initWithJSONString:theJson];
+            response = [[KMCoreConversationCreateResponse alloc] initWithJSONString:theJson];
         }
         ALSLog(ALLoggerSeverityInfo, @"SEVER RESPONSE FROM JSON CREATE_CONVERSATION : %@", theJson);
         completion(theError, response);

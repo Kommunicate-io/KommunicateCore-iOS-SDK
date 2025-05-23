@@ -433,7 +433,7 @@
 
 - (NSMutableArray *)fetchLatestConversationsGroupByContactId:(BOOL)isFetchOnCreatedAtTime {
 
-    ALConversationListRequest *conversationListRequest = [[ALConversationListRequest alloc] init];
+    KMCoreConversationListRequest *conversationListRequest = [[KMCoreConversationListRequest alloc] init];
 
     NSMutableArray *sortedArray = [self fetchLatestMessagesFromDatabaseWithRequestList:conversationListRequest];
 
@@ -444,7 +444,7 @@
     return sortedArray;
 }
 
-- (NSMutableArray *)fetchLatestMessagesFromDatabaseWithRequestList:(ALConversationListRequest *)conversationListRequest {
+- (NSMutableArray *)fetchLatestMessagesFromDatabaseWithRequestList:(KMCoreConversationListRequest *)conversationListRequest {
 
     NSPredicate *predicateCreatedAt;
     if (conversationListRequest.endTimeStamp

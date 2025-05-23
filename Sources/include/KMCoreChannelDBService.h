@@ -12,7 +12,7 @@
 #import "DB_CHANNEL_USER_X.h"
 #import "KMCoreDBHandler.h"
 #import "KMCoreChannelUserX.h"
-#import "ALConversationProxy.h"
+#import "KMCoreConversationProxy.h"
 #import "DB_ConversationProxy.h"
 #import "KMCoreSettings.h"
 #import "KMCoreRealTimeUpdate.h"

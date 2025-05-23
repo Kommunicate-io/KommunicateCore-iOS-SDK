@@ -20,7 +20,7 @@
 #import "KMCoreUserDetail.h"
 #import "ALContactDBService.h"
 #import "ALContactService.h"
-#import "ALConversationService.h"
+#import "KMCoreConversationService.h"
 #import "KMCoreMessage.h"
 #include <tgmath.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -497,8 +497,8 @@ static KMCoreMessageClientService *alMsgClientService;
     }
 
     if (message.conversationId != nil) {
-        ALConversationService *alConversationService = [[ALConversationService alloc] init];
-        [alConversationService fetchTopicDetails:message.conversationId withCompletion:^(NSError *error, ALConversationProxy *proxy) {
+        KMCoreConversationService *alConversationService = [[KMCoreConversationService alloc] init];
+        [alConversationService fetchTopicDetails:message.conversationId withCompletion:^(NSError *error, KMCoreConversationProxy *proxy) {
         }];
     }
     return YES;

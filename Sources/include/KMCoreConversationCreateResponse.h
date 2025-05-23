@@ -1,5 +1,5 @@
 //
-//  ALConversationCreateResponse.h
+//  KMCoreConversationCreateResponse.h
 //  Kommunicate
 //
 //  Created by Divjyot Singh on 04/03/16.
@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "ALAPIResponse.h"
-#import "ALConversationProxy.h"
+#import "KMCoreConversationProxy.h"
 
-@interface ALConversationCreateResponse : ALAPIResponse
+@interface KMCoreConversationCreateResponse : ALAPIResponse
 
-@property (nonatomic, strong) ALConversationProxy *alConversationProxy;
+@property (nonatomic, strong) KMCoreConversationProxy *alConversationProxy;
 - (instancetype)initWithJSONString:(NSString *)JSONString;
 @end

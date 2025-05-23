@@ -17,7 +17,7 @@
 #import "KMCoreChannelService.h"
 #import "ALSyncMessageFeed.h"
 #import "ALUtilityClass.h"
-#import "ALConversationService.h"
+#import "KMCoreConversationService.h"
 #import "MessageListRequest.h"
 #import "ALUserBlockResponse.h"
 #import "ALUserService.h"
@@ -383,7 +383,7 @@
 
         KMCoreMessageDBService *alMessageDBService = [[KMCoreMessageDBService alloc] init];
         [alMessageDBService addMessageList:messageListResponse.messageList skipAddingMessageInDb:isOpenGroup];
-        ALConversationService *alConversationService = [[ALConversationService alloc] init];
+        KMCoreConversationService *alConversationService = [[KMCoreConversationService alloc] init];
         [alConversationService addConversations:messageListResponse.conversationPxyList];
 
         KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];
@@ -770,7 +770,7 @@ NSString *latSyncCallTime = @"";
 
         KMCoreChannelFeed *alChannelFeed = [[KMCoreChannelFeed alloc] initWithJSONString:theJson];
 
-        ALConversationService *alConversationService = [[ALConversationService alloc] init];
+        KMCoreConversationService *alConversationService = [[KMCoreConversationService alloc] init];
         [alConversationService addConversations:alChannelFeed.conversationProxyList];
 
         KMCoreChannelService *channelService = [[KMCoreChannelService alloc] init];

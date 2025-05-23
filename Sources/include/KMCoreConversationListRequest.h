@@ -1,5 +1,5 @@
 //
-//  ALConversationListRequest.h
+//  KMCoreConversationListRequest.h
 //  KommunicateCore
 //
 //  Created by Sunil on 08/04/21.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ALConversationListRequest : NSObject
+@interface KMCoreConversationListRequest : NSObject
 
 @property(nonatomic,retain) NSNumber *startTimeStamp;
 @property(nonatomic,retain) NSNumber *endTimeStamp;

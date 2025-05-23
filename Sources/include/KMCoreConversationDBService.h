@@ -1,5 +1,5 @@
 //
-//  ALConversationDBService.h
+//  KMCoreConversationDBService.h
 //  Kommunicate
 //
 //  Created by Devashish on 27/02/16.
@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "DB_ConversationProxy.h"
-#import "ALConversationProxy.h"
+#import "KMCoreConversationProxy.h"
 
-@interface ALConversationDBService : NSObject
+@interface KMCoreConversationDBService : NSObject
 
 - (void)insertConversationProxy:(NSMutableArray *)proxyArray;
 
-- (DB_ConversationProxy *)createConversationProxy:(ALConversationProxy *)conversationProxy;
+- (DB_ConversationProxy *)createConversationProxy:(KMCoreConversationProxy *)conversationProxy;
 
 - (DB_ConversationProxy *)getConversationProxyByKey:(NSNumber *)Id;
 

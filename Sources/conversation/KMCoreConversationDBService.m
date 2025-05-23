@@ -1,16 +1,16 @@
 //
-//  ALConversationDBService.m
+//  KMCoreConversationDBService.m
 //  Kommunicate
 //
 //  Created by Devashish on 27/02/16.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALConversationDBService.h"
+#import "KMCoreConversationDBService.h"
 #import "KMCoreDBHandler.h"
 #import "ALLogger.h"
 
-@implementation ALConversationDBService
+@implementation KMCoreConversationDBService
 
 - (void)insertConversationProxy:(NSMutableArray *)proxyArray {
     if (proxyArray == nil || !proxyArray.count) {
@@ -19,7 +19,7 @@
 
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     
-    for (ALConversationProxy *proxy in proxyArray) {
+    for (KMCoreConversationProxy *proxy in proxyArray) {
         [self createConversationProxy:proxy];
     }
 
@@ -34,7 +34,7 @@
 
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     
-    for (ALConversationProxy *proxy in proxyArray) {
+    for (KMCoreConversationProxy *proxy in proxyArray) {
         DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:proxy.Id];
         if (!dbConversationProxy) {
             dbConversationProxy.topicDetailJson = proxy.topicDetailJson;
@@ -50,7 +50,7 @@
 
 }
 
-- (DB_ConversationProxy *)createConversationProxy:(ALConversationProxy *)conversationProxy {
+- (DB_ConversationProxy *)createConversationProxy:(KMCoreConversationProxy *)conversationProxy {
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     DB_ConversationProxy *dbConversationProxy = [self getConversationProxyByKey:conversationProxy.Id];
     if (!dbConversationProxy) {

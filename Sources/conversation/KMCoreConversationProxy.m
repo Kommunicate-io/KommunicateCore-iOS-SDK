@@ -1,26 +1,26 @@
 //
-//  ALConversationProxy.m
+//  KMCoreConversationProxy.m
 //  Kommunicate
 //
 //  Created by devashish on 07/01/2016.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALConversationProxy.h"
+#import "KMCoreConversationProxy.h"
 #import "DB_ConversationProxy.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALLogger.h"
 
-@implementation ALConversationProxy
+@implementation KMCoreConversationProxy
 
 - (id)initWithDictonary:(NSDictionary *)messageDictonary {
     [self parseMessage:messageDictonary];
     return self;
 }
 
-- (ALConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
+- (KMCoreConversationProxy *)convertAlConversationProxy:(DB_ConversationProxy *)dbConversation {
     
-    ALConversationProxy *alConversationProxy = [[ALConversationProxy alloc] init];
+    KMCoreConversationProxy *alConversationProxy = [[KMCoreConversationProxy alloc] init];
     
     alConversationProxy.created = dbConversation.created.boolValue;
     alConversationProxy.closed = dbConversation.closed.boolValue;
@@ -54,7 +54,7 @@
     return (self.topicDetailJson)?[[ALTopicDetail alloc] initWithDictonary:JSONDictionary]: nil;
 }
 
-+ (NSMutableDictionary *)getDictionaryForCreate:(ALConversationProxy *)alConversationProxy {
++ (NSMutableDictionary *)getDictionaryForCreate:(KMCoreConversationProxy *)alConversationProxy {
     
     NSMutableDictionary *requestDictionary = [[NSMutableDictionary alloc] init];
     [requestDictionary setValue:alConversationProxy.topicId forKey:@"topicId"];

@@ -17,7 +17,7 @@
 #import "KMCoreMessageInfoResponse.h"
 #import "ALMQTTConversationService.h"
 #import "KMCoreRealTimeUpdate.h"
-#import "ALConversationProxy.h"
+#import "KMCoreConversationProxy.h"
 #import "KMCoreMessageClientService.h"
 #import "ALUserService.h"
 #import "KMCoreChannelService.h"

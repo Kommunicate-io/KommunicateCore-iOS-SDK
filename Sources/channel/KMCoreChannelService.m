@@ -8,7 +8,7 @@
 
 #import "KMCoreChannelService.h"
 #import "KMCoreMessageClientService.h"
-#import "ALConversationService.h"
+#import "KMCoreConversationService.h"
 #import "KMCoreChannelUser.h"
 #import "ALMuteRequest.h"
 #import "ALAPIResponse.h"
@@ -60,7 +60,7 @@ dispatch_queue_t channelUserbackgroundQueue;
     [self.channelDBService insertChannel:alChannelFeed.channelFeedsList];
 
     //callForChannelProxy inserting in DB...
-    ALConversationService *alConversationService = [[ALConversationService alloc] init];
+    KMCoreConversationService *alConversationService = [[KMCoreConversationService alloc] init];
     [alConversationService addConversations:alChannelFeed.conversationProxyList];
 
     [self saveChannelUsersAndChannelDetails:alChannelFeed.channelFeedsList calledFromMessageList:YES];

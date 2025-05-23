@@ -1,14 +1,14 @@
 //
-//  ALConversationCreateResponse.m
+//  KMCoreConversationCreateResponse.m
 //  Kommunicate
 //
 //  Created by Divjyot Singh on 04/03/16.
 //  Copyright © 2016 kommunicate. All rights reserved.
 //
 
-#import "ALConversationCreateResponse.h"
+#import "KMCoreConversationCreateResponse.h"
 
-@implementation ALConversationCreateResponse
+@implementation KMCoreConversationCreateResponse
 
 
 - (instancetype)initWithJSONString:(NSString *)JSONString {
@@ -17,7 +17,7 @@
     
     if ([super.status isEqualToString: AL_RESPONSE_SUCCESS]) {
         NSDictionary *JSONDictionary = [[JSONString valueForKey:@"response"] valueForKey:@"conversationPxy"];
-        self.alConversationProxy = [[ALConversationProxy alloc] initWithDictonary:JSONDictionary];
+        self.alConversationProxy = [[KMCoreConversationProxy alloc] initWithDictonary:JSONDictionary];
         
         return self;
     } else {

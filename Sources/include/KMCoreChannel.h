@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/NSManagedObject.h>
 #import "ALJson.h"
-#import "ALConversationProxy.h"
+#import "KMCoreConversationProxy.h"
 
 static NSString *const AL_CHANNEL_DEFAULT_MUTE = @"MUTE";
 static NSString *const AL_CHANNEL_CONVERSATION_STATUS = @"CONVERSATION_STATUS";
@@ -58,7 +58,7 @@ typedef enum {
 @property (nonatomic, strong) NSMutableArray *membersName;
 @property (nonatomic, strong) NSMutableArray *membersId;
 @property (nonatomic, strong) NSMutableArray *removeMembers;
-@property (nonatomic, strong) ALConversationProxy *conversationProxy;
+@property (nonatomic, strong) KMCoreConversationProxy *conversationProxy;
 @property (nonatomic, strong) NSNumber *parentKey;
 @property (nonatomic, strong) NSString *parentClientKey;
 @property (nonatomic, strong) NSMutableArray *groupUsers;

@@ -12,7 +12,7 @@
 #import "KMCoreMessage.h"
 #import "ALFileMetaInfo.h"
 #import "MessageListRequest.h"
-#import "ALConversationListRequest.h"
+#import "KMCoreConversationListRequest.h"
 
 @class KMCoreMessageService;
 
@@ -111,6 +111,6 @@
 
 /// Returns a list of last messages for group and contact based on the startTime or endTime
 /// @param conversationListRequest Used for passing the startTime or endTime
-- (NSMutableArray *)fetchLatestMessagesFromDatabaseWithRequestList:(ALConversationListRequest *)conversationListRequest;
+- (NSMutableArray *)fetchLatestMessagesFromDatabaseWithRequestList:(KMCoreConversationListRequest *)conversationListRequest;
 
 @end

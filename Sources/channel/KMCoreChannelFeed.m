@@ -7,7 +7,7 @@
 //
 
 #import "KMCoreChannelFeed.h"
-#import "ALConversationProxy.h"
+#import "KMCoreConversationProxy.h"
 
 @implementation KMCoreChannelFeed
 
@@ -29,7 +29,7 @@
     
     NSDictionary *conversationProxyDictinoary = [json valueForKey:@"conversationPxys"];
     for (NSDictionary *theDictionary in conversationProxyDictinoary) {
-        ALConversationProxy *conversationProxy = [[ALConversationProxy alloc] initWithDictonary:theDictionary];
+        KMCoreConversationProxy *conversationProxy = [[KMCoreConversationProxy alloc] initWithDictonary:theDictionary];
         [conversationProxyArray addObject:conversationProxy];
     }
     self.conversationProxyList = conversationProxyArray;
