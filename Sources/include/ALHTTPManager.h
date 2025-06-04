@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ALUploadTask.h"
 #import "ALDownloadTask.h"
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "KommunicateClient.h"
 
 @interface ALHTTPManager : NSObject <NSURLSessionDataDelegate,NSURLSessionDelegate>
@@ -28,9 +28,9 @@
 
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
-- (void)processDownloadForMessage:(ALMessage *)alMessage isAttachmentDownload:(BOOL)attachmentDownloadFlag;
+- (void)processDownloadForMessage:(KMCoreMessage *)alMessage isAttachmentDownload:(BOOL)attachmentDownloadFlag;
 
-- (void)processUploadFileForMessage:(ALMessage *)message uploadURL:(NSString *)uploadURL;
+- (void)processUploadFileForMessage:(KMCoreMessage *)message uploadURL:(NSString *)uploadURL;
 
 - (void)uploadProfileImage:(UIImage *)profileImage
              withFilePath:(NSString *)filePath

@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessageService.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageService.h"
+#import "KMCoreMessageDBService.h"
 #import "ALUserService.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALRegistrationResponse.h"
 #import "KMCoreUser.h"
 
@@ -24,29 +24,29 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
 /// This delegate callback will be called on bytes downloaded in attachment with message object.
 /// @param bytesReceived It will have total bytes received so far.
 /// @param alMessage It will have a message which can be used for identifying which attachment is currently downloading using the message key.
-- (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(ALMessage *)alMessage;
+- (void)onUpdateBytesDownloaded:(int64_t)bytesReceived withMessage:(KMCoreMessage *)alMessage;
 
 /// This delegate callback will be called on the progress of uploading bytes.
 /// @param bytesSent Bytes uploaded to the server so far.
-/// @param alMessage It will have ALMessage which can be used for identifying which attachment is currently uploading using messageKey.
-- (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(ALMessage *)alMessage;
+/// @param alMessage It will have KMCoreMessage which can be used for identifying which attachment is currently uploading using messageKey.
+- (void)onUpdateBytesUploaded:(int64_t)bytesSent withMessage:(KMCoreMessage *)alMessage;
 
 /// This delegate callback will be called once the attachment upload is failed.
 /// @param alMessage It will have a message which can be used for identifying which attachment is failed for uploading using the message key.
-- (void)onUploadFailed:(ALMessage *)alMessage;
+- (void)onUploadFailed:(KMCoreMessage *)alMessage;
 
 /// This delegate callback will be called once the download failed.
 /// @param alMessage It will have a message which can be used for identifying which attachment is currently downloading using the message key.
-- (void)onDownloadFailed:(ALMessage *)alMessage;
+- (void)onDownloadFailed:(KMCoreMessage *)alMessage;
 
 /// This delegate callback will be called once the uploading is completed.
 /// @param alMessage It will have a message which will have updated details like message key and file meta.
-/// @param oldMessageKey The old message key is used to identify the message in view for replacing the uploaded attachment ALMessage.
-- (void)onUploadCompleted:(ALMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey;
+/// @param oldMessageKey The old message key is used to identify the message in view for replacing the uploaded attachment KMCoreMessage.
+- (void)onUploadCompleted:(KMCoreMessage *)alMessage withOldMessageKey:(NSString *)oldMessageKey;
 
 /// This delegate callback will be called once the downloading is completed.
-/// @param alMessage It will have ALMessage.
-- (void)onDownloadCompleted:(ALMessage *)alMessage;
+/// @param alMessage It will have KMCoreMessage.
+- (void)onDownloadCompleted:(KMCoreMessage *)alMessage;
 
 @optional
 
@@ -55,10 +55,10 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
 @interface KommunicateClient : NSObject  <NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) id<KommunicateAttachmentDelegate>attachmentProgressDelegate;
-@property (nonatomic, retain) ALMessageService *messageService;
-@property (nonatomic, retain) ALMessageDBService *messageDbService;
+@property (nonatomic, retain) KMCoreMessageService *messageService;
+@property (nonatomic, retain) KMCoreMessageDBService *messageDbService;
 @property (nonatomic, retain) ALUserService *userService;
-@property (nonatomic, retain) ALChannelService *channelService;
+@property (nonatomic, retain) KMCoreChannelService *channelService;
 
 @property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 
@@ -83,27 +83,27 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
                             withCompletion:(void(^)(ALRegistrationResponse *rResponse, NSError *error))completion;
 
 /// This method is for sending an Attachment message in one-to-one or group conversation.
-/// @param attachmentMessage Pass the ALMessage object for sending an attachment message.
-- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage;
+/// @param attachmentMessage Pass the KMCoreMessage object for sending an attachment message.
+- (void)sendMessageWithAttachment:(KMCoreMessage *)attachmentMessage;
 
 /// This method is used for sending a text message in one-to-one or group conversation.
-/// @param alMessage Pass the ALMessage object for sending a text message
-/// @param completion In case of successful a message sent it will have ALMessage object with messagekey is updated and it as createdAtTime of the message which is created in our server else in case of any error it will have NSError.
-- (void)sendTextMessage:(ALMessage *)alMessage withCompletion:(void(^)(ALMessage *message, NSError *error))completion;
+/// @param alMessage Pass the KMCoreMessage object for sending a text message
+/// @param completion In case of successful a message sent it will have KMCoreMessage object with messagekey is updated and it as createdAtTime of the message which is created in our server else in case of any error it will have NSError.
+- (void)sendTextMessage:(KMCoreMessage *)alMessage withCompletion:(void(^)(KMCoreMessage *message, NSError *error))completion;
 
 /// This method is for getting the latest messages list of user and group, grouped by the latest messages with createdAtTime of the messages.
 /// @param isNextPage Pass YES or true in case if want to fetch the next set of messages else Make NO or false to load the first set of messages.
-/// @param completion NSMutableArray will have a list of ALMessage objects else it will have NSError in case of any error comes.
+/// @param completion NSMutableArray will have a list of KMCoreMessage objects else it will have NSError in case of any error comes.
 - (void)getLatestMessages:(BOOL)isNextPage withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error))completion;
 
 /// This method is used for fetching one-to-one or group chat messages.
 /// @param messageListRequest Pass the MessageListRequest in case of one-to-one pass the userId or channelKey in case of a group.
-/// @param completion If messages are fetched successfully it will have a list of ALMessage objects else it will have NSError in case of any error comes.
+/// @param completion If messages are fetched successfully it will have a list of KMCoreMessage objects else it will have NSError in case of any error comes.
 - (void)getMessages:(MessageListRequest *)messageListRequest withCompletionHandler:(void(^)(NSMutableArray *messageList, NSError *error))completion;
 
 /// Theis method is used for downloading an Attachment in conversation.
-/// @param alMessage Build and pass the ALMessage object.
-- (void)downloadMessageAttachment:(ALMessage*)alMessage;
+/// @param alMessage Build and pass the KMCoreMessage object.
+- (void)downloadMessageAttachment:(KMCoreMessage*)alMessage;
 
 /// This method is for creating a group like public group, open group, private group or group of two.
 /// Below are the types of the groups.
@@ -114,7 +114,7 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
 /// GROUP_OF_TWO = 7
 /// @param channelInfo Pass information about group deatils.
 /// @param completion it will be having complete  deatils about channel and status, if its error or success else it will have NSError.
-- (void)createChannelWithChannelInfo:(ALChannelInfo *)channelInfo withCompletion:(void(^)(ALChannelCreateResponse *response, NSError *error))completion;
+- (void)createChannelWithChannelInfo:(KMCoreChannelInfo *)channelInfo withCompletion:(void(^)(KMCoreChannelCreateResponse *response, NSError *error))completion;
 
 /// This method is used for removing a member from the group.
 /// @param userId Pass userId that wanted to remove from group/channel.
@@ -167,10 +167,10 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
 /// This method is used for getting channel/group information.
 /// @param channelKey Pass channelKey for the group/channel you want a deatils.
 /// @param clientChannelKey If you have client channelKey pass else pass it as nil.
-/// @param completion ALChannel object will have complete details of channel/group and AlChannelFeedResponse if any API error comes in group/channel then check channelResponse else check for NSError
+/// @param completion KMCoreChannel object will have complete details of channel/group and KMCoreChannelFeedResponse if any API error comes in group/channel then check channelResponse else check for NSError
 - (void)getChannelInformationWithChannelKey:(NSNumber *)channelKey
                          orClientChannelKey:(NSString *)clientChannelKey
-                             withCompletion:(void(^)(NSError *error, ALChannel *alChannel, AlChannelFeedResponse *channelResponse))completion;
+                             withCompletion:(void(^)(NSError *error, KMCoreChannel *alChannel, KMCoreChannelFeedResponse *channelResponse))completion;
 
 /// This method is used for logout user from applozic this will clear all data of login user.
 /// @param completion ALAPIResponse will be having a complete response like status else it will have NSError.
@@ -239,7 +239,7 @@ typedef NS_ENUM(NSInteger, KMCoreClientError) {
 /// @param isNextPage if you want to load the next set of messages pass YES or true to load else pass NO or false.
 /// @param isGroup To get groups messages only then pass YES or true it will give group latest messages else
 /// to get only user latest messages then pass NO or false.
-/// @param completion Array of messages of type ALMessage and error if failed to get the messages.
+/// @param completion Array of messages of type KMCoreMessage and error if failed to get the messages.
 - (void)getLatestMessages:(BOOL)isNextPage
            withOnlyGroups:(BOOL)isGroup
     withCompletionHandler: (void(^)(NSMutableArray *messageList, NSError *error))completion;

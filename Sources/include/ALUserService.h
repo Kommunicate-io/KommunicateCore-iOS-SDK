@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "ALConstant.h"
 #import "ALSyncMessageFeed.h"
-#import "ALMessageList.h"
-#import "ALMessage.h"
+#import "KMCoreMessageList.h"
+#import "KMCoreMessage.h"
 #import "DB_FileMetaInfo.h"
 #import "ALLastSeenSyncFeed.h"
 #import "ALUserClientService.h"
@@ -18,7 +18,7 @@
 #import "ALUserBlockResponse.h"
 #import "KMCoreRealTimeUpdate.h"
 #import "ALMuteRequest.h"
-#import "ALChannelService.h"
+#import "KMCoreChannelService.h"
 #import "ALContactService.h"
 #import "ALContactDBService.h"
 
@@ -27,7 +27,7 @@
 + (ALUserService *)sharedInstance;
 
 @property (nonatomic, strong) ALUserClientService *userClientService;
-@property (nonatomic, strong) ALChannelService *channelService;
+@property (nonatomic, strong) KMCoreChannelService *channelService;
 @property (nonatomic, strong) ALContactDBService *contactDBService;
 @property (nonatomic, strong) ALContactService *contactService;
 
@@ -47,11 +47,11 @@
 /// @param completion In case of a successful conversation marked as read, the error will be nil. Otherwise, in case of failure, the error will not be nil.
 - (void)markConversationAsRead:(NSString *)contactId withCompletion:(void (^)(NSString *, NSError *))completion;
 
-/// This method is used for marking a single message as read using paired message key from the ALMessage object.
-/// @param alMessage Pass the ALMessage object for marking the message as read.
-/// @param pairedkeyValue Pass the paired message key from the ALMessage object.
+/// This method is used for marking a single message as read using paired message key from the KMCoreMessage object.
+/// @param alMessage Pass the KMCoreMessage object for marking the message as read.
+/// @param pairedkeyValue Pass the paired message key from the KMCoreMessage object.
 /// @param completion In case of a successful message marked as read, the error will be nil. Otherwise, in case of failure, the error will not be nil.
-- (void)markMessageAsRead:(ALMessage *)alMessage
+- (void)markMessageAsRead:(KMCoreMessage *)alMessage
        withPairedkeyValue:(NSString *)pairedkeyValue
            withCompletion:(void (^)(NSString *, NSError *))completion;
 
@@ -156,6 +156,6 @@
 - (void)getListOfRegisteredContactsWithNextPage:(BOOL)nextPage
                                  withCompletion:(void(^)(NSMutableArray *contactArray, NSError *error))completion;
 
-- (void)markConversationReadInDataBaseWithMessage:(ALMessage *)alMessage;
+- (void)markConversationReadInDataBaseWithMessage:(KMCoreMessage *)alMessage;
 
 @end

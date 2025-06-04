@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 /*
  
  topicDetail = "{\"title\":\"Product on demand\",\"subtitle\":\"PID : 4398343dsjhsjdhsdj9\",\"link\":\"http://www.msupply.com/media/catalog/product/cache/1/image/400x492/9df78eab33525d08d6e5fb8d27136e95/E/L/ELEL10014724_1.jpg\",\"key1\":\"Qty\",\"value1\":\"50\",\"key2\":\"Price\",\"value2\":\"Rs.90\"}";
@@ -15,7 +15,7 @@
  },
  
  */
-@interface ALTopicDetail : ALJson
+@interface ALTopicDetail : KMCoreJson
 
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *subtitle;

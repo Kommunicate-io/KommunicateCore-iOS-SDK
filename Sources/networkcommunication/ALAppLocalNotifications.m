@@ -9,13 +9,13 @@
 #import "ALAppLocalNotifications.h"
 #import "ALUtilityClass.h"
 #import "ALPushAssist.h"
-#import "ALMessageDBService.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageDBService.h"
+#import "KMCoreMessageService.h"
 #import "KMCoreUserDefaultsHandler.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageService.h"
 #import "ALUserService.h"
 #import "ALMQTTConversationService.h"
-#import "ALConversationService.h"
+#import "KMCoreConversationService.h"
 #import "KMCoreSettings.h"
 #import "ALLogger.h"
 
@@ -88,9 +88,9 @@
         if ([reachability isReachable]) {
             ALSLog(ALLoggerSeverityInfo, @"========== IF internetConnectionReach ============");
             [self proactivelyConnectMQTT];
-            [ALMessageService syncMessages];
+            [KMCoreMessageService syncMessages];
 
-            ALMessageService *messageService = [[ALMessageService alloc]init];
+            KMCoreMessageService *messageService = [[KMCoreMessageService alloc]init];
             [messageService processPendingMessages];
 
             ALUserService *userService = [ALUserService new];
@@ -121,7 +121,7 @@
 
 - (void)onAppDidBecomeActive:(NSNotification *)notification {
     [self proactivelyConnectMQTT];
-    [ALMessageService syncMessages];
+    [KMCoreMessageService syncMessages];
 }
 
 

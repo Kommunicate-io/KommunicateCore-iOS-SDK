@@ -19,9 +19,9 @@
 
 @property (retain, nonatomic) NSNumber *conversationId;
 
-@property (retain, nonatomic) ALMessage *alMessageObject;
+@property (retain, nonatomic) KMCoreMessage *alMessageObject;
 
-- (instancetype)initWithAlMessage:(ALMessage *)alMessage withAlertMessage: (NSString *)alertMessage;
+- (instancetype)initWithAlMessage:(KMCoreMessage *)alMessage withAlertMessage: (NSString *)alertMessage;
 
 - (void)showNativeNotificationWithcompletionHandler:(void (^)(BOOL))handler;
 

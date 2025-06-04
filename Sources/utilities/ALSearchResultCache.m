@@ -12,7 +12,7 @@
 @implementation ALSearchResultCache
 
 static ALSearchResultCache *sharedInstance = nil;
-NSCache<NSNumber *, ALChannel *> *channelCache;
+NSCache<NSNumber *, KMCoreChannel *> *channelCache;
 NSCache<NSString *, ALContact *> *contactCache;
 
 + (ALSearchResultCache *)shared {
@@ -25,8 +25,8 @@ NSCache<NSString *, ALContact *> *contactCache;
     return sharedInstance;
 }
 
-- (void)saveChannels:(NSMutableArray<ALChannel *> *)channels {
-    for (ALChannel *channel in channels) {
+- (void)saveChannels:(NSMutableArray<KMCoreChannel *> *)channels {
+    for (KMCoreChannel *channel in channels) {
         [channelCache setObject:channel forKey:channel.key];
     }
 }
@@ -59,7 +59,7 @@ NSCache<NSString *, ALContact *> *contactCache;
     return contact;
 }
 
-- (ALChannel *)getChannelWithId:(NSNumber *)key {
+- (KMCoreChannel *)getChannelWithId:(NSNumber *)key {
     return [channelCache objectForKey: key];
 }
 

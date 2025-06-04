@@ -8,7 +8,7 @@
 
 #import "ALSyncMessageFeed.h"
 
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 
 
 @implementation ALSyncMessageFeed
@@ -26,7 +26,7 @@
 - (void)parseMessagseArray:(id)theMessageDict {
     NSMutableArray *messagesArray = [NSMutableArray new];
     for (NSDictionary *theDictionary in theMessageDict) {
-        ALMessage *message = [[ALMessage alloc] initWithDictonary:theDictionary ];
+        KMCoreMessage *message = [[KMCoreMessage alloc] initWithDictonary:theDictionary ];
         [messagesArray addObject:message];
     }
     self.messagesList = messagesArray;

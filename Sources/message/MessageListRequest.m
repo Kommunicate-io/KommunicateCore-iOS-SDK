@@ -9,7 +9,7 @@
 #import "MessageListRequest.h"
 #import "KMCoreUserDefaultsHandler.h"
 #import "NSString+Encode.h"
-#import "ALChannel.h"
+#import "KMCoreChannel.h"
 #import "ALLogger.h"
 
 static NSString *const DEFAULT_PAGE_SIZE = @"50";

@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
 
-@interface ALFileMetaInfo : ALJson
+@interface ALFileMetaInfo : KMCoreJson
 
 @property (nonatomic,copy) NSString *key;
 @property (nonatomic,copy) NSString *userKey;

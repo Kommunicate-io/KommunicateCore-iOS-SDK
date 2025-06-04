@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 
 @interface ALUploadTask : NSObject
 
@@ -17,7 +17,7 @@
 
 @property (nonatomic, copy) NSString *identifier;
 
-@property (nonatomic, strong) ALMessage *message;
+@property (nonatomic, strong) KMCoreMessage *message;
 
 @property (nonatomic, strong) NSString *videoThumbnailName;
 

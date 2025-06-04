@@ -10,10 +10,10 @@
 #import "ALUtilityClass.h"
 #import "ALRegistrationResponse.h"
 #import "KMCoreUserDefaultsHandler.h"
-#import "ALMessageDBService.h"
+#import "KMCoreMessageDBService.h"
 #import "KMCoreSettings.h"
 #import "ALMQTTConversationService.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageService.h"
 #import "ALConstant.h"
 #import "ALUserService.h"
 #import "ALContactDBService.h"
@@ -468,7 +468,7 @@
     [KMCoreUserDefaultsHandler clearAll];
     [KMCoreSettings clearAll];
 
-    ALMessageDBService *messageDBService = [[ALMessageDBService alloc] init];
+    KMCoreMessageDBService *messageDBService = [[KMCoreMessageDBService alloc] init];
     [messageDBService deleteAllObjectsInCoreData];
 }
 
