@@ -33,7 +33,7 @@
 
 - (KMCoreChannel *)loadChannelByKey:(NSNumber *)key;
 
-- (DB_CHANNEL *)getChannelByKey:(NSNumber *)key;
+- (KMCoreChannel *)getChannelByKey:(NSNumber *)key;
 
 - (NSString *)userNamesWithCommaSeparatedForChannelkey:(NSNumber *)key;
 
