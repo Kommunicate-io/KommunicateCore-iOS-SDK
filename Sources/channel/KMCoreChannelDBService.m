@@ -729,9 +729,7 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
             }
             
             if (childKeysList.count) {
-                for (NSNumber *childKey in childKeysList) {
-                    [self updateChannelParentKey:childKey andWithParentKey:channelKey isAdding:YES];
-                }
+                [self updateParentForChildKeys:childKeysList andWithParentKey:channelKey isAdding:YES];
             }
             for (NSDictionary *chUserDict in channelUsers) {
                 KMCoreChannelUser *channelUser = [[KMCoreChannelUser alloc] initWithDictonary:chUserDict];
@@ -812,37 +810,46 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
     
 }
 
-- (void)updateChannelParentKey:(NSNumber *)channelKey
-              andWithParentKey:(NSNumber *)channelParentKey
+- (void)updateParentForChildKeys:(NSArray<NSNumber *> *)childKeys
+              andWithParentKey:(NSNumber *)parentKey
                       isAdding:(BOOL)flag {
     
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
     NSManagedObjectContext *backgroundContext = [[alDBHandler persistentContainer] newBackgroundContext];
-    
+    backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy;
+
     [backgroundContext performBlock:^{
+        NSMutableArray *allKeys = [childKeys mutableCopy];
+        if (parentKey) {
+            [allKeys addObject:parentKey];
+        }
+
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"DB_CHANNEL"];
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"channelKey IN {%@, %@}", channelKey, channelParentKey];
-        
-        NSError *error = nil;
-        NSArray *results = [backgroundContext executeFetchRequest:fetchRequest error:&error];
-        
-        if (error || results.count < 1) {
-            ALSLog(ALLoggerSeverityError, @"Failed to fetch parent or child channel: %@", error.localizedDescription);
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"channelKey IN %@", allKeys];
+
+        NSError *fetchError = nil;
+        NSArray *results = [backgroundContext executeFetchRequest:fetchRequest error:&fetchError];
+
+        if (fetchError || results.count == 0) {
+            ALSLog(ALLoggerSeverityError, @"[BatchUpdate] Fetch failed: %@", fetchError.localizedDescription);
             return;
         }
-        
-        DB_CHANNEL *childChannel = nil;
+
         DB_CHANNEL *parentChannel = nil;
-        
+        NSMutableDictionary<NSNumber *, DB_CHANNEL *> *channelMap = [NSMutableDictionary new];
+
         for (DB_CHANNEL *channel in results) {
-            if ([channel.channelKey isEqualToNumber:channelKey]) {
-                childChannel = channel;
-            } else if ([channel.channelKey isEqualToNumber:channelParentKey]) {
+            if ([channel.channelKey isEqualToNumber:parentKey]) {
                 parentChannel = channel;
+            } else {
+                channelMap[channel.channelKey] = channel;
             }
         }
-        
-        if (childChannel) {
+
+        for (NSNumber *childKey in childKeys) {
+            DB_CHANNEL *childChannel = channelMap[childKey];
+            if (!childChannel) continue;
+
             if (flag && parentChannel) {
                 childChannel.parentGroupKey = parentChannel.channelKey;
                 childChannel.parentClientGroupKey = parentChannel.clientChannelKey;
@@ -850,10 +857,12 @@ static int const CHANNEL_MEMBER_FETCH_LMIT = 5;
                 childChannel.parentGroupKey = nil;
                 childChannel.parentClientGroupKey = nil;
             }
-            
+        }
+
+        if ([backgroundContext hasChanges]) {
             NSError *saveError = nil;
-            if ([backgroundContext hasChanges] && ![backgroundContext save:&saveError]) {
-                ALSLog(ALLoggerSeverityError, @"Failed to save updated parent-child relation: %@", saveError.localizedDescription);
+            if (![backgroundContext save:&saveError]) {
+                ALSLog(ALLoggerSeverityError, @"[BatchUpdate] Save failed: %@", saveError.localizedDescription);
             }
         }
     }];

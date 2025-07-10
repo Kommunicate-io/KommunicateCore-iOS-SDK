@@ -73,9 +73,9 @@
 
 - (BOOL)isAdminBroadcastChannel:(NSNumber *)groupId;
 
-- (void)updateChannelParentKey:(NSNumber *)channelKey
-              andWithParentKey:(NSNumber *)channelParentKey
-                       isAdding:(BOOL)flag;
+- (void)updateParentForChildKeys:(NSArray<NSNumber *> *)childKeys
+              andWithParentKey:(NSNumber *)parentKey
+                        isAdding:(BOOL)flag;
 
 - (void)updateClientChannelParentKey:(NSString *)clientChildKey
              andWithClientParentKey:(NSString *)clientParentKey
