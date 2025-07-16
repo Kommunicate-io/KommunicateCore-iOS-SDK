@@ -311,6 +311,37 @@
     return [userDefaults boolForKey:key];
 }
 
++ (void)removeServerCallDoneForMSGListForContactIds:(NSArray<NSString *> *)contactIds {
+    if (!contactIds || contactIds.count == 0) {
+        return;
+    }
+
+    NSUserDefaults *userDefaults = [KMCoreUserDefaultsHandler getUserDefaults];
+
+    for (NSString *contactId in contactIds) {
+        if (contactId.length == 0) {
+            continue;
+        }
+
+        NSString *key = [KM_CORE_MSG_LIST_CALL_SUFIX stringByAppendingString:contactId];
+        [userDefaults removeObjectForKey:key];
+    }
+
+    [userDefaults synchronize];
+}
+
++ (void)setLastCleanupTimeForAgentApp:(NSDate *)date {
+    if (!date) return;
+    NSUserDefaults *userDefaults = [KMCoreUserDefaultsHandler getUserDefaults];
+    [userDefaults setObject:date forKey:KM_CORE_AGENT_APP_CLEANUP_LAST_TIME];
+    [userDefaults synchronize];
+}
+
++ (NSDate *)getLastCleanupTimeForAgentApp {
+    NSUserDefaults *userDefaults = [KMCoreUserDefaultsHandler getUserDefaults];
+    return [userDefaults objectForKey:KM_CORE_AGENT_APP_CLEANUP_LAST_TIME];
+}
+
 + (void)setProcessedNotificationIds:(NSMutableArray *)arrayWithIds {
     NSUserDefaults *userDefaults = [KMCoreUserDefaultsHandler getUserDefaults];
     [userDefaults setObject:arrayWithIds forKey:KM_CORE_PROCESSED_NOTIFICATION_IDS];

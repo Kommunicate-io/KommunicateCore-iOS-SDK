@@ -82,6 +82,7 @@ static NSString *const KM_CORE_INITIAL_MESSAGE_LIST_CALL = @"io.kommunicate.core
 static NSString *const KM_CORE_LOGGED_IN_USER_DEACTIVATED = @"io.kommunicate.core.userdefault.AL_LOGGED_IN_USER_DEACTIVATED";
 static NSString *const KM_CORE_CHANNEL_LIST_LAST_GENERATED_TIME = @"io.kommunicate.core.userdefault.AL_CHANNEL_LIST_LAST_GENERATED_TIME";
 static NSString *const KM_CORE_VOIP_DEVICE_TOKEN = @"io.kommunicate.core.userdefault.VOIP_DEVICE_TOKEN";
+static NSString *const KM_CORE_AGENT_APP_CLEANUP_LAST_TIME = @"io.kommunicate.core.userdefault.KM_CORE_AGENT_APP_CLEANUP_LAST_TIME";
 
 @interface KMCoreUserDefaultsHandler : NSObject
 
@@ -156,6 +157,12 @@ static NSString *const KM_CORE_VOIP_DEVICE_TOKEN = @"io.kommunicate.core.userdef
 + (void)setServerCallDoneForMSGList:(BOOL)value forContactId:(NSString *)constactId;
 
 + (BOOL)isServerCallDoneForMSGList:(NSString *)contactId;
+
++ (void)removeServerCallDoneForMSGListForContactIds:(NSArray<NSString *> *)contactIds;
+
++ (void)setLastCleanupTimeForAgentApp:(NSDate *)date;
+
++ (NSDate *)getLastCleanupTimeForAgentApp;
 
 + (void)setProcessedNotificationIds:(NSMutableArray *)arrayWithIds;
 
