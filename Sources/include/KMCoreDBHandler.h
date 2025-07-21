@@ -26,6 +26,9 @@ static NSString *const AL_SQLITE_FILE_NAME = @"AppLozic.sqlite";
 - (void)saveWithContext:(NSManagedObjectContext *)context
              completion:(void (^)(NSError *error))completion;
 
+- (void)executeFetchRequest:(NSFetchRequest *)fetchRequest
+             withCompletion:(void (^)(NSArray *result, NSError *error))completion;
+
 - (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchrequest withError:(NSError **)fetchError;
 
 - (NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name;

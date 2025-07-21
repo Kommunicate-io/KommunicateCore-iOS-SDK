@@ -210,9 +210,7 @@ dispatch_queue_t channelUserbackgroundQueue;
         [self.channelClientService addChildKeyList:childKeyList andParentKey:parentKey withCompletion:^(id json, NSError *error) {
             
             if (!error) {
-                for (NSNumber *childKey in childKeyList) {
-                    [weakSelf.channelDBService updateChannelParentKey:childKey andWithParentKey:parentKey isAdding:YES];
-                }
+                [weakSelf.channelDBService updateParentForChildKeys:childKeyList andWithParentKey:parentKey isAdding:YES];
             }
             completion(json, error);
         }];
@@ -227,9 +225,7 @@ dispatch_queue_t channelUserbackgroundQueue;
         [self.channelClientService removeChildKeyList:childKeyList andParentKey:parentKey withCompletion:^(id json, NSError *error) {
             
             if (!error) {
-                for (NSNumber *childKey in childKeyList) {
-                    [self.channelDBService updateChannelParentKey:childKey andWithParentKey:parentKey isAdding:NO];
-                }
+                [self.channelDBService updateParentForChildKeys:childKeyList andWithParentKey:parentKey isAdding:YES];
             }
             completion(json, error);
             

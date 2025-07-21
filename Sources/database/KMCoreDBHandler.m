@@ -232,6 +232,35 @@
     return fetchResultArray;
 }
 
+
+- (void)executeFetchRequest:(NSFetchRequest *)fetchRequest
+                withCompletion:(void (^)(NSArray *result, NSError *error))completion {
+
+    if (!self.persistentContainer) {
+        if (completion) {
+            NSError *error = [NSError errorWithDomain:@"KMCoreDBHandler"
+                                                 code:1001
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Persistent container is nil"}];
+            completion(nil, error);
+        }
+        return;
+    }
+
+    NSManagedObjectContext *backgroundContext = [self.persistentContainer newBackgroundContext];
+
+    [backgroundContext performBlock:^{
+        NSError *fetchError = nil;
+        NSArray *result = [backgroundContext executeFetchRequest:fetchRequest error:&fetchError];
+
+        if (completion) {
+            // Pass back to the original queue (usually main) if needed
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(result, fetchError);
+            });
+        }
+    }];
+}
+
 - (NSEntityDescription *)entityDescriptionWithEntityForName:(NSString *)name {
     if (!self.persistentContainer) {
         return nil;
