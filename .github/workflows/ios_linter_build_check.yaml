@@ -11,53 +11,69 @@ on:
       - reopened
 
 concurrency:
-  group: pr-${{ github.event.pull_request.number }}
+  # Improved concurrency to handle multiple PRs reliably.
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-and-lint:
     name: Build and Lint
-    runs-on: macos-latest
+    # Use a specific macOS version for stability.
+    runs-on: macos-15
     timeout-minutes: 10
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        # Pin to a specific major version to prevent unexpected changes.
+        uses: actions/checkout@v4
 
       - name: Set up Xcode
+        # Use the latest version of the action, pinning if preferred.
         uses: maxim-lobanov/setup-xcode@v1
         with:
+          # Use a specific Xcode version for reproducibility.
           xcode-version: '16.1.0'
 
+      - name: Cache CocoaPods dependencies
+        # Cache dependencies to significantly speed up runs.
+        id: cocoapods-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install Pods
+        # Run `pod install` only if the cache was not restored.
+        if: steps.cocoapods-cache.outputs.cache-hit != 'true'
+        run: |
+          # Use `bundle exec pod install` if you use a Gemfile for CocoaPods
+          pod install
+      
       - name: Run Linter Check
         run: |
           pod lib lint --allow-warnings
 
-      - name: Debug Environment Variables (Optional)
-        run: echo "Environment variables set successfully."
-
-      - name: Post Lint Test Results to PR
-        if: github.event_name == 'pull_request' && success()
+      - name: Post Lint Result to PR
+        # Combine success and failure into a single, reliable step.
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
           script: |
-            const comment = `✅ **iOS Lint Test Result**\nCongratulations! Linter Check Passed Successfully 🎉`;
+            const isSuccess = process.env.GITHUB_ACTION_STATUS === 'success';
+            const commentBody = isSuccess
+              ? '✅ **iOS Lint Test Result**\nCongratulations! Linter Check Passed Successfully 🎉'
+              : '❌ **iOS Lint Test Result**\nOops! Linter Check Failed. Please fix the issues.';
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment,
+              body: commentBody,
             });
-
-      - name: Post Lint Failure Result to PR
-        if: github.event_name == 'pull_request' && failure()
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const comment = `❌ **iOS Lint Test Result**\nOops! Linter Check Failed. Please fix the issues.`;
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment,
-            });
+        env:
+          GITHUB_ACTION_STATUS: ${{ job.status }}
