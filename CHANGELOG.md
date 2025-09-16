@@ -1,6 +1,9 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
+## [1.3.1] 2025-09-16
+- Real Time Status Fetch API Migration.
+- Bug Fixes.
 ## [1.3.0] 2025-04-25
 - Migration of Applozic to Kommunicate.
 ## [1.2.6] 2025-03-18
