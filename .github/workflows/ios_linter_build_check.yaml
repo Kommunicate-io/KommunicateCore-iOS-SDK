@@ -46,13 +46,6 @@ jobs:
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
-
-      - name: Install Pods
-        # Run `pod install` only if the cache was not restored.
-        if: steps.cocoapods-cache.outputs.cache-hit != 'true'
-        run: |
-          # Use `bundle exec pod install` if you use a Gemfile for CocoaPods
-          pod install
       
       - name: Run Linter Check
         run: |
