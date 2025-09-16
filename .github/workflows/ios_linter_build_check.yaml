@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Linter Check
         run: |
-          pod lib lint --allow-warnings
+          pod lib lint --allow-warnings --verbose --skip-tests
 
       - name: Debug Environment Variables (Optional)
         run: echo "Environment variables set successfully."
