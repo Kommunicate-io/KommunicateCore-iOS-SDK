@@ -7,38 +7,38 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "KMCoreUserDetail.h"
-#import "ALChannel.h"
+#import "KMCoreChannel.h"
 
 @protocol KommunicateUpdatesDelegate <NSObject>
 
 /// This callback will be called once the new message is received.
-/// @param alMessage Will have ALMessage object which is recieved message.
-/// @ref ALMessage for message properties.
-- (void)onMessageReceived:(ALMessage *)alMessage;
+/// @param alMessage Will have KMCoreMessage object which is recieved message.
+/// @ref KMCoreMessage for message properties.
+- (void)onMessageReceived:(KMCoreMessage *)alMessage;
 
 /// This will be called once the message is sent by same user login in different devices or platforms
-/// @param alMessage Will have ALMessage object which is sent message.
-/// @ref ALMessage for message properties.
-- (void)onMessageSent:(ALMessage *)alMessage;
+/// @param alMessage Will have KMCoreMessage object which is sent message.
+/// @ref KMCoreMessage for message properties.
+- (void)onMessageSent:(KMCoreMessage *)alMessage;
 
 /// This method will be called once the user details updated like name, profile imageUrl, status etc.
 /// @param userDetail Will have KMCoreUserDetail object which will have user properties.
 - (void)onUserDetailsUpdate:(KMCoreUserDetail *)userDetail;
 
 /// This method will be called once message is delivered to receiver.
-/// @param message Will have ALMessage object which is delivered message it has status.
-- (void)onMessageDelivered:(ALMessage *)message;
+/// @param message Will have KMCoreMessage object which is delivered message it has status.
+- (void)onMessageDelivered:(KMCoreMessage *)message;
 
 /// This will be called once message is deleted by same user login in different devices or platforms.
 /// @param messageKey Will have messageKey of message which is deleted.
 - (void)onMessageDeleted:(NSString *)messageKey;
 
 /// This will be called once the message is read and delivered by receiver user.
-/// @param message Will have ALMessage object which is delivered and read.
+/// @param message Will have KMCoreMessage object which is delivered and read.
 /// @param userId Will have userId which is delivered and read a message.
-- (void)onMessageDeliveredAndRead:(ALMessage *)message withUserId:(NSString *)userId;
+- (void)onMessageDeliveredAndRead:(KMCoreMessage *)message withUserId:(NSString *)userId;
 
 /// This method will be called once the conversation is deleted.
 /// @param userId If the conversation is deleted for user then userId will be.
@@ -65,8 +65,8 @@
 - (void)onUserBlockedOrUnBlocked:(NSString *)userId andBlockFlag:(BOOL)flag;
 
 /// This method will be called once their is any change in Channel.
-/// @param channel It will have ALChannel object.
-- (void)onChannelUpdated:(ALChannel *)channel;
+/// @param channel It will have KMCoreChannel object.
+- (void)onChannelUpdated:(KMCoreChannel *)channel;
 
 /// This will be called once the receiver read the message conversation.
 /// @param userId Will have receiver userId who has read the conversation.
@@ -83,7 +83,7 @@
 - (void)onUserMuteStatus:(KMCoreUserDetail *)userDetail;
 
 /// This method will be called after a group has been muted/unmuted.
-/// @param channelKey You will get the channelKey by using this channel key you can get channel and check isNotificationMuted from ALChannel object.
+/// @param channelKey You will get the channelKey by using this channel key you can get channel and check isNotificationMuted from KMCoreChannel object.
 - (void)onChannelMute:(NSNumber *)channelKey;
 
 @end

@@ -11,9 +11,9 @@
  {"messageKey":"28c47e68-e6a3-4a6d-b0db-4658d6e0aa18","createdAt":1446820801594}
  */
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface ALSendMessageResponse : ALJson
+@interface ALSendMessageResponse : KMCoreJson
 
 @property (nonatomic, copy) NSString *messageKey;
 

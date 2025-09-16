@@ -7,12 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
 extern NSString *const AL_RESPONSE_SUCCESS;
 extern NSString *const AL_RESPONSE_ERROR;
 
-@interface ALAPIResponse : ALJson
+@interface ALAPIResponse : KMCoreJson
 
 @property (nonatomic, strong) NSString *status;
 @property (nonatomic, strong) NSNumber *generatedAt;

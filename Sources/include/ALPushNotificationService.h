@@ -47,7 +47,7 @@ typedef enum
 } AL_PUSH_NOTIFICATION_TYPE;
 
 #import <Foundation/Foundation.h>
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "KMCoreUserDetail.h"
 #import "ALSyncCallService.h"
 #import "ALMQTTConversationService.h"

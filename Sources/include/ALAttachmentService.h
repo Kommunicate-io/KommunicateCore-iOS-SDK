@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALMessageDBService.h"
-#import "ALMessage.h"
-#import "ALMessageService.h"
+#import "KMCoreMessageDBService.h"
+#import "KMCoreMessage.h"
+#import "KMCoreMessageService.h"
 #import "KMCoreRealTimeUpdate.h"
 #import "KommunicateClient.h"
 #import "ALHTTPManager.h"
@@ -23,13 +23,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (ALAttachmentService *)sharedInstance;
 
-- (void)sendMessageWithAttachment:(ALMessage *)attachmentMessage
+- (void)sendMessageWithAttachment:(KMCoreMessage *)attachmentMessage
                      withDelegate:(id<KommunicateUpdatesDelegate>)delegate
            withAttachmentDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate;
 
-- (void)downloadMessageAttachment:(ALMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate;
+- (void)downloadMessageAttachment:(KMCoreMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate;
 
-- (void)downloadImageThumbnail:(ALMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate;
+- (void)downloadImageThumbnail:(KMCoreMessage *)alMessage withDelegate:(id<KommunicateAttachmentDelegate>)attachmentProgressDelegate;
 
 @end
 

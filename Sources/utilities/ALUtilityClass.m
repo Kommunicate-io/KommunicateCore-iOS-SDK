@@ -116,8 +116,8 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     ALContactDBService *contactDatabase = [[ALContactDBService alloc] init];
     contact = [contactDatabase loadContactByKey:@"userId" value:contactId];
 
-    ALChannel *channel = nil;
-    ALChannelDBService *channelDatabaseService = [[ALChannelDBService alloc] init];
+    KMCoreChannel *channel = nil;
+    KMCoreChannelDBService *channelDatabaseService = [[KMCoreChannelDBService alloc] init];
 
     NSString *title;
     if (groupID != nil) {
@@ -225,14 +225,14 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return stringTime;
 }
 
-+ (NSString *)getLocationURL:(ALMessage *)alMessage {
++ (NSString *)getLocationURL:(KMCoreMessage *)alMessage {
     NSString *latLongArgument = [self formatLocationJson:alMessage];
     NSString *finalURl = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/staticmap?center=%@&zoom=17&size=290x179&maptype=roadmap&format=png&visual_refresh=true&markers=%@&key=%@",
                           latLongArgument,latLongArgument,[KMCoreUserDefaultsHandler getGoogleMapAPIKey]];
     return finalURl;
 }
 
-+ (NSString *)getLocationURL:(ALMessage *)alMessage size:(CGRect)withSize {
++ (NSString *)getLocationURL:(KMCoreMessage *)alMessage size:(CGRect)withSize {
 
     NSString *latLongArgument = [self formatLocationJson:alMessage];
 
@@ -242,9 +242,9 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     return staticMapURL;
 }
 
-+ (NSString *)formatLocationJson:(ALMessage *)locationALMessage {
++ (NSString *)formatLocationJson:(KMCoreMessage *)locationKMCoreMessage {
     NSError *error;
-    NSData *objectData = [locationALMessage.message dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *objectData = [locationKMCoreMessage.message dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *jsonStringDictionary = [NSJSONSerialization JSONObjectWithData:objectData
                                                                          options:NSJSONReadingMutableContainers
                                                                            error:&error];
@@ -252,14 +252,14 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
     NSArray *latLog = [[NSArray alloc] initWithObjects:[jsonStringDictionary valueForKey:@"lat"],[jsonStringDictionary valueForKey:@"lon"], nil];
     
     if (!latLog.count) {
-        return [self processMapURL:locationALMessage];
+        return [self processMapURL:locationKMCoreMessage];
     }
     
     NSString *latLongArgument = [NSString stringWithFormat:@"%@,%@", latLog[0], latLog[1]];
     return latLongArgument;
 }
 
-+ (NSString *)processMapURL:(ALMessage *)message {
++ (NSString *)processMapURL:(KMCoreMessage *)message {
     NSArray *arrayOfURL = [message.message componentsSeparatedByString:@"="];
     NSString *coordinate = (NSString *)[arrayOfURL lastObject];
     return coordinate;

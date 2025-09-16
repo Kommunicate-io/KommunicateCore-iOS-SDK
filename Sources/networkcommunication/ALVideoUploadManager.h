@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ALUploadTask.h"
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "KommunicateClient.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -20,11 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<KommunicateUpdatesDelegate> delegate;
 
 @property (nonatomic, strong) ALUploadTask *uploadTask;
-@property (nonatomic, strong) ALMessageDBService *messageDatabaseService;
-@property (nonatomic, strong) ALMessageClientService *clientService;
+@property (nonatomic, strong) KMCoreMessageDBService *messageDatabaseService;
+@property (nonatomic, strong) KMCoreMessageClientService *clientService;
 @property (nonatomic, strong) ALResponseHandler *responseHandler;
 
--(void)uploadTheVideo:(ALMessage *)message;
+-(void)uploadTheVideo:(KMCoreMessage *)message;
 @end
 
 NS_ASSUME_NONNULL_END

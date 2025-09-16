@@ -8,18 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import "MQTTClient.h"
-#import "ALMessage.h"
+#import "KMCoreMessage.h"
 #import "ALSyncCallService.h"
 #import "KMCoreUserDetail.h"
 #import "KMCoreRealTimeUpdate.h"
 
-extern NSString *const ALChannelDidChangeGroupMuteNotification;
+extern NSString *const KMCoreChannelDidChangeGroupMuteNotification;
 extern NSString *const ALLoggedInUserDidChangeDeactivateNotification;
 extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 
 @protocol ALMQTTConversationDelegate <NSObject>
 
-- (void)syncCall:(ALMessage *)alMessage andMessageList:(NSMutableArray *)messageArray;
+- (void)syncCall:(KMCoreMessage *)alMessage andMessageList:(NSMutableArray *)messageArray;
 - (void)delivered:(NSString *)messageKey contactId:(NSString *)contactId withStatus:(int)status;
 - (void)updateStatusForContact:(NSString *)contactId withStatus:(int)status;
 - (void)updateTypingStatus:(NSString *) applicationKey userId:(NSString *)userId status:(BOOL)status;
@@ -66,7 +66,7 @@ extern NSString *const AL_MESSAGE_STATUS_TOPIC;
 
 - (void)subscribeToOpenChannel:(NSNumber *)channelKey;
 - (void)unSubscribeToOpenChannel:(NSNumber *)channelKey;
-- (void)syncReceivedMessage :(ALMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary*)nsMutableDictionary;
+- (void)syncReceivedMessage :(KMCoreMessage *)alMessage withNSMutableDictionary:(NSMutableDictionary*)nsMutableDictionary;
 
 - (void)retryConnection;
 - (void)retryConnectionWithTopic:(NSString *)topic;

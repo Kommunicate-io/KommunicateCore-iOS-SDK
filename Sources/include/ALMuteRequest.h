@@ -6,9 +6,9 @@
 //  Copyright © 2017 kommunicate. All rights reserved.
 //
 
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
-@interface ALMuteRequest : ALJson
+@interface ALMuteRequest : KMCoreJson
 
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic, strong) NSNumber *id;		    //Group unique identifier

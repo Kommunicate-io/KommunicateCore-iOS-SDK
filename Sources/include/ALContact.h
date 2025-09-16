@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALJson.h"
+#import "KMCoreJson.h"
 
 static NSString *const AL_DISPLAY_NAME_UPDATED = @"AL_DISPLAY_NAME_UPDATED";
 
-@interface ALContact : ALJson
+@interface ALContact : KMCoreJson
 
 @property (nonatomic,retain) NSString *userId;
 

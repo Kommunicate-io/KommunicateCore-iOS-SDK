@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ALChannel.h"
+#import "KMCoreChannel.h"
 #import "ALContact.h"
 #import "KMCoreUserDetail.h"
 
@@ -15,10 +15,10 @@
 
 + (ALSearchResultCache *)shared;
 
-- (void)saveChannels:(NSMutableArray<ALChannel *> *)channels;
+- (void)saveChannels:(NSMutableArray<KMCoreChannel *> *)channels;
 - (void)saveUserDetails:(NSMutableArray<KMCoreUserDetail *> *)userDetails;
 
-- (ALChannel *)getChannelWithId:(NSNumber *)key;
+- (KMCoreChannel *)getChannelWithId:(NSNumber *)key;
 - (ALContact *)getContactWithId:(NSString *)key;
 
 @end
