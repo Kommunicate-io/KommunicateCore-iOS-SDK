@@ -7,13 +7,12 @@
 //
 
 #import "KMViewController.h"
-#import "ApplozicClient.h"
+@import KommunicateCore_iOS_SDK;
 #import "KMAppDelegate.h"
 
 @interface KMViewController ()
 
-@property(strong, nonatomic) ApplozicClient *client;
-
+@property(strong, nonatomic) KommunicateClient *client;
 @end
 
 @implementation KMViewController
@@ -21,7 +20,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [_client initWithApplicationKey:@"2faa0ef06918df6dd5dc8506df6cec267"];
+    self.client = [[KommunicateClient alloc] initWithApplicationKey:@"2faa0ef06918df6dd5dc8506df6cec267"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -32,26 +31,26 @@
 
 -(IBAction)loginButtonTapped:(id)sender {
     
-    ALUser *user = [[ALUser alloc] initWithUserId:@"test" password:@"1234" email:@"test@test.com" andDisplayName:@"sample user"];
-    [_client loginUser: user withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
+    KMCoreUser *user = [[KMCoreUser alloc] initWithUserId:@"test" password:@"1234" email:@"test@test.com" andDisplayName:@"sample user"];
+    [self.client loginUser: user withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
         NSLog(@"%@", rResponse);
     }];
 }
 
 -(IBAction)fetchMessageList:(id)sender {
         
-    if ([ALUserDefaultsHandler isLoggedIn]) {
+    if ([KMCoreUserDefaultsHandler isLoggedIn]) {
         NSLog(@"User already logged in");
         NSLog(@"Fetching message list...");
-        ALMessageService *messageService = [[ALMessageService alloc] init];
+        KMCoreMessageService *messageService = [[KMCoreMessageService alloc] init];
         [messageService getLatestMessageForUser:@"test"];
     }
 }
 
 -(IBAction)logOut:(id)sender {
 
-    [_client logoutUserWithCompletion:^(NSError *error, ALAPIResponse *response) {
-        NSLog(error);
+    [self.client logoutUserWithCompletion:^(NSError *error, ALAPIResponse *response) {
+        NSLog(@"%@", error);
     }];
     
 }
