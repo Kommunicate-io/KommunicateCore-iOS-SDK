@@ -32,8 +32,13 @@
 -(IBAction)loginButtonTapped:(id)sender {
     
     KMCoreUser *user = [[KMCoreUser alloc] initWithUserId:@"test" password:@"1234" email:@"test@test.com" andDisplayName:@"sample user"];
-    [self.client loginUser: user withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
-        NSLog(@"%@", rResponse);
+    [self.client loginUser:user withCompletion:^(ALRegistrationResponse *rResponse, NSError *error) {
+        if (error) {
+            NSLog(@"Login failed: %@", error.localizedDescription);
+            return;
+        }
+
+        NSLog(@"Login successful: %@", rResponse);
     }];
 }
 
