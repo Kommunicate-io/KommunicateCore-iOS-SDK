@@ -578,7 +578,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		5FD89C2130299805000C4E3A /* XCLocalSwiftPackageReference "../../KommunicateCore-iOS-SDK" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "..";
+            relativePath = "..";
 		};
 /* End XCLocalSwiftPackageReference section */
 
