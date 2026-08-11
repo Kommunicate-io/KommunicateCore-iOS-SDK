@@ -95,7 +95,6 @@
 				6003F5B5195388D20070C39A /* Tests */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
-				A7EA01EF31A30D13F2DC90DD /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -175,13 +174,6 @@
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
-		A7EA01EF31A30D13F2DC90DD /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -198,6 +190,9 @@
 			dependencies = (
 			);
 			name = "KommunicateCore-iOS-SDK_Example";
+            packageProductDependencies = (
+                5FD89C2230299805000C4E3A /* KommunicateCore_iOS_SDK */,
+            );
 			productName = "KommunicateCore-iOS-SDK";
 			productReference = 6003F58A195388D20070C39A /* KommunicateCore-iOS-SDK_Example.app */;
 			productType = "com.apple.product-type.application";
@@ -252,7 +247,7 @@
 			);
 			mainGroup = 6003F581195388D10070C39A;
 			packageReferences = (
-				5FD89C2130299805000C4E3A /* XCLocalSwiftPackageReference "KommunicateCore-iOS-SDK" */,
+				5FD89C2130299805000C4E3A /* XCLocalSwiftPackageReference "../../KommunicateCore-iOS-SDK" */,
 			);
 			productRefGroup = 6003F58B195388D20070C39A /* Products */;
 			projectDirPath = "";
@@ -392,7 +387,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -441,7 +436,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -458,13 +453,10 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C25JNDCBM4;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/KommunicateCore-iOS-SDK\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+                GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KommunicateCore-iOS-SDK/KommunicateCore-iOS-SDK-Prefix.pch";
 				INFOPLIST_FILE = "KommunicateCore-iOS-SDK/KommunicateCore-iOS-SDK-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kommunicate.kommunicateCoreDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -487,6 +479,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KommunicateCore-iOS-SDK/KommunicateCore-iOS-SDK-Prefix.pch";
 				INFOPLIST_FILE = "KommunicateCore-iOS-SDK/KommunicateCore-iOS-SDK-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kommunicate.kommunicateCoreDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -583,17 +576,18 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		5FD89C2130299805000C4E3A /* XCLocalSwiftPackageReference "KommunicateCore-iOS-SDK" */ = {
+		5FD89C2130299805000C4E3A /* XCLocalSwiftPackageReference "../../KommunicateCore-iOS-SDK" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../KommunicateCore-iOS-SDK";
+			relativePath = "..";
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5FD89C2230299805000C4E3A /* KommunicateCore_iOS_SDK */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = KommunicateCore_iOS_SDK;
-		};
+    5FD89C2230299805000C4E3A /* KommunicateCore_iOS_SDK */ = {
+        isa = XCSwiftPackageProductDependency;
+        package = 5FD89C2130299805000C4E3A /* XCLocalSwiftPackageReference "KommunicateCore-iOS-SDK" */;
+        productName = KommunicateCore_iOS_SDK;
+    };
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6003F582195388D10070C39A /* Project object */;
