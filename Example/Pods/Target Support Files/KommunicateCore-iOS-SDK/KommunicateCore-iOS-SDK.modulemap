@@ -1,6 +1,0 @@
-framework module KommunicateCore_iOS_SDK {
-  umbrella header "KommunicateCore-iOS-SDK-umbrella.h"
-
-  export *
-  module * { export * }
-}
