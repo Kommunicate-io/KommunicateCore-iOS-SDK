@@ -7,6 +7,7 @@
 //
 
 @import XCTest;
+@import KommunicateCore_iOS_SDK;
 
 @interface Tests : XCTestCase
 
@@ -22,13 +23,18 @@
 
 - (void)tearDown
 {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    [KMCoreUserDefaultsHandler clearAll];
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testKommunicateClientStoresApplicationKey
 {
-    XCTAssertTrue(YES);
+    NSString *applicationKey = @"test-application-key";
+
+    KommunicateClient *client = [[KommunicateClient alloc] initWithApplicationKey:applicationKey];
+
+    XCTAssertNotNil(client);
+    XCTAssertEqualObjects([KMCoreUserDefaultsHandler getApplicationKey], applicationKey);
 }
 
 @end
