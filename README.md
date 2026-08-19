@@ -1,7 +1,6 @@
 ![header-ios](https://user-images.githubusercontent.com/24476344/43458226-0f1219b4-94e7-11e8-9b00-ca89b2da8952.png)
 
-[![License](https://img.shields.io/cocoapods/l/Kommunicate.svg?style=flat)](http://cocoapods.org/pods/Kommunicate)
-[![Platform](https://img.shields.io/cocoapods/p/Kommunicate.svg?style=flat)](http://cocoapods.org/pods/Kommunicate)
+![Swift Package Manager](https://img.shields.io/badge/Swift%20Package%20Manager-supported-brightgreen.svg)
 
 
 ## [Kommunicate](https://www.kommunicate.io/?utm_source=github&utm_medium=readme&utm_campaign=ios) iOS Chat Core SDK
@@ -43,6 +42,18 @@ Kommunicate SDK lets you integrate custom chatbots in your mobile apps for autom
 **Quick Replies:** Quickly respond to generic user queries using Quick Replies. Easily create and manage templated messages from your dashboard.
 
 ------------------------
+
+## Installation
+
+KommunicateCore-iOS-SDK is distributed through Swift Package Manager.
+
+In Xcode, add this repository URL through **File > Add Package Dependencies**:
+
+```text
+https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK.git
+```
+
+Use the `KommunicateCore_iOS_SDK` product in your target.
 
 ## Docs
 
