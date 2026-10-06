@@ -45,7 +45,7 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
 - (instancetype)initWithBaseURL:(NSString *)baseURL {
     self = [super init];
     if (self) {
-        _baseURL = [self.class normalizedBaseURL:baseURL];
+        _baseURL = [baseURL copy];
         _stateLock = [[NSLock alloc] init];
 
         NSURLSessionConfiguration *configuration = NSURLSessionConfiguration.ephemeralSessionConfiguration;
@@ -81,7 +81,7 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
     [request setValue:@"1" forHTTPHeaderField:@"X-Audio-Channel-Count"];
     [request setValue:@"16000" forHTTPHeaderField:@"X-Audio-Sample-Rate"];
     [request setValue:@"recognize" forHTTPHeaderField:@"X-Stt-Mode"];
-    [request setValue:@"mobile" forHTTPHeaderField:@"X-Voice-Source"];
+    [request setValue:@"ios" forHTTPHeaderField:@"X-Voice-Source"];
     [request setValue:[NSString stringWithFormat:@"%lld", conversationID]
    forHTTPHeaderField:@"X-Voice-Ucid"];
 
@@ -302,15 +302,7 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
 }
 
 - (NSURL *)URLForPath:(NSString *)path {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", self.baseURL, path]];
-}
-
-+ (NSString *)normalizedBaseURL:(NSString *)baseURL {
-    NSString *normalized = [baseURL stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
-    while ([normalized hasSuffix:@"/"]) {
-        normalized = [normalized substringToIndex:normalized.length - 1];
-    }
-    return normalized;
+    return [[NSURL URLWithString:self.baseURL] URLByAppendingPathComponent:path];
 }
 
 - (NSError *)errorWithCode:(KMCoreVoiceAPIErrorCode)code description:(NSString *)description {
