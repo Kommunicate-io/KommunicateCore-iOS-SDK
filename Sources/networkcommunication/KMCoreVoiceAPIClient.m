@@ -81,7 +81,7 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
     [request setValue:@"1" forHTTPHeaderField:@"X-Audio-Channel-Count"];
     [request setValue:@"16000" forHTTPHeaderField:@"X-Audio-Sample-Rate"];
     [request setValue:@"recognize" forHTTPHeaderField:@"X-Stt-Mode"];
-    [request setValue:@"web" forHTTPHeaderField:@"X-Voice-Source"];
+    [request setValue:@"mobile" forHTTPHeaderField:@"X-Voice-Source"];
     [request setValue:[NSString stringWithFormat:@"%lld", conversationID]
    forHTTPHeaderField:@"X-Voice-Ucid"];
 
