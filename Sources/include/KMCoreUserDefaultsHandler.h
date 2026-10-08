@@ -83,6 +83,8 @@ static NSString *const KM_CORE_LOGGED_IN_USER_DEACTIVATED = @"io.kommunicate.cor
 static NSString *const KM_CORE_CHANNEL_LIST_LAST_GENERATED_TIME = @"io.kommunicate.core.userdefault.AL_CHANNEL_LIST_LAST_GENERATED_TIME";
 static NSString *const KM_CORE_VOIP_DEVICE_TOKEN = @"io.kommunicate.core.userdefault.VOIP_DEVICE_TOKEN";
 static NSString *const KM_CORE_AGENT_APP_CLEANUP_LAST_TIME = @"io.kommunicate.core.userdefault.KM_CORE_AGENT_APP_CLEANUP_LAST_TIME";
+static NSString *const KM_CORE_VOICE_CHAT_ENABLED = @"io.kommunicate.core.userdefault.VOICE_CHAT_ENABLED";
+static NSString *const KM_CORE_VOICE_BASE_URL = @"io.kommunicate.core.userdefault.VOICE_BASE_URL";
 
 @interface KMCoreUserDefaultsHandler : NSObject
 
@@ -321,4 +323,10 @@ static NSString *const KM_CORE_AGENT_APP_CLEANUP_LAST_TIME = @"io.kommunicate.co
 
 + (void)setVOIPDeviceToken:(NSString *)VOIPDeviceToken;
 + (NSString *)getVOIPDeviceToken;
+
++ (void)setVoiceChatEnabled:(BOOL)enabled;
++ (BOOL)isVoiceChatEnabled;
+
++ (void)setVoiceBaseURL:(NSString *)baseURL;
++ (NSString *)getVoiceBaseURL;
 @end

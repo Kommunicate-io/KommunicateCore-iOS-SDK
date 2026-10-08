@@ -40,6 +40,7 @@ FOUNDATION_EXPORT const unsigned char KommunicateCoreVersionString[];
 #import "ALContact.h"
 #import "KMCoreUser.h"
 #import "KMCoreUserDefaultsHandler.h"
+#import "KMCoreVoiceAPIClient.h"
 #import "DB_CONTACT.h"
 #import "KMCoreUserDetail.h"
 #import "ALContactService.h"
