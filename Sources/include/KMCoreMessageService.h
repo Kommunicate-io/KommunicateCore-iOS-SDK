@@ -51,6 +51,15 @@ static NSString *const AL_GROUP_MESSAGE_METADATA_UPDATE = @"AL_GROUP_MESSAGE_MET
                          startTime:(NSNumber *)startTime
                     withCompletion:(void (^)(NSMutableArray *))completion;
 
++ (void)getMessageListForContactId:(NSString *)contactIds
+                           isGroup:(BOOL)isGroup
+                        channelKey:(NSNumber *)channelKey
+                    conversationId:(NSNumber *)conversationId
+                        startIndex:(NSInteger)startIndex
+                         startTime:(NSNumber *)startTime
+             includeHiddenMessages:(BOOL)includeHiddenMessages
+                    withCompletion:(void (^)(NSMutableArray *))completion;
+
 /// This method is used for sending a text message one to one or group conversation.
 /// @param message Pass the KMCoreMessage object for sending a text message.
 /// @param completion If success in sending a message the NSError will be nil; else, if there is an error in sending a message the NSError will not be nil.
