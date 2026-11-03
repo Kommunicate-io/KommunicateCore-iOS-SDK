@@ -2008,8 +2008,12 @@
 }
 
 + (NSUserDefaults *)getUserDefaults {
-    NSString *appSuiteName = [ALUtilityClass getAppGroupsName];
-    return [[NSUserDefaults alloc] initWithSuiteName:appSuiteName];
+    static NSUserDefaults *userDefaults;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        userDefaults = [[NSUserDefaults alloc] initWithSuiteName:[ALUtilityClass getAppGroupsName]];
+    });
+    return userDefaults;
 }
 
 + (NSUserDefaults *)getOldUserDefaults {

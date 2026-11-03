@@ -16,11 +16,15 @@
 @implementation ALHTTPManager
 
 static dispatch_semaphore_t semaphore;
+static dispatch_queue_t sessionStartQueue;
 
 - (instancetype)init {
     self = [super init];
     if (!semaphore) {
         semaphore = dispatch_semaphore_create(2); //2 tasks
+    }
+    if (!sessionStartQueue) {
+        sessionStartQueue = dispatch_queue_create("io.kommunicate.ALHTTPManager.sessionStart", DISPATCH_QUEUE_SERIAL);
     }
     if (self) {
         self.buffer = [[NSMutableData alloc]init];
@@ -408,14 +412,15 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 - (void)startSession:(NSURLSession *)session
          withRequest:(NSURLRequest *)urlRequest {
     [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:session];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    if ([[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] containsObject:session]) {
-        NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:urlRequest];
-        [sessionDataTask resume];
-    } else {
-        dispatch_semaphore_signal(semaphore);
-        return;
-    }
+    dispatch_async(sessionStartQueue, ^{
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        if ([[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] containsObject:session]) {
+            NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:urlRequest];
+            [sessionDataTask resume];
+        } else {
+            dispatch_semaphore_signal(semaphore);
+        }
+    });
 }
 
 - (void)uploadProfileImage:(UIImage *)profileImage
