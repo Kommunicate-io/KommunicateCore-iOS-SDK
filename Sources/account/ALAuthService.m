@@ -10,6 +10,8 @@
 #import "ALAuthClientService.h"
 #import "ALJWT.h"
 
+NSString *const KMCoreAuthTokenRefreshErrorDomain = @"KMCoreAuthTokenRefresh";
+
 @implementation ALAuthService
 
 static NSString *const CREATED_TIME = @"createdAtTime";
@@ -87,9 +89,18 @@ static NSString *const VALID_UPTO = @"validUpto";
 }
 
 - (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
+    NSString *requestedUserId = [KMCoreUserDefaultsHandler getUserId];
     [self.authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
         if (error) {
             completion(nil, error);
+            return;
+        }
+        // The login changed while the request was in flight; never save a token for another user.
+        if (![KMCoreUserDefaultsHandler isLoggedIn] ||
+            ![[KMCoreUserDefaultsHandler getUserId] isEqualToString:requestedUserId]) {
+            completion(nil, [NSError errorWithDomain:KMCoreAuthTokenRefreshErrorDomain
+                                                code:KMCoreAuthTokenRefreshErrorStaleUser
+                                            userInfo:@{NSLocalizedDescriptionKey : @"Auth token refresh result is for a different user"}]);
             return;
         }
         NSError *authTokenError = nil;

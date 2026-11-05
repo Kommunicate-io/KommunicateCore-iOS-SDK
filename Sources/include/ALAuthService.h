@@ -10,6 +10,13 @@
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALAuthClientService.h"
 
+FOUNDATION_EXPORT NSString *const KMCoreAuthTokenRefreshErrorDomain;
+
+typedef NS_ENUM(NSInteger, KMCoreAuthTokenRefreshError) {
+    /// The refreshed token belongs to a previous login and was discarded.
+    KMCoreAuthTokenRefreshErrorStaleUser = 1
+};
+
 @interface ALAuthService : NSObject
 
 @property (nonatomic, strong) ALAuthClientService *authClientService;

@@ -8,10 +8,94 @@ static NSUInteger const KMCoreVoiceMaximumJSONBytes = 1024 * 1024;
 static NSUInteger const KMCoreVoiceMaximumAudioBytes = 10 * 1024 * 1024;
 static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
 
+typedef void (^KMCoreVoiceTaskCompletion)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error);
+
+@interface KMCoreVoiceTaskState : NSObject
+
+@property (nonatomic, strong) NSMutableData *data;
+@property (nonatomic) NSUInteger maximumBytes;
+@property (nonatomic) BOOL exceededMaximum;
+@property (nonatomic, copy) KMCoreVoiceTaskCompletion completion;
+
+@end
+
+@implementation KMCoreVoiceTaskState
+@end
+
+/// Collects response bodies per task and cancels a task as soon as it exceeds its size limit,
+/// so an oversized response is never fully buffered. It is kept separate from the client so the
+/// session's strong delegate reference does not keep the client alive.
+@interface KMCoreVoiceResponseCollector : NSObject <NSURLSessionDataDelegate>
+
+- (void)registerTask:(NSURLSessionTask *)task
+        maximumBytes:(NSUInteger)maximumBytes
+          completion:(KMCoreVoiceTaskCompletion)completion;
+
+@end
+
+@implementation KMCoreVoiceResponseCollector {
+    NSMutableDictionary<NSNumber *, KMCoreVoiceTaskState *> *_states;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _states = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
+
+- (void)registerTask:(NSURLSessionTask *)task
+        maximumBytes:(NSUInteger)maximumBytes
+          completion:(KMCoreVoiceTaskCompletion)completion {
+    KMCoreVoiceTaskState *state = [[KMCoreVoiceTaskState alloc] init];
+    state.data = [NSMutableData data];
+    state.maximumBytes = maximumBytes;
+    state.completion = completion;
+    @synchronized (self) {
+        _states[@(task.taskIdentifier)] = state;
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data {
+    KMCoreVoiceTaskState *state;
+    @synchronized (self) {
+        state = _states[@(dataTask.taskIdentifier)];
+    }
+    if (state == nil || state.exceededMaximum) {
+        return;
+    }
+    [state.data appendData:data];
+    if (state.data.length > state.maximumBytes) {
+        state.exceededMaximum = YES;
+        [dataTask cancel];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didCompleteWithError:(NSError *)error {
+    KMCoreVoiceTaskState *state;
+    @synchronized (self) {
+        state = _states[@(task.taskIdentifier)];
+        [_states removeObjectForKey:@(task.taskIdentifier)];
+    }
+    if (state == nil) {
+        return;
+    }
+    // An oversized body ends in a cancellation; report it as data over the limit, not as an error.
+    state.completion(state.data, task.response, state.exceededMaximum ? nil : error);
+}
+
+@end
+
 @interface KMCoreVoiceAPIClient ()
 
 @property (nonatomic, copy) NSString *baseURL;
 @property (nonatomic, strong) NSURLSession *session;
+@property (nonatomic, strong) KMCoreVoiceResponseCollector *collector;
 @property (nonatomic, strong, nullable) NSURLSessionDataTask *activeTask;
 @property (nonatomic) NSUInteger generation;
 @property (nonatomic, strong) NSLock *stateLock;
@@ -52,9 +136,18 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
         configuration.timeoutIntervalForRequest = 15;
         configuration.timeoutIntervalForResource = 30;
         configuration.HTTPMaximumConnectionsPerHost = 1;
-        _session = [NSURLSession sessionWithConfiguration:configuration];
+        _collector = [[KMCoreVoiceResponseCollector alloc] init];
+        _session = [NSURLSession sessionWithConfiguration:configuration delegate:_collector delegateQueue:nil];
     }
     return self;
+}
+
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                                 maximumBytes:(NSUInteger)maximumBytes
+                            completionHandler:(KMCoreVoiceTaskCompletion)completionHandler {
+    NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request];
+    [self.collector registerTask:task maximumBytes:maximumBytes completion:completionHandler];
+    return task;
 }
 
 - (void)dealloc {
@@ -87,8 +180,9 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
 
     NSUInteger generation = [self nextGeneration];
     __weak typeof(self) weakSelf = self;
-    NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request
-                          completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request
+                                              maximumBytes:KMCoreVoiceMaximumJSONBytes
+                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         __strong typeof(weakSelf) self = weakSelf;
         if (self == nil || ![self finishGeneration:generation]) {
             return;
@@ -103,7 +197,7 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
         }
 
         NSError *JSONError;
-        id payload = [NSJSONSerialization JSONObjectWithData:data options:0 error:&JSONError];
+        id payload = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&JSONError];
         NSString *transcript = [self transcriptFromPayload:payload depth:0];
         if (JSONError != nil || transcript.length == 0) {
             completion(nil, [self errorWithCode:KMCoreVoiceAPIErrorInvalidPayload
@@ -145,8 +239,9 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
 
     NSUInteger generation = [self nextGeneration];
     __weak typeof(self) weakSelf = self;
-    NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request
-                          completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSURLSessionDataTask *task = [self dataTaskWithRequest:request
+                                              maximumBytes:KMCoreVoiceMaximumAudioBytes
+                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         __strong typeof(weakSelf) self = weakSelf;
         if (self == nil || ![self finishGeneration:generation]) {
             return;
@@ -160,8 +255,15 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
             return;
         }
         NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
+        NSString *contentType = [HTTPResponse valueForHTTPHeaderField:@"Content-Type"];
+        NSString *lowercasedContentType = contentType.lowercaseString;
+        if ([lowercasedContentType hasPrefix:@"application/json"] || [lowercasedContentType hasPrefix:@"text/"]) {
+            completion(nil, [self errorWithCode:KMCoreVoiceAPIErrorInvalidResponse
+                                    description:@"The voice service did not return audio"]);
+            return;
+        }
         completion([[KMCoreVoiceAudioResponse alloc] initWithAudioData:data
-                                                           contentType:HTTPResponse.allHeaderFields[@"Content-Type"]], nil);
+                                                           contentType:contentType], nil);
     }];
     [self activateTask:task generation:generation];
 }
@@ -282,7 +384,10 @@ static NSUInteger const KMCoreVoiceMaximumErrorBytes = 64 * 1024;
             }
             NSArray *alternatives = result[@"alternatives"];
             NSDictionary *first = [alternatives isKindOfClass:NSArray.class] ? alternatives.firstObject : nil;
-            NSString *part = [first isKindOfClass:NSDictionary.class] ? first[@"transcript"] : nil;
+            id transcriptValue = [first isKindOfClass:NSDictionary.class] ? first[@"transcript"] : nil;
+            NSString *part = [transcriptValue isKindOfClass:NSString.class]
+                ? [transcriptValue stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet]
+                : nil;
             if (part.length > 0) {
                 [parts addObject:part];
             }
