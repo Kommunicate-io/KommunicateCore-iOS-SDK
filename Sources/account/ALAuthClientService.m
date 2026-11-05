@@ -14,6 +14,8 @@
 #import "ALLogger.h"
 #import "NSData+AES.h"
 
+NSString *const KMCoreAuthTokenRefreshErrorDomain = @"KMCoreAuthTokenRefresh";
+
 @implementation ALAuthClientService
 
 static NSString *const USERID = @"userId";
@@ -106,7 +108,7 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
             ALSLog(ALLoggerSeverityError, @"Authentication error: HTTP 401 : ERROR CODE : %ld, FAILING URL: %@",  (long)connectionError.code,  failingURL);
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:@"Authentication error: 401"]);
+                reponseCompletion(nil, [self unauthorizedError]);
             });
             return;
         } else if (connectionError.code == kCFURLErrorNotConnectedToInternet) {
@@ -127,8 +129,10 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         if (theHttpResponse.statusCode != 200 && theHttpResponse.statusCode != 201) {
             NSMutableString *errorString = [[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             ALSLog(ALLoggerSeverityError, @"api error : %@ - %@",tag,errorString);
+            NSError *statusError = theHttpResponse.statusCode == 401 ? [self unauthorizedError]
+                                                                       : [self errorWithDescription:message_SomethingWentWrong];
             dispatch_async(dispatch_get_main_queue(), ^{
-                reponseCompletion(nil,[self errorWithDescription:message_SomethingWentWrong]);
+                reponseCompletion(nil, statusError);
             });
             return;
         }
@@ -218,6 +222,12 @@ static NSString *const message_SomethingWentWrong = @"SomethingWentWrong";
         });
     }];
     [sessionDataTask resume];
+}
+
+- (NSError *)unauthorizedError {
+    return [NSError errorWithDomain:KMCoreAuthTokenRefreshErrorDomain
+                               code:KMCoreAuthTokenRefreshErrorUnauthorized
+                           userInfo:@{NSLocalizedDescriptionKey: @"Authentication error: 401"}];
 }
 
 - (NSError *)errorWithDescription:(NSString *)reason {

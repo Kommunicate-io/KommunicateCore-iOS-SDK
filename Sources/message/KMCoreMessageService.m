@@ -302,7 +302,9 @@ static BOOL KMShouldDropHiddenMessage(KMCoreMessage *message, BOOL includeHidden
     NSPredicate *predicate2 = includeHiddenMessages
         ? [NSPredicate predicateWithFormat:@"deletedFlag == NO AND (msgHidden == %@ OR (metadata CONTAINS %@ AND metadata CONTAINS %@))", @(NO), @"NOTE_ID", @"noteContent"]
         : [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
-    NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
+    NSPredicate *predicate3 = includeHiddenMessages
+        ? [NSPredicate predicateWithFormat:@"contentType != %i OR (metadata CONTAINS %@ AND metadata CONTAINS %@)", ALMESSAGE_CONTENT_HIDDEN, @"NOTE_ID", @"noteContent"]
+        : [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
     NSPredicate *compoundPredicate;
     if(startTime != nil){
         NSPredicate *predicate4 = [NSPredicate predicateWithFormat:@"createdAt < %lld", [startTime longLongValue]];
@@ -314,6 +316,39 @@ static BOOL KMShouldDropHiddenMessage(KMCoreMessage *message, BOOL includeHidden
     [dbMessageFetchRequest setFetchOffset:startIndex];
     [dbMessageFetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
 
+    if (includeHiddenMessages) {
+        // Hidden rows are validated in code, so page over the validated messages: skip the ones the
+        // caller already has (startIndex counts messages, not rows), then fill one page.
+        NSMutableArray *pageMessages = [[NSMutableArray alloc] init];
+        KMCoreMessageDBService *pageDBService = [[KMCoreMessageDBService alloc] init];
+        NSInteger messagesToSkip = startIndex;
+        NSInteger rowOffset = 0;
+        while ((NSInteger)pageMessages.count < rp) {
+            [dbMessageFetchRequest setFetchOffset:rowOffset];
+            NSArray *rows = [alDBHandler executeFetchRequest:dbMessageFetchRequest withError:nil];
+            for (DB_Message * theEntity in rows) {
+                rowOffset++;
+                KMCoreMessage * theMessage = [pageDBService createMessageEntity:theEntity];
+                if (KMShouldDropHiddenMessage(theMessage, YES)) {
+                    continue;
+                }
+                if (messagesToSkip > 0) {
+                    messagesToSkip--;
+                    continue;
+                }
+                [pageMessages insertObject:theMessage atIndex:0];
+                if ((NSInteger)pageMessages.count == rp) {
+                    break;
+                }
+            }
+            if ((NSInteger)rows.count < rp) {
+                break;
+            }
+        }
+        completion(pageMessages);
+        return;
+    }
+
     NSArray *theArray = [alDBHandler executeFetchRequest:dbMessageFetchRequest withError:nil];
 
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
@@ -321,9 +356,6 @@ static BOOL KMShouldDropHiddenMessage(KMCoreMessage *message, BOOL includeHidden
         KMCoreMessageDBService* messageDBService = [[KMCoreMessageDBService alloc]init];
         for (DB_Message * theEntity in theArray) {
             KMCoreMessage * theMessage = [messageDBService createMessageEntity:theEntity];
-            if (includeHiddenMessages && KMShouldDropHiddenMessage(theMessage, YES)) {
-                continue;
-            }
             [messageArray insertObject:theMessage atIndex:0];
         }
     }

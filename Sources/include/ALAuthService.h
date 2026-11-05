@@ -10,13 +10,6 @@
 #import "KMCoreUserDefaultsHandler.h"
 #import "ALAuthClientService.h"
 
-FOUNDATION_EXPORT NSString *const KMCoreAuthTokenRefreshErrorDomain;
-
-typedef NS_ENUM(NSInteger, KMCoreAuthTokenRefreshError) {
-    /// The login or application changed while the refresh was in flight; the result was discarded.
-    KMCoreAuthTokenRefreshErrorStaleSession = 1
-};
-
 @interface ALAuthService : NSObject
 
 @property (nonatomic, strong) ALAuthClientService *authClientService;

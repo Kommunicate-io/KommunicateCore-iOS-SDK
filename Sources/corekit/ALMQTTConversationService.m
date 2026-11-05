@@ -171,15 +171,26 @@ static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *chann
         }
 
         if (refreshError) {
-            // A stale result belongs to a previous session: it is not a refresh failure, so ignore it.
-            if ([refreshError.domain isEqualToString:KMCoreAuthTokenRefreshErrorDomain] &&
-                refreshError.code == KMCoreAuthTokenRefreshErrorStaleSession) {
+            BOOL isRefreshAuthError = [refreshError.domain isEqualToString:KMCoreAuthTokenRefreshErrorDomain];
+            if (isRefreshAuthError && refreshError.code == KMCoreAuthTokenRefreshErrorStaleSession) {
+                // The result belongs to a previous session, so it is not a refresh failure. Topics queued
+                // by the current session while it was running still need their own refresh.
                 ALSLog(ALLoggerSeverityInfo, @"MQTT : IGNORING STALE AUTH_TOKEN_REFRESH RESULT");
+                BOOL hasPendingTopics;
+                @synchronized (self) {
+                    hasPendingTopics = self.pendingAuthRetryTopics.count > 0;
+                }
+                if (hasPendingTopics) {
+                    [self refreshAuthTokenAndRetrySubscriptionForTopic:nil];
+                }
                 return;
             }
-            // A real HTTP 401 already posts the unauthorized-user notification in ALResponseHandler.
-            // On any other failure the queued topics stay pending for the next refresh.
             ALSLog(ALLoggerSeverityError, @"MQTT : AUTH_TOKEN_REFRESH_FAILED :: %@", refreshError.description);
+            // Only an HTTP 401 means the credentials are rejected. Any other failure (offline, 5xx,
+            // bad body) leaves the user logged in and keeps the queued topics for the next refresh.
+            if (isRefreshAuthError && refreshError.code == KMCoreAuthTokenRefreshErrorUnauthorized) {
+                [self postUnauthorizedUserNotification];
+            }
             return;
         }
 

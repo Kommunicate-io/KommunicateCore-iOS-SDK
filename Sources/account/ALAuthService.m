@@ -10,8 +10,6 @@
 #import "ALAuthClientService.h"
 #import "ALJWT.h"
 
-NSString *const KMCoreAuthTokenRefreshErrorDomain = @"KMCoreAuthTokenRefresh";
-
 @implementation ALAuthService
 
 static NSString *const CREATED_TIME = @"createdAtTime";
