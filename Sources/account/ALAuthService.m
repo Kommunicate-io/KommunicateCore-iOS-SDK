@@ -87,7 +87,19 @@ static NSString *const VALID_UPTO = @"validUpto";
 }
 
 - (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
+    NSString *requestedUserId = [KMCoreUserDefaultsHandler getUserId];
+    NSString *requestedApplicationKey = [KMCoreUserDefaultsHandler getApplicationKey];
     [self.authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
+        // The login or application changed while the request was in flight; that result, success or
+        // failure, belongs to a previous session and must not be saved or reported as current.
+        if (![KMCoreUserDefaultsHandler isLoggedIn] ||
+            ![[KMCoreUserDefaultsHandler getUserId] isEqualToString:requestedUserId] ||
+            ![[KMCoreUserDefaultsHandler getApplicationKey] isEqualToString:requestedApplicationKey]) {
+            completion(nil, [NSError errorWithDomain:@"KMCore"
+                                                code:1
+                                            userInfo:@{NSLocalizedDescriptionKey : @"Auth token refresh result is for a different session"}]);
+            return;
+        }
         if (error) {
             completion(nil, error);
             return;

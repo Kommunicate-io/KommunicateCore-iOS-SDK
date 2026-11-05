@@ -95,16 +95,25 @@
 - (void)startSession:(NSURLSession *)session
          withRequest:(NSURLRequest *)urlRequest {
 
-    [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:session];
+    NSMutableArray *connectionQueue = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    BOOL isQueued;
+    @synchronized (connectionQueue) {
+        [connectionQueue addObject:session];
+        isQueued = [connectionQueue containsObject:session];
+    }
 
-    if ([[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] containsObject:session]) {
+    if (isQueued) {
         NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest: urlRequest];
         [sessionDataTask resume];
     }
 }
 
 - (void)uploadTheVideo:(KMCoreMessage *)message {
-    NSMutableArray *urlSessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    NSMutableArray *connectionQueue = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    NSArray *urlSessionArray;
+    @synchronized (connectionQueue) {
+        urlSessionArray = [connectionQueue copy];
+    }
 
     for (NSURLSession *session in urlSessionArray) {
         NSURLSessionConfiguration *config = session.configuration;
