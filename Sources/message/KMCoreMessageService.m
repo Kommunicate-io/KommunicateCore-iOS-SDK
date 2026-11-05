@@ -47,6 +47,12 @@ static BOOL KMIsInternalNoteMessage(KMCoreMessage *message) {
         && [noteContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
 }
 
+// Hidden messages are dropped, except VOIP notifications and (when requested) internal notes.
+static BOOL KMShouldDropHiddenMessage(KMCoreMessage *message, BOOL includeHiddenMessages) {
+    return [message isHiddenMessage] && ![message isVOIPNotificationMessage]
+        && !(includeHiddenMessages && KMIsInternalNoteMessage(message));
+}
+
 + (KMCoreMessageService *)sharedInstance {
     static KMCoreMessageService *sharedInstance = nil;
     static dispatch_once_t onceToken;
@@ -153,6 +159,14 @@ static BOOL KMIsInternalNoteMessage(KMCoreMessage *message) {
     //On Message List Cell Tap
     KMCoreMessageDBService *alMessageDBService = [[KMCoreMessageDBService alloc] init];
     NSMutableArray *messageList = [alMessageDBService getMessageListForContactWithCreatedAt:messageListRequest];
+    if (messageListRequest.includeHiddenMessages) {
+        // Cached hidden messages must pass the same internal-note check as the server path.
+        for (NSInteger i = (NSInteger)messageList.count - 1; i >= 0; i--) {
+            if (KMShouldDropHiddenMessage(messageList[i], YES)) {
+                [messageList removeObjectAtIndex:i];
+            }
+        }
+    }
 
     NSString *chatId;
     if (messageListRequest.conversationId != nil) {
@@ -202,8 +216,7 @@ static BOOL KMIsInternalNoteMessage(KMCoreMessage *message) {
         for (int i = (int)messages.count - 1; i >= 0; i--) {
             KMCoreMessage *message = messages[i];
 
-            if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]
-                && !(messageListRequest.includeHiddenMessages && KMIsInternalNoteMessage(message))) {
+            if (KMShouldDropHiddenMessage(message, messageListRequest.includeHiddenMessages)) {
                 [messages removeObjectAtIndex:i];
             }
 
@@ -308,6 +321,9 @@ static BOOL KMIsInternalNoteMessage(KMCoreMessage *message) {
         KMCoreMessageDBService* messageDBService = [[KMCoreMessageDBService alloc]init];
         for (DB_Message * theEntity in theArray) {
             KMCoreMessage * theMessage = [messageDBService createMessageEntity:theEntity];
+            if (includeHiddenMessages && KMShouldDropHiddenMessage(theMessage, YES)) {
+                continue;
+            }
             [messageArray insertObject:theMessage atIndex:0];
         }
     }

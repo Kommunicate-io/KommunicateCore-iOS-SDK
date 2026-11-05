@@ -10,6 +10,8 @@
 #import "ALAuthClientService.h"
 #import "ALJWT.h"
 
+NSString *const KMCoreAuthTokenRefreshErrorDomain = @"KMCoreAuthTokenRefresh";
+
 @implementation ALAuthService
 
 static NSString *const CREATED_TIME = @"createdAtTime";
@@ -95,8 +97,8 @@ static NSString *const VALID_UPTO = @"validUpto";
         if (![KMCoreUserDefaultsHandler isLoggedIn] ||
             ![[KMCoreUserDefaultsHandler getUserId] isEqualToString:requestedUserId] ||
             ![[KMCoreUserDefaultsHandler getApplicationKey] isEqualToString:requestedApplicationKey]) {
-            completion(nil, [NSError errorWithDomain:@"KMCore"
-                                                code:1
+            completion(nil, [NSError errorWithDomain:KMCoreAuthTokenRefreshErrorDomain
+                                                code:KMCoreAuthTokenRefreshErrorStaleSession
                                             userInfo:@{NSLocalizedDescriptionKey : @"Auth token refresh result is for a different session"}]);
             return;
         }

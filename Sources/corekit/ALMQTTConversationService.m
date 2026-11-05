@@ -170,9 +170,15 @@ static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *chann
             self.isRefreshingMQTTAuthToken = NO;
         }
 
-        // A real HTTP 401 already posts the unauthorized-user notification in ALResponseHandler.
-        // On any other failure the queued topics stay pending for the next refresh.
         if (refreshError) {
+            // A stale result belongs to a previous session: it is not a refresh failure, so ignore it.
+            if ([refreshError.domain isEqualToString:KMCoreAuthTokenRefreshErrorDomain] &&
+                refreshError.code == KMCoreAuthTokenRefreshErrorStaleSession) {
+                ALSLog(ALLoggerSeverityInfo, @"MQTT : IGNORING STALE AUTH_TOKEN_REFRESH RESULT");
+                return;
+            }
+            // A real HTTP 401 already posts the unauthorized-user notification in ALResponseHandler.
+            // On any other failure the queued topics stay pending for the next refresh.
             ALSLog(ALLoggerSeverityError, @"MQTT : AUTH_TOKEN_REFRESH_FAILED :: %@", refreshError.description);
             return;
         }
