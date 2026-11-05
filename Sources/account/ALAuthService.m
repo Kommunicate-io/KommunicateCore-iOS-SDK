@@ -10,8 +10,6 @@
 #import "ALAuthClientService.h"
 #import "ALJWT.h"
 
-NSString *const KMCoreAuthTokenRefreshErrorDomain = @"KMCoreAuthTokenRefresh";
-
 @implementation ALAuthService
 
 static NSString *const CREATED_TIME = @"createdAtTime";
@@ -90,17 +88,20 @@ static NSString *const VALID_UPTO = @"validUpto";
 
 - (void)refreshAuthTokenForLoginUserWithCompletion:(void (^)(ALAPIResponse *apiResponse, NSError *error))completion {
     NSString *requestedUserId = [KMCoreUserDefaultsHandler getUserId];
+    NSString *requestedApplicationKey = [KMCoreUserDefaultsHandler getApplicationKey];
     [self.authClientService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *error) {
-        if (error) {
-            completion(nil, error);
+        // The login or application changed while the request was in flight; that result, success or
+        // failure, belongs to a previous session and must not be saved or reported as current.
+        if (![KMCoreUserDefaultsHandler isLoggedIn] ||
+            ![[KMCoreUserDefaultsHandler getUserId] isEqualToString:requestedUserId] ||
+            ![[KMCoreUserDefaultsHandler getApplicationKey] isEqualToString:requestedApplicationKey]) {
+            completion(nil, [NSError errorWithDomain:@"KMCore"
+                                                code:1
+                                            userInfo:@{NSLocalizedDescriptionKey : @"Auth token refresh result is for a different session"}]);
             return;
         }
-        // The login changed while the request was in flight; never save a token for another user.
-        if (![KMCoreUserDefaultsHandler isLoggedIn] ||
-            ![[KMCoreUserDefaultsHandler getUserId] isEqualToString:requestedUserId]) {
-            completion(nil, [NSError errorWithDomain:KMCoreAuthTokenRefreshErrorDomain
-                                                code:KMCoreAuthTokenRefreshErrorStaleUser
-                                            userInfo:@{NSLocalizedDescriptionKey : @"Auth token refresh result is for a different user"}]);
+        if (error) {
+            completion(nil, error);
             return;
         }
         NSError *authTokenError = nil;

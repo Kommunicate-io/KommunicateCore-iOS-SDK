@@ -37,7 +37,7 @@ static NSTimeInterval const KMCoreMQTTRetryDelay = 2.0;
 
 @interface ALMQTTConversationService ()
 
-@property (atomic, assign) BOOL isRefreshingMQTTAuthToken;
+@property (nonatomic, assign) BOOL isRefreshingMQTTAuthToken;
 @property (nonatomic, strong) NSMutableSet<NSString *> *pendingAuthRetryTopics;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, dispatch_block_t> *deferredSubscriptions;
 
@@ -166,20 +166,14 @@ static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *chann
 
     ALAuthService *authService = [[ALAuthService alloc] init];
     [authService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *refreshError) {
-        NSSet<NSString *> *topics;
         @synchronized (self) {
             self.isRefreshingMQTTAuthToken = NO;
-            topics = [self.pendingAuthRetryTopics copy];
-            [self.pendingAuthRetryTopics removeAllObjects];
         }
 
+        // A real HTTP 401 already posts the unauthorized-user notification in ALResponseHandler.
+        // On any other failure the queued topics stay pending for the next refresh.
         if (refreshError) {
             ALSLog(ALLoggerSeverityError, @"MQTT : AUTH_TOKEN_REFRESH_FAILED :: %@", refreshError.description);
-            // A stale result (login changed) or a transport failure is not an authorization rejection.
-            if (![refreshError.domain isEqualToString:KMCoreAuthTokenRefreshErrorDomain] &&
-                ![refreshError.domain isEqualToString:NSURLErrorDomain]) {
-                [self postUnauthorizedUserNotification];
-            }
             return;
         }
 
@@ -187,6 +181,11 @@ static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *chann
             return;
         }
 
+        NSSet<NSString *> *topics;
+        @synchronized (self) {
+            topics = [self.pendingAuthRetryTopics copy];
+            [self.pendingAuthRetryTopics removeAllObjects];
+        }
         for (NSString *pendingTopic in topics) {
             [self subscribeToConversationWithTopic:pendingTopic withCompletionHandler:^(BOOL subscribed, NSError *retryError) {
                 if (retryError) {
@@ -838,6 +837,12 @@ static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *chann
 }
 
 - (BOOL)unsubscribeToConversationForUser:(NSString *)userKey WithTopic:(NSString *)topic {
+    // Drop anything still waiting to be (re)subscribed, even if the session is already gone.
+    @synchronized (self) {
+        [self.deferredSubscriptions removeAllObjects];
+        [self.pendingAuthRetryTopics removeAllObjects];
+    }
+
     @try {
         if (self.session == nil) {
             return NO;
@@ -862,9 +867,6 @@ static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *chann
             [self.session unsubscribeTopics: [topicsArray copy]];
         }
 
-        @synchronized (self) {
-            [self.deferredSubscriptions removeAllObjects];
-        }
         [self.session closeWithDisconnectHandler:^(NSError *error) {
             if (error) {
                 ALSLog(ALLoggerSeverityError, @"MQTT : ERROR WHIlE DISCONNECTING FROM MQTT %@", error);
@@ -907,8 +909,9 @@ static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *chann
 - (void)unSubscribeToChannelConversation:(NSNumber *)channelKey {
     @try {
         ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_UNSUBSCRIBING");
-        [self removeDeferredSubscriptionWithKey:KMCoreDeferredSubscriptionKey(@"typing", channelKey)];
         dispatch_async(dispatch_get_main_queue (), ^{
+            // On the main queue so it runs after any subscribe that is already queued.
+            [self removeDeferredSubscriptionWithKey:KMCoreDeferredSubscriptionKey(@"typing", channelKey)];
 
             if (!self.session) {
                 ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
@@ -956,8 +959,8 @@ static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *chann
 - (void)unSubscribeToOpenChannel:(NSNumber *)channelKey {
     @try {
         ALSLog(ALLoggerSeverityInfo, @"MQTT_/OPEN_GROUP_UNSUBSCRIBING");
-        [self removeDeferredSubscriptionWithKey:KMCoreDeferredSubscriptionKey(@"open", channelKey)];
         dispatch_async(dispatch_get_main_queue (), ^{
+            [self removeDeferredSubscriptionWithKey:KMCoreDeferredSubscriptionKey(@"open", channelKey)];
 
             if (!self.session) {
                 ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");

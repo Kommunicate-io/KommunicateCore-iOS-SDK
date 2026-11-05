@@ -703,7 +703,7 @@
     NSPredicate *predicateDeletedCheck=[NSPredicate predicateWithFormat:@"deletedFlag == NO"];
 
     NSPredicate *predicateForHiddenMessages = messageListRequest.includeHiddenMessages
-        ? [NSPredicate predicateWithFormat:@"msgHidden == %@ OR metadata CONTAINS %@", @(NO), @"NOTE_ID"]
+        ? [NSPredicate predicateWithFormat:@"msgHidden == %@ OR (metadata CONTAINS %@ AND metadata CONTAINS %@)", @(NO), @"NOTE_ID", @"noteContent"]
         : [NSPredicate predicateWithFormat:@"msgHidden == %@", @(NO)];
 
     NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"createdAt < 0"];

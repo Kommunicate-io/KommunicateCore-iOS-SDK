@@ -257,7 +257,8 @@ didCompleteWithError:(NSError *)error {
         NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
         NSString *contentType = [HTTPResponse valueForHTTPHeaderField:@"Content-Type"];
         NSString *lowercasedContentType = contentType.lowercaseString;
-        if ([lowercasedContentType hasPrefix:@"application/json"] || [lowercasedContentType hasPrefix:@"text/"]) {
+        // Only accept confirmed audio types; anything else (JSON, problem+json, text, none) is not audio.
+        if (![lowercasedContentType hasPrefix:@"audio/"] && ![lowercasedContentType hasPrefix:@"application/octet-stream"]) {
             completion(nil, [self errorWithCode:KMCoreVoiceAPIErrorInvalidResponse
                                     description:@"The voice service did not return audio"]);
             return;

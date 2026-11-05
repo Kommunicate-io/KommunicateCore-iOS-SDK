@@ -300,7 +300,7 @@ static BOOL KMShouldDropHiddenMessage(KMCoreMessage *message, BOOL includeHidden
     }
 
     NSPredicate *predicate2 = includeHiddenMessages
-        ? [NSPredicate predicateWithFormat:@"deletedFlag == NO AND (msgHidden == %@ OR metadata CONTAINS %@)", @(NO), @"NOTE_ID"]
+        ? [NSPredicate predicateWithFormat:@"deletedFlag == NO AND (msgHidden == %@ OR (metadata CONTAINS %@ AND metadata CONTAINS %@))", @(NO), @"NOTE_ID", @"noteContent"]
         : [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
     NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
     NSPredicate *compoundPredicate;
