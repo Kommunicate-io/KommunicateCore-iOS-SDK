@@ -1,6 +1,12 @@
 # CHANGELOG
 
 The changelog for [KommunicateCore-iOS-SDK](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK). Also see the [releases](https://github.com/Kommunicate-io/KommunicateCore-iOS-SDK/releases) on Github.
+## [1.3.3] 2026-11-05
+- Voice mode STT and TTS APIs
+- Internal notes included in message history
+- Fixed MQTT authentication and retry handling
+- Performance improvements (avoid main thread waits)
+
 ## [1.3.2] 2026-04-21
 - Xcode 26.4 Support
 - Settings for Images
