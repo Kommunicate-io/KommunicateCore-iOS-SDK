@@ -40,6 +40,13 @@
 
 static KMCoreMessageClientService *alMsgClientService;
 
+static BOOL KMIsInternalNoteMessage(KMCoreMessage *message) {
+    NSString *noteContent = [message.metadata valueForKey:@"noteContent"];
+    return [message.metadata valueForKey:@"NOTE_ID"] != nil
+        && [noteContent isKindOfClass:[NSString class]]
+        && [noteContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
+}
+
 + (KMCoreMessageService *)sharedInstance {
     static KMCoreMessageService *sharedInstance = nil;
     static dispatch_once_t onceToken;
@@ -195,7 +202,8 @@ static KMCoreMessageClientService *alMsgClientService;
         for (int i = (int)messages.count - 1; i >= 0; i--) {
             KMCoreMessage *message = messages[i];
 
-            if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
+            if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]
+                && !(messageListRequest.includeHiddenMessages && KMIsInternalNoteMessage(message))) {
                 [messages removeObjectAtIndex:i];
             }
 
@@ -246,6 +254,24 @@ static KMCoreMessageClientService *alMsgClientService;
                         startIndex:(NSInteger)startIndex
                          startTime:(NSNumber *)startTime
                     withCompletion:(void (^)(NSMutableArray *))completion {
+    [self getMessageListForContactId:contactIds
+                             isGroup:isGroup
+                          channelKey:channelKey
+                      conversationId:conversationId
+                          startIndex:startIndex
+                           startTime:startTime
+               includeHiddenMessages:NO
+                      withCompletion:completion];
+}
+
++ (void)getMessageListForContactId:(NSString *)contactIds
+                           isGroup:(BOOL)isGroup
+                        channelKey:(NSNumber *)channelKey
+                    conversationId:(NSNumber *)conversationId
+                        startIndex:(NSInteger)startIndex
+                         startTime:(NSNumber *)startTime
+             includeHiddenMessages:(BOOL)includeHiddenMessages
+                    withCompletion:(void (^)(NSMutableArray *))completion {
     int rp = 50;
 
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
@@ -260,7 +286,9 @@ static KMCoreMessageClientService *alMsgClientService;
         predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil", contactIds];
     }
 
-    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
+    NSPredicate *predicate2 = includeHiddenMessages
+        ? [NSPredicate predicateWithFormat:@"deletedFlag == NO AND (msgHidden == %@ OR metadata CONTAINS %@)", @(NO), @"NOTE_ID"]
+        : [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
     NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
     NSPredicate *compoundPredicate;
     if(startTime != nil){
