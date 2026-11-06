@@ -32,6 +32,17 @@ NSString *const KMCoreChannelDidChangeGroupMuteNotification = @"KMCoreChannelDid
 NSString *const ALLoggedInUserDidChangeDeactivateNotification = @"ALLoggedInUserDidChangeDeactivateNotification";
 NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
+static NSString *const KMCoreMQTTBadCredentialsError = @"MQTT CONNACK: bad user name or password";
+static NSTimeInterval const KMCoreMQTTRetryDelay = 2.0;
+
+@interface ALMQTTConversationService ()
+
+@property (nonatomic, assign) BOOL isRefreshingMQTTAuthToken;
+@property (nonatomic, strong) NSMutableSet<NSString *> *pendingAuthRetryTopics;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, dispatch_block_t> *deferredSubscriptions;
+
+@end
+
 @implementation ALMQTTConversationService
 
 /*
@@ -93,6 +104,118 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     }
 }
 
+- (BOOL)isBadMQTTCredentialsError:(NSError *)error {
+    return [error.localizedDescription isEqualToString:KMCoreMQTTBadCredentialsError];
+}
+
+- (void)postUnauthorizedUserNotification {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"LOGOUT_UNAUTHORIZED_USER"
+                                                        object:nil
+                                                      userInfo:nil];
+}
+
+static NSString *KMCoreDeferredSubscriptionKey(NSString *prefix, NSNumber *channelKey) {
+    return [NSString stringWithFormat:@"%@-%@", prefix, channelKey ?: @"none"];
+}
+
+// Subscriptions requested before the session is connected are kept (one per key) and replayed on connect.
+- (void)deferSubscriptionWithKey:(NSString *)key block:(dispatch_block_t)block {
+    @synchronized (self) {
+        if (!self.deferredSubscriptions) {
+            self.deferredSubscriptions = [NSMutableDictionary dictionary];
+        }
+        self.deferredSubscriptions[key] = [block copy];
+    }
+}
+
+- (void)removeDeferredSubscriptionWithKey:(NSString *)key {
+    @synchronized (self) {
+        [self.deferredSubscriptions removeObjectForKey:key];
+    }
+}
+
+- (void)replayDeferredSubscriptions {
+    NSArray<dispatch_block_t> *blocks;
+    @synchronized (self) {
+        blocks = self.deferredSubscriptions.allValues;
+        [self.deferredSubscriptions removeAllObjects];
+    }
+    for (dispatch_block_t block in blocks) {
+        block();
+    }
+}
+
+- (void)refreshAuthTokenAndRetrySubscriptionForTopic:(NSString *)topic {
+    if (![self shouldRetry]) {
+        return;
+    }
+
+    // Topics requested while a refresh is already running are replayed once it finishes.
+    @synchronized (self) {
+        if (!self.pendingAuthRetryTopics) {
+            self.pendingAuthRetryTopics = [NSMutableSet set];
+        }
+        if (topic.length) {
+            [self.pendingAuthRetryTopics addObject:topic];
+        }
+        if (self.isRefreshingMQTTAuthToken) {
+            return;
+        }
+        self.isRefreshingMQTTAuthToken = YES;
+    }
+
+    ALAuthService *authService = [[ALAuthService alloc] init];
+    [authService refreshAuthTokenForLoginUserWithCompletion:^(ALAPIResponse *apiResponse, NSError *refreshError) {
+        @synchronized (self) {
+            self.isRefreshingMQTTAuthToken = NO;
+        }
+
+        if (refreshError) {
+            BOOL isRefreshAuthError = [refreshError.domain isEqualToString:KMCoreAuthTokenRefreshErrorDomain];
+            if (isRefreshAuthError && refreshError.code == KMCoreAuthTokenRefreshErrorStaleSession) {
+                // The result belongs to a previous session, so it is not a refresh failure. Topics queued
+                // by the current session while it was running still need their own refresh.
+                ALSLog(ALLoggerSeverityInfo, @"MQTT : IGNORING STALE AUTH_TOKEN_REFRESH RESULT");
+                BOOL hasPendingTopics;
+                @synchronized (self) {
+                    hasPendingTopics = self.pendingAuthRetryTopics.count > 0;
+                }
+                if (hasPendingTopics) {
+                    [self refreshAuthTokenAndRetrySubscriptionForTopic:nil];
+                }
+                return;
+            }
+            ALSLog(ALLoggerSeverityError, @"MQTT : AUTH_TOKEN_REFRESH_FAILED :: %@", refreshError.description);
+            // Only an HTTP 401 means the credentials are rejected. Any other failure (offline, 5xx,
+            // bad body) leaves the user logged in and keeps the queued topics for the next refresh.
+            if (isRefreshAuthError && refreshError.code == KMCoreAuthTokenRefreshErrorUnauthorized) {
+                [self postUnauthorizedUserNotification];
+            }
+            return;
+        }
+
+        if (![self shouldRetry]) {
+            return;
+        }
+
+        NSSet<NSString *> *topics;
+        @synchronized (self) {
+            topics = [self.pendingAuthRetryTopics copy];
+            [self.pendingAuthRetryTopics removeAllObjects];
+        }
+        for (NSString *pendingTopic in topics) {
+            [self subscribeToConversationWithTopic:pendingTopic withCompletionHandler:^(BOOL subscribed, NSError *retryError) {
+                if (retryError) {
+                    ALSLog(ALLoggerSeverityError, @"MQTT : ERROR_IN_AUTH_RETRY_SUBSCRIBE :: %@", retryError.description);
+                    if ([self isBadMQTTCredentialsError:retryError]) {
+                        [self postUnauthorizedUserNotification];
+                    }
+                }
+            }];
+        }
+    }];
+}
+
 - (void)connectToMQTTWithCompletionHandler:(void (^)(BOOL isConnected,NSError *errror))completion {
 
     @try
@@ -109,7 +232,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
             return;
         }
 
-        if (self.session && (self.session.status == MQTTSessionEventConnected || self.session.status == MQTTSessionStatusConnected)) {
+        if (self.session && self.session.status == MQTTSessionStatusConnected) {
             ALSLog(ALLoggerSeverityInfo, @"MQTT : IGNORING REQUEST, ALREADY CONNECTED");
             completion(true, nil);
             return;
@@ -160,6 +283,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 
                 [self.session publishAndWaitData:[publishString dataUsingEncoding:NSUTF8StringEncoding] onTopic:MQTT_TOPIC_STATUS retain:NO qos:MQTTQosLevelAtMostOnce timeout:30];
 
+                [self replayDeferredSubscriptions];
                 completion(true, nil);
             }];
         }];
@@ -176,10 +300,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     [self subscribeToConversationWithTopic:topic withCompletionHandler:^(BOOL subscribed, NSError *error) {
         if (error) {
             ALSLog(ALLoggerSeverityError, @"MQTT : ERROR_IN_SUBSCRIBE :: %@", error.description);
-            if ([error.description  isEqual: @"MQTT CONNACK: bad user name or password"]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"LOGOUT_UNAUTHORIZED_USER"
-                                                                    object:nil
-                                                                  userInfo:nil];
+            if ([self isBadMQTTCredentialsError:error]) {
+                [self refreshAuthTokenAndRetrySubscriptionForTopic:topic];
             }
         }
     }];
@@ -629,7 +751,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 }
 
 - (void)sendTypingStatus:(NSString *)applicationKey userID:(NSString *)userId andChannelKey:(NSNumber *)channelKey typing:(BOOL)typing {
-    if (!self.session) {
+    NSString *loggedInUserId = [KMCoreUserDefaultsHandler getUserId];
+    NSString *applicationId = [KMCoreUserDefaultsHandler getApplicationKey];
+    if (!self.session ||
+        self.session.status != MQTTSessionStatusConnected ||
+        !loggedInUserId.length ||
+        !applicationId.length ||
+        (!channelKey && !userId.length)) {
         return;
     }
     if (channelKey) {
@@ -638,13 +766,13 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
         ALSLog(ALLoggerSeverityInfo, @"Sending typing status %d to user: %@", typing, userId);
     }
 
-    NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i", [KMCoreUserDefaultsHandler getApplicationKey],
-                            [KMCoreUserDefaultsHandler getUserId], typing ? 1 : 0];
+    NSString *dataString = [NSString stringWithFormat:@"%@,%@,%i", applicationId,
+                            loggedInUserId, typing ? 1 : 0];
 
-    NSString *topicString = [NSString stringWithFormat:@"typing-%@-%@", [KMCoreUserDefaultsHandler getApplicationKey], userId];
+    NSString *topicString = [NSString stringWithFormat:@"typing-%@-%@", applicationId, userId];
 
     if (channelKey != nil) {
-        topicString = [NSString stringWithFormat:@"typing-%@-%@", [KMCoreUserDefaultsHandler getApplicationKey], channelKey];
+        topicString = [NSString stringWithFormat:@"typing-%@-%@", applicationId, channelKey];
     }
     ALSLog(ALLoggerSeverityInfo, @"MQTT_PUBLISH :: %@",topicString);
 
@@ -726,6 +854,12 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
 }
 
 - (BOOL)unsubscribeToConversationForUser:(NSString *)userKey WithTopic:(NSString *)topic {
+    // Drop anything still waiting to be (re)subscribed, even if the session is already gone.
+    @synchronized (self) {
+        [self.deferredSubscriptions removeAllObjects];
+        [self.pendingAuthRetryTopics removeAllObjects];
+    }
+
     @try {
         if (self.session == nil) {
             return NO;
@@ -767,8 +901,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_SUBSCRIBING");
     dispatch_async(dispatch_get_main_queue (),^{
         @try {
-            if (!self.session && self.session.status == MQTTSessionStatusConnected) {
+            if (!self.session || self.session.status != MQTTSessionStatusConnected) {
                 ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+                [self deferSubscriptionWithKey:KMCoreDeferredSubscriptionKey(@"typing", channelKey) block:^{
+                    [self subscribeToChannelConversation:channelKey];
+                }];
                 return;
             }
             NSString *topicString = @"";
@@ -790,6 +927,8 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     @try {
         ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/USER_UNSUBSCRIBING");
         dispatch_async(dispatch_get_main_queue (), ^{
+            // On the main queue so it runs after any subscribe that is already queued.
+            [self removeDeferredSubscriptionWithKey:KMCoreDeferredSubscriptionKey(@"typing", channelKey)];
 
             if (!self.session) {
                 ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
@@ -814,8 +953,11 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     ALSLog(ALLoggerSeverityInfo, @"MQTT_CHANNEL/OPEN_GROUP_SUBSCRIBING");
     dispatch_async(dispatch_get_main_queue (),^{
         @try {
-            if (!self.session && self.session.status == MQTTSessionStatusConnected) {
+            if (!self.session || self.session.status != MQTTSessionStatusConnected) {
                 ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
+                [self deferSubscriptionWithKey:KMCoreDeferredSubscriptionKey(@"open", channelKey) block:^{
+                    [self subscribeToOpenChannel:channelKey];
+                }];
                 return;
             }
             NSString *openGroupString = @"";
@@ -835,6 +977,7 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     @try {
         ALSLog(ALLoggerSeverityInfo, @"MQTT_/OPEN_GROUP_UNSUBSCRIBING");
         dispatch_async(dispatch_get_main_queue (), ^{
+            [self removeDeferredSubscriptionWithKey:KMCoreDeferredSubscriptionKey(@"open", channelKey)];
 
             if (!self.session) {
                 ALSLog(ALLoggerSeverityInfo, @"MQTT_SESSION_NULL");
@@ -872,15 +1015,20 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     }];
 }
 - (BOOL)shouldRetry {
-    BOOL isInBackground = [UIApplication sharedApplication].applicationState == UIApplicationStateBackground;
-    return !isInBackground && [ALDataNetworkConnection checkDataNetworkAvailable];
+    BOOL isAppActive = [UIApplication sharedApplication].applicationState == UIApplicationStateActive;
+    return isAppActive &&
+           [KMCoreUserDefaultsHandler isLoggedIn] &&
+           [ALDataNetworkConnection checkDataNetworkAvailable];
 }
 
 - (void)retryConnection {
     if (![self shouldRetry]) {
         return;
     }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(KMCoreMQTTRetryDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (![self shouldRetry]) {
+            return;
+        }
         [self subscribeToConversation];
     });
 }
@@ -889,7 +1037,10 @@ NSString *const AL_MESSAGE_STATUS_TOPIC = @"message-status";
     if (![self shouldRetry]) {
         return;
     }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(KMCoreMQTTRetryDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (![self shouldRetry]) {
+            return;
+        }
         [self subscribeToConversationWithTopic: topic];
     });
 }

@@ -89,6 +89,27 @@
     return [KMCoreUserDefaultsHandler getDeviceKeyString] != nil;
 }
 
++ (void)setVoiceChatEnabled:(BOOL)enabled {
+    [[KMCoreUserDefaultsHandler getUserDefaults] setBool:enabled forKey:KM_CORE_VOICE_CHAT_ENABLED];
+}
+
++ (BOOL)isVoiceChatEnabled {
+    return [[KMCoreUserDefaultsHandler getUserDefaults] boolForKey:KM_CORE_VOICE_CHAT_ENABLED];
+}
+
++ (void)setVoiceBaseURL:(NSString *)baseURL {
+    NSUserDefaults *userDefaults = [KMCoreUserDefaultsHandler getUserDefaults];
+    if (baseURL.length == 0) {
+        [userDefaults removeObjectForKey:KM_CORE_VOICE_BASE_URL];
+    } else {
+        [userDefaults setObject:baseURL forKey:KM_CORE_VOICE_BASE_URL];
+    }
+}
+
++ (NSString *)getVoiceBaseURL {
+    return [[KMCoreUserDefaultsHandler getUserDefaults] stringForKey:KM_CORE_VOICE_BASE_URL];
+}
+
 + (void)clearAll {
     ALSLog(ALLoggerSeverityInfo, @"CLEARING_USER_DEFAULTS");
     NSUserDefaults *userDefaults = [KMCoreUserDefaultsHandler getUserDefaults];
@@ -925,8 +946,12 @@
 }
 
 + (NSUserDefaults *)getUserDefaults {
-    NSString *appSuiteName = [ALUtilityClass getAppGroupsName];
-    return [[NSUserDefaults alloc] initWithSuiteName:appSuiteName];
+    static NSUserDefaults *userDefaults;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        userDefaults = [[NSUserDefaults alloc] initWithSuiteName:[ALUtilityClass getAppGroupsName]];
+    });
+    return userDefaults;
 }
 
 + (void)deactivateLoggedInUser:(BOOL)deactivate {

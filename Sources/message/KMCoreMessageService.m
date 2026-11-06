@@ -40,6 +40,19 @@
 
 static KMCoreMessageClientService *alMsgClientService;
 
+static BOOL KMIsInternalNoteMessage(KMCoreMessage *message) {
+    NSString *noteContent = [message.metadata valueForKey:@"noteContent"];
+    return [message.metadata valueForKey:@"NOTE_ID"] != nil
+        && [noteContent isKindOfClass:[NSString class]]
+        && [noteContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0;
+}
+
+// Hidden messages are dropped, except VOIP notifications and (when requested) internal notes.
+static BOOL KMShouldDropHiddenMessage(KMCoreMessage *message, BOOL includeHiddenMessages) {
+    return [message isHiddenMessage] && ![message isVOIPNotificationMessage]
+        && !(includeHiddenMessages && KMIsInternalNoteMessage(message));
+}
+
 + (KMCoreMessageService *)sharedInstance {
     static KMCoreMessageService *sharedInstance = nil;
     static dispatch_once_t onceToken;
@@ -146,6 +159,14 @@ static KMCoreMessageClientService *alMsgClientService;
     //On Message List Cell Tap
     KMCoreMessageDBService *alMessageDBService = [[KMCoreMessageDBService alloc] init];
     NSMutableArray *messageList = [alMessageDBService getMessageListForContactWithCreatedAt:messageListRequest];
+    if (messageListRequest.includeHiddenMessages) {
+        // Cached hidden messages must pass the same internal-note check as the server path.
+        for (NSInteger i = (NSInteger)messageList.count - 1; i >= 0; i--) {
+            if (KMShouldDropHiddenMessage(messageList[i], YES)) {
+                [messageList removeObjectAtIndex:i];
+            }
+        }
+    }
 
     NSString *chatId;
     if (messageListRequest.conversationId != nil) {
@@ -195,7 +216,7 @@ static KMCoreMessageClientService *alMsgClientService;
         for (int i = (int)messages.count - 1; i >= 0; i--) {
             KMCoreMessage *message = messages[i];
 
-            if ([message isHiddenMessage] && ![message isVOIPNotificationMessage]) {
+            if (KMShouldDropHiddenMessage(message, messageListRequest.includeHiddenMessages)) {
                 [messages removeObjectAtIndex:i];
             }
 
@@ -246,6 +267,24 @@ static KMCoreMessageClientService *alMsgClientService;
                         startIndex:(NSInteger)startIndex
                          startTime:(NSNumber *)startTime
                     withCompletion:(void (^)(NSMutableArray *))completion {
+    [self getMessageListForContactId:contactIds
+                             isGroup:isGroup
+                          channelKey:channelKey
+                      conversationId:conversationId
+                          startIndex:startIndex
+                           startTime:startTime
+               includeHiddenMessages:NO
+                      withCompletion:completion];
+}
+
++ (void)getMessageListForContactId:(NSString *)contactIds
+                           isGroup:(BOOL)isGroup
+                        channelKey:(NSNumber *)channelKey
+                    conversationId:(NSNumber *)conversationId
+                        startIndex:(NSInteger)startIndex
+                         startTime:(NSNumber *)startTime
+             includeHiddenMessages:(BOOL)includeHiddenMessages
+                    withCompletion:(void (^)(NSMutableArray *))completion {
     int rp = 50;
 
     KMCoreDBHandler *alDBHandler = [KMCoreDBHandler sharedInstance];
@@ -260,8 +299,12 @@ static KMCoreMessageClientService *alMsgClientService;
         predicate1 = [NSPredicate predicateWithFormat:@"contactId = %@ && groupId = nil", contactIds];
     }
 
-    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
-    NSPredicate *predicate3 = [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
+    NSPredicate *predicate2 = includeHiddenMessages
+        ? [NSPredicate predicateWithFormat:@"deletedFlag == NO AND (msgHidden == %@ OR (metadata CONTAINS %@ AND metadata CONTAINS %@))", @(NO), @"NOTE_ID", @"noteContent"]
+        : [NSPredicate predicateWithFormat:@"deletedFlag == NO AND msgHidden == %@",@(NO)];
+    NSPredicate *predicate3 = includeHiddenMessages
+        ? [NSPredicate predicateWithFormat:@"contentType != %i OR (metadata CONTAINS %@ AND metadata CONTAINS %@)", ALMESSAGE_CONTENT_HIDDEN, @"NOTE_ID", @"noteContent"]
+        : [NSPredicate predicateWithFormat:@"contentType != %i",ALMESSAGE_CONTENT_HIDDEN];
     NSPredicate *compoundPredicate;
     if(startTime != nil){
         NSPredicate *predicate4 = [NSPredicate predicateWithFormat:@"createdAt < %lld", [startTime longLongValue]];
@@ -272,6 +315,39 @@ static KMCoreMessageClientService *alMsgClientService;
     [dbMessageFetchRequest setPredicate:compoundPredicate];
     [dbMessageFetchRequest setFetchOffset:startIndex];
     [dbMessageFetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:NO]]];
+
+    if (includeHiddenMessages) {
+        // Hidden rows are validated in code, so page over the validated messages: skip the ones the
+        // caller already has (startIndex counts messages, not rows), then fill one page.
+        NSMutableArray *pageMessages = [[NSMutableArray alloc] init];
+        KMCoreMessageDBService *pageDBService = [[KMCoreMessageDBService alloc] init];
+        NSInteger messagesToSkip = startIndex;
+        NSInteger rowOffset = 0;
+        while ((NSInteger)pageMessages.count < rp) {
+            [dbMessageFetchRequest setFetchOffset:rowOffset];
+            NSArray *rows = [alDBHandler executeFetchRequest:dbMessageFetchRequest withError:nil];
+            for (DB_Message * theEntity in rows) {
+                rowOffset++;
+                KMCoreMessage * theMessage = [pageDBService createMessageEntity:theEntity];
+                if (KMShouldDropHiddenMessage(theMessage, YES)) {
+                    continue;
+                }
+                if (messagesToSkip > 0) {
+                    messagesToSkip--;
+                    continue;
+                }
+                [pageMessages insertObject:theMessage atIndex:0];
+                if ((NSInteger)pageMessages.count == rp) {
+                    break;
+                }
+            }
+            if ((NSInteger)rows.count < rp) {
+                break;
+            }
+        }
+        completion(pageMessages);
+        return;
+    }
 
     NSArray *theArray = [alDBHandler executeFetchRequest:dbMessageFetchRequest withError:nil];
 

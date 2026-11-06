@@ -275,12 +275,14 @@ NSString * const AL_APP_GROUPS_ACCESS_KEY = @"ALAppGroupsKey";
 }
 
 + (NSURL *)getAppsGroupDirectory {
-
-    NSURL *urlForDocumentsDirectory;
-    NSString *shareExtentionGroupName = [KMCoreSettings getShareExtentionGroup];
-    if (shareExtentionGroupName) {
-        urlForDocumentsDirectory = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:shareExtentionGroupName];
-    }
+    static NSURL *urlForDocumentsDirectory;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *shareExtentionGroupName = [KMCoreSettings getShareExtentionGroup];
+        if (shareExtentionGroupName) {
+            urlForDocumentsDirectory = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:shareExtentionGroupName];
+        }
+    });
     return urlForDocumentsDirectory;
 }
 

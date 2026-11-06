@@ -19,6 +19,7 @@
 @property(nonatomic,retain) NSNumber *startTimeStamp;
 @property(nonatomic,retain) NSString *userId;
 @property(nonatomic,retain) NSNumber *conversationId;
+@property(nonatomic) BOOL includeHiddenMessages;
 
 - (NSString *)getParamString;
 - (BOOL)isFirstCall;

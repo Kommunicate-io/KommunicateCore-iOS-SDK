@@ -16,12 +16,30 @@
 @implementation ALHTTPManager
 
 static dispatch_semaphore_t semaphore;
+static dispatch_queue_t sessionStartQueue;
+
+// The shared connection array is touched from several queues; always lock on the array itself.
+static NSArray *KMConnectionQueueSnapshot(void) {
+    NSMutableArray *connectionQueue = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    @synchronized (connectionQueue) {
+        return [connectionQueue copy];
+    }
+}
+
+static void KMRemoveSessionFromConnectionQueue(NSURLSession *session) {
+    NSMutableArray *connectionQueue = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    @synchronized (connectionQueue) {
+        [connectionQueue removeObject:session];
+    }
+}
 
 - (instancetype)init {
     self = [super init];
-    if (!semaphore) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         semaphore = dispatch_semaphore_create(2); //2 tasks
-    }
+        sessionStartQueue = dispatch_queue_create("io.kommunicate.ALHTTPManager.sessionStart", DISPATCH_QUEUE_SERIAL);
+    });
     if (self) {
         self.buffer = [[NSMutableData alloc]init];
         self.responseHandler = [[ALResponseHandler alloc] init];
@@ -116,11 +134,11 @@ static dispatch_semaphore_t semaphore;
                     [self.attachmentProgressDelegate onDownloadCompleted:alMessage];
                 }
                 self.buffer = nil;
-                [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:session];
+                KMRemoveSessionFromConnectionQueue(session);
             });
         }
     } else {
-        [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] removeObject:session];
+        KMRemoveSessionFromConnectionQueue(session);
         if (error) {
             ALSLog(ALLoggerSeverityError, @"Error while downloading  %@", error.localizedDescription);
         } else {
@@ -231,7 +249,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
                 // set URL
                 [urlRequest setURL:[NSURL URLWithString:uploadURL]];
 
-                NSMutableArray *sessionURLArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+                NSArray *sessionURLArray = KMConnectionQueueSnapshot();
 
                 for (NSURLSession *session in sessionURLArray) {
                     NSURLSessionConfiguration *config = session.configuration;
@@ -279,7 +297,7 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
     downloadTask.message = alMessage;
     self.downloadTask = downloadTask;
 
-    NSMutableArray *sessionArray = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    NSArray *sessionArray = KMConnectionQueueSnapshot();
 
     for (NSURLSession *session in sessionArray) {
         NSURLSessionConfiguration *config = session.configuration;
@@ -407,15 +425,23 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 
 - (void)startSession:(NSURLSession *)session
          withRequest:(NSURLRequest *)urlRequest {
-    [[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] addObject:session];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    if ([[[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue] containsObject:session]) {
-        NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:urlRequest];
-        [sessionDataTask resume];
-    } else {
-        dispatch_semaphore_signal(semaphore);
-        return;
+    NSMutableArray *connectionQueue = [[ALConnectionQueueHandler sharedConnectionQueueHandler] getCurrentConnectionQueue];
+    @synchronized (connectionQueue) {
+        [connectionQueue addObject:session];
     }
+    dispatch_async(sessionStartQueue, ^{
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        BOOL isQueued;
+        @synchronized (connectionQueue) {
+            isQueued = [connectionQueue containsObject:session];
+        }
+        if (isQueued) {
+            NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:urlRequest];
+            [sessionDataTask resume];
+        } else {
+            dispatch_semaphore_signal(semaphore);
+        }
+    });
 }
 
 - (void)uploadProfileImage:(UIImage *)profileImage
