@@ -442,10 +442,7 @@ static NSString * const AL_CONVERSATION_DELETE_ACTION = @"4";
             _imageFilePath = builder.imageFilePath.lastPathComponent;
             _fileMeta = [self getFileMetaInfo];
             //File Meta Creation
-            _fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", builder.imageFilePath];
-            if (builder.to) {
-                _fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",builder.to, builder.imageFilePath];
-            }
+            _fileMeta.name = builder.imageFilePath.lastPathComponent;
         }
 
     }
