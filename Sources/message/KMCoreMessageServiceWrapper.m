@@ -68,10 +68,7 @@ andWithStatusDelegate:(id)statusDelegate
     
     //File Meta Creation
     message.fileMeta = [self getFileMetaInfo];
-    message.fileMeta.name = [NSString stringWithFormat:@"AUD-5-%@", attachmentLocalPath.lastPathComponent];
-    if (alMessage.contactIds) {
-        message.fileMeta.name = [NSString stringWithFormat:@"%@-5-%@",alMessage.contactIds, attachmentLocalPath.lastPathComponent];
-    }
+    message.fileMeta.name = attachmentLocalPath.lastPathComponent;
     NSString *mimeType = [ALUtilityClass fileMIMEType:attachmentLocalPath];
     if (!mimeType) {
         return;
